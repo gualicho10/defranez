@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ezequiel De Francisco — Product Designer</title>
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg"/>
   <link rel="icon" type="image/x-icon" href="img/favicon.ico"/>
-  <link rel="icon" type="image/png" href="img/favicon.png"/>
   <link rel="apple-touch-icon" href="img/favicon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -35,6 +35,7 @@
       color: #e8eaed;
       font-family: 'Syne', sans-serif;
       overflow-x: hidden;
+      cursor: none;
     }
 
     /* Custom cursor */
@@ -426,6 +427,7 @@
       background: #0e1114;
       border: 1px solid rgba(255,255,255,0.06);
       overflow: hidden;
+      cursor: none;
       transition: border-color 0.3s;
       text-decoration: none;
       display: block;
@@ -730,38 +732,24 @@
       transform: translateY(0);
     }
 
-    /* Hero logo background */
-    .hero-logo-bg {
+    /* Figma LOGO asset */
+    .hero-logo {
       position: absolute;
-      inset: 0;
+      top: 8%;
+      right: 0;
+      width: 43vw;
+      max-width: 820px;
+      aspect-ratio: 818 / 891;
       overflow: hidden;
       pointer-events: none;
-      opacity: 0.7;
     }
-    .hero-logo-bg img {
+    .hero-logo img {
       position: absolute;
-      height: 135%;
-      width: auto;
-      top: -10%;
-      left: 30%;
-      max-width: none;
-    }
-
-    /* SVG hero decoration (fallback if no logo.png) */
-    .hero-svg {
-      position: absolute;
-      top: 50%;
-      right: 8%;
-      transform: translateY(-50%);
-      width: 420px;
-      height: 420px;
-      opacity: 0.12;
-      pointer-events: none;
-      animation: svgRotate 30s linear infinite;
-    }
-    @keyframes svgRotate {
-      from { transform: translateY(-50%) rotate(0deg); }
-      to { transform: translateY(-50%) rotate(360deg); }
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      mix-blend-mode: color-dodge;
     }
 
     @media (max-width: 900px) {
@@ -770,8 +758,7 @@
       section { padding: 80px 24px; }
       .hero { padding: 0 24px 60px; }
       .hero-scroll { display: none; }
-      .hero-svg { display: none; }
-      .hero-logo-bg { display: none; }
+      .hero-logo { display: none; }
       .about-grid, .resume-grid, .contact-inner { grid-template-columns: 1fr; gap: 40px; }
       .projects-grid { grid-template-columns: 1fr; }
       footer { padding: 28px 24px; flex-direction: column; gap: 16px; text-align: center; }
@@ -857,8 +844,8 @@
 </head>
 <body>
 
-  <div class="cursor" id="cursor" style="display:none"></div>
-  <div class="cursor-ring" id="cursorRing" style="display:none"></div>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
 
   <!-- NAV -->
   <nav>
@@ -876,23 +863,10 @@
   <section class="hero">
     <div class="hero-orb"></div>
 
-    <!-- Logo background -->
-    <div class="hero-logo-bg">
-      <img src="img/logo.png" alt="" />
+    <!-- Figma LOGO asset -->
+    <div class="hero-logo">
+      <img src="logo-vector.svg" alt="">
     </div>
-
-    <!-- Decorative SVG rings (hidden when logo.png is present) -->
-    <svg class="hero-svg" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none">
-      <circle cx="200" cy="200" r="180" stroke="#00f5a0" stroke-width="0.5"/>
-      <circle cx="200" cy="200" r="140" stroke="#00c8ff" stroke-width="0.5"/>
-      <circle cx="200" cy="200" r="100" stroke="#00f5a0" stroke-width="0.5"/>
-      <circle cx="200" cy="200" r="60" stroke="#00c8ff" stroke-width="0.5"/>
-      <line x1="20" y1="200" x2="380" y2="200" stroke="#00f5a0" stroke-width="0.5"/>
-      <line x1="200" y1="20" x2="200" y2="380" stroke="#00f5a0" stroke-width="0.5"/>
-      <line x1="72" y1="72" x2="328" y2="328" stroke="#00c8ff" stroke-width="0.5"/>
-      <line x1="328" y1="72" x2="72" y2="328" stroke="#00c8ff" stroke-width="0.5"/>
-      <circle cx="200" cy="200" r="4" fill="#00f5a0"/>
-    </svg>
 
     <div class="hero-eyebrow">Product Designer · UX/UI · Web3</div>
     <h1 class="hero-name">Ezequiel<br><span>De Francisco</span></h1>
@@ -911,7 +885,7 @@
   <!-- ABOUT -->
   <section id="about">
     <div class="section-label">01 · About</div>
-    <h2 class="section-title">A bit about me</h2>
+    <h2 class="section-title">Crafting interfaces<br>that just work.</h2>
     <div class="about-grid">
       <div class="about-text fade-up">
         <p>I'm a <strong>Senior Product Designer with 22 years of experience</strong> — started in 2004 with a non-stop journey across Press, Editorial, Web, Gaming, and Mobile. I've worked on-site for major companies and remotely with startups, as well as a freelancer across LATAM, USA, and Israel.</p>
@@ -958,7 +932,7 @@
     <div class="work-header">
       <div>
         <div class="section-label">02 · Selected Work</div>
-        <h2 class="section-title">Portfolio</h2>
+        <h2 class="section-title">Projects.</h2>
       </div>
       <a href="https://www.behance.net/defranez" target="_blank" rel="noopener">
         View all on Behance →
@@ -970,7 +944,7 @@
       <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="project-card fade-up">
         <div class="project-thumb thumb-1">
           <div class="project-thumb-inner">
-            <img src="img/cover-1.jpg" alt="Product Design at OpenLoot" />
+            <img src="img/cover-1.png" alt="Product Design at OpenLoot" />
           </div>
           <div class="project-overlay">
             <div class="overlay-cta">View on Behance →</div>
@@ -986,7 +960,7 @@
       <a href="https://www.behance.net/gallery/46636791/analyzelife-iOS-app" target="_blank" rel="noopener" class="project-card fade-up">
         <div class="project-thumb thumb-2">
           <div class="project-thumb-inner">
-            <img src="img/cover-2.jpg" alt="analyze.life iOS App" />
+            <img src="img/cover-2.png" alt="analyze.life iOS App" />
           </div>
           <div class="project-overlay">
             <div class="overlay-cta">View on Behance →</div>
@@ -1002,7 +976,7 @@
       <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="project-card fade-up">
         <div class="project-thumb thumb-3">
           <div class="project-thumb-inner">
-            <img src="img/cover-3.jpg" alt="My Congress — Roche" />
+            <img src="img/cover-3.png" alt="My Congress — Roche" />
           </div>
           <div class="project-overlay">
             <div class="overlay-cta">View on Behance →</div>
@@ -1018,7 +992,7 @@
       <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="project-card fade-up">
         <div class="project-thumb thumb-4">
           <div class="project-thumb-inner">
-            <img src="img/cover-4.jpg" alt="Mobile Games" />
+            <img src="img/cover-4.png" alt="Mobile Games" />
           </div>
           <div class="project-overlay">
             <div class="overlay-cta">View on Behance →</div>
@@ -1034,7 +1008,7 @@
       <a href="https://www.behance.net/gallery/46637147/UX-UI-Design" target="_blank" rel="noopener" class="project-card fade-up">
         <div class="project-thumb thumb-5">
           <div class="project-thumb-inner">
-            <img src="img/cover-5.jpg" alt="UX / UI Design" />
+            <img src="img/cover-5.png" alt="UX / UI Design" />
           </div>
           <div class="project-overlay">
             <div class="overlay-cta">View on Behance →</div>
@@ -1050,7 +1024,7 @@
       <a href="https://www.behance.net/gallery/66848937/Brand-Concept-(logo-Styles-Guide)" target="_blank" rel="noopener" class="project-card fade-up">
         <div class="project-thumb thumb-6">
           <div class="project-thumb-inner">
-            <img src="img/cover-6.jpg" alt="Brand Concept — Logo + Style Guide" />
+            <img src="img/cover-6.png" alt="Brand Concept — Logo + Style Guide" />
           </div>
           <div class="project-overlay">
             <div class="overlay-cta">View on Behance →</div>
@@ -1069,7 +1043,7 @@
   <!-- RESUME -->
   <section id="resume">
     <div class="section-label">03 · Resume</div>
-    <h2 class="section-title">Career</h2>
+    <h2 class="section-title">Career.</h2>
 
     <div class="resume-grid fade-up">
       <div class="resume-col">
