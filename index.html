@@ -32,7 +32,6 @@
       color: #e8eaed;
       font-family: 'Syne', sans-serif;
       overflow-x: hidden;
-      cursor: none;
     }
 
     /* Custom cursor */
@@ -424,7 +423,6 @@
       background: #0e1114;
       border: 1px solid rgba(255,255,255,0.06);
       overflow: hidden;
-      cursor: none;
       transition: border-color 0.3s;
       text-decoration: none;
       display: block;
@@ -832,8 +830,8 @@
 </head>
 <body>
 
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="cursor" id="cursor" style="display:none"></div>
+  <div class="cursor-ring" id="cursorRing" style="display:none"></div>
 
   <!-- NAV -->
   <nav>
