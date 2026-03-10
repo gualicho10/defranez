@@ -176,11 +176,13 @@
       font-size: 11px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 8px 16px;
+      padding: 9px 17px;
       color: #8a94a6;
-      transition: color 0.2s;
+      background: #0e1114;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: color 0.2s, border-color 0.2s;
     }
-    .tag:hover { color: #00f5a0; }
+    .tag:hover { color: #00f5a0; border-color: rgba(0,245,160,0.3); }
 
     .hero-scroll {
       position: absolute;
@@ -195,6 +197,7 @@
       display: flex;
       align-items: center;
       gap: 16px;
+      z-index: 2;
     }
     .hero-scroll::after {
       content: '';
@@ -607,9 +610,12 @@
     }
 
     .resume-item {
-      padding: 28px 0;
+      padding: 24px 0;
       border-bottom: 1px solid rgba(255,255,255,0.06);
       position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .resume-item:last-child { border-bottom: none; }
@@ -619,21 +625,18 @@
       font-size: 11px;
       color: #8a94a6;
       letter-spacing: 0.08em;
-      margin-bottom: 8px;
     }
 
     .resume-role {
       font-size: 18px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 4px;
       letter-spacing: -0.01em;
     }
 
     .resume-company {
       font-size: 14px;
       color: #00f5a0;
-      margin-bottom: 12px;
       font-weight: 500;
     }
 
@@ -642,6 +645,18 @@
       color: #8a94a6;
       line-height: 1.6;
     }
+
+    /* Formation items (col 2) — green tint cards */
+    .formation-item {
+      background: rgba(0,245,160,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 24px;
+      margin-bottom: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .formation-item:last-child { margin-bottom: 0; }
 
     .resume-download {
       display: inline-flex;
@@ -791,8 +806,7 @@
     .hero-eyebrow,
     .hero-name,
     .hero-title,
-    .hero-tags,
-    .hero-scroll {
+    .hero-tags {
       position: relative;
       z-index: 2;
     }
@@ -1120,7 +1134,7 @@
           <div class="resume-period">2022 — Present · USA (Remote)</div>
           <div class="resume-role">UX / UI / Product Designer</div>
           <div class="resume-company">Big Time Studios / OpenLoot</div>
-          <div class="resume-desc">Product Designer at OpenLoot.com, bridging complex Web3 infrastructure with intuitive UX for a leading crypto-game marketplace. Designed data-heavy dashboards, real-time transaction tracking, and developer-ready UI kits. Translated blockchain technicalities — wallet integration, asset ownership — into seamless interfaces for non-native users. Partnered daily with fullstack engineers to ensure pixel-perfect implementation.</div>
+          <div class="resume-desc">Product Designer at OpenLoot.com, bridging complex Web3 infrastructure with intuitive UX for a leading crypto-game marketplace. Designed data-heavy dashboards, real-time transaction tracking, and developer-ready UI kits. Translated blockchain technicalities — wallet integration, asset ownership — into seamless interfaces for non-native users.</div>
         </div>
 
         <div class="resume-item">
@@ -1139,74 +1153,45 @@
 
         <div class="resume-item">
           <div class="resume-period">2015 — 2018 · Tel Aviv, Israel (Contract)</div>
-          <div class="resume-role">Design Manager</div>
+          <div class="resume-role">Product Design</div>
           <div class="resume-company">SIMPLY.VISION (analyze.life)</div>
           <div class="resume-desc">UX / UI / Product, Branding, Website, and Mobile App design for an Israeli tech startup. Full end-to-end design ownership across the product lifecycle.</div>
         </div>
 
         <div class="resume-item">
           <div class="resume-period">2011 — 2015 · Buenos Aires</div>
-          <div class="resume-role">Senior Advance UI & Visual Designer</div>
+          <div class="resume-role">Senior Advance UI &amp; Visual Designer</div>
           <div class="resume-company">Globant</div>
           <div class="resume-desc">Art Direction, Illustration, and UX/UI for "Bola" mobile game (Disney Argentina). UX/UI Admin platform for DreamWorks, On Site (CA, USA).</div>
         </div>
-
-        <div class="resume-item">
-          <div class="resume-period">2009 — 2011 · California, USA</div>
-          <div class="resume-role">Senior UI & Visual Designer</div>
-          <div class="resume-company">Nextive Solutions</div>
-          <div class="resume-desc">UI design, Illustration, and motion for mobile games — clients included Zynga and Big Fish Games.</div>
-        </div>
-
-        <a href="resume_EdeFco_2026.pdf" class="resume-download" download="Ezequiel_deFrancisco_CV_2026.pdf">
-          Download Full CV ↓
-        </a>
       </div>
 
       <div class="resume-col">
-        <h3>Education & Tools</h3>
+        <h3>Formation</h3>
 
-        <div class="resume-item">
-          <div class="resume-period">2007 — 2009 · Buenos Aires</div>
-          <div class="resume-role">Semi-Senior Web Designer</div>
-          <div class="resume-company">e-Volution</div>
-          <div class="resume-desc">Front-end development, microsites, HTML + CSS for Microsoft Latam. External proposals and mailing campaigns.</div>
-        </div>
-
-        <div class="resume-item">
-          <div class="resume-period">2004 — 2006 · Buenos Aires</div>
-          <div class="resume-role">Graphic Design — Internship</div>
-          <div class="resume-company">Musimundo</div>
-          <div class="resume-desc">Marketing area: graphic design and newspaper advertising.</div>
-        </div>
-
-        <div class="resume-item">
-          <div class="resume-period">Education · 2001 — 2007</div>
+        <div class="formation-item">
+          <div class="resume-period">Education</div>
           <div class="resume-role">Graphic Design</div>
-          <div class="resume-company">UBA — Universidad de Buenos Aires</div>
-          <div class="resume-desc">Foundation in visual communication, typography, editorial, and digital media.</div>
+          <div class="resume-company">FADU/UBA — Universidad de Buenos Aires (GRADUATED)</div>
+          <div class="resume-period">2001–2007</div>
         </div>
 
-        <div class="resume-item">
-          <div class="resume-period">Education · 2016 — 2020</div>
+        <div class="formation-item">
+          <div class="resume-period">Education</div>
           <div class="resume-role">Jazz Guitar Professor</div>
           <div class="resume-company">EMPA — Escuela de Música Popular de Avellaneda</div>
-          <div class="resume-desc"></div>
+          <div class="resume-period">2016–2020</div>
         </div>
 
-        <div class="resume-item">
+        <div class="formation-item">
           <div class="resume-period">Languages</div>
           <div class="resume-role">Spanish · English · Italian</div>
           <div class="resume-company">Native · Advanced · Basic</div>
-          <div class="resume-desc"></div>
         </div>
 
-        <div class="resume-item">
-          <div class="resume-period">Tools</div>
-          <div class="resume-role">Full Stack Design Toolkit</div>
-          <div class="resume-company">—</div>
-          <div class="resume-desc">Figma · Photoshop · Illustrator · InDesign · After Effects · Premiere / Final Cut · Sketch Up · Ableton / Logic Pro · Asana / ClickUp / Jira</div>
-        </div>
+        <a href="img/resume_EdeFco_2026.pdf" class="resume-download" download="Ezequiel_deFrancisco_CV_2026.pdf">
+          Download Full CV ↓
+        </a>
       </div>
     </div>
 
