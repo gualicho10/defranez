@@ -140,7 +140,7 @@
     }
 
     .hero-name {
-      font-size: clamp(56px, 9vw, 130px);
+      font-size: clamp(42px, 9vw, 130px);
       font-weight: 800;
       line-height: 0.9;
       letter-spacing: -0.03em;
@@ -271,9 +271,6 @@
       border-top: 1px solid rgba(255,255,255,0.06);
     }
 
-    #about .section-title {
-      font-style: italic;
-    }
 
     .about-ctas {
       display: flex;
@@ -364,7 +361,7 @@
 
     .stat-card {
       background: #0e1114;
-      padding: 32px;
+      padding: 33px;
       border: 1px solid rgba(255,255,255,0.06);
       position: relative;
       overflow: hidden;
@@ -401,11 +398,22 @@
     }
 
     /* SKILLS */
+    .skills-label {
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      margin-top: 40px;
+      margin-bottom: 12px;
+    }
+
     .skills-row {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 40px;
+      margin-top: 0;
     }
 
     .skill-pill {
@@ -468,13 +476,19 @@
     .project-card:hover { border-color: rgba(0,245,160,0.25); }
 
     .project-thumb {
-      height: 260px;
+      height: 200px;
       background: #13171c;
       position: relative;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+    @media (min-width: 640px) {
+      .project-thumb { height: 280px; }
+    }
+    @media (min-width: 900px) {
+      .project-thumb { height: 336px; }
     }
 
     .project-thumb-inner {
@@ -508,6 +522,7 @@
       object-fit: cover;
       display: block;
       transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      mix-blend-mode: luminosity;
     }
     .project-card:hover .project-thumb img { transform: scale(1.04); }
 
@@ -536,9 +551,14 @@
     }
 
     .project-info {
-      padding: 28px;
+      padding: 24px 24px 12px;
       border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
+    .project-info .project-cat { margin-bottom: 0; }
+    .project-info .project-name { margin-bottom: 0; }
 
     .project-cat {
       font-family: 'DM Mono', monospace;
@@ -912,7 +932,7 @@
     </div>
 
     <div class="hero-eyebrow">Product Designer · UX/UI · Web3</div>
-    <h1 class="hero-name">Ezequiel<br><span>De Francisco</span></h1>
+    <h1 class="hero-name">Ezequiel<br><span>de Francisco</span></h1>
     <p class="hero-title">22 years simplifying complex systems — from Web3 marketplaces to mobile games. Bridging blockchain complexity and intuitive human experience.</p>
     <div class="hero-tags">
       <span class="tag">Web3 & DeFi</span>
@@ -934,6 +954,7 @@
         <p>I'm a <strong>Senior Product Designer with 22 years of experience</strong> — started in 2004 with a non-stop journey across Press, Editorial, Web, Gaming, and Mobile. I've worked on-site for major companies and remotely with startups, as well as a freelancer across LATAM, USA, and Israel.</p>
         <p>In recent years I've focused on <strong>UX/UI for Mobile, Product, and Gaming</strong>, and expanded into Web3 — most recently at <strong>Big Time Studios / OpenLoot</strong>, bridging blockchain infrastructure and intuitive marketplace UX. As a former Creative Leader, I've managed multidisciplinary teams of up to 12, optimizing workflows that directly drive business growth.</p>
         <p>Based in <strong>Buenos Aires, Argentina</strong> · UBA graduate · Available for remote freelance and full-time opportunities worldwide.</p>
+        <div class="skills-label">tools</div>
         <div class="skills-row">
           <span class="skill-pill">Figma</span>
           <span class="skill-pill">Photoshop</span>
