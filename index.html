@@ -681,17 +681,14 @@
     }
 
     .contact-inner {
-      display: flex;
-      flex-direction: column;
-      gap: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
       margin-top: 64px;
+      align-items: start;
     }
-    @media (min-width: 900px) {
-      .contact-inner {
-        flex-direction: row;
-        gap: 80px;
-        align-items: flex-end;
-      }
+    @media (max-width: 900px) {
+      .contact-inner { grid-template-columns: 1fr; gap: 48px; }
     }
 
     .contact-headline {
