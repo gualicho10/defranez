@@ -461,9 +461,13 @@
     .work-header a:hover { gap: 14px; }
 
     .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
+      display: inline-grid;
+      row-gap: 10px;
+      column-gap: 10px;
+      align-self: stretch;
+      grid-template-rows: repeat(1, fit-content(100%));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      width: 100%;
     }
 
     .project-card {
@@ -854,7 +858,7 @@
       .hero-scroll { display: none; }
       .hero-logo { display: none; }
       .about-grid, .resume-grid, .contact-inner { grid-template-columns: 1fr; gap: 40px; }
-      .projects-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       footer { padding: 28px 24px; flex-direction: column; gap: 16px; text-align: center; }
     }
     /* CASE STUDY BLOCK */
