@@ -523,10 +523,13 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-      mix-blend-mode: luminosity;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), filter 0.5s ease;
+      filter: grayscale(1) brightness(0.75);
     }
-    .project-card:hover .project-thumb img { transform: scale(1.04); }
+    .project-card:hover .project-thumb img {
+      transform: scale(1.04);
+      filter: grayscale(0) brightness(1);
+    }
 
     .project-overlay {
       position: absolute;
