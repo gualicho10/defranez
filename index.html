@@ -681,28 +681,36 @@
     }
 
     .contact-inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
       margin-top: 64px;
+    }
+    @media (min-width: 900px) {
+      .contact-inner {
+        flex-direction: row;
+        gap: 80px;
+        align-items: flex-end;
+      }
     }
 
     .contact-headline {
-      font-size: clamp(72px, 10vw, 160px);
+      font-size: clamp(32px, 5vw, 56px);
       font-weight: 800;
-      line-height: 0.9;
-      letter-spacing: -0.04em;
-      color: #00f5a0;
-      margin-bottom: 24px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      margin-bottom: 0;
     }
+    .contact-headline .headline-accent { color: #00f5a0; }
 
     .contact-sub {
       font-size: 16px;
       color: #8a94a6;
       line-height: 1.6;
-      max-width: 380px;
+      max-width: 500px;
     }
-    .contact-sub strong { color: #e8eaed; font-weight: 600; }
+    .contact-sub strong { color: #e8eaed; font-weight: 700; }
 
     .contact-links {
       display: flex;
@@ -714,12 +722,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 28px 32px;
+      padding: 29px 33px;
       background: #0e1114;
       border: 1px solid rgba(255,255,255,0.06);
       text-decoration: none;
       transition: border-color 0.3s, background 0.3s;
-      group: true;
     }
     .contact-link:hover {
       border-color: rgba(0,245,160,0.3);
@@ -740,6 +747,14 @@
       font-weight: 600;
       color: #ffffff;
       letter-spacing: -0.01em;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .cl-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .cl-arrow {
@@ -1217,33 +1232,33 @@
     <div class="section-label">04 · Contact</div>
     <div class="contact-inner">
       <div class="fade-up">
-        <h2 class="contact-headline">great.</h2>
-        <p class="contact-sub">Available for freelance and full-time remote opportunities in <strong>Product Design</strong> and <strong>WEB3.</strong></p>
+        <h2 class="contact-headline">Let's build<br>something<br><span class="headline-accent">great.</span></h2>
+        <p class="contact-sub" style="margin-top:24px;">Available for freelance and full-time remote opportunities in <strong>Product Design</strong> and <strong>WEB3.</strong></p>
       </div>
       <div class="contact-links fade-up">
         <a href="mailto:ezequiel.defrancisco@gmail.com" class="contact-link">
-          <div>
+          <div class="cl-inner">
             <div class="cl-label">Email</div>
             <div class="cl-value">ezequiel.defrancisco@gmail.com</div>
           </div>
           <div class="cl-arrow">↗</div>
         </a>
         <a href="https://wa.me/5491161624371" target="_blank" rel="noopener" class="contact-link">
-          <div>
-            <div class="cl-label">WhatsApp</div>
+          <div class="cl-inner">
+            <div class="cl-label">Phone</div>
             <div class="cl-value">+54 11 6162 4371</div>
           </div>
           <div class="cl-arrow">↗</div>
         </a>
         <a href="https://www.linkedin.com/in/ezequiel-de-francisco/" target="_blank" rel="noopener" class="contact-link">
-          <div>
+          <div class="cl-inner">
             <div class="cl-label">LinkedIn</div>
             <div class="cl-value">ezequiel-de-francisco</div>
           </div>
           <div class="cl-arrow">↗</div>
         </a>
         <a href="https://www.behance.net/defranez" target="_blank" rel="noopener" class="contact-link">
-          <div>
+          <div class="cl-inner">
             <div class="cl-label">Behance</div>
             <div class="cl-value">behance.net/defranez</div>
           </div>
