@@ -853,12 +853,28 @@
     @media (max-width: 900px) {
       nav { padding: 20px 24px; }
       .nav-links { display: none; }
-      section { padding: 80px 24px; }
+      section { padding: 80px 24px; overflow: hidden; }
+      #projects { overflow: visible; padding-right: 0; }
       .hero { padding: 0 24px 60px; }
       .hero-scroll { display: none; }
       .hero-logo { display: none; }
       .about-grid, .resume-grid, .contact-inner { grid-template-columns: 1fr; gap: 40px; }
-      .projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .projects-grid {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 10px;
+        /* hide scrollbar */
+        scrollbar-width: none;
+      }
+      .projects-grid::-webkit-scrollbar { display: none; }
+      .projects-grid .project-card {
+        flex: 0 0 88vw;
+        scroll-snap-align: start;
+        width: 88vw;
+      }
       footer { padding: 28px 24px; flex-direction: column; gap: 16px; text-align: center; }
     }
     /* CASE STUDY BLOCK */
