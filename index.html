@@ -854,12 +854,18 @@
       nav { padding: 20px 24px; }
       .nav-links { display: none; }
       section { padding: 80px 24px; overflow: hidden; }
-      #projects { overflow: visible; padding-right: 0; }
       .behance-all { display: none !important; }
       .hero { padding: 0 24px 60px; }
       .hero-scroll { display: none; }
       .hero-logo { display: none; }
       .about-grid, .resume-grid, .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+      .projects-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+      .projects-grid .project-card { flex: unset; width: unset; }
+      footer { padding: 28px 24px; flex-direction: column; gap: 16px; text-align: center; }
+    }
+
+    @media (max-width: 560px) {
+      #projects { overflow: visible; padding-right: 0; }
       .projects-grid {
         display: flex;
         flex-direction: row;
@@ -867,16 +873,15 @@
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         gap: 10px;
-        /* hide scrollbar */
         scrollbar-width: none;
+        width: auto;
       }
       .projects-grid::-webkit-scrollbar { display: none; }
       .projects-grid .project-card {
-        flex: 0 0 88vw;
+        flex: 0 0 80vw;
         scroll-snap-align: start;
-        width: 88vw;
+        width: 80vw;
       }
-      footer { padding: 28px 24px; flex-direction: column; gap: 16px; text-align: center; }
     }
     /* CASE STUDY BLOCK */
     .case-study-block {
