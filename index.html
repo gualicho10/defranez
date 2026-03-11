@@ -434,6 +434,59 @@
     }
 
     /* WORK */
+    /* TOOLS & EXPERTISE */
+    #tools {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      margin-top: 48px;
+    }
+
+    .skill-item {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .skill-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: #8a94a6;
+      line-height: 18px;
+    }
+
+    .skill-pct {
+      font-size: 12px;
+      color: #8a94a6;
+    }
+
+    .skill-track {
+      background: rgba(255,255,255,0.06);
+      height: 4px;
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .skill-bar {
+      height: 4px;
+      background: linear-gradient(to right, #00f5a0, #00c8ff);
+      border-radius: 100px;
+    }
+
+    @media (max-width: 900px) {
+      .tools-grid { gap: 24px; }
+    }
+    @media (max-width: 560px) {
+      .tools-grid { grid-template-columns: 1fr; gap: 20px; }
+    }
+
     #work {
       border-top: 1px solid rgba(255,255,255,0.06);
     }
@@ -989,6 +1042,7 @@
     <a href="#" class="nav-logo">EDF · Portfolio</a>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
+      <li><a href="#tools">Skills</a></li>
       <li><a href="#work">Projects</a></li>
       <li><a href="#resume">Resume</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -1080,11 +1134,61 @@
     </div>
   </section>
 
+  <!-- TOOLS & EXPERTISE -->
+  <section id="tools">
+    <div class="section-label">02 · Skills</div>
+    <h2 class="section-title">Tools &amp; Expertise</h2>
+    <div class="tools-grid fade-up">
+      <div class="skill-item">
+        <div class="skill-header">
+          <span>Product Design / UX / UI</span>
+          <span class="skill-pct">100%</span>
+        </div>
+        <div class="skill-track"><div class="skill-bar" style="width:100%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header">
+          <span>Photoshop</span>
+          <span class="skill-pct">100%</span>
+        </div>
+        <div class="skill-track"><div class="skill-bar" style="width:100%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header">
+          <span>Web3 / NFT</span>
+          <span class="skill-pct">90%</span>
+        </div>
+        <div class="skill-track"><div class="skill-bar" style="width:90%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header">
+          <span>Gaming</span>
+          <span class="skill-pct">80%</span>
+        </div>
+        <div class="skill-track"><div class="skill-bar" style="width:80%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header">
+          <span>Illustrator</span>
+          <span class="skill-pct">80%</span>
+        </div>
+        <div class="skill-track"><div class="skill-bar" style="width:80%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header">
+          <span>Figma</span>
+          <span class="skill-pct">10%</span>
+        </div>
+        <div class="skill-track"><div class="skill-bar" style="width:10%"></div></div>
+      </div>
+    </div>
+  </section>
+
   <!-- WORK -->
   <section id="work">
     <div class="work-header">
       <div>
-        <div class="section-label">02 · Selected Work</div>
+        <div class="section-label">03 · Selected Work</div>
         <h2 class="section-title">Portfolio</h2>
       </div>
       
@@ -1274,7 +1378,7 @@
 
   <!-- RESUME -->
   <section id="resume">
-    <div class="section-label">03 · Resume</div>
+    <div class="section-label">04 · Resume</div>
     <h2 class="section-title">Career.</h2>
 
     <div class="resume-grid fade-up">
@@ -1365,7 +1469,7 @@
 
   <!-- CONTACT -->
   <section id="contact">
-    <div class="section-label">04 · Contact</div>
+    <div class="section-label">05 · Contact</div>
     <div class="contact-inner">
       <div class="fade-up">
         <h2 class="contact-headline">Let's build<br>something<br><span class="headline-accent">great.</span></h2>
