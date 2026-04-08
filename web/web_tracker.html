@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Web Tracker — defranez.com</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #080a0c;
+      --surface: #0e1114;
+      --surface2: #13171c;
+      --border: rgba(255,255,255,0.06);
+      --accent: #00f5a0;
+      --accent2: #00c8ff;
+      --text: #e8eaed;
+      --muted: #6b7280;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1000; opacity: 0.4;
+    }
+
+    /* Grid pattern */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── PASSWORD GATE ─────────────────────────────────────── */
+    #gate {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 900;
+      background: var(--bg);
+    }
+
+    .gate-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 48px 40px;
+      width: 100%; max-width: 380px;
+      display: flex; flex-direction: column; gap: 24px;
+    }
+
+    .gate-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .gate-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .gate-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .gate-input {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      padding: 14px 16px;
+      width: 100%;
+      outline: none;
+      letter-spacing: 0.1em;
+      transition: border-color 0.2s;
+    }
+    .gate-input:focus { border-color: rgba(0,245,160,0.4); }
+    .gate-input::placeholder { color: var(--muted); }
+
+    .gate-btn {
+      background: var(--accent);
+      color: #080a0c;
+      border: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 14px 24px;
+      cursor: pointer;
+      width: 100%;
+      transition: opacity 0.2s;
+      font-weight: 500;
+    }
+    .gate-btn:hover { opacity: 0.85; }
+
+    .gate-error {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: #ff6b6b;
+      letter-spacing: 0.05em;
+      display: none;
+    }
+    .gate-error.show { display: block; }
+
+    /* ── DASHBOARD ─────────────────────────────────────────── */
+    #dashboard { display: none; position: relative; z-index: 1; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 500;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 60px;
+      background: rgba(8,10,12,0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-left {
+      display: flex; align-items: center; gap: 20px;
+    }
+
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .nav-sep {
+      width: 1px; height: 16px;
+      background: var(--border);
+    }
+
+    .nav-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+
+    .nav-refresh {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .nav-refresh:hover { color: var(--accent); border-color: rgba(0,245,160,0.3); }
+
+    .nav-logout {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #080a0c;
+      background: var(--accent);
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .nav-logout:hover { opacity: 0.85; }
+
+    /* MAIN */
+    main { padding: 60px; max-width: 1400px; margin: 0 auto; }
+
+    /* LOADING */
+    .loading {
+      display: flex; align-items: center; gap: 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      padding: 80px 0;
+      justify-content: center;
+    }
+
+    .loading-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes pulse { 0%,100% { opacity: 0.2; } 50% { opacity: 1; } }
+
+    /* SUMMARY CARDS */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      padding: 32px 28px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .stat-value {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: #fff;
+    }
+
+    .stat-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+
+    /* SECTIONS */
+    .section { margin-bottom: 56px; }
+
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::before {
+      content: '';
+      width: 24px; height: 1px;
+      background: var(--accent);
+    }
+
+    .section-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+    }
+
+    thead tr {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    tbody tr:hover { background: var(--surface); }
+
+    td {
+      padding: 14px 16px;
+      color: var(--text);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    td.muted { color: var(--muted); }
+    td.accent { color: var(--accent); }
+    td.wrap { white-space: normal; word-break: break-all; max-width: 260px; }
+
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .badge.mobile { color: var(--accent2); border-color: rgba(0,200,255,0.25); }
+    .badge.tablet { color: #f5a623; border-color: rgba(245,166,35,0.25); }
+    .badge.desktop { color: var(--accent); border-color: rgba(0,245,160,0.25); }
+
+    .repeat-badge {
+      font-size: 10px;
+      font-weight: 700;
+      color: #080a0c;
+      background: var(--accent);
+      padding: 2px 7px;
+      letter-spacing: 0.05em;
+    }
+
+    .empty {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      padding: 40px;
+      border: 1px solid var(--border);
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PASSWORD GATE -->
+  <div id="gate">
+    <div class="gate-card">
+      <div class="gate-logo">EDF · defranez.com</div>
+      <div>
+        <div class="gate-title">Web Tracker</div>
+        <div class="gate-sub" style="margin-top:8px">Private access only</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <input id="pass-input" type="password" class="gate-input" placeholder="Password" autocomplete="off"/>
+        <div id="gate-error" class="gate-error">Incorrect password</div>
+        <button class="gate-btn" onclick="checkPass()">Enter →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard">
+    <nav>
+      <div class="nav-left">
+        <span class="nav-logo">EDF · Portfolio</span>
+        <div class="nav-sep"></div>
+        <span class="nav-title">Web Tracker</span>
+      </div>
+      <div class="nav-right">
+        <button class="nav-refresh" onclick="loadData()">↻ Refresh</button>
+        <button class="nav-logout" onclick="logout()">Logout</button>
+      </div>
+    </nav>
+
+    <main>
+      <div id="content">
+        <div class="loading">
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+          &nbsp;Loading data...
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const SB_URL = 'https://aqtfbzrdwbdymaoskxpt.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxdGZienJkd2JkeW1hb3NreHB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NzUwMzMsImV4cCI6MjA5MTI1MTAzM30.zCtyQBXjt3-s0bMITXDCIZmtEKdDIx39xirLw2u9wX4';
+    const PASS = 'Pacho1983';
+
+    // ── AUTH ─────────────────────────────────────────────────
+    function checkPass() {
+      const val = document.getElementById('pass-input').value;
+      if (val === PASS) {
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        sessionStorage.setItem('_tracker_auth', '1');
+        loadData();
+      } else {
+        document.getElementById('gate-error').classList.add('show');
+        document.getElementById('pass-input').value = '';
+        document.getElementById('pass-input').focus();
+      }
+    }
+
+    document.getElementById('pass-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkPass();
+      document.getElementById('gate-error').classList.remove('show');
+    });
+
+    function logout() {
+      sessionStorage.removeItem('_tracker_auth');
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('gate').style.display = 'flex';
+      document.getElementById('pass-input').value = '';
+    }
+
+    // Auto-login if already authenticated this session
+    if (sessionStorage.getItem('_tracker_auth') === '1') {
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadData();
+    }
+
+    // ── DATA ─────────────────────────────────────────────────
+    async function loadData() {
+      document.getElementById('content').innerHTML = `
+        <div class="loading">
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+          &nbsp;Loading data...
+        </div>`;
+
+      const H = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
+
+      try {
+        const [visRes, clkRes] = await Promise.all([
+          fetch(SB_URL + '/rest/v1/visits?select=*&order=created_at.desc&limit=500', { headers: H }),
+          fetch(SB_URL + '/rest/v1/link_clicks?select=*&order=created_at.desc&limit=300', { headers: H })
+        ]);
+        const visits = await visRes.json();
+        const clicks = await clkRes.json();
+        renderAll(visits, clicks);
+      } catch (e) {
+        document.getElementById('content').innerHTML = `<div class="empty">Failed to load data. Check your connection.</div>`;
+      }
+    }
+
+    // ── HELPERS ───────────────────────────────────────────────
+    function timeAgo(str) {
+      const diff = Date.now() - new Date(str).getTime();
+      const m = Math.floor(diff / 60000);
+      if (m < 1) return 'just now';
+      if (m < 60) return m + 'm ago';
+      const h = Math.floor(m / 60);
+      if (h < 24) return h + 'h ago';
+      return Math.floor(h / 24) + 'd ago';
+    }
+
+    function fmtDate(str) {
+      return new Date(str).toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+    }
+
+    function parseRef(ref) {
+      if (!ref || ref === 'direct') return '— Direct';
+      try {
+        const h = new URL(ref.startsWith('http') ? ref : 'https://' + ref).hostname.replace('www.', '');
+        return h;
+      } catch(_) { return ref; }
+    }
+
+    function deviceBadge(d) {
+      const cls = d === 'mobile' ? 'mobile' : d === 'tablet' ? 'tablet' : 'desktop';
+      return `<span class="badge ${cls}">${d || '—'}</span>`;
+    }
+
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ── RENDER ────────────────────────────────────────────────
+    function renderAll(visits, clicks) {
+      // Summary
+      const uniqueIPs = [...new Set(visits.map(v => v.ip).filter(Boolean))];
+      const countries = [...new Set(visits.map(v => v.country).filter(Boolean))];
+
+      const refCounts = {};
+      visits.forEach(v => { const r = parseRef(v.referrer); refCounts[r] = (refCounts[r]||0)+1; });
+      const topRef = Object.entries(refCounts).sort((a,b)=>b[1]-a[1])[0];
+
+      // IP frequency map
+      const ipMap = {};
+      visits.forEach(v => {
+        if (!v.ip) return;
+        if (!ipMap[v.ip]) ipMap[v.ip] = { count:0, country: v.country, city: v.city, first: v.created_at, last: v.created_at, device: v.device_type };
+        ipMap[v.ip].count++;
+        if (v.created_at < ipMap[v.ip].first) ipMap[v.ip].first = v.created_at;
+        if (v.created_at > ipMap[v.ip].last)  ipMap[v.ip].last  = v.created_at;
+      });
+      const repeatIPs = Object.entries(ipMap).filter(([,d]) => d.count > 1).sort((a,b)=>b[1].count-a[1].count);
+
+      document.getElementById('content').innerHTML = `
+        <!-- SUMMARY -->
+        <div class="summary-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Visits</div>
+            <div class="stat-value">${visits.length}</div>
+            <div class="stat-sub">page loads</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Unique IPs</div>
+            <div class="stat-value">${uniqueIPs.length}</div>
+            <div class="stat-sub">${repeatIPs.length} with repeat visits</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Countries</div>
+            <div class="stat-value">${countries.length}</div>
+            <div class="stat-sub">${countries.slice(0,3).join(', ') || '—'}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Link Clicks</div>
+            <div class="stat-value">${clicks.length}</div>
+            <div class="stat-sub">top: ${topRef ? esc(topRef[0]) : '—'}</div>
+          </div>
+        </div>
+
+        <!-- RECENT VISITS -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-label">Recent Visits</div>
+            <div class="section-count">${visits.length} records</div>
+          </div>
+          ${visits.length === 0
+            ? `<div class="empty">No visits recorded yet</div>`
+            : `<div class="table-wrap"><table>
+              <thead><tr>
+                <th>Time</th>
+                <th>IP</th>
+                <th>Location</th>
+                <th>Device</th>
+                <th>Browser / OS</th>
+                <th>Referrer</th>
+              </tr></thead>
+              <tbody>
+                ${visits.map(v => `<tr>
+                  <td class="muted" title="${fmtDate(v.created_at)}">${timeAgo(v.created_at)}</td>
+                  <td class="accent">${esc(v.ip) || '—'}</td>
+                  <td>${v.city ? esc(v.city) + ', ' : ''}${esc(v.country) || '—'}</td>
+                  <td>${deviceBadge(v.device_type)}</td>
+                  <td class="muted">${esc(v.browser) || '—'} · ${esc(v.os) || '—'}</td>
+                  <td class="muted">${esc(parseRef(v.referrer))}</td>
+                </tr>`).join('')}
+              </tbody>
+            </table></div>`}
+        </div>
+
+        <!-- REPEAT VISITORS -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-label">Repeat Visitors</div>
+            <div class="section-count">${repeatIPs.length} IPs</div>
+          </div>
+          ${repeatIPs.length === 0
+            ? `<div class="empty">No repeat visitors yet</div>`
+            : `<div class="table-wrap"><table>
+              <thead><tr>
+                <th>IP</th>
+                <th>Visits</th>
+                <th>Location</th>
+                <th>Device</th>
+                <th>First Visit</th>
+                <th>Last Visit</th>
+              </tr></thead>
+              <tbody>
+                ${repeatIPs.map(([ip, d]) => `<tr>
+                  <td class="accent">${esc(ip)}</td>
+                  <td><span class="repeat-badge">${d.count}×</span></td>
+                  <td>${d.city ? esc(d.city) + ', ' : ''}${esc(d.country) || '—'}</td>
+                  <td>${deviceBadge(d.device)}</td>
+                  <td class="muted">${fmtDate(d.first)}</td>
+                  <td class="muted">${fmtDate(d.last)}</td>
+                </tr>`).join('')}
+              </tbody>
+            </table></div>`}
+        </div>
+
+        <!-- LINK CLICKS -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-label">Portfolio Link Clicks</div>
+            <div class="section-count">${clicks.length} clicks</div>
+          </div>
+          ${clicks.length === 0
+            ? `<div class="empty">No link clicks recorded yet</div>`
+            : `<div class="table-wrap"><table>
+              <thead><tr>
+                <th>Time</th>
+                <th>IP</th>
+                <th>Label</th>
+                <th>URL</th>
+              </tr></thead>
+              <tbody>
+                ${clicks.map(c => `<tr>
+                  <td class="muted" title="${fmtDate(c.created_at)}">${timeAgo(c.created_at)}</td>
+                  <td class="accent">${esc(c.ip) || '—'}</td>
+                  <td>${esc(c.link_label) || '—'}</td>
+                  <td class="muted wrap">${esc(c.link_url) || '—'}</td>
+                </tr>`).join('')}
+              </tbody>
+            </table></div>`}
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
