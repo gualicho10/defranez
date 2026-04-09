@@ -1853,12 +1853,26 @@
       document.body.style.overflow = '';
     }
 
+    const MODAL_ORDER = ['openloot', 'dipper', 'roche', 'games', 'branding', 'sketchup'];
+
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         document.querySelectorAll('.modal-backdrop.open').forEach(m => {
           m.classList.remove('open');
           document.body.style.overflow = '';
         });
+      }
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        const open = document.querySelector('.modal-backdrop.open');
+        if (!open) return;
+        const currentId = open.id.replace('modal-', '');
+        const currentIdx = MODAL_ORDER.indexOf(currentId);
+        if (currentIdx === -1) return;
+        const nextIdx = e.key === 'ArrowRight'
+          ? (currentIdx + 1) % MODAL_ORDER.length
+          : (currentIdx - 1 + MODAL_ORDER.length) % MODAL_ORDER.length;
+        closeModal(currentId);
+        openModal(MODAL_ORDER[nextIdx]);
       }
     });
 
