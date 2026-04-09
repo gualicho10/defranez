@@ -567,7 +567,7 @@
     .thumb-3 { background: linear-gradient(135deg, #1a0d28 0%, #200a35 50%, #1a073d 100%); }
     .thumb-4 { background: linear-gradient(135deg, #1a0d0d 0%, #280a0a 50%, #1a0505 100%); }
     .thumb-5 { background: linear-gradient(135deg, #0d1a1a 0%, #0a2828 50%, #073030 100%); }
-    .thumb-5 img { object-fit: contain; padding: 16px; }
+
     .thumb-6 { background: linear-gradient(135deg, #1a1a0d 0%, #282810 50%, #1a1700 100%); }
 
     .thumb-icon {
@@ -816,6 +816,8 @@
 
     .cl-arrow {
       font-size: 20px;
+      font-family: 'DM Mono', monospace;
+      font-variant-emoji: text;
       color: #00f5a0;
       transition: transform 0.2s;
     }
@@ -874,6 +876,17 @@
       transform: translateY(0);
     }
 
+    /* ── CARD REVEAL — portfolio stagger (replaces fade-up on new grid cards) ── */
+    .card-reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+    }
+    .card-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* Hero content sits above logo */
     .hero-eyebrow,
     .hero-name,
@@ -921,10 +934,11 @@
     @media (max-width: 560px) {
       /* Hero */
       section { padding: 40px 24px; overflow: hidden; }
-      .hero { min-height: 620px; padding: 0 24px 60px; }
+      .hero { height: 100dvh; min-height: unset; padding: 0 24px 32px; }
       .hero-logo { display: block; width: 100%; top: 0; right: auto; left: 0; max-width: none; z-index: 1; }
       .hero-logo img { opacity: 0.7; width: 100%; }
-      .hero-title { font-size: 15px; margin-bottom: 24px; }
+      .hero-title { font-size: 15px; margin-bottom: 20px; }
+      .hero-tags { margin-bottom: 0; }
 
       /* Carousel */
       #projects { overflow: visible; padding-right: 0; }
@@ -1110,8 +1124,8 @@
           <div class="stat-label">Projects Shipped</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num">3</div>
-          <div class="stat-label">Industries: Web3 · Gaming · Mobile</div>
+          <div class="stat-num">5</div>
+          <div class="stat-label">Industries:<br>Gaming - Web3 - Health&amp;Wellness - Art&amp;Culture - Financial</div>
         </div>
         <div class="stat-card">
           <div class="stat-num">∞</div>
@@ -1305,7 +1319,7 @@
     <!-- NEW GRID — from Figma -->
     <div class="projects-grid">
 
-      <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="project-card fade-up">
+      <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="project-card card-reveal">
         <div class="project-thumb thumb-1">
           <img src="img/cover-1.png" alt="Product Design at OpenLoot">
           <div class="project-overlay">
@@ -1319,7 +1333,7 @@
         </div>
       </a>
 
-      <a href="https://www.behance.net/gallery/46636791/analyzelife-iOS-app" target="_blank" rel="noopener" class="project-card fade-up">
+      <a href="https://www.behance.net/gallery/245507671/Our-Dipper-Landing-Web-app" target="_blank" rel="noopener" class="project-card card-reveal">
         <div class="project-thumb thumb-2">
           <img src="img/cover-2.png" alt="Our Dipper">
           <div class="project-overlay">
@@ -1333,7 +1347,7 @@
         </div>
       </a>
 
-      <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="project-card fade-up">
+      <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="project-card card-reveal">
         <div class="project-thumb thumb-3">
           <img src="img/cover-3.png" alt="UX/UI for Roche">
           <div class="project-overlay">
@@ -1347,7 +1361,7 @@
         </div>
       </a>
 
-      <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="project-card fade-up">
+      <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="project-card card-reveal">
         <div class="project-thumb thumb-4">
           <img src="img/cover-4.png" alt="Mobile Games">
           <div class="project-overlay">
@@ -1361,7 +1375,7 @@
         </div>
       </a>
 
-      <a href="https://www.behance.net/gallery/66848937/Brand-Concept-(logo-Styles-Guide)" target="_blank" rel="noopener" class="project-card fade-up">
+      <a href="https://www.behance.net/gallery/66848937/Brand-Concept-(logo-Styles-Guide)" target="_blank" rel="noopener" class="project-card card-reveal">
         <div class="project-thumb thumb-5">
           <img src="img/cover-5.png" alt="Branding + Social">
           <div class="project-overlay">
@@ -1375,7 +1389,7 @@
         </div>
       </a>
 
-      <a href="https://www.behance.net/gallery/46637147/UX-UI-Design" target="_blank" rel="noopener" class="project-card fade-up">
+      <a href="https://www.behance.net/gallery/46637147/UX-UI-Design" target="_blank" rel="noopener" class="project-card card-reveal">
         <div class="project-thumb thumb-6">
           <img src="img/cover-6.png" alt="Sketchup: 3D Modelling + Render">
           <div class="project-overlay">
@@ -1497,28 +1511,28 @@
             <div class="cl-label">Email</div>
             <div class="cl-value">ezequiel.defrancisco@gmail.com</div>
           </div>
-          <div class="cl-arrow">↗</div>
+          <div class="cl-arrow">↗&#xFE0E;</div>
         </a>
         <a href="https://wa.me/5491161624371" target="_blank" rel="noopener" class="contact-link">
           <div class="cl-inner">
             <div class="cl-label">Phone</div>
             <div class="cl-value">+54 11 6162 4371</div>
           </div>
-          <div class="cl-arrow">↗</div>
+          <div class="cl-arrow">↗&#xFE0E;</div>
         </a>
         <a href="https://www.linkedin.com/in/ezequiel-de-francisco/" target="_blank" rel="noopener" class="contact-link">
           <div class="cl-inner">
             <div class="cl-label">LinkedIn</div>
             <div class="cl-value">ezequiel-de-francisco</div>
           </div>
-          <div class="cl-arrow">↗</div>
+          <div class="cl-arrow">↗&#xFE0E;</div>
         </a>
         <a href="https://www.behance.net/defranez" target="_blank" rel="noopener" class="contact-link">
           <div class="cl-inner">
             <div class="cl-label">Behance</div>
             <div class="cl-value">behance.net/defranez</div>
           </div>
-          <div class="cl-arrow">↗</div>
+          <div class="cl-arrow">↗&#xFE0E;</div>
         </a>
       </div>
     </div>
@@ -1588,6 +1602,127 @@
           }).catch(() => {});
         }, { once: true });
       });
+    })();
+
+    // ── STAT COUNTERS — About Me ───────────────────────────────────────────
+    (function () {
+      const aboutSection = document.querySelector('#about');
+      if (!aboutSection) return;
+
+      function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+      const COUNTER_DURATIONS = [2000, 3000, 4000];
+
+      function animateCounter(el, target, duration) {
+        const suffix = el.querySelector('span');
+        if (suffix) suffix.style.opacity = '0';
+        const textNode = el.childNodes[0];
+        const start = performance.now();
+        function tick(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = easeOutExpo(progress);
+          textNode.textContent = Math.round(target * eased);
+          if (progress < 1) {
+            requestAnimationFrame(tick);
+          } else {
+            textNode.textContent = target;
+            if (suffix) suffix.style.opacity = '1';
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+
+      let statFired = false;
+      const statObs = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting || statFired) return;
+        statFired = true;
+        statObs.disconnect();
+        let idx = 0;
+        document.querySelectorAll('.about-stats .stat-num').forEach(el => {
+          const raw = el.childNodes[0].textContent.trim();
+          if (raw === '∞') return;
+          const target = parseInt(raw, 10);
+          if (!isNaN(target)) animateCounter(el, target, COUNTER_DURATIONS[idx++] || 2000);
+        });
+      }, { threshold: 0.3 });
+      statObs.observe(aboutSection);
+    })();
+
+    // ── SKILL BAR ANIMATION — Tools & Expertise ───────────────────────────
+    (function () {
+      const toolsSection = document.querySelector('#tools');
+      if (!toolsSection) return;
+
+      const items = Array.from(toolsSection.querySelectorAll('.skill-item'));
+      const colOrder = [
+        ...items.map((_, i) => i).filter(i => i % 2 === 0),
+        ...items.map((_, i) => i).filter(i => i % 2 !== 0)
+      ];
+
+      function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+      const data = items.map(item => {
+        const bar = item.querySelector('.skill-bar');
+        const pctEl = item.querySelector('.skill-pct');
+        const match = (bar.style.width || '').match(/(\d+)/);
+        const pct = match ? parseInt(match[1], 10) : 0;
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        if (pctEl) pctEl.textContent = '0%';
+        return { bar, pctEl, pct };
+      });
+
+      const STAGGER = 150;
+      const BAR_DUR = 800;
+      let barFired = false;
+
+      const barObs = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting || barFired) return;
+        barFired = true;
+        barObs.disconnect();
+
+        colOrder.forEach((itemIdx, order) => {
+          const { bar, pctEl, pct } = data[itemIdx];
+          setTimeout(() => {
+            bar.style.transition = `width ${BAR_DUR}ms ease-out`;
+            bar.style.width = pct + '%';
+            if (pctEl) {
+              const start = performance.now();
+              (function tick(now) {
+                const progress = Math.min((now - start) / BAR_DUR, 1);
+                pctEl.textContent = Math.round(pct * easeOutQuart(progress)) + '%';
+                if (progress < 1) requestAnimationFrame(tick);
+                else pctEl.textContent = pct + '%';
+              })(performance.now());
+            }
+          }, order * STAGGER);
+        });
+      }, { threshold: 0.2 });
+
+      barObs.observe(toolsSection);
+    })();
+
+    // ── PORTFOLIO CARD REVEAL — staggered left-to-right ───────────────────
+    (function () {
+      const newGrid = document.querySelector('.projects-grid:not([style*="none"])');
+      if (!newGrid) return;
+      const cards = Array.from(newGrid.querySelectorAll('.card-reveal'));
+      if (!cards.length) return;
+
+      let cardFired = false;
+      const STAGGER = 120;
+
+      const cardObs = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting || cardFired) return;
+        cardFired = true;
+        cardObs.disconnect();
+        cards.forEach((card, i) => {
+          card.style.transitionDelay = (i * STAGGER) + 'ms';
+          card.classList.add('visible');
+        });
+      }, { threshold: 0.1 });
+
+      cardObs.observe(newGrid);
     })();
   </script>
 </body>
