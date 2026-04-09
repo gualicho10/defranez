@@ -908,10 +908,17 @@
       pointer-events: none;
       z-index: 1;
     }
+    @keyframes logoSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
     .hero-logo img {
       position: absolute;
       inset: 0;
       width: 100%;
+      transform-origin: center center;
+      animation: logoSpin 40s linear infinite;
       height: 100%;
       object-fit: contain;
       mix-blend-mode: color-dodge;
@@ -1185,7 +1192,7 @@
 
     <!-- Figma LOGO asset -->
     <div class="hero-logo">
-      <img src="img/img_logo.png" alt="">
+      <img src="img/img_logo_square.png" alt="">
     </div>
 
     <div class="hero-eyebrow">Product Designer · UX/UI · Web3</div>
