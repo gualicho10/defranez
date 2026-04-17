@@ -99,6 +99,25 @@
     }
     .nav-links a:hover { color: #00f5a0; }
 
+    .nav-right {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .nav-version {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      color: #00f5a0;
+      border: 1px solid #00f5a0;
+      padding: 10px 22px;
+      text-decoration: none;
+      letter-spacing: 0.96px;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-version:hover { background: rgba(0,245,160,0.1); }
+
     .nav-cta {
       font-size: 12px;
       font-family: 'DM Mono', monospace;
@@ -1175,7 +1194,7 @@
 
   <!-- NAV -->
   <nav>
-    <a href="#" class="nav-logo">EDF · Portfolio</a>
+    <a href="#" class="nav-logo">EDF · Portfolio V1</a>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#tools">Skills</a></li>
@@ -1183,7 +1202,10 @@
       <li><a href="#resume">Resume</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <a href="#contact" class="nav-cta">Hire me →</a>
+    <div class="nav-right">
+      <a href="index.html" class="nav-version">V2</a>
+      <a href="#contact" class="nav-cta">Hire me →</a>
+    </div>
   </nav>
 
   <!-- HERO -->
