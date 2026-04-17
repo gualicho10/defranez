@@ -1,11 +1,1943 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0;url=web/index.html">
-  <title>Redirecting…</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ezequiel De Francisco — Product Designer v2</title>
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #080a0c;
+      --surface: #0e1114;
+      --surface2: #13171c;
+      --border: rgba(255,255,255,0.06);
+      --accent: #00f5a0;
+      --accent2: #00c8ff;
+      --text: #e8eaed;
+      --muted: #6b7280;
+      --white: #ffffff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body * { color: inherit; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: #080a0c;
+      color: #e8eaed;
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* Grid pattern */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 60px;
+      background: rgba(8,10,12,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-logo {
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+      color: #00f5a0;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      color: #8a94a6;
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #00f5a0; }
+
+    .nav-right {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .nav-version {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      color: #00f5a0;
+      border: 1px solid #00f5a0;
+      padding: 10px 22px;
+      text-decoration: none;
+      letter-spacing: 0.96px;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-version:hover { background: rgba(0,245,160,0.1); }
+
+    .nav-cta {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      color: #080a0c;
+      background: #00f5a0;
+      padding: 10px 22px;
+      text-decoration: none;
+      letter-spacing: 0.96px;
+      text-transform: uppercase;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 60px 80px;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 40px; height: 1px;
+      background: #00f5a0;
+    }
+
+    .hero-name {
+      font-size: clamp(42px, 9vw, 130px);
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .hero-name span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-title {
+      font-size: 22px;
+      font-weight: 400;
+      color: #8a94a6;
+      margin-bottom: 48px;
+      letter-spacing: 0.44px;
+      max-width: 700px;
+      line-height: 1.5;
+    }
+    .hero-title .title-highlight {
+      color: #ffffff;
+      font-weight: 400;
+    }
+
+    .hero-tags {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 64px;
+    }
+
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 9px 17px;
+      color: #8a94a6;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tag:hover { color: #00f5a0; border-color: rgba(0,245,160,0.3); }
+
+    .hero-scroll {
+      position: absolute;
+      right: 60px;
+      bottom: 80px;
+      writing-mode: vertical-rl;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #8a94a6;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 2;
+    }
+    .hero-scroll::after {
+      content: '';
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    .hero-orb {
+      position: absolute;
+      top: 15%;
+      right: 10%;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,245,160,0.08) 0%, rgba(0,200,255,0.04) 40%, transparent 70%);
+      pointer-events: none;
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .hero-lines {
+      position: absolute;
+      top: 0; right: 0;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0.15;
+    }
+
+    /* Hero content sits above logo */
+    .hero-eyebrow,
+    .hero-name,
+    .hero-title,
+    .hero-tags {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-logo {
+      position: absolute;
+      top: 8%;
+      right: 0;
+      width: 43vw;
+      max-width: 820px;
+      aspect-ratio: 818 / 891;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+    @keyframes logoSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .hero-logo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      transform-origin: center center;
+      animation: logoSpin 40s linear infinite;
+      height: 100%;
+      object-fit: contain;
+      mix-blend-mode: color-dodge;
+    }
+
+    /* SECTION BASE */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 120px 60px;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 64px;
+    }
+    .section-label::before {
+      content: '';
+      width: 30px; height: 1px;
+      background: #00f5a0;
+    }
+
+    .section-title {
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+    }
+
+    /* ABOUT */
+    #about {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .about-grid {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      margin-top: 24px;
+    }
+    .about-text { max-width: 820px; flex-shrink: 0; }
+
+    .about-text p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #8a94a6;
+      margin-bottom: 24px;
+    }
+
+    .about-text p strong {
+      color: #e8eaed;
+      font-weight: 600;
+    }
+
+    .about-stats {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .stat-card {
+      background: #0e1114;
+      padding: 33px;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .stat-card:hover { border-color: rgba(0,245,160,0.3); }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .stat-card:hover::before { opacity: 1; }
+
+    .stat-num {
+      font-size: 48px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-num span { color: #00f5a0; }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #8a94a6;
+    }
+
+    /* SKILLS */
+    .skills-label {
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      margin-top: 40px;
+      margin-bottom: 12px;
+    }
+
+    .skills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 0;
+    }
+
+    .skill-pill {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      padding: 10px 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      color: #e8eaed;
+      background: #0e1114;
+      transition: all 0.2s;
+    }
+    .skill-pill:hover {
+      border-color: #00f5a0;
+      color: #00f5a0;
+      background: rgba(0,245,160,0.05);
+    }
+
+    /* ABOUT — below-grid sections (full width) */
+    .about-below {
+      display: flex;
+      flex-direction: column;
+      gap: 50px;
+      margin-top: 50px;
+    }
+
+    .about-tools-label {
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      padding-bottom: 17px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 24px;
+    }
+
+    /* JAZZ / MUSIC CARDS (v2) */
+    .jazz-label {
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      padding-bottom: 17px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 24px;
+    }
+
+    .jazz-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .jazz-card {
+      flex: 1;
+      padding: 13px;
+      background: linear-gradient(133deg, rgba(0,245,160,0.04) 0%, rgba(0,200,255,0.02) 100%);
+      border: 1px solid rgba(0,245,160,0.2);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+      min-width: 0;
+    }
+    .jazz-card:hover { border-color: rgba(0,245,160,0.4); }
+    .jazz-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,245,160,0), #00f5a0, rgba(0,245,160,0));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .jazz-card:hover::before { opacity: 1; }
+
+    .jazz-card iframe {
+      width: 100%;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .jazz-yt-link {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 13px;
+      background: linear-gradient(133deg, rgba(0,245,160,0.04) 0%, rgba(0,200,255,0.02) 100%);
+      text-decoration: none;
+      border: 1px solid rgba(0,245,160,0.2);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+      justify-content: center;
+      min-width: 0;
+    }
+    .jazz-yt-link:hover { border-color: rgba(0,245,160,0.4); }
+    .jazz-yt-link::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,245,160,0), #00f5a0, rgba(0,245,160,0));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .jazz-yt-link:hover::before { opacity: 1; }
+
+    .jazz-link-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      white-space: nowrap;
+    }
+
+    .jazz-thumb {
+      width: 181px;
+      height: 104px;
+      border-radius: 5px;
+      border: 1px solid rgba(255,255,255,0.5);
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .jazz-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .jazz-thumb-play {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px; height: 40px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .jazz-thumb-play::after {
+      content: '';
+      display: block;
+      width: 0; height: 0;
+      border-style: solid;
+      border-width: 8px 0 8px 14px;
+      border-color: transparent transparent transparent #fff;
+      margin-left: 3px;
+    }
+
+    /* TOOLS & EXPERTISE (v2) */
+    #tools {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .tools-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      margin-top: 48px;
+    }
+
+    .tools-col-label {
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      margin-bottom: 24px;
+    }
+
+    .tool-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .tool-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .tool-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .tool-subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: #8a94a6;
+      letter-spacing: 0.05em;
+    }
+
+    .skill-track {
+      background: rgba(255,255,255,0.06);
+      height: 4px;
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .skill-bar {
+      height: 4px;
+      background: linear-gradient(to right, #00f5a0, #00c8ff);
+      border-radius: 100px;
+    }
+
+    .expertise-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .expertise-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      padding: 10px 18px;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #8a94a6;
+      transition: all 0.2s;
+    }
+    .expertise-tag:hover {
+      border-color: rgba(0,245,160,0.3);
+      color: #00f5a0;
+    }
+
+    /* PORTFOLIO — sticky-sync layout (v2) */
+    #work {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .work-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 64px;
+    }
+
+    .work-header a {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: #00f5a0;
+      text-decoration: underline;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: gap 0.2s;
+    }
+    .work-header a:hover { gap: 14px; }
+
+    .portfolio-sticky-layout {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .portfolio-nav {
+      position: sticky;
+      top: 120px;
+      width: 315px;
+      flex-shrink: 0;
+      padding: 32px 0;
+    }
+
+    .portfolio-nav-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #8a94a6;
+      padding: 0 0 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 0;
+    }
+
+    .portfolio-nav-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 20px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-top: none; border-left: none; border-right: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .portfolio-nav-item:last-child { border-bottom: none; }
+
+    .portfolio-nav-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: rgba(138,148,166,0.5);
+      flex-shrink: 0;
+      transition: color 0.3s;
+    }
+
+    .portfolio-nav-cat {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: rgba(138,148,166,0.5);
+      transition: color 0.3s;
+    }
+
+    .portfolio-nav-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .portfolio-nav-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: rgba(138,148,166,0.5);
+      letter-spacing: -0.3px;
+      transition: color 0.3s;
+    }
+
+    .portfolio-nav-arrow {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      color: #00f5a1;
+      opacity: 0;
+      transition: opacity 0.3s;
+      flex-shrink: 0;
+    }
+
+    .portfolio-nav-year {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: rgba(138,148,166,0.6);
+      letter-spacing: 0.5px;
+    }
+
+    /* Active state */
+    .portfolio-nav-item.active {
+      background: rgba(0,245,161,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 24px 18px;
+      gap: 6px;
+    }
+    .portfolio-nav-item.active .portfolio-nav-num { color: #00f5a1; }
+    .portfolio-nav-item.active .portfolio-nav-cat { color: rgba(0,245,161,0.8); }
+    .portfolio-nav-item.active .portfolio-nav-name { color: #ffffff; font-weight: 700; }
+    .portfolio-nav-item.active .portfolio-nav-arrow { opacity: 1; }
+
+    /* Hover state */
+    .portfolio-nav-item:not(.active):hover {
+      border: 1px solid rgba(0,245,161,0.2);
+      padding: 24px 28px;
+      gap: 6px;
+    }
+    .portfolio-nav-item:not(.active):hover .portfolio-nav-num { color: rgba(0,245,161,0.3); }
+    .portfolio-nav-item:not(.active):hover .portfolio-nav-cat { color: rgba(0,245,161,0.3); }
+    .portfolio-nav-item:not(.active):hover .portfolio-nav-name { color: rgba(0,245,161,0.3); }
+    .portfolio-nav-item:not(.active):hover .portfolio-nav-year { color: rgba(0,245,161,0.3); }
+
+    .portfolio-scroll {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 120px;
+    }
+
+    .portfolio-project {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .proj-counter {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .proj-counter-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(0,245,161,0.6);
+    }
+
+    .proj-counter-dot {
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: #8a94a6;
+    }
+
+    .proj-counter-cat {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #8a94a6;
+    }
+
+    .proj-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .proj-title-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .proj-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -1.2px;
+    }
+
+    .proj-company {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #00f5a1;
+    }
+
+    .proj-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: gap 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .proj-cta:hover { gap: 8px; }
+
+    .proj-desc {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: #8a94a6;
+      line-height: 26px;
+    }
+
+    .proj-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .proj-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      padding: 7px 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #8a94a6;
+    }
+
+    .proj-visual {
+      width: 100%;
+      background: #0e1114;
+      border: 1px solid rgba(255,255,255,0.06);
+      overflow: hidden;
+      position: relative;
+    }
+    .proj-visual img {
+      width: 100%;
+      display: block;
+    }
+    .proj-color-bar {
+      position: absolute;
+      top: -1px; left: -1px; right: -1px;
+      height: 4px;
+    }
+
+    /* CAREER (v2 — table rows) */
+    #resume {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-bottom: 80px;
+    }
+
+    .career-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 48px;
+    }
+
+    .career-more-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      text-decoration: none;
+    }
+    .career-more-link:hover { text-decoration: underline; }
+
+    .career-table {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .career-row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      padding: 20px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-left: 1px solid transparent;
+      border-right: 1px solid transparent;
+      border-top: 1px solid transparent;
+      transition: all 0.3s;
+    }
+    .career-row:last-child { border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .career-row:hover {
+      background: rgba(0,245,161,0.03);
+      border: 1px solid rgba(0,245,161,0.15);
+    }
+    .career-row:hover .career-role { color: #ffffff; }
+    .career-row:hover .career-company { color: #00f5a0; }
+
+    .career-period {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: #8a94a6;
+      letter-spacing: 0.08em;
+      width: 148px;
+      flex-shrink: 0;
+    }
+
+    .career-role {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      width: 315px;
+      flex-shrink: 0;
+    }
+
+    .career-company {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: #00f5a1;
+      width: 316px;
+      flex-shrink: 0;
+    }
+
+    .career-location {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: rgba(138,148,166,0.7);
+      flex: 1;
+    }
+
+    .career-bottom {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-top: 48px;
+    }
+
+    .resume-download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #080a0c;
+      background: #00f5a0;
+      padding: 14px 28px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+      width: 315px;
+      flex-shrink: 0;
+    }
+    .resume-download:hover { opacity: 0.85; }
+
+    .career-formation-info {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex: 1;
+    }
+
+    .career-formation-item {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      color: #8a94a6;
+    }
+    .career-formation-item strong {
+      font-weight: 600;
+      color: #e8eaed;
+    }
+
+    .career-formation-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #00f5a0;
+      flex-shrink: 0;
+    }
+
+    /* CONTACT */
+    #contact {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      margin-top: 64px;
+      align-items: start;
+    }
+
+    .contact-headline {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      margin-bottom: 0;
+    }
+    .contact-headline .headline-accent { color: #00f5a0; }
+
+    .contact-sub {
+      font-size: 16px;
+      color: #8a94a6;
+      line-height: 1.6;
+      max-width: 500px;
+    }
+    .contact-sub strong { color: #e8eaed; font-weight: 700; }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 29px 33px;
+      background: #0e1114;
+      border: 1px solid rgba(255,255,255,0.06);
+      text-decoration: none;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .contact-link:hover {
+      border-color: rgba(0,245,160,0.3);
+      background: rgba(0,245,160,0.04);
+    }
+
+    .cl-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #8a94a6;
+      margin-bottom: 6px;
+    }
+
+    .cl-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .cl-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .cl-arrow {
+      font-size: 20px;
+      font-family: 'DM Mono', monospace;
+      font-variant-emoji: text;
+      color: #00f5a0;
+      transition: transform 0.2s;
+    }
+    .contact-link:hover .cl-arrow { transform: translate(4px, -4px); }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 40px 60px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: #8a94a6;
+      letter-spacing: 0.08em;
+    }
+
+    .footer-status {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: #00f5a0;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #00f5a0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ANIMATIONS */
+    .fade-up {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.animate {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .fade-up.animate.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      .nav-version { padding: 8px 14px; font-size: 11px; }
+      section { padding: 80px 24px; overflow: hidden; }
+      .hero { padding: 0 24px 60px; }
+      .hero-scroll { display: none; }
+      .hero-logo { display: block; width: 60vw; top: 6%; right: 0; }
+      .about-grid { flex-direction: column; }
+      .about-text { max-width: 100%; }
+      .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+      .career-row { flex-wrap: wrap; }
+      .career-period, .career-role, .career-company { width: auto; flex: 1; }
+      .career-bottom { flex-wrap: wrap; }
+      .resume-download { width: auto; }
+      .career-formation-info { flex-wrap: wrap; gap: 12px; }
+      .tools-layout { grid-template-columns: 1fr; gap: 40px; }
+      .portfolio-sticky-layout { flex-direction: column; }
+      .portfolio-nav { position: static; width: 100%; display: flex; flex-wrap: wrap; gap: 0; }
+      .portfolio-nav-label { width: 100%; }
+      .portfolio-nav-item { flex: 1; min-width: 45%; }
+      .portfolio-nav-name { font-size: 18px; }
+      .behance-all { display: none !important; }
+      footer { padding: 28px 24px; flex-direction: column; gap: 16px; text-align: center; }
+    }
+
+    @media (max-width: 560px) {
+      section { padding: 40px 24px; overflow: hidden; }
+      .hero { height: 100dvh; min-height: unset; padding: 0 24px 32px; }
+      .hero-logo { display: block; width: 100%; top: 0; right: auto; left: 0; max-width: none; z-index: 1; }
+      .hero-logo img { opacity: 0.7; width: 100%; }
+      .hero-title { font-size: 15px; margin-bottom: 20px; }
+      .hero-tags { margin-bottom: 0; }
+      .jazz-links { flex-direction: column; }
+      .jazz-thumb { width: 100%; height: auto; aspect-ratio: 16/9; }
+      .career-row { flex-direction: column; gap: 8px; padding: 16px 0; }
+      .career-period, .career-role, .career-company { width: 100%; }
+      .career-bottom { flex-direction: column; gap: 16px; }
+      .resume-download { width: 100%; text-align: center; box-sizing: border-box; }
+      .proj-title-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+    }
+  </style>
 </head>
 <body>
-  <script>window.location.replace('web/index.html');</script>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">EDF · Portfolio V2</a>
+    <ul class="nav-links">
+      <li><a href="#about">About me</a></li>
+      <li><a href="#work">Portfolio</a></li>
+      <li><a href="#tools">Tools</a></li>
+      <li><a href="#resume">Career</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="v1.html" class="nav-version">V1</a>
+      <a href="#contact" class="nav-cta">Hire me →</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-orb"></div>
+    <div class="hero-logo">
+      <img src="img/img_logo_square.png" alt="">
+    </div>
+    <div class="hero-eyebrow">Product Designer · UX/UI · Web3</div>
+    <h1 class="hero-name">Ezequiel<br><span>de Francisco</span></h1>
+    <p class="hero-title"><span class="title-highlight">22 years trying to simplify complex systems</span> — from Web3 marketplaces to mobile games. Bridging blockchain complexity into an intuitive user experience.</p>
+    <div class="hero-tags">
+      <span class="tag">Web3 & DeFi</span>
+      <span class="tag">Gaming UX</span>
+      <span class="tag">Mobile Design</span>
+      <span class="tag">Art Direction</span>
+      <span class="tag">Design Leadership</span>
+      <span class="tag">Figma</span>
+      <span class="tag">Claude Code</span>
+    </div>
+    <div class="hero-scroll">Scroll</div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">01 · About</div>
+    <h2 class="section-title">A bit about me</h2>
+
+    <div class="about-grid">
+      <div class="about-text fade-up">
+        <p>I'm a <strong>Senior Product Designer with 22 years of experience</strong> — started in 2004 with a non-stop journey across Press, Editorial, Web, Gaming, and Mobile. I've worked on-site for major companies and remotely with startups, as well as a freelancer across LATAM, USA, and Israel.</p>
+        <p>In recent years I've focused on <strong>UX/UI for Mobile, Product, and Gaming</strong>, and expanded into Web3 — most recently at <strong>Big Time Studios / OpenLoot</strong>, bridging blockchain infrastructure and intuitive marketplace UX. As a former Creative Leader, I've managed multidisciplinary teams of up to 12, optimizing workflows that directly drive business growth.</p>
+        <p>Based in <strong>Buenos Aires, Argentina</strong> · UBA graduate · Available for remote freelance and full-time opportunities worldwide.</p>
+      </div>
+      <div class="about-stats fade-up">
+        <div class="stat-card">
+          <div class="stat-num">22<span>+</span></div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">40<span>+</span></div>
+          <div class="stat-label">Projects Shipped</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Industries: Web3 · Gaming · Mobile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tools (full width, below grid) -->
+    <div class="about-below fade-up">
+      <div>
+        <div class="about-tools-label">tools</div>
+        <div class="skills-row">
+          <span class="skill-pill">Figma</span>
+          <span class="skill-pill">Photoshop</span>
+          <span class="skill-pill">Illustrator</span>
+          <span class="skill-pill">After Effects</span>
+          <span class="skill-pill">Final Cut Pro</span>
+          <span class="skill-pill">Claude Code</span>
+          <span class="skill-pill">Gemini</span>
+          <span class="skill-pill">Slack</span>
+          <span class="skill-pill">JIRA</span>
+          <span class="skill-pill">SketchUp</span>
+          <span class="skill-pill">Enscape</span>
+          <span class="skill-pill">Ableton Live</span>
+        </div>
+      </div>
+
+      <!-- Jazz section -->
+      <div>
+        <div class="jazz-label">i'm also a jazz guitarist</div>
+        <div class="jazz-links">
+          <div class="jazz-card">
+            <iframe src="https://open.spotify.com/embed/artist/7gHkOVCTBSEGAZvdiwKhev?utm_source=generator&theme=0" height="152" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          </div>
+          <a href="https://www.youtube.com/watch?v=yau-W_WeHPs" target="_blank" rel="noopener" class="jazz-yt-link">
+            <div class="jazz-link-label">watch in youtube →</div>
+            <div class="jazz-thumb">
+              <img src="https://img.youtube.com/vi/yau-W_WeHPs/hqdefault.jpg" alt="Jazz guitar video">
+              <div class="jazz-thumb-play"></div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO — sticky-sync -->
+  <section id="work">
+    <div class="work-header">
+      <div>
+        <div class="section-label">02 · Selected Work</div>
+        <h2 class="section-title">Portfolio</h2>
+      </div>
+      <a href="https://www.behance.net/defranez" target="_blank" rel="noopener" class="behance-all">
+        View all on Behance →
+      </a>
+    </div>
+
+    <div class="portfolio-sticky-layout">
+      <!-- LEFT — sticky nav -->
+      <div class="portfolio-nav">
+        <div class="portfolio-nav-label">Sticky → Projects</div>
+        <div class="portfolio-nav-item active" data-index="0" onclick="scrollToProject(0)">
+          <div class="portfolio-nav-num">01</div>
+          <div class="portfolio-nav-info">
+            <div class="portfolio-nav-cat">Web3 · NFT Marketplace</div>
+            <div class="portfolio-nav-name">OpenLoot</div>
+            <div class="portfolio-nav-year">2022 — 2026</div>
+          </div>
+          <div class="portfolio-nav-arrow">→</div>
+        </div>
+        <div class="portfolio-nav-item" data-index="1" onclick="scrollToProject(1)">
+          <div class="portfolio-nav-num">02</div>
+          <div class="portfolio-nav-info">
+            <div class="portfolio-nav-cat">UX/UI · Web App</div>
+            <div class="portfolio-nav-name">Our Dipper</div>
+            <div class="portfolio-nav-year">2021</div>
+          </div>
+          <div class="portfolio-nav-arrow">→</div>
+        </div>
+        <div class="portfolio-nav-item" data-index="2" onclick="scrollToProject(2)">
+          <div class="portfolio-nav-num">03</div>
+          <div class="portfolio-nav-info">
+            <div class="portfolio-nav-cat">Enterprise · Health</div>
+            <div class="portfolio-nav-name">Roche Congress</div>
+            <div class="portfolio-nav-year">2020</div>
+          </div>
+          <div class="portfolio-nav-arrow">→</div>
+        </div>
+        <div class="portfolio-nav-item" data-index="3" onclick="scrollToProject(3)">
+          <div class="portfolio-nav-num">04</div>
+          <div class="portfolio-nav-info">
+            <div class="portfolio-nav-cat">Gaming · Mobile</div>
+            <div class="portfolio-nav-name">Mobile Games</div>
+            <div class="portfolio-nav-year">2013–2015</div>
+          </div>
+          <div class="portfolio-nav-arrow">→</div>
+        </div>
+        <div class="portfolio-nav-item" data-index="4" onclick="scrollToProject(4)">
+          <div class="portfolio-nav-num">05</div>
+          <div class="portfolio-nav-info">
+            <div class="portfolio-nav-cat">Logo · Design System</div>
+            <div class="portfolio-nav-name">Branding + Social</div>
+            <div class="portfolio-nav-year">2019–2021</div>
+          </div>
+          <div class="portfolio-nav-arrow">→</div>
+        </div>
+        <div class="portfolio-nav-item" data-index="5" onclick="scrollToProject(5)">
+          <div class="portfolio-nav-num">06</div>
+          <div class="portfolio-nav-info">
+            <div class="portfolio-nav-cat">3D · Architecture</div>
+            <div class="portfolio-nav-name">Sketchup Renders</div>
+            <div class="portfolio-nav-year">2023</div>
+          </div>
+          <div class="portfolio-nav-arrow">→</div>
+        </div>
+      </div>
+
+      <!-- RIGHT — scrolling projects -->
+      <div class="portfolio-scroll">
+
+        <!-- 01 OpenLoot -->
+        <div class="portfolio-project fade-up" data-index="0">
+          <div class="proj-counter">
+            <span class="proj-counter-num">01 / 06</span>
+            <span class="proj-counter-dot"></span>
+            <span class="proj-counter-cat">Web3 · NFT Marketplace</span>
+          </div>
+          <div class="proj-title-row">
+            <div class="proj-title-info">
+              <div class="proj-title">OpenLoot</div>
+              <div class="proj-company">Big Time Studios · 2022 — 2026</div>
+            </div>
+            <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="proj-cta">View case study →</a>
+          </div>
+          <p class="proj-desc">Bridging blockchain complexity with intuitive marketplace UX — designing security flows, two-step verification, and high-conversion commerce for crypto-native and non-native user personas.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">UX/UI</span>
+            <span class="proj-tag">Web3</span>
+            <span class="proj-tag">Marketplace</span>
+            <span class="proj-tag">Design Systems</span>
+          </div>
+          <div class="proj-visual">
+            <img src="img/cover-1.png" alt="OpenLoot — Product Design">
+          </div>
+        </div>
+
+        <!-- 02 Our Dipper -->
+        <div class="portfolio-project fade-up" data-index="1">
+          <div class="proj-counter">
+            <span class="proj-counter-num">02 / 06</span>
+            <span class="proj-counter-dot"></span>
+            <span class="proj-counter-cat">UX/UI · Web App</span>
+          </div>
+          <div class="proj-title-row">
+            <div class="proj-title-info">
+              <div class="proj-title">Our Dipper</div>
+              <div class="proj-company">Startup · 2021</div>
+            </div>
+            <a href="https://www.behance.net/gallery/245507671/Our-Dipper-Landing-Web-app" target="_blank" rel="noopener" class="proj-cta">View case study →</a>
+          </div>
+          <p class="proj-desc">Intuitive service-management platform streamlining the full user journey from provider discovery to booking confirmation, with a focus on seamless navigation and conversion.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">UX</span>
+            <span class="proj-tag">Web App</span>
+            <span class="proj-tag">Service Design</span>
+          </div>
+          <div class="proj-visual">
+            <div class="proj-color-bar" style="background: rgba(0,153,229,0.3);"></div>
+            <img src="img/cover-2.png" alt="Our Dipper">
+          </div>
+        </div>
+
+        <!-- 03 Roche Congress -->
+        <div class="portfolio-project fade-up" data-index="2">
+          <div class="proj-counter">
+            <span class="proj-counter-num">03 / 06</span>
+            <span class="proj-counter-dot"></span>
+            <span class="proj-counter-cat">Enterprise · Health</span>
+          </div>
+          <div class="proj-title-row">
+            <div class="proj-title-info">
+              <div class="proj-title">Roche Congress</div>
+              <div class="proj-company">Roche · 2020</div>
+            </div>
+            <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="proj-cta">View case study →</a>
+          </div>
+          <p class="proj-desc">Event and congress management platform for a global pharmaceutical brand. UX/UI with enterprise-grade usability for complex stakeholder workflows.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Enterprise UX</span>
+            <span class="proj-tag">Healthcare</span>
+            <span class="proj-tag">Complex Flows</span>
+          </div>
+          <div class="proj-visual">
+            <div class="proj-color-bar" style="background: rgba(229,51,77,0.3);"></div>
+            <img src="img/cover-3.png" alt="Roche Congress">
+          </div>
+        </div>
+
+        <!-- 04 Mobile Games -->
+        <div class="portfolio-project fade-up" data-index="3">
+          <div class="proj-counter">
+            <span class="proj-counter-num">04 / 06</span>
+            <span class="proj-counter-dot"></span>
+            <span class="proj-counter-cat">Gaming · Mobile</span>
+          </div>
+          <div class="proj-title-row">
+            <div class="proj-title-info">
+              <div class="proj-title">Mobile Games</div>
+              <div class="proj-company">Disney / Globant · 2013 — 2015</div>
+            </div>
+            <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="proj-cta">View case study →</a>
+          </div>
+          <p class="proj-desc">Art direction, illustration, and UX/UI for 'Bola' mobile game (Disney Argentina). Visual systems, HUDs, and interaction design for high-engagement gameplay.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Gaming UX</span>
+            <span class="proj-tag">Mobile</span>
+            <span class="proj-tag">Art Direction</span>
+          </div>
+          <div class="proj-visual">
+            <div class="proj-color-bar" style="background: rgba(242,140,26,0.3);"></div>
+            <img src="img/cover-4.png" alt="Mobile Games">
+          </div>
+        </div>
+
+        <!-- 05 Branding + Social -->
+        <div class="portfolio-project fade-up" data-index="4">
+          <div class="proj-counter">
+            <span class="proj-counter-num">05 / 06</span>
+            <span class="proj-counter-dot"></span>
+            <span class="proj-counter-cat">Logo · Design System · Social</span>
+          </div>
+          <div class="proj-title-row">
+            <div class="proj-title-info">
+              <div class="proj-title">Branding + Social</div>
+              <div class="proj-company">Various · 2019 — 2021</div>
+            </div>
+            <a href="https://www.behance.net/gallery/66848937/Brand-Concept-(logo-Styles-Guide)" target="_blank" rel="noopener" class="proj-cta">View case study →</a>
+          </div>
+          <p class="proj-desc">UX and UI work spanning multiple industries — research-driven design, wireframes, high-fidelity interfaces, and a curated selection of design system assets.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Branding</span>
+            <span class="proj-tag">Design Systems</span>
+            <span class="proj-tag">Social Media</span>
+          </div>
+          <div class="proj-visual">
+            <div class="proj-color-bar" style="background: rgba(0,245,161,0.3);"></div>
+            <img src="img/cover-5.png" alt="Branding + Social">
+          </div>
+        </div>
+
+        <!-- 06 Sketchup Renders -->
+        <div class="portfolio-project fade-up" data-index="5">
+          <div class="proj-counter">
+            <span class="proj-counter-num">06 / 06</span>
+            <span class="proj-counter-dot"></span>
+            <span class="proj-counter-cat">3D · Architecture · Rendering</span>
+          </div>
+          <div class="proj-title-row">
+            <div class="proj-title-info">
+              <div class="proj-title">Sketchup Renders</div>
+              <div class="proj-company">Personal · 2023</div>
+            </div>
+            <a href="https://www.behance.net/gallery/245216341/Sketchup-ModellingRender" target="_blank" rel="noopener" class="proj-cta">View case study →</a>
+          </div>
+          <p class="proj-desc">3D modelling and rendering experiments — architectural visualization, interior concepts, and exploratory visual storytelling using Sketchup + Enscape.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">3D</span>
+            <span class="proj-tag">Architecture</span>
+            <span class="proj-tag">Visualization</span>
+          </div>
+          <div class="proj-visual">
+            <div class="proj-color-bar" style="background: rgba(153,153,153,0.3);"></div>
+            <img src="img/cover-6.png" alt="Sketchup Renders">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS & EXPERTISE -->
+  <section id="tools">
+    <div class="section-label">03 · Skills</div>
+    <h2 class="section-title">Tools &amp; Expertise</h2>
+
+    <div class="tools-layout fade-up">
+      <!-- Left — Design Tools with bars -->
+      <div>
+        <div class="tools-col-label">Design Tools</div>
+
+        <div class="tool-item">
+          <div class="tool-header">
+            <span class="tool-name">Figma</span>
+            <span class="tool-subtitle">Primary · 5+ years</span>
+          </div>
+          <div class="skill-track"><div class="skill-bar" style="width:100%"></div></div>
+        </div>
+
+        <div class="tool-item">
+          <div class="tool-header">
+            <span class="tool-name">Photoshop</span>
+            <span class="tool-subtitle">Photo retouch · 20+ years</span>
+          </div>
+          <div class="skill-track"><div class="skill-bar" style="width:100%"></div></div>
+        </div>
+
+        <div class="tool-item">
+          <div class="tool-header">
+            <span class="tool-name">Illustrator</span>
+            <span class="tool-subtitle">Visual design · 15+ years</span>
+          </div>
+          <div class="skill-track"><div class="skill-bar" style="width:85%"></div></div>
+        </div>
+
+        <div class="tool-item">
+          <div class="tool-header">
+            <span class="tool-name">Claude Code</span>
+            <span class="tool-subtitle">AI + MCP integrations · WIP</span>
+          </div>
+          <div class="skill-track"><div class="skill-bar" style="width:75%"></div></div>
+        </div>
+
+        <div class="tool-item">
+          <div class="tool-header">
+            <span class="tool-name">JIRA / Confluence</span>
+            <span class="tool-subtitle">Agile workflow</span>
+          </div>
+          <div class="skill-track"><div class="skill-bar" style="width:75%"></div></div>
+        </div>
+      </div>
+
+      <!-- Right — Areas of Expertise tags -->
+      <div>
+        <div class="tools-col-label">Areas of Expertise</div>
+        <div class="expertise-tags">
+          <span class="expertise-tag">Product Design</span>
+          <span class="expertise-tag">UX Research</span>
+          <span class="expertise-tag">UX/UI</span>
+          <span class="expertise-tag">Design Systems</span>
+          <span class="expertise-tag">Interaction Design</span>
+          <span class="expertise-tag">Prototyping</span>
+          <span class="expertise-tag">Motion Design</span>
+          <span class="expertise-tag">Web Design</span>
+          <span class="expertise-tag">Branding</span>
+          <span class="expertise-tag">Art Direction</span>
+          <span class="expertise-tag">Visual Design</span>
+          <span class="expertise-tag">Figma-to-Code</span>
+          <span class="expertise-tag">HTML / CSS</span>
+          <span class="expertise-tag">Web3 &amp; DeFi</span>
+          <span class="expertise-tag">Gaming UX</span>
+          <span class="expertise-tag">Design Leadership</span>
+          <span class="expertise-tag">Product Strategy</span>
+          <span class="expertise-tag">Discovery</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAREER (condensed) -->
+  <section id="resume">
+    <div class="section-label">04 · Resume</div>
+
+    <div class="career-title-row">
+      <h2 class="section-title">Career.</h2>
+      <a href="career.html" class="career-more-link">View entire career →</a>
+    </div>
+
+    <div class="career-table fade-up">
+      <div class="career-row">
+        <div class="career-period">2022 — 2026</div>
+        <div class="career-role">UX / UI / Product Designer</div>
+        <div class="career-company">Big Time Studios / OpenLoot</div>
+        <div class="career-location">USA (Remote)</div>
+      </div>
+      <div class="career-row">
+        <div class="career-period">2020 — 2021</div>
+        <div class="career-role">Creative Leader</div>
+        <div class="career-company">PSh</div>
+        <div class="career-location">Buenos Aires</div>
+      </div>
+      <div class="career-row">
+        <div class="career-period">2019 — 2020</div>
+        <div class="career-role">UX / UI Design Leader</div>
+        <div class="career-company">_coderio</div>
+        <div class="career-location">Buenos Aires</div>
+      </div>
+      <div class="career-row">
+        <div class="career-period">2015 — 2018</div>
+        <div class="career-role">Product Design</div>
+        <div class="career-company">SIMPLY.VISION (analyze.life)</div>
+        <div class="career-location">Tel Aviv, Israel</div>
+      </div>
+      <div class="career-row">
+        <div class="career-period">2011 — 2015</div>
+        <div class="career-role">Senior Advance UI & Visual Designer</div>
+        <div class="career-company">Globant</div>
+        <div class="career-location">Buenos Aires</div>
+      </div>
+      <div class="career-row">
+        <div class="career-period">2009 — 2011</div>
+        <div class="career-role">UI & Visual Designer</div>
+        <div class="career-company">Nextive Solutions</div>
+        <div class="career-location">Buenos Aires</div>
+      </div>
+    </div>
+
+    <div class="career-bottom fade-up">
+      <a href="img/resume_EdeFco_2026.pdf" class="resume-download" download="Ezequiel_deFrancisco_CV_2026.pdf">
+        Download Full CV ↓
+      </a>
+      <div class="career-formation-info">
+        <div class="career-formation-item"><strong>Graphic Design</strong> - UBA Graduate</div>
+        <span class="career-formation-dot"></span>
+        <div class="career-formation-item"><strong>Jazz Guitar Professor</strong> - EMPA</div>
+        <span class="career-formation-dot"></span>
+        <div class="career-formation-item">Spanish · English · Italian</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label">05 · Contact</div>
+    <div class="contact-inner">
+      <div class="fade-up">
+        <h2 class="contact-headline">Let's build smtg<br><span class="headline-accent">great.</span></h2>
+        <p class="contact-sub" style="margin-top:24px;">Available for freelance and full-time remote opportunities in <strong>Product Design</strong> and <strong>WEB3.</strong></p>
+      </div>
+      <div class="contact-links fade-up">
+        <a href="mailto:ezequiel.defrancisco@gmail.com" class="contact-link">
+          <div class="cl-inner">
+            <div class="cl-label">Email</div>
+            <div class="cl-value">ezequiel.defrancisco@gmail.com</div>
+          </div>
+          <div class="cl-arrow">↗&#xFE0E;</div>
+        </a>
+        <a href="https://www.linkedin.com/in/ezequiel-de-francisco/" target="_blank" rel="noopener" class="contact-link">
+          <div class="cl-inner">
+            <div class="cl-label">LinkedIn</div>
+            <div class="cl-value">ezequiel-de-francisco</div>
+          </div>
+          <div class="cl-arrow">↗&#xFE0E;</div>
+        </a>
+        <a href="https://www.behance.net/defranez" target="_blank" rel="noopener" class="contact-link">
+          <div class="cl-inner">
+            <div class="cl-label">Behance</div>
+            <div class="cl-value">behance.net/defranez</div>
+          </div>
+          <div class="cl-arrow">↗&#xFE0E;</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-copy">© 2026 Ezequiel de Francisco. All rights reserved.</div>
+    <div class="footer-status">
+      <span class="status-dot"></span>
+      Available for new projects
+    </div>
+  </footer>
+
+  <script>
+    // ── Fade-up observer ──────────────────────────────────────────────────
+    const fadeEls = document.querySelectorAll('.fade-up');
+    fadeEls.forEach(el => el.classList.add('animate'));
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.08 });
+
+    fadeEls.forEach(el => observer.observe(el));
+
+    // ── Nav scroll effect ─────────────────────────────────────────────────
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      nav.style.borderBottomColor = window.scrollY > 20
+        ? 'rgba(255,255,255,0.1)'
+        : 'rgba(255,255,255,0.06)';
+    });
+
+    // ── Visit tracker ────────────────────────────────────────────────────
+    (async function () {
+      const SB_URL = 'https://aqtfbzrdwbdymaoskxpt.supabase.co';
+      const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxdGZienJkd2JkeW1hb3NreHB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NzUwMzMsImV4cCI6MjA5MTI1MTAzM30.zCtyQBXjt3-s0bMITXDCIZmtEKdDIx39xirLw2u9wX4';
+
+      if (location.hostname === 'localhost' || sessionStorage.getItem('_vl')) return;
+      sessionStorage.setItem('_vl', '1');
+
+      const ua = navigator.userAgent;
+      const device = window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop';
+      const browser = /Edg\//.test(ua) ? 'Edge' : /Chrome\//.test(ua) && !/Chromium/.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) && !/Chrome/.test(ua) ? 'Safari' : 'Other';
+      const os = /Windows/.test(ua) ? 'Windows' : /iPhone|iPad/.test(ua) ? 'iOS' : /Android/.test(ua) ? 'Android' : /Mac OS X/.test(ua) ? 'macOS' : /Linux/.test(ua) ? 'Linux' : 'Other';
+
+      let ip = '', country = '', city = '', region = '';
+      try {
+        const geo = await fetch('https://ip-api.com/json/?fields=status,query,country,city,regionName').then(r => r.json());
+        if (geo.status === 'success') { ip = geo.query; country = geo.country; city = geo.city; region = geo.regionName; }
+      } catch (_) {}
+
+      const H = { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Prefer': 'return=minimal' };
+
+      fetch(SB_URL + '/rest/v1/visits', {
+        method: 'POST', headers: H,
+        body: JSON.stringify({ ip, country, city, region, device_type: device, browser, os, referrer: document.referrer || 'direct', page: location.pathname })
+      }).catch(() => {});
+
+      document.querySelectorAll('a[target="_blank"]').forEach(a => {
+        a.addEventListener('click', () => {
+          fetch(SB_URL + '/rest/v1/link_clicks', {
+            method: 'POST', headers: H,
+            body: JSON.stringify({ ip, link_url: a.href, link_label: (a.textContent.trim() || a.getAttribute('aria-label') || a.href).slice(0, 100) })
+          }).catch(() => {});
+        }, { once: true });
+      });
+    })();
+
+    // ── STAT COUNTERS — About Me ───────────────────────────────────────────
+    (function () {
+      const aboutSection = document.querySelector('#about');
+      if (!aboutSection) return;
+
+      function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+      const COUNTER_DURATIONS = [2000, 3000, 4000];
+
+      function animateCounter(el, target, duration) {
+        const suffix = el.querySelector('span');
+        if (suffix) suffix.style.opacity = '0';
+        const textNode = el.childNodes[0];
+        const start = performance.now();
+        function tick(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = easeOutExpo(progress);
+          textNode.textContent = Math.round(target * eased);
+          if (progress < 1) {
+            requestAnimationFrame(tick);
+          } else {
+            textNode.textContent = target;
+            if (suffix) suffix.style.opacity = '1';
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+
+      let statFired = false;
+      const statObs = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting || statFired) return;
+        statFired = true;
+        statObs.disconnect();
+        let idx = 0;
+        document.querySelectorAll('.about-stats .stat-num').forEach(el => {
+          const raw = el.childNodes[0].textContent.trim();
+          if (raw === '∞') return;
+          const target = parseInt(raw, 10);
+          if (!isNaN(target)) animateCounter(el, target, COUNTER_DURATIONS[idx++] || 2000);
+        });
+      }, { threshold: 0.3 });
+      statObs.observe(aboutSection);
+    })();
+
+    // ── SKILL BAR ANIMATION — Tools & Expertise ───────────────────────────
+    (function () {
+      const toolsSection = document.querySelector('#tools');
+      if (!toolsSection) return;
+
+      const items = Array.from(toolsSection.querySelectorAll('.tool-item'));
+
+      function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+      const data = items.map(item => {
+        const bar = item.querySelector('.skill-bar');
+        const match = (bar.style.width || '').match(/(\d+)/);
+        const pct = match ? parseInt(match[1], 10) : 0;
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        return { bar, pct };
+      });
+
+      const STAGGER = 150;
+      const BAR_DUR = 800;
+      let barFired = false;
+
+      const barObs = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting || barFired) return;
+        barFired = true;
+        barObs.disconnect();
+
+        data.forEach(({ bar, pct }, order) => {
+          setTimeout(() => {
+            bar.style.transition = `width ${BAR_DUR}ms ease-out`;
+            bar.style.width = pct + '%';
+          }, order * STAGGER);
+        });
+      }, { threshold: 0.2 });
+
+      barObs.observe(toolsSection);
+    })();
+
+    // ── PORTFOLIO STICKY SYNC — scroll-based ──────────────────────────
+    (function () {
+      const rightProjects = document.querySelectorAll('.portfolio-project');
+      const leftItems = document.querySelectorAll('.portfolio-nav-item');
+      if (!rightProjects.length || !leftItems.length) return;
+
+      let currentActive = -1;
+      let ticking = false;
+
+      function updateActive() {
+        const viewportCenter = window.innerHeight * 0.35;
+        let closestIdx = 0;
+        let closestDist = Infinity;
+
+        rightProjects.forEach((p, i) => {
+          const rect = p.getBoundingClientRect();
+          const dist = Math.abs(rect.top - viewportCenter);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closestIdx = i;
+          }
+        });
+
+        if (closestIdx !== currentActive) {
+          currentActive = closestIdx;
+          leftItems.forEach(i => i.classList.remove('active'));
+          leftItems[closestIdx].classList.add('active');
+        }
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', function () {
+        if (!ticking) {
+          requestAnimationFrame(updateActive);
+          ticking = true;
+        }
+      });
+
+      updateActive();
+    })();
+
+    function scrollToProject(idx) {
+      const project = document.querySelector('.portfolio-project[data-index="' + idx + '"]');
+      if (project) project.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+
 </body>
 </html>

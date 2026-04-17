@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Work Experience — Ezequiel De Francisco</title>
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #080a0c;
+      --surface: #0e1114;
+      --border: rgba(255,255,255,0.06);
+      --accent: #00f5a0;
+      --text: #e8eaed;
+      --muted: #8a94a6;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body * { color: inherit; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 60px;
+      background: rgba(8,10,12,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+      color: var(--accent);
+      letter-spacing: 1.04px;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--accent); }
+
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 56px 60px 50px;
+      margin-top: 73px;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2.2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 56px;
+    }
+    .section-label::before {
+      content: '';
+      width: 30px; height: 1px;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -2.16px;
+      color: #ffffff;
+      font-style: italic;
+      margin-bottom: 56px;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .tl-entry {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .tl-year {
+      width: 147px;
+      flex-shrink: 0;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .tl-year-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 24px;
+    }
+
+    .tl-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 4px solid var(--bg);
+      flex-shrink: 0;
+    }
+
+    .tl-card {
+      flex: 1;
+      min-width: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 40px;
+      display: flex;
+      gap: 24px;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .tl-card:hover {
+      border-color: rgba(0,245,161,0.15);
+      background: rgba(14,17,20,0.95);
+    }
+
+    .tl-card-left {
+      width: 443px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tl-company {
+      font-family: 'Syne', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 36px;
+    }
+
+    .tl-tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tl-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 5px 13px;
+      line-height: 15px;
+    }
+
+    .tl-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      line-height: 18px;
+    }
+
+    .tl-location {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 16.5px;
+    }
+
+    .tl-card-right {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tl-role {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 24px;
+    }
+
+    .tl-desc {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 25.5px;
+    }
+
+    /* Graduation special row */
+    .tl-grad {
+      flex: 1;
+      min-width: 0;
+      background: rgba(0,245,161,0.1);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tl-grad-period {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .tl-grad-row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .tl-grad-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      width: 443px;
+      flex-shrink: 0;
+    }
+    .tl-grad-title span {
+      font-weight: 400;
+    }
+
+    .tl-grad-school {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--accent);
+      flex: 1;
+    }
+
+    .tl-grad .tl-year-text {
+      color: var(--accent);
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 24px 60px 25px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .footer-status {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+    }
+
+    .fade-up {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.animate { opacity: 0; transform: translateY(30px); }
+    .fade-up.animate.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 1100px) {
+      .tl-card-left { width: 280px; }
+      .tl-grad-title { width: 280px; }
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; }
+      section { padding: 56px 24px 50px; }
+      .section-title { font-size: 48px; }
+      .tl-year { width: auto; min-width: 60px; }
+      .tl-card { flex-direction: column; gap: 16px; padding: 24px; }
+      .tl-card-left { width: 100%; }
+      .tl-grad-title { width: auto; }
+      .tl-grad-row { flex-direction: column; gap: 8px; align-items: flex-start; }
+      footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+    }
+
+    @media (max-width: 560px) {
+      section { padding: 40px 24px; margin-top: 65px; }
+      .section-title { font-size: 36px; margin-bottom: 32px; }
+      .tl-entry { flex-direction: column; gap: 8px; }
+      .tl-year { width: 100%; }
+      .tl-card { padding: 20px; }
+      .tl-grad { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">EDF · Portfolio</a>
+    <a href="index.html#resume" class="nav-back">← Back to portfolio</a>
+  </nav>
+
+  <section>
+    <div class="section-label">02 · Career</div>
+    <h2 class="section-title">Work experience</h2>
+
+    <div class="timeline">
+
+      <div class="tl-entry fade-up">
+        <div class="tl-year">
+          <div class="tl-year-text">2022</div>
+          <div class="tl-dot"></div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-left">
+            <div class="tl-company">Big Time Studios / OpenLoot</div>
+            <div class="tl-tags">
+              <span class="tl-tag">gaming</span>
+              <span class="tl-tag">web3</span>
+              <span class="tl-tag">defi</span>
+              <span class="tl-tag">marketplace</span>
+            </div>
+            <div class="tl-date">July 2022 to March 2026</div>
+            <div class="tl-location">United States</div>
+          </div>
+          <div class="tl-card-right">
+            <div class="tl-role">Product Designer</div>
+            <div class="tl-desc">Product Designer at OpenLoot.com, specializing in bridging the gap between complex Web3 infrastructure and intuitive user experiences for a leading crypto-game marketplace. Expert at translating blockchain technicalities—such as wallet integration and asset ownership—into seamless interfaces for non-native users. Partnered daily with fullstack engineers to align design specifications with technical constraints, ensuring high-fidelity implementation.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-entry fade-up">
+        <div class="tl-year">
+          <div class="tl-year-text">2020</div>
+          <div class="tl-dot"></div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-left">
+            <div class="tl-company">PSh</div>
+            <div class="tl-tags">
+              <span class="tl-tag">gaming</span>
+              <span class="tl-tag">web3</span>
+              <span class="tl-tag">defi</span>
+              <span class="tl-tag">marketplace</span>
+            </div>
+            <div class="tl-date">July 2020 to June 2021</div>
+            <div class="tl-location">Buenos Aires, Argentina</div>
+          </div>
+          <div class="tl-card-right">
+            <div class="tl-role">Creative Leader</div>
+            <div class="tl-desc">Operational and cross-functional 12 member team management (over web, graphic, motion). Proven track record in Executing Web Design by implementing scalable workflows and technical delivery guidelines across multimedia production. Managed stakeholders engagement. Developed measurable processes and goals and day-to-day execution, ensuring on-time delivery while managing clients budget. Collaborated with senior leadership to roadmap and drive operational growth.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-entry fade-up">
+        <div class="tl-year">
+          <div class="tl-year-text">2019</div>
+          <div class="tl-dot"></div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-left">
+            <div class="tl-company">CODERIO</div>
+            <div class="tl-tags">
+              <span class="tl-tag">gaming</span>
+              <span class="tl-tag">web3</span>
+              <span class="tl-tag">defi</span>
+              <span class="tl-tag">marketplace</span>
+            </div>
+            <div class="tl-date">Sep. 2019 to July 2020</div>
+            <div class="tl-location">Buenos Aires, Argentina</div>
+          </div>
+          <div class="tl-card-right">
+            <div class="tl-role">UX / UI Design Leader</div>
+            <div class="tl-desc">Design Lead of a cross-functional team of 8, overseeing the delivery of complex UX/UI and website projects (B2B tech sector). Adopted advanced internal processes (Design Thinking / Jobs-to-be-Done) and improved project efficiency and team performance. Successfully managed stakeholder relationships and led the pro-optimization of design processes to drive business growth.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-entry fade-up">
+        <div class="tl-year">
+          <div class="tl-year-text">2015</div>
+          <div class="tl-dot"></div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-left">
+            <div class="tl-company">SIMPLY.VISION</div>
+            <div class="tl-tags">
+              <span class="tl-tag">mobile app</span>
+              <span class="tl-tag">health &amp; wellness</span>
+              <span class="tl-tag">startup</span>
+            </div>
+            <div class="tl-date">Jan. 2015 to Dec. 2018</div>
+            <div class="tl-location">Tel Aviv, Israel (contract)</div>
+          </div>
+          <div class="tl-card-right">
+            <div class="tl-role">Design Manager</div>
+            <div class="tl-desc">UX / UI, Product, Branding, Website, Mobile App.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-entry fade-up">
+        <div class="tl-year">
+          <div class="tl-year-text">2011</div>
+          <div class="tl-dot"></div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-left">
+            <div class="tl-company">GLOBANT</div>
+            <div class="tl-tags">
+              <span class="tl-tag">mobile app</span>
+              <span class="tl-tag">health &amp; wellness</span>
+              <span class="tl-tag">startup</span>
+            </div>
+            <div class="tl-date">Jul. 2011 - Jan. 2015</div>
+            <div class="tl-location">Buenos Aires, Argentina</div>
+          </div>
+          <div class="tl-card-right">
+            <div class="tl-role">Senior Advance UI &amp; Visual Designer</div>
+            <div class="tl-desc">UX Direction / Art Direction / Concept development / UX and UI for mobile game (<strong>Disney</strong> Arg.) / Analysis, Target, UX/UI Admin platform for <strong>Dreamworks</strong> "On Site" (CA-USA)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-entry fade-up">
+        <div class="tl-year">
+          <div class="tl-year-text">2009</div>
+          <div class="tl-dot"></div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-left">
+            <div class="tl-company">Nextive Solutions</div>
+            <div class="tl-tags">
+              <span class="tl-tag">mobile</span>
+              <span class="tl-tag">illustration</span>
+              <span class="tl-tag">gaming</span>
+            </div>
+            <div class="tl-date">Aug. 2009 - Jul. 2011</div>
+            <div class="tl-location">California, USA</div>
+          </div>
+          <div class="tl-card-right">
+            <div class="tl-role">Senior UI &amp; Visual Designer</div>
+            <div class="tl-desc">Artist of design &amp; illustration &amp; motion for mobile games (Zynga, Big Fish Games).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-entry fade-up">
+        <div class="tl-year">
+          <div class="tl-year-text">2007</div>
+          <div class="tl-dot"></div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-left">
+            <div class="tl-company">e-Volution</div>
+            <div class="tl-tags">
+              <span class="tl-tag">web2.0</span>
+              <span class="tl-tag">html+css</span>
+              <span class="tl-tag">dreamweaver</span>
+            </div>
+            <div class="tl-date">Jul. 2007 - May. 2009</div>
+            <div class="tl-location">Buenos Aires, Argentina</div>
+          </div>
+          <div class="tl-card-right">
+            <div class="tl-role">Web Designer</div>
+            <div class="tl-desc">External proposals front-end development, microsites, mailing / Html + Css for <strong>Microsoft Latam</strong>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graduation -->
+      <div class="tl-entry fade-up">
+        <div class="tl-year">
+          <div class="tl-year-text" style="color: #00f5a1;">2007</div>
+          <div class="tl-dot"></div>
+        </div>
+        <div class="tl-grad">
+          <div class="tl-grad-period">2001-2007</div>
+          <div class="tl-grad-row">
+            <div class="tl-grad-title">Graphic Design - <span>Graduation</span></div>
+            <div class="tl-grad-school">FADU/UBA — Universidad de Buenos Aires</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-entry fade-up">
+        <div class="tl-year">
+          <div class="tl-year-text">2006</div>
+          <div class="tl-dot"></div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-left">
+            <div class="tl-company">Caro Cuore</div>
+            <div class="tl-tags">
+              <span class="tl-tag">photoshop</span>
+              <span class="tl-tag">photo enhancement</span>
+            </div>
+            <div class="tl-date">May. 2006 - Dec. 2006</div>
+            <div class="tl-location">Buenos Aires, Argentina</div>
+          </div>
+          <div class="tl-card-right">
+            <div class="tl-role">Graphic Designer</div>
+            <div class="tl-desc">Press Retouch, Magazine Advertising, Fashion Lookbook</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-entry fade-up">
+        <div class="tl-year">
+          <div class="tl-year-text">2004</div>
+          <div class="tl-dot"></div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-left">
+            <div class="tl-company">Musimundo</div>
+            <div class="tl-tags">
+              <span class="tl-tag">marketing</span>
+              <span class="tl-tag">photo enhancement</span>
+            </div>
+            <div class="tl-date">Jun. 2004 - May. 2006</div>
+            <div class="tl-location">Buenos Aires, Argentina</div>
+          </div>
+          <div class="tl-card-right">
+            <div class="tl-role">Graphic Designer Trainee</div>
+            <div class="tl-desc">Press, photo retouch, newspaper advertise, marketing advice, internal communication.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-copy">© 2026 Ezequiel de Francisco. All rights reserved.</div>
+    <div class="footer-status">Buenos Aires, Argentina</div>
+  </footer>
+
+  <script>
+    const fadeEls = document.querySelectorAll('.fade-up');
+    fadeEls.forEach(el => el.classList.add('animate'));
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.08 });
+    fadeEls.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
