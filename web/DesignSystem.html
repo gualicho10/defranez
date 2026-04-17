@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design System — Ezequiel De Francisco</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════
+       DESIGN TOKENS
+    ═══════════════════════════════════════════════════════════════════════ */
+    :root {
+      --bg:        #080a0c;
+      --surface:   #0e1114;
+      --surface2:  #13171c;
+      --border:    rgba(255,255,255,0.06);
+      --border-strong: rgba(255,255,255,0.1);
+      --accent:    #00f5a0;
+      --accent2:   #00c8ff;
+      --text:      #e8eaed;
+      --muted:     #6b7280;
+      --secondary: #8a94a6;
+      --white:     #ffffff;
+
+      /* Accent opacities */
+      --accent-05: rgba(0,245,160,0.05);
+      --accent-08: rgba(0,245,160,0.08);
+      --accent-20: rgba(0,245,160,0.20);
+      --accent-30: rgba(0,245,160,0.30);
+      --accent-40: rgba(0,245,160,0.40);
+
+      /* Typography */
+      --font-primary: 'Syne', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+
+      /* Spacing */
+      --sp-2:   2px;
+      --sp-4:   4px;
+      --sp-6:   6px;
+      --sp-8:   8px;
+      --sp-10:  10px;
+      --sp-12:  12px;
+      --sp-16:  16px;
+      --sp-20:  20px;
+      --sp-24:  24px;
+      --sp-32:  32px;
+      --sp-40:  40px;
+      --sp-48:  48px;
+      --sp-60:  60px;
+      --sp-64:  64px;
+      --sp-80:  80px;
+      --sp-120: 120px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       BASE
+    ═══════════════════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-primary);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Grid pattern */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════════════════════════════════════ */
+    .ds-page { position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; }
+
+    .ds-section {
+      padding: 80px 60px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ds-section:last-child { border-bottom: none; }
+
+    .ds-section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ds-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .ds-section-title {
+      font-family: var(--font-primary);
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 48px;
+      line-height: 1;
+    }
+
+    .ds-subsection-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .ds-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .ds-row:last-child { margin-bottom: 0; }
+
+    .ds-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; }
+    .ds-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .ds-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .ds-grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       HEADER / HERO
+    ═══════════════════════════════════════════════════════════════════════ */
+    .ds-header {
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      background: rgba(8,10,12,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ds-header-logo {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--text);
+    }
+
+    .ds-header-nav {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .ds-header-nav a {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .ds-header-nav a:hover { color: var(--accent); }
+
+    .ds-hero {
+      padding: 80px 60px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ds-hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .ds-hero-title {
+      font-size: clamp(48px, 8vw, 96px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    .ds-hero-sub {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+
+    .ds-hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       COLOR SWATCHES
+    ═══════════════════════════════════════════════════════════════════════ */
+    .color-swatch {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .color-swatch__preview {
+      height: 100px;
+      width: 100%;
+    }
+
+    .color-swatch__info {
+      background: var(--surface);
+      padding: 12px 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .color-swatch__token {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .color-swatch__label {
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .color-swatch__hex {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--secondary);
+    }
+
+    .gradient-swatch {
+      height: 80px;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: flex-end;
+      padding: 8px 10px;
+    }
+
+    .gradient-swatch__name {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       TYPOGRAPHY
+    ═══════════════════════════════════════════════════════════════════════ */
+    .type-specimen {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+    }
+
+    .type-specimen:last-child { border-bottom: none; }
+
+    .type-specimen__sample {
+      color: var(--text);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .type-specimen__meta {
+      width: 280px;
+      flex-shrink: 0;
+    }
+
+    .type-specimen__name {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+
+    .type-specimen__details {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .font-weight-row {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .font-weight-row:last-child { border-bottom: none; }
+
+    .font-weight-row__sample {
+      font-family: var(--font-primary);
+      font-size: 36px;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .font-weight-row__mono {
+      font-family: var(--font-mono);
+      font-size: 32px;
+      color: var(--text);
+      flex: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       COMPONENTS — BUTTONS
+    ═══════════════════════════════════════════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn--primary {
+      background: var(--accent);
+      color: var(--bg);
+      padding: 10px 22px;
+      border: none;
+    }
+    .btn--primary:hover { opacity: 0.85; }
+
+    .btn--outline {
+      background: transparent;
+      color: var(--accent);
+      padding: 16px 28px;
+      border: 1px solid var(--accent-30);
+    }
+    .btn--outline:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--muted);
+      padding: 12px 20px;
+      border: 1px solid var(--border-strong);
+    }
+    .btn--ghost:hover {
+      border-color: var(--accent-30);
+      color: var(--accent);
+    }
+
+    .btn--modal {
+      background: var(--accent);
+      color: var(--bg);
+      padding: 12px 24px;
+      border: none;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+    }
+    .btn--modal:hover { opacity: 0.85; }
+
+    .component-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+
+    .component-desc {
+      font-size: 10px;
+      color: var(--secondary);
+      margin-top: 3px;
+    }
+
+    .component-showcase {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    .component-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       COMPONENTS — TAGS & PILLS
+    ═══════════════════════════════════════════════════════════════════════ */
+    .tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 9px 17px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tag:hover,
+    .tag--active {
+      border-color: var(--accent-30);
+      color: var(--accent);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       COMPONENTS — NAV BAR
+    ═══════════════════════════════════════════════════════════════════════ */
+    .nav-demo {
+      background: rgba(8,10,12,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 60px;
+    }
+
+    .nav-demo__logo {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      color: var(--text);
+    }
+
+    .nav-demo__links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-demo__links a {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-demo__links a:hover { color: var(--accent); }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       COMPONENTS — STAT CARDS
+    ═══════════════════════════════════════════════════════════════════════ */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 33px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .stat-card:hover::before { opacity: 1; }
+
+    .stat-card__number {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-card__label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       COMPONENTS — SKILL BARS
+    ═══════════════════════════════════════════════════════════════════════ */
+    .skill-bar-wrap { display: flex; flex-direction: column; gap: 16px; }
+
+    .skill-item { display: flex; flex-direction: column; gap: 8px; }
+
+    .skill-item__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .skill-item__name {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .skill-item__pct {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .skill-item__track {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .skill-item__fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--accent), var(--accent2));
+      border-radius: 2px;
+      transition: width 1s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       COMPONENTS — CONTACT LINKS
+    ═══════════════════════════════════════════════════════════════════════ */
+    .contact-link {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 29px 33px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .contact-link:hover {
+      border-color: var(--accent-20);
+      background: var(--accent-05);
+    }
+
+    .contact-link:hover .contact-link__arrow {
+      transform: translate(4px, -4px);
+    }
+
+    .contact-link__info { display: flex; flex-direction: column; gap: 6px; }
+
+    .contact-link__label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .contact-link__name {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .contact-link__arrow {
+      font-size: 20px;
+      color: var(--muted);
+      transition: transform 0.3s, color 0.3s;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       COMPONENTS — PROJECT CARD
+    ═══════════════════════════════════════════════════════════════════════ */
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.3s;
+      position: relative;
+    }
+
+    .project-card:hover { border-color: rgba(255,255,255,0.1); }
+
+    .project-card__thumb {
+      height: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(0.3);
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), filter 0.3s;
+    }
+
+    .project-card:hover .project-card__thumb img {
+      transform: scale(1.03);
+      filter: grayscale(0);
+    }
+
+    .project-card__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(8,10,12,0.95) 0%, rgba(8,10,12,0.3) 60%, transparent 100%);
+      display: flex;
+      align-items: flex-end;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .project-card:hover .project-card__overlay { opacity: 1; }
+
+    .project-card__cta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .project-card__info {
+      padding: 24px 24px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .project-card__category {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .project-card__name {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .project-card__desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Thumb placeholder gradients */
+    .thumb-blue   { background: linear-gradient(135deg, #0a1628, #0d2137 50%, #0a3040); }
+    .thumb-green  { background: linear-gradient(135deg, #0d1f0f, #0a2818 50%, #073020); }
+    .thumb-purple { background: linear-gradient(135deg, #1a0d28, #200a35 50%, #1a073d); }
+    .thumb-red    { background: linear-gradient(135deg, #1a0d0d, #280a0a 50%, #1a0505); }
+    .thumb-teal   { background: linear-gradient(135deg, #0d1a1a, #0a2828 50%, #073030); }
+    .thumb-yellow { background: linear-gradient(135deg, #1a1a0d, #282810 50%, #1a1700); }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       COMPONENTS — CASE STUDY BLOCK
+    ═══════════════════════════════════════════════════════════════════════ */
+    .case-study-block {
+      border: 1px solid rgba(0,245,160,0.2);
+      background: linear-gradient(124deg, rgba(0,245,160,0.04) 0%, rgba(0,200,255,0.02) 100%);
+      padding: 48px;
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 48px;
+    }
+
+    .case-study-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+    }
+
+    .case-study-block__eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .case-study-block__company {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .case-study-block__title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .case-study-block__body {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       COMPONENTS — MODAL PREVIEW
+    ═══════════════════════════════════════════════════════════════════════ */
+    .modal-preview {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      max-width: 800px;
+    }
+
+    .modal-preview__header {
+      padding: 40px 48px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-preview__eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .modal-preview__title {
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .modal-preview__sub {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .modal-preview__footer {
+      padding: 24px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       ICONS SECTION
+    ═══════════════════════════════════════════════════════════════════════ */
+    .icon-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+    }
+
+    .icon-card__char {
+      font-family: var(--font-mono);
+      font-size: 32px;
+      color: var(--accent);
+    }
+
+    .icon-card__name {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .icon-card__use {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SPACING SECTION
+    ═══════════════════════════════════════════════════════════════════════ */
+    .spacing-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .spacing-row:last-child { border-bottom: none; }
+
+    .spacing-row__bar {
+      height: 20px;
+      background: rgba(0,245,160,0.25);
+      border-radius: 2px;
+      min-width: 2px;
+    }
+
+    .spacing-row__token {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      width: 60px;
+      flex-shrink: 0;
+    }
+
+    .spacing-row__use {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       BREAKPOINTS
+    ═══════════════════════════════════════════════════════════════════════ */
+    .breakpoint-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 28px;
+    }
+
+    .breakpoint-card__label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .breakpoint-card__width {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .breakpoint-card__detail {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 4px;
+      font-size: 11px;
+    }
+
+    .breakpoint-card__key {
+      color: var(--muted);
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .breakpoint-card__value { color: var(--text); }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       ANIMATIONS / MOTION
+    ═══════════════════════════════════════════════════════════════════════ */
+    @keyframes scrollLine {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    @keyframes logoSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .motion-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      min-height: 140px;
+      text-align: center;
+    }
+
+    .motion-demo-orb {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,245,160,0.4) 0%, transparent 70%);
+      animation: orbFloat 4s ease-in-out infinite;
+    }
+
+    .motion-demo-spin {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--accent);
+      border-radius: 2px;
+      animation: logoSpin 6s linear infinite;
+    }
+
+    .motion-demo-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .motion-demo-line {
+      width: 2px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+
+    .motion-card__name {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .motion-card__spec {
+      font-size: 10px;
+      color: var(--secondary);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════════════════════════════ */
+    .ds-footer {
+      padding: 40px 60px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .ds-footer span { color: var(--accent); }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       UTILITIES
+    ═══════════════════════════════════════════════════════════════════════ */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 32px 0;
+    }
+
+    .code-block {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-left: 2px solid var(--accent-30);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .ds-section { padding: 60px 24px; }
+      .ds-header { padding: 16px 24px; }
+      .ds-hero { padding: 60px 24px 40px; }
+      .ds-header-nav { display: none; }
+      .ds-grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .ds-grid-6 { grid-template-columns: repeat(3, 1fr); }
+      .ds-grid-3 { grid-template-columns: 1fr; }
+      .ds-grid-2 { grid-template-columns: 1fr; gap: 20px; }
+      .nav-demo { padding: 20px 24px; }
+      .nav-demo__links { display: none; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .type-specimen { flex-direction: column; gap: 8px; }
+      .type-specimen__meta { width: 100%; }
+      .case-study-block { flex-direction: column; gap: 24px; padding: 28px 24px; }
+      .modal-preview__header { padding: 28px 24px 20px; }
+      .modal-preview__footer { padding: 20px 24px; }
+      .ds-footer { flex-direction: column; gap: 12px; text-align: center; }
+    }
+
+    @media (max-width: 560px) {
+      .ds-section { padding: 40px 24px; }
+      .ds-grid-4, .ds-grid-6 { grid-template-columns: repeat(2, 1fr); }
+      .stat-grid { grid-template-columns: 1fr; gap: 2px; }
+      .component-showcase { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     STICKY HEADER
+══════════════════════════════════════════════════════════════════════════ -->
+<header class="ds-header">
+  <div class="ds-header-logo">EDF — DESIGN SYSTEM 2026</div>
+  <nav>
+    <ul class="ds-header-nav">
+      <li><a href="#colors">Colors</a></li>
+      <li><a href="#typography">Typography</a></li>
+      <li><a href="#components">Components</a></li>
+      <li><a href="#icons">Icons</a></li>
+      <li><a href="#spacing">Spacing</a></li>
+      <li><a href="#motion">Motion</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="ds-page">
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="ds-hero">
+    <p class="ds-hero-eyebrow">Design System</p>
+    <h1 class="ds-hero-title">Ezequiel De Francisco</h1>
+    <p class="ds-hero-sub">Portfolio 2026 · All design tokens, components, and patterns used across the site</p>
+    <div class="ds-hero-tags">
+      <span class="tag">Colors</span>
+      <span class="tag">Typography</span>
+      <span class="tag">Components</span>
+      <span class="tag">Icons</span>
+      <span class="tag">Spacing</span>
+      <span class="tag">Motion</span>
+      <span class="tag">Syne</span>
+      <span class="tag">DM Mono</span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       COLORS
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="ds-section" id="colors">
+    <p class="ds-section-label">01</p>
+    <h2 class="ds-section-title">Color Palette</h2>
+
+    <p class="ds-subsection-label">Base / Background</p>
+    <div class="ds-row">
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:#080a0c"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">--bg</div>
+          <div class="color-swatch__label">Background</div>
+          <div class="color-swatch__hex">#080A0C</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:#0e1114"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">--surface</div>
+          <div class="color-swatch__label">Surface</div>
+          <div class="color-swatch__hex">#0E1114</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:#13171c"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">--surface2</div>
+          <div class="color-swatch__label">Surface 2</div>
+          <div class="color-swatch__hex">#13171C</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="ds-subsection-label">Text</p>
+    <div class="ds-row">
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:#e8eaed"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">--text</div>
+          <div class="color-swatch__label">Text Primary</div>
+          <div class="color-swatch__hex">#E8EAED</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:#6b7280"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">--muted</div>
+          <div class="color-swatch__label">Text Muted</div>
+          <div class="color-swatch__hex">#6B7280</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:#8a94a6"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">--secondary</div>
+          <div class="color-swatch__label">Text Secondary</div>
+          <div class="color-swatch__hex">#8A94A6</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:#ffffff; border:1px solid rgba(255,255,255,0.1)"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">--white</div>
+          <div class="color-swatch__label">White</div>
+          <div class="color-swatch__hex">#FFFFFF</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="ds-subsection-label">Accent</p>
+    <div class="ds-row">
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:#00f5a0"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">--accent</div>
+          <div class="color-swatch__label">Accent Green</div>
+          <div class="color-swatch__hex">#00F5A0</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:#00c8ff"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">--accent2</div>
+          <div class="color-swatch__label">Accent Cyan</div>
+          <div class="color-swatch__hex">#00C8FF</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:rgba(0,245,160,0.08)"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">accent/08</div>
+          <div class="color-swatch__label">Accent 8%</div>
+          <div class="color-swatch__hex">rgba(0,245,160,0.08)</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:rgba(0,245,160,0.20)"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">accent/20</div>
+          <div class="color-swatch__label">Accent 20%</div>
+          <div class="color-swatch__hex">rgba(0,245,160,0.20)</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:rgba(0,245,160,0.30)"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">accent/30</div>
+          <div class="color-swatch__label">Accent 30%</div>
+          <div class="color-swatch__hex">rgba(0,245,160,0.30)</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:rgba(0,245,160,0.40)"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">accent/40</div>
+          <div class="color-swatch__label">Accent 40%</div>
+          <div class="color-swatch__hex">rgba(0,245,160,0.40)</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="ds-subsection-label">Borders</p>
+    <div class="ds-row">
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:rgba(255,255,255,0.06)"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">--border</div>
+          <div class="color-swatch__label">Border default</div>
+          <div class="color-swatch__hex">rgba(255,255,255,0.06)</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:rgba(255,255,255,0.10)"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">border-strong</div>
+          <div class="color-swatch__label">Border strong</div>
+          <div class="color-swatch__hex">rgba(255,255,255,0.10)</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:rgba(0,245,160,0.20)"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">border-accent</div>
+          <div class="color-swatch__label">Border accent</div>
+          <div class="color-swatch__hex">rgba(0,245,160,0.20)</div>
+        </div>
+      </div>
+      <div class="color-swatch" style="flex:1;min-width:120px">
+        <div class="color-swatch__preview" style="background:rgba(0,245,160,0.30)"></div>
+        <div class="color-swatch__info">
+          <div class="color-swatch__token">border-accent-hover</div>
+          <div class="color-swatch__label">Border accent hover</div>
+          <div class="color-swatch__hex">rgba(0,245,160,0.30)</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="ds-subsection-label">Gradients</p>
+    <div class="ds-grid-6" style="margin-bottom:0">
+      <div class="gradient-swatch" style="background:linear-gradient(135deg,#00f5a0,#00c8ff)">
+        <span class="gradient-swatch__name">Hero / Accent</span>
+      </div>
+      <div class="gradient-swatch thumb-blue">
+        <span class="gradient-swatch__name">Project: Blue</span>
+      </div>
+      <div class="gradient-swatch thumb-green">
+        <span class="gradient-swatch__name">Project: Green</span>
+      </div>
+      <div class="gradient-swatch thumb-purple">
+        <span class="gradient-swatch__name">Project: Purple</span>
+      </div>
+      <div class="gradient-swatch thumb-red">
+        <span class="gradient-swatch__name">Project: Red</span>
+      </div>
+      <div class="gradient-swatch thumb-teal">
+        <span class="gradient-swatch__name">Project: Teal</span>
+      </div>
+      <div class="gradient-swatch thumb-yellow">
+        <span class="gradient-swatch__name">Project: Yellow</span>
+      </div>
+      <div class="gradient-swatch" style="background:linear-gradient(to right,#00f5a0,transparent)">
+        <span class="gradient-swatch__name">Accent Fade</span>
+      </div>
+      <div class="gradient-swatch" style="background:linear-gradient(to top,rgba(8,10,12,0.95) 0%,rgba(8,10,12,0.3) 60%,transparent 100%)">
+        <span class="gradient-swatch__name">Project Overlay</span>
+      </div>
+      <div class="gradient-swatch" style="background:linear-gradient(90deg,transparent,#00f5a0,transparent)">
+        <span class="gradient-swatch__name">Stat Top Line</span>
+      </div>
+      <div class="gradient-swatch" style="background:linear-gradient(124deg,rgba(0,245,160,0.1),rgba(0,200,255,0.05))">
+        <span class="gradient-swatch__name">Case Study BG</span>
+      </div>
+      <div class="gradient-swatch" style="background:radial-gradient(circle,rgba(0,245,160,0.2) 0%,rgba(0,200,255,0.06) 40%,transparent 70%)">
+        <span class="gradient-swatch__name">Glow Orb</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       TYPOGRAPHY
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="ds-section" id="typography">
+    <p class="ds-section-label">02</p>
+    <h2 class="ds-section-title">Typography</h2>
+
+    <!-- SYNE -->
+    <p class="ds-subsection-label">Syne — Primary Typeface</p>
+    <div style="margin-bottom:8px;font-size:11px;color:var(--muted);font-family:var(--font-mono)">Google Fonts · Weights: 400, 500, 600, 700, 800 · Used for headings, labels, nav, body</div>
+    <div style="margin-bottom:40px">
+      <div class="font-weight-row">
+        <span class="font-weight-row__sample" style="font-weight:400">Aa Bb Cc Dd — Regular 400</span>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);width:160px;flex-shrink:0">Regular · 400</span>
+      </div>
+      <div class="font-weight-row">
+        <span class="font-weight-row__sample" style="font-weight:500">Aa Bb Cc Dd — Medium 500</span>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);width:160px;flex-shrink:0">Medium · 500</span>
+      </div>
+      <div class="font-weight-row">
+        <span class="font-weight-row__sample" style="font-weight:600">Aa Bb Cc Dd — SemiBold 600</span>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);width:160px;flex-shrink:0">SemiBold · 600</span>
+      </div>
+      <div class="font-weight-row">
+        <span class="font-weight-row__sample" style="font-weight:700">Aa Bb Cc Dd — Bold 700</span>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);width:160px;flex-shrink:0">Bold · 700</span>
+      </div>
+      <div class="font-weight-row">
+        <span class="font-weight-row__sample" style="font-weight:800">Aa Bb Cc Dd — ExtraBold 800</span>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);width:160px;flex-shrink:0">ExtraBold · 800</span>
+      </div>
+    </div>
+
+    <!-- DM MONO -->
+    <p class="ds-subsection-label">DM Mono — Monospace Typeface</p>
+    <div style="margin-bottom:8px;font-size:11px;color:var(--muted);font-family:var(--font-mono)">Google Fonts · Weights: 300, 400, 500 · Used for tags, labels, eyebrows, buttons, nav links</div>
+    <div style="margin-bottom:40px">
+      <div class="font-weight-row">
+        <span class="font-weight-row__mono" style="font-weight:300;font-size:24px">0123456789 ABCDEFG → ↗ — Light 300</span>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);width:160px;flex-shrink:0">Light · 300</span>
+      </div>
+      <div class="font-weight-row">
+        <span class="font-weight-row__mono" style="font-weight:400;font-size:24px">0123456789 ABCDEFG → ↗ — Regular 400</span>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);width:160px;flex-shrink:0">Regular · 400</span>
+      </div>
+      <div class="font-weight-row">
+        <span class="font-weight-row__mono" style="font-weight:500;font-size:24px">0123456789 ABCDEFG → ↗ — Medium 500</span>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);width:160px;flex-shrink:0">Medium · 500</span>
+      </div>
+      <div class="font-weight-row">
+        <span class="font-weight-row__mono" style="font-weight:300;font-style:italic;font-size:24px">0123456789 ABCDEFG → ↗ — Light Italic</span>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);width:160px;flex-shrink:0">Light Italic</span>
+      </div>
+    </div>
+
+    <!-- TYPE SCALE -->
+    <p class="ds-subsection-label">Type Scale</p>
+    <div>
+      <div class="type-specimen">
+        <div class="type-specimen__sample" style="font-size:clamp(42px,8vw,96px);font-weight:800;letter-spacing:-0.03em;line-height:0.9;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Hero Name</div>
+        <div class="type-specimen__meta">
+          <div class="type-specimen__name">Hero Name</div>
+          <div class="type-specimen__details">clamp(42px, 9vw, 130px) · weight 800 · letter-spacing -0.03em · line-height 0.9 · Gradient fill</div>
+        </div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-specimen__sample" style="font-size:clamp(36px,5vw,72px);font-weight:800;letter-spacing:-0.03em;line-height:1">Section Title</div>
+        <div class="type-specimen__meta">
+          <div class="type-specimen__name">Section Title</div>
+          <div class="type-specimen__details">clamp(36px, 5vw, 72px) · weight 800 · letter-spacing -0.03em · line-height 1</div>
+        </div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-specimen__sample" style="font-size:48px;font-weight:700;line-height:1">48</div>
+        <div class="type-specimen__meta">
+          <div class="type-specimen__name">Stat Number</div>
+          <div class="type-specimen__details">48px · weight 700 · About section counters</div>
+        </div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-specimen__sample" style="font-size:26px;font-weight:700;letter-spacing:-0.02em;line-height:1.2">Case Study Title</div>
+        <div class="type-specimen__meta">
+          <div class="type-specimen__name">Case Study Title</div>
+          <div class="type-specimen__details">26px · weight 700 · letter-spacing -0.02em</div>
+        </div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-specimen__sample" style="font-size:22px;font-weight:500;line-height:1.5;letter-spacing:0.44px">Senior Product Designer</div>
+        <div class="type-specimen__meta">
+          <div class="type-specimen__name">Hero Title</div>
+          <div class="type-specimen__details">22px · weight 500 · letter-spacing 0.44px · line-height 1.5</div>
+        </div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-specimen__sample" style="font-size:20px;font-weight:700;letter-spacing:-0.01em">Project Card Name</div>
+        <div class="type-specimen__meta">
+          <div class="type-specimen__name">Project Name</div>
+          <div class="type-specimen__details">20px · weight 700 · letter-spacing -0.01em</div>
+        </div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-specimen__sample" style="font-size:18px;font-weight:400;line-height:1.7">About body text paragraph with extended line-height for comfortable reading. Used in the about section to describe the designer's background.</div>
+        <div class="type-specimen__meta">
+          <div class="type-specimen__name">Body Text</div>
+          <div class="type-specimen__details">18px · weight 400 · line-height 1.7 · About, descriptions</div>
+        </div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-specimen__sample" style="font-size:15px;font-weight:400;line-height:1.7;color:var(--muted)">Case study body copy at 15px with generous line-height for readability in tight spaces.</div>
+        <div class="type-specimen__meta">
+          <div class="type-specimen__name">Case Study Body</div>
+          <div class="type-specimen__details">15px · weight 400 · line-height 1.7 · color: muted</div>
+        </div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-specimen__sample" style="font-size:13px;font-weight:400;line-height:1.5;color:var(--muted)">Project card description at 13px for compact info display.</div>
+        <div class="type-specimen__meta">
+          <div class="type-specimen__name">Small Body / Card Desc</div>
+          <div class="type-specimen__details">13px · weight 400 · line-height 1.5</div>
+        </div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-specimen__sample" style="font-family:var(--font-mono);font-size:12px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase">NAV LINK  ·  TAG LABEL</div>
+        <div class="type-specimen__meta">
+          <div class="type-specimen__name">Label / Nav</div>
+          <div class="type-specimen__details">DM Mono · 12px · letter-spacing 0.1em · uppercase</div>
+        </div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-specimen__sample" style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.2em;color:var(--accent);text-transform:uppercase">EYEBROW LABEL  ·  SECTION MARKER</div>
+        <div class="type-specimen__meta">
+          <div class="type-specimen__name">Eyebrow / Section Label</div>
+          <div class="type-specimen__details">DM Mono · 11px · letter-spacing 0.2em · color: accent</div>
+        </div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-specimen__sample" style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase">MICRO TEXT  ·  PROJECT CATEGORY  ·  PERIOD</div>
+        <div class="type-specimen__meta">
+          <div class="type-specimen__name">Micro Text</div>
+          <div class="type-specimen__details">DM Mono · 10px · letter-spacing 0.15em · uppercase</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       COMPONENTS
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="ds-section" id="components">
+    <p class="ds-section-label">03</p>
+    <h2 class="ds-section-title">Components</h2>
+
+    <!-- NAVIGATION -->
+    <p class="ds-subsection-label">Navigation Bar</p>
+    <div class="nav-demo" style="margin-bottom:8px">
+      <div class="nav-demo__logo">EDF</div>
+      <ul class="nav-demo__links">
+        <li><a href="#">About</a></li>
+        <li><a href="#">Work</a></li>
+        <li><a href="#">Resume</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <a href="#" class="btn btn--primary" style="font-size:12px;padding:10px 22px">Get in Touch</a>
+    </div>
+    <div class="code-block" style="margin-bottom:40px">position: fixed · top: 0 · z-index: 500 · backdrop-filter: blur(20px) · bg: rgba(8,10,12,0.8) · padding: 24px 60px</div>
+
+    <!-- BUTTONS -->
+    <p class="ds-subsection-label">Buttons</p>
+    <div class="component-showcase" style="margin-bottom:40px">
+      <div class="component-item">
+        <a href="#" class="btn btn--primary">View Work</a>
+        <div class="component-label">Primary / Filled</div>
+        <div class="component-desc">bg: #00f5a0 · color: dark · 10px 22px</div>
+      </div>
+      <div class="component-item">
+        <a href="#" class="btn btn--outline">View Case Study →</a>
+        <div class="component-label">Secondary / Outline</div>
+        <div class="component-desc">border: accent 30% · hover: bg accent</div>
+      </div>
+      <div class="component-item">
+        <a href="#" class="btn btn--ghost">Download CV</a>
+        <div class="component-label">Ghost / Border</div>
+        <div class="component-desc">border: white 10% · hover: accent</div>
+      </div>
+      <div class="component-item">
+        <a href="#" class="btn btn--modal">View on Behance ↗</a>
+        <div class="component-label">Modal CTA</div>
+        <div class="component-desc">Same as primary · 12px 24px · 0.12em spacing</div>
+      </div>
+    </div>
+
+    <!-- TAGS -->
+    <p class="ds-subsection-label">Tags & Pills</p>
+    <div class="ds-row" style="margin-bottom:8px">
+      <span class="tag">Product Design</span>
+      <span class="tag">UX/UI</span>
+      <span class="tag">Web3</span>
+      <span class="tag">Branding</span>
+      <span class="tag">Motion</span>
+      <span class="tag">3D</span>
+      <span class="tag">Figma</span>
+      <span class="tag">React</span>
+    </div>
+    <div class="ds-row" style="margin-bottom:4px">
+      <span class="tag tag--active">Product Design</span>
+      <span class="tag tag--active">UX/UI</span>
+      <span class="tag tag--active">Web3</span>
+    </div>
+    <div class="code-block" style="margin-bottom:40px">DM Mono · 11px · uppercase · letter-spacing 0.08em · padding 9px 17px · border: white 6% → hover: accent 30%</div>
+
+    <!-- STAT CARDS -->
+    <p class="ds-subsection-label">Stat Cards — 2×2 Grid</p>
+    <div class="stat-grid" style="max-width:800px;margin-bottom:40px">
+      <div class="stat-card">
+        <div class="stat-card__number">8+</div>
+        <div class="stat-card__label">Years of Experience</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__number">∞</div>
+        <div class="stat-card__label">Curiosity Level</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__number">60+</div>
+        <div class="stat-card__label">Projects Shipped</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__number">3</div>
+        <div class="stat-card__label">Countries Worked In</div>
+      </div>
+    </div>
+
+    <!-- SKILL BARS -->
+    <p class="ds-subsection-label">Skill Bars</p>
+    <div class="skill-bar-wrap" style="max-width:700px;margin-bottom:40px">
+      <div class="skill-item">
+        <div class="skill-item__header">
+          <span class="skill-item__name">Product Design</span>
+          <span class="skill-item__pct">95%</span>
+        </div>
+        <div class="skill-item__track">
+          <div class="skill-item__fill" style="width:95%"></div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-item__header">
+          <span class="skill-item__name">UX Research</span>
+          <span class="skill-item__pct">88%</span>
+        </div>
+        <div class="skill-item__track">
+          <div class="skill-item__fill" style="width:88%"></div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-item__header">
+          <span class="skill-item__name">Figma / Prototyping</span>
+          <span class="skill-item__pct">98%</span>
+        </div>
+        <div class="skill-item__track">
+          <div class="skill-item__fill" style="width:98%"></div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-item__header">
+          <span class="skill-item__name">Web Development</span>
+          <span class="skill-item__pct">75%</span>
+        </div>
+        <div class="skill-item__track">
+          <div class="skill-item__fill" style="width:75%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT LINKS -->
+    <p class="ds-subsection-label">Contact Link Cards</p>
+    <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:40px">
+      <div class="contact-link">
+        <div class="contact-link__info">
+          <span class="contact-link__label">LinkedIn</span>
+          <span class="contact-link__name">Let's connect</span>
+        </div>
+        <span class="contact-link__arrow">↗</span>
+      </div>
+      <div class="contact-link">
+        <div class="contact-link__info">
+          <span class="contact-link__label">Behance</span>
+          <span class="contact-link__name">See full portfolio</span>
+        </div>
+        <span class="contact-link__arrow">↗</span>
+      </div>
+      <div class="contact-link">
+        <div class="contact-link__info">
+          <span class="contact-link__label">Email</span>
+          <span class="contact-link__name">Drop a line</span>
+        </div>
+        <span class="contact-link__arrow">↗</span>
+      </div>
+    </div>
+
+    <!-- PROJECT CARDS -->
+    <p class="ds-subsection-label">Project Cards — 6-column Grid</p>
+    <div class="ds-grid-6" style="margin-bottom:40px">
+      <div class="project-card" style="grid-column:span 2">
+        <div class="project-card__thumb thumb-blue">
+          <div class="project-card__overlay">
+            <span class="project-card__cta">View Project →</span>
+          </div>
+        </div>
+        <div class="project-card__info">
+          <div class="project-card__category">Web3 / Product Design</div>
+          <div class="project-card__name">OpenLoot Platform</div>
+          <div class="project-card__desc">NFT marketplace for 2M+ users across web and mobile.</div>
+        </div>
+      </div>
+      <div class="project-card" style="grid-column:span 2">
+        <div class="project-card__thumb thumb-green">
+          <div class="project-card__overlay">
+            <span class="project-card__cta">View Project →</span>
+          </div>
+        </div>
+        <div class="project-card__info">
+          <div class="project-card__category">App / UX</div>
+          <div class="project-card__name">Our Dipper</div>
+          <div class="project-card__desc">Social discovery app connecting communities.</div>
+        </div>
+      </div>
+      <div class="project-card" style="grid-column:span 2">
+        <div class="project-card__thumb thumb-purple">
+          <div class="project-card__overlay">
+            <span class="project-card__cta">View Project →</span>
+          </div>
+        </div>
+        <div class="project-card__info">
+          <div class="project-card__category">Enterprise / Healthcare</div>
+          <div class="project-card__name">Roche UX/UI</div>
+          <div class="project-card__desc">Enterprise healthcare platform redesign.</div>
+        </div>
+      </div>
+      <div class="project-card" style="grid-column:span 2">
+        <div class="project-card__thumb thumb-red"></div>
+        <div class="project-card__info">
+          <div class="project-card__category">Mobile / Gaming</div>
+          <div class="project-card__name">Mobile Games</div>
+        </div>
+      </div>
+      <div class="project-card" style="grid-column:span 2">
+        <div class="project-card__thumb thumb-teal"></div>
+        <div class="project-card__info">
+          <div class="project-card__category">Branding</div>
+          <div class="project-card__name">Branding + Social</div>
+        </div>
+      </div>
+      <div class="project-card" style="grid-column:span 2">
+        <div class="project-card__thumb thumb-yellow"></div>
+        <div class="project-card__info">
+          <div class="project-card__category">3D / Visualization</div>
+          <div class="project-card__name">Sketchup 3D</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CASE STUDY BLOCK -->
+    <p class="ds-subsection-label">Case Study Block</p>
+    <div class="case-study-block" style="margin-bottom:40px">
+      <div style="flex:1">
+        <div class="case-study-block__eyebrow">Case Study</div>
+        <div class="case-study-block__company">OpenLoot · BigTime Studios</div>
+        <div class="case-study-block__title">Redesigning the Web3 Gaming Marketplace</div>
+        <div class="case-study-block__body">Led the end-to-end redesign of the OpenLoot NFT marketplace, improving retention by 40% and increasing daily active users across web and mobile platforms.</div>
+      </div>
+      <div style="flex-shrink:0">
+        <a href="#" class="btn btn--outline">Read Case Study →</a>
+      </div>
+    </div>
+
+    <!-- MODAL PREVIEW -->
+    <p class="ds-subsection-label">Modal / Project Detail</p>
+    <div class="modal-preview" style="margin-bottom:0">
+      <div class="modal-preview__header">
+        <div class="modal-preview__eyebrow">Web3 · Product Design · 2022–2023</div>
+        <div class="modal-preview__title">OpenLoot Platform</div>
+        <div class="modal-preview__sub">Role: Lead Product Designer · Company: BigTime Studios</div>
+      </div>
+      <div style="height:200px" class="thumb-blue"></div>
+      <div class="modal-preview__footer">
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">Full case study available on Behance with process documentation, wireframes, and final deliverables.</div>
+        <a href="#" class="btn btn--modal">View on Behance ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       ICONS
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="ds-section" id="icons">
+    <p class="ds-section-label">04</p>
+    <h2 class="ds-section-title">Icons & Assets</h2>
+
+    <p class="ds-subsection-label">Unicode Icons — DM Mono</p>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:24px;font-family:var(--font-mono)">No external icon library used. All icons are Unicode characters rendered in DM Mono.</p>
+    <div class="ds-grid-6" style="margin-bottom:40px">
+      <div class="icon-card">
+        <span class="icon-card__char">→</span>
+        <span class="icon-card__name">Right Arrow</span>
+        <span class="icon-card__use">CTAs, overlays</span>
+      </div>
+      <div class="icon-card">
+        <span class="icon-card__char">↗</span>
+        <span class="icon-card__name">Top-right Arrow</span>
+        <span class="icon-card__use">External links</span>
+      </div>
+      <div class="icon-card">
+        <span class="icon-card__char">✕</span>
+        <span class="icon-card__name">Close</span>
+        <span class="icon-card__use">Modal close button</span>
+      </div>
+      <div class="icon-card">
+        <span class="icon-card__char">∞</span>
+        <span class="icon-card__name">Infinity</span>
+        <span class="icon-card__use">Stat placeholder</span>
+      </div>
+      <div class="icon-card">
+        <span class="icon-card__char">↓</span>
+        <span class="icon-card__name">Down Arrow</span>
+        <span class="icon-card__use">Scroll indicator</span>
+      </div>
+    </div>
+
+    <p class="ds-subsection-label">Project Cover Images — /img/</p>
+    <div class="ds-grid-6" style="margin-bottom:40px">
+      <div class="project-card">
+        <div class="project-card__thumb thumb-blue" style="height:120px"></div>
+        <div class="project-card__info" style="padding:12px 16px 14px">
+          <div class="project-card__category">cover-1.png</div>
+          <div class="project-card__name" style="font-size:13px">OpenLoot Web3</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-card__thumb thumb-green" style="height:120px"></div>
+        <div class="project-card__info" style="padding:12px 16px 14px">
+          <div class="project-card__category">cover-2.png</div>
+          <div class="project-card__name" style="font-size:13px">Our Dipper</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-card__thumb thumb-purple" style="height:120px"></div>
+        <div class="project-card__info" style="padding:12px 16px 14px">
+          <div class="project-card__category">cover-3.png</div>
+          <div class="project-card__name" style="font-size:13px">Roche UX/UI</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-card__thumb thumb-red" style="height:120px"></div>
+        <div class="project-card__info" style="padding:12px 16px 14px">
+          <div class="project-card__category">cover-4.png</div>
+          <div class="project-card__name" style="font-size:13px">Mobile Games</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-card__thumb thumb-teal" style="height:120px"></div>
+        <div class="project-card__info" style="padding:12px 16px 14px">
+          <div class="project-card__category">cover-5.png</div>
+          <div class="project-card__name" style="font-size:13px">Branding</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-card__thumb thumb-yellow" style="height:120px"></div>
+        <div class="project-card__info" style="padding:12px 16px 14px">
+          <div class="project-card__category">cover-6.png</div>
+          <div class="project-card__name" style="font-size:13px">Sketchup 3D</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="ds-subsection-label">Logo Assets — /img/</p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:0">
+      <div style="background:var(--surface);border:1px solid var(--border);padding:16px 20px;min-width:240px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:4px">/img/img_logo.png</div>
+        <div style="font-size:11px;color:var(--muted)">Standard logo · used in nav & footer</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:16px 20px;min-width:240px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:4px">/img/img_logo_square.png</div>
+        <div style="font-size:11px;color:var(--muted)">Hero logo · mix-blend-mode: color-dodge</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:16px 20px;min-width:240px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:4px">/img/logo-vector.svg</div>
+        <div style="font-size:11px;color:var(--muted)">Vector version · scalable</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:16px 20px;min-width:240px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:4px">/img/favicon.png</div>
+        <div style="font-size:11px;color:var(--muted)">Browser tab icon</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       SPACING & LAYOUT
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="ds-section" id="spacing">
+    <p class="ds-section-label">05</p>
+    <h2 class="ds-section-title">Spacing & Layout</h2>
+
+    <div class="ds-grid-2">
+      <div>
+        <p class="ds-subsection-label">Spacing Scale</p>
+        <div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:4px"></div><span class="spacing-row__token">2px</span><span class="spacing-row__use">Gap between stat / contact cards</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:8px"></div><span class="spacing-row__token">4px</span><span class="spacing-row__use">Inner text vertical gap</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:12px"></div><span class="spacing-row__token">6px</span><span class="spacing-row__use">Nav item sub-gap</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:16px"></div><span class="spacing-row__token">8px</span><span class="spacing-row__use">Resume col gap, skill header</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:20px"></div><span class="spacing-row__token">10px</span><span class="spacing-row__use">Card gap, nav CTA padding</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:24px"></div><span class="spacing-row__token">12px</span><span class="spacing-row__use">Tags row gap, swatch gap</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:32px"></div><span class="spacing-row__token">16px</span><span class="spacing-row__use">Section label gap, items</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:40px"></div><span class="spacing-row__token">20px</span><span class="spacing-row__use">Mobile padding, resume gap</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:48px"></div><span class="spacing-row__token">24px</span><span class="spacing-row__use">Project info padding, modal</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:64px"></div><span class="spacing-row__token">32px</span><span class="spacing-row__use">Resume download padding</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:80px"></div><span class="spacing-row__token">40px</span><span class="spacing-row__use">Nav links gap, tools grid</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:96px"></div><span class="spacing-row__token">48px</span><span class="spacing-row__use">Case study padding</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:120px"></div><span class="spacing-row__token">60px</span><span class="spacing-row__use">Section horizontal padding</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:128px"></div><span class="spacing-row__token">64px</span><span class="spacing-row__use">Section label margin, hero tags</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:160px"></div><span class="spacing-row__token">80px</span><span class="spacing-row__use">Grid gap, hero scroll margin</span></div>
+          <div class="spacing-row"><div class="spacing-row__bar" style="width:200px"></div><span class="spacing-row__token">120px</span><span class="spacing-row__use">Section vertical padding</span></div>
+        </div>
+      </div>
+
+      <div>
+        <p class="ds-subsection-label">Grid Systems</p>
+        <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:32px">
+          <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px;letter-spacing:0.1em">PROJECTS — 6 COLUMN</div>
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;height:24px">
+              <div style="background:rgba(0,245,160,0.15)"></div>
+              <div style="background:rgba(0,245,160,0.15)"></div>
+              <div style="background:rgba(0,245,160,0.15)"></div>
+              <div style="background:rgba(0,245,160,0.15)"></div>
+              <div style="background:rgba(0,245,160,0.15)"></div>
+              <div style="background:rgba(0,245,160,0.15)"></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:8px;font-family:var(--font-mono)">grid-template-columns: repeat(6, minmax(0, 1fr)) · gap: 10px</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px;letter-spacing:0.1em">ABOUT / RESUME / CONTACT — 2 COLUMN</div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;height:24px">
+              <div style="background:rgba(0,245,160,0.15)"></div>
+              <div style="background:rgba(0,245,160,0.15)"></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:8px;font-family:var(--font-mono)">grid-template-columns: 1fr 1fr · gap: 80px</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px;letter-spacing:0.1em">STATS — 2×2 GRID</div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:2px;height:40px">
+              <div style="background:rgba(0,245,160,0.15)"></div>
+              <div style="background:rgba(0,245,160,0.15)"></div>
+              <div style="background:rgba(0,245,160,0.15)"></div>
+              <div style="background:rgba(0,245,160,0.15)"></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:8px;font-family:var(--font-mono)">grid-template-columns: 1fr 1fr · gap: 2px</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px;letter-spacing:0.1em">TOOLS — 2 COLUMN</div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;height:24px">
+              <div style="background:rgba(0,245,160,0.15)"></div>
+              <div style="background:rgba(0,245,160,0.15)"></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:8px;font-family:var(--font-mono)">grid-template-columns: repeat(2, 1fr) · gap: 40px</div>
+          </div>
+        </div>
+
+        <p class="ds-subsection-label">Breakpoints</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="breakpoint-card">
+            <div class="breakpoint-card__label">Desktop</div>
+            <div class="breakpoint-card__width">1440px +</div>
+            <div class="breakpoint-card__detail"><span class="breakpoint-card__key">Padding:</span><span class="breakpoint-card__value">120px 60px</span></div>
+            <div class="breakpoint-card__detail"><span class="breakpoint-card__key">Projects:</span><span class="breakpoint-card__value">6-column grid</span></div>
+            <div class="breakpoint-card__detail"><span class="breakpoint-card__key">Nav:</span><span class="breakpoint-card__value">Full links visible</span></div>
+          </div>
+          <div class="breakpoint-card">
+            <div class="breakpoint-card__label">Tablet — max-width: 900px</div>
+            <div class="breakpoint-card__width">≤ 900px</div>
+            <div class="breakpoint-card__detail"><span class="breakpoint-card__key">Padding:</span><span class="breakpoint-card__value">80px 24px</span></div>
+            <div class="breakpoint-card__detail"><span class="breakpoint-card__key">Projects:</span><span class="breakpoint-card__value">3-column grid</span></div>
+            <div class="breakpoint-card__detail"><span class="breakpoint-card__key">Nav:</span><span class="breakpoint-card__value">Links hidden</span></div>
+          </div>
+          <div class="breakpoint-card">
+            <div class="breakpoint-card__label">Mobile — max-width: 560px</div>
+            <div class="breakpoint-card__width">≤ 560px</div>
+            <div class="breakpoint-card__detail"><span class="breakpoint-card__key">Padding:</span><span class="breakpoint-card__value">40px 24px</span></div>
+            <div class="breakpoint-card__detail"><span class="breakpoint-card__key">Projects:</span><span class="breakpoint-card__value">Horizontal carousel (88vw)</span></div>
+            <div class="breakpoint-card__detail"><span class="breakpoint-card__key">Hero:</span><span class="breakpoint-card__value">100dvh, logo 100%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       MOTION
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="ds-section" id="motion">
+    <p class="ds-section-label">06</p>
+    <h2 class="ds-section-title">Motion & Effects</h2>
+
+    <p class="ds-subsection-label">Animations</p>
+    <div class="ds-grid-4" style="margin-bottom:40px">
+      <div class="motion-card">
+        <div class="motion-demo-orb"></div>
+        <div class="motion-card__name">Orb Float</div>
+        <div class="motion-card__spec">8s ease-in-out infinite · translateY ±30px · scale 1→1.05</div>
+      </div>
+      <div class="motion-card">
+        <div class="motion-demo-spin"></div>
+        <div class="motion-card__name">Logo Spin</div>
+        <div class="motion-card__spec">40s linear infinite · 360° rotation · hero logo</div>
+      </div>
+      <div class="motion-card">
+        <div class="motion-demo-pulse"></div>
+        <div class="motion-card__name">Pulse</div>
+        <div class="motion-card__spec">2s ease-in-out infinite · opacity 1→0.3 · status dot</div>
+      </div>
+      <div class="motion-card">
+        <div class="motion-demo-line"></div>
+        <div class="motion-card__name">Scroll Line</div>
+        <div class="motion-card__spec">2s ease-in-out infinite · opacity 0.3→1→0.3</div>
+      </div>
+    </div>
+
+    <p class="ds-subsection-label">Transitions</p>
+    <div class="ds-grid-4" style="margin-bottom:40px">
+      <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px">FAST</div>
+        <div style="font-size:24px;font-weight:700;color:var(--text);margin-bottom:8px">0.2s</div>
+        <div style="font-size:11px;color:var(--muted)">Links, borders, color changes, nav transitions</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px">MEDIUM</div>
+        <div style="font-size:24px;font-weight:700;color:var(--text);margin-bottom:8px">0.3s</div>
+        <div style="font-size:11px;color:var(--muted)">Borders, background changes, card hovers</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px">SLOW</div>
+        <div style="font-size:24px;font-weight:700;color:var(--text);margin-bottom:8px">0.6s</div>
+        <div style="font-size:11px;color:var(--muted)">Image zoom, hover transforms, skill bars (0.8s)</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px">MODAL</div>
+        <div style="font-size:24px;font-weight:700;color:var(--text);margin-bottom:8px">0.35s</div>
+        <div style="font-size:11px;color:var(--muted)">Modal open/close, overlay transitions</div>
+      </div>
+    </div>
+
+    <p class="ds-subsection-label">Easing Functions</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:40px">
+      <div style="background:var(--surface);border:1px solid var(--border);padding:16px 20px;display:flex;gap:20px;align-items:center">
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--accent);width:160px;flex-shrink:0">easeOutExpo</span>
+        <span style="font-size:11px;color:var(--muted)">Stat counter animations · 2s, 3s, 4s durations</span>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:16px 20px;display:flex;gap:20px;align-items:center">
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--accent);width:160px;flex-shrink:0">easeOutQuart</span>
+        <span style="font-size:11px;color:var(--muted)">Skill bar fill animations · 800ms</span>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:16px 20px;display:flex;gap:20px;align-items:center">
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--accent);width:160px;flex-shrink:0">cubic-bezier<br>(0.23, 1, 0.32, 1)</span>
+        <span style="font-size:11px;color:var(--muted)">Image zoom on card hover · 0.6s</span>
+      </div>
+    </div>
+
+    <p class="ds-subsection-label">Scroll Interactions</p>
+    <div class="ds-grid-3" style="margin-bottom:0">
+      <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px">FADE-UP</div>
+        <div style="font-size:13px;color:var(--muted)">opacity 0.7s ease + translateY 30px. Threshold: 8%. Used on section content.</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px">STAGGERED CARDS</div>
+        <div style="font-size:13px;color:var(--muted)">120ms delay per card. opacity 0.6s ease-in-out + translateY 20px. Threshold: 10%.</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px">COUNTER + BARS</div>
+        <div style="font-size:13px;color:var(--muted)">Stats at 30% threshold. Skill bars at 20%. All use Intersection Observer.</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="ds-subsection-label">Decorative Effects</p>
+    <div class="ds-grid-3" style="margin-bottom:0">
+      <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px">NOISE OVERLAY</div>
+        <div style="font-size:13px;color:var(--muted)">SVG feTurbulence · fractalNoise · baseFrequency 0.9 · 4 octaves · opacity 0.4 · fixed full screen</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px">GRID PATTERN</div>
+        <div style="font-size:13px;color:var(--muted)">Linear gradients · 80×80px background-size · rgba(255,255,255,0.015) · fixed full screen</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px">GLOW ORB</div>
+        <div style="font-size:13px;color:var(--muted)">Radial gradient 500×500px · accent→transparent · top 15%, right 10% · animated 8s float</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════════════════════════ -->
+<footer class="ds-footer">
+  <div>DESIGN SYSTEM — Ezequiel De Francisco Portfolio 2026</div>
+  <div>Syne · DM Mono · <span>#00F5A0</span> · <span>#00C8FF</span></div>
+  <div>All components extracted from index.html</div>
+</footer>
+
+</body>
+</html>
