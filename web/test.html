@@ -1957,42 +1957,6 @@ function initDial() {
   }
   render();
 }
-
-/* ── Visit tracker (Supabase) ─────────────────────────────────────── */
-(async function () {
-  const SB_URL = 'https://aqtfbzrdwbdymaoskxpt.supabase.co';
-  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxdGZienJkd2JkeW1hb3NreHB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NzUwMzMsImV4cCI6MjA5MTI1MTAzM30.zCtyQBXjt3-s0bMITXDCIZmtEKdDIx39xirLw2u9wX4';
-
-  if (location.hostname === 'localhost' || sessionStorage.getItem('_vl')) return;
-  sessionStorage.setItem('_vl', '1');
-
-  const ua = navigator.userAgent;
-  const device = window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop';
-  const browser = /Edg\//.test(ua) ? 'Edge' : /Chrome\//.test(ua) && !/Chromium/.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) && !/Chrome/.test(ua) ? 'Safari' : 'Other';
-  const os = /Windows/.test(ua) ? 'Windows' : /iPhone|iPad/.test(ua) ? 'iOS' : /Android/.test(ua) ? 'Android' : /Mac OS X/.test(ua) ? 'macOS' : /Linux/.test(ua) ? 'Linux' : 'Other';
-
-  let ip = '', country = '', city = '', region = '';
-  try {
-    const geo = await fetch('https://ip-api.com/json/?fields=status,query,country,city,regionName').then(r => r.json());
-    if (geo.status === 'success') { ip = geo.query; country = geo.country; city = geo.city; region = geo.regionName; }
-  } catch (_) {}
-
-  const H = { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Prefer': 'return=minimal' };
-
-  fetch(SB_URL + '/rest/v1/visits', {
-    method: 'POST', headers: H,
-    body: JSON.stringify({ ip, country, city, region, device_type: device, browser, os, referrer: document.referrer || 'direct', page: location.pathname })
-  }).catch(() => {});
-
-  document.querySelectorAll('a[target="_blank"]').forEach(a => {
-    a.addEventListener('click', () => {
-      fetch(SB_URL + '/rest/v1/link_clicks', {
-        method: 'POST', headers: H,
-        body: JSON.stringify({ ip, link_url: a.href, link_label: (a.textContent.trim() || a.getAttribute('aria-label') || a.href).slice(0, 100) })
-      }).catch(() => {});
-    }, { once: true });
-  });
-})();
 </script>
 
 </body>
