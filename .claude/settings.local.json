@@ -5,7 +5,28 @@
       "Bash(git remote:*)",
       "Bash(git --version)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(python3 -c \":*)",
+      "mcp__claude_ai_Figma__get_design_context",
+      "mcp__claude_ai_Figma__get_screenshot",
+      "mcp__claude_ai_Figma__get_metadata",
+      "Bash(ipconfig getifaddr:*)",
+      "Bash(python3 -m http.server 8080)",
+      "Bash(gh api:*)",
+      "Bash(curl -s 'https://aqtfbzrdwbdymaoskxpt.supabase.co/rest/v1/visits?select=*&limit=5' -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxdGZienJkd2JkeW1hb3NreHB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NzUwMzMsImV4cCI6MjA5MTI1MTAzM30.zCtyQBXjt3-s0bMITXDCIZmtEKdDIx39xirLw2u9wX4' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxdGZienJkd2JkeW1hb3NreHB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NzUwMzMsImV4cCI6MjA5MTI1MTAzM30.zCtyQBXjt3-s0bMITXDCIZmtEKdDIx39xirLw2u9wX4')",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://www.defranez.com/\")",
+      "Bash(curl -s \"https://www.defranez.com/\")",
+      "Bash(curl -s \"https://www.defranez.com/web/\")",
+      "Bash(python3 -c ':*)",
+      "Bash(git checkout:*)",
+      "WebFetch(domain:www.behance.net)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://www.defranez.com/web/img/cover-1_expanded.png\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://www.defranez.com/img/cover-1.png\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://www.defranez.com/img/cover-1_expanded.png\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://www.defranez.com/img/favicon.png\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://www.defranez.com/favicon.png\")"
     ]
   }
 }

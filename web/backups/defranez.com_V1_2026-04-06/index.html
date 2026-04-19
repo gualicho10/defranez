@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ezequiel De Francisco — Product Designer</title>
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #080a0c;
+      --surface: #0e1114;
+      --surface2: #13171c;
+      --border: rgba(255,255,255,0.06);
+      --accent: #00f5a0;
+      --accent2: #00c8ff;
+      --text: #e8eaed;
+      --muted: #6b7280;
+      --white: #ffffff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Force all text visible - override any browser/renderer defaults */
+    body * { color: inherit; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: #080a0c;
+      color: #e8eaed;
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* Grid pattern */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 60px;
+      background: rgba(8,10,12,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-logo {
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+      color: #00f5a0;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      color: #8a94a6;
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #00f5a0; }
+
+    .nav-cta {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      color: #080a0c;
+      background: #00f5a0;
+      padding: 10px 22px;
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 60px 80px;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 40px; height: 1px;
+      background: #00f5a0;
+    }
+
+    .hero-name {
+      font-size: clamp(42px, 9vw, 130px);
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .hero-name span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-title {
+      font-size: 22px;
+      font-weight: 400;
+      color: #8a94a6;
+      margin-bottom: 48px;
+      letter-spacing: 0.44px;
+      max-width: 700px;
+      line-height: 1.5;
+    }
+    .hero-title .title-highlight {
+      color: #ffffff;
+      font-weight: 400;
+    }
+
+    .hero-tags {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 64px;
+    }
+
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 9px 17px;
+      color: #8a94a6;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tag:hover { color: #00f5a0; border-color: rgba(0,245,160,0.3); }
+
+    .hero-scroll {
+      position: absolute;
+      right: 60px;
+      bottom: 80px;
+      writing-mode: vertical-rl;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #8a94a6;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 2;
+    }
+    .hero-scroll::after {
+      content: '';
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* Glowing orb */
+    .hero-orb {
+      position: absolute;
+      top: 15%;
+      right: 10%;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,245,160,0.08) 0%, rgba(0,200,255,0.04) 40%, transparent 70%);
+      pointer-events: none;
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .hero-lines {
+      position: absolute;
+      top: 0; right: 0;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0.15;
+    }
+
+    /* SECTION BASE */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 120px 60px;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 64px;
+    }
+    .section-label::before {
+      content: '';
+      width: 30px; height: 1px;
+      background: #00f5a0;
+    }
+
+    .section-title {
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+    }
+
+    /* ABOUT */
+    #about {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+
+    .about-ctas {
+      display: none;
+    }
+
+    .about-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #8a94a6;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 12px 20px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .about-cta:hover { border-color: #00f5a0; color: #00f5a0; }
+
+    .jazz-block {
+      margin-top: 48px;
+      padding-top: 24px;
+    }
+
+    .jazz-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      margin-bottom: 16px;
+    }
+
+    .jazz-links {
+      display: flex;
+      gap: 2px;
+    }
+
+    .jazz-link {
+      flex: 1;
+      display: block;
+      padding: 32px;
+      background: linear-gradient(124deg, rgba(0,245,160,0.04) 0%, rgba(0,200,255,0.02) 100%);
+      text-decoration: none;
+      border: 1px solid rgba(0,245,160,0.2);
+    }
+    .jazz-link:hover { border-color: rgba(0,245,160,0.4); }
+
+    .jazz-link-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #00f5a0;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+      margin-top: 64px;
+    }
+
+    .about-text p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #8a94a6;
+      margin-bottom: 24px;
+    }
+
+    .about-text p strong {
+      color: #e8eaed;
+      font-weight: 600;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .stat-card {
+      background: #0e1114;
+      padding: 33px;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .stat-card:hover { border-color: rgba(0,245,160,0.3); }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .stat-card:hover::before { opacity: 1; }
+
+    .stat-num {
+      font-size: 48px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-num span { color: #00f5a0; }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #8a94a6;
+    }
+
+    /* SKILLS */
+    .skills-label {
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      margin-top: 40px;
+      margin-bottom: 12px;
+    }
+
+    .skills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 0;
+    }
+
+    .skill-pill {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      padding: 10px 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      color: #e8eaed;
+      background: #0e1114;
+      transition: all 0.2s;
+    }
+    .skill-pill:hover {
+      border-color: #00f5a0;
+      color: #00f5a0;
+      background: rgba(0,245,160,0.05);
+    }
+
+    /* WORK */
+    /* TOOLS & EXPERTISE */
+    #tools {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      margin-top: 48px;
+    }
+
+    .skill-item {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .skill-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: #8a94a6;
+      line-height: 18px;
+    }
+
+    .skill-pct {
+      font-size: 12px;
+      color: #8a94a6;
+    }
+
+    .skill-track {
+      background: rgba(255,255,255,0.06);
+      height: 4px;
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .skill-bar {
+      height: 4px;
+      background: linear-gradient(to right, #00f5a0, #00c8ff);
+      border-radius: 100px;
+    }
+
+    @media (max-width: 900px) {
+      .tools-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    @media (max-width: 560px) {
+      .tools-grid { gap: 20px; }
+    }
+
+    #work {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .work-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 64px;
+    }
+
+    .work-header a {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: #00f5a0;
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: gap 0.2s;
+    }
+    .work-header a:hover { gap: 14px; }
+
+    .projects-grid {
+      display: inline-grid;
+      row-gap: 10px;
+      column-gap: 10px;
+      align-self: stretch;
+      grid-template-rows: repeat(1, fit-content(100%));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      width: 100%;
+    }
+
+    .project-card {
+      position: relative;
+      background: #0e1114;
+      border: 1px solid rgba(255,255,255,0.06);
+      overflow: hidden;
+      transition: border-color 0.3s;
+      text-decoration: none;
+      display: block;
+    }
+    .project-card:hover { border-color: rgba(0,245,160,0.25); }
+
+    .project-thumb {
+      height: 200px;
+      background: #13171c;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @media (min-width: 640px) {
+      .project-thumb { height: 280px; }
+    }
+    @media (min-width: 900px) {
+      .project-thumb { height: 336px; }
+    }
+
+    .project-thumb-inner {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      user-select: none;
+    }
+
+    /* unique thumb gradients */
+    .thumb-1 { background: linear-gradient(135deg, #0a1628 0%, #0d2137 50%, #0a3040 100%); }
+    .thumb-2 { background: linear-gradient(135deg, #0d1f0f 0%, #0a2818 50%, #073020 100%); }
+    .thumb-3 { background: linear-gradient(135deg, #1a0d28 0%, #200a35 50%, #1a073d 100%); }
+    .thumb-4 { background: linear-gradient(135deg, #1a0d0d 0%, #280a0a 50%, #1a0505 100%); }
+    .thumb-5 { background: linear-gradient(135deg, #0d1a1a 0%, #0a2828 50%, #073030 100%); }
+    .thumb-5 img { object-fit: contain; padding: 16px; }
+    .thumb-6 { background: linear-gradient(135deg, #1a1a0d 0%, #282810 50%, #1a1700 100%); }
+
+    .thumb-icon {
+      font-size: 56px;
+      opacity: 0.5;
+      filter: grayscale(0.3);
+    }
+
+    .project-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), filter 0.5s ease;
+      filter: grayscale(1) brightness(0.75);
+    }
+    .project-card:hover .project-thumb img {
+      transform: scale(1.04);
+      filter: grayscale(0) brightness(1);
+    }
+
+    .project-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(8,10,12,0.95) 0%, rgba(8,10,12,0.3) 60%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .project-card:hover .project-overlay { opacity: 1; }
+
+    .overlay-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .project-info {
+      padding: 24px 24px 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .project-info .project-cat { margin-bottom: 0; }
+    .project-info .project-name { margin-bottom: 0; }
+
+    .project-cat {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      margin-bottom: 10px;
+    }
+
+    .project-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+
+    .project-desc {
+      font-size: 13px;
+      color: #8a94a6;
+      line-height: 1.5;
+    }
+
+    /* RESUME */
+    #resume {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .resume-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      margin-top: 64px;
+    }
+
+    .resume-col h3 {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .resume-item {
+      padding: 24px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .resume-item:last-child { border-bottom: none; }
+
+    .resume-period {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: #8a94a6;
+      letter-spacing: 0.08em;
+    }
+
+    .resume-role {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+
+    .resume-company {
+      font-size: 14px;
+      color: #00f5a0;
+      font-weight: 500;
+    }
+
+    .resume-desc {
+      font-size: 13px;
+      color: #8a94a6;
+      line-height: 1.6;
+    }
+
+    /* Formation items (col 2) — green tint cards */
+    .formation-item {
+      background: rgba(0,245,160,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 24px;
+      margin-bottom: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .formation-item:last-child { margin-bottom: 0; }
+
+    .resume-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 48px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #080a0c;
+      background: #00f5a0;
+      padding: 16px 32px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .resume-download:hover { opacity: 0.85; }
+
+    /* CONTACT */
+    #contact {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      margin-top: 64px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    .contact-headline {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      margin-bottom: 0;
+    }
+    .contact-headline .headline-accent { color: #00f5a0; }
+
+    .contact-sub {
+      font-size: 16px;
+      color: #8a94a6;
+      line-height: 1.6;
+      max-width: 500px;
+    }
+    .contact-sub strong { color: #e8eaed; font-weight: 700; }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 29px 33px;
+      background: #0e1114;
+      border: 1px solid rgba(255,255,255,0.06);
+      text-decoration: none;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .contact-link:hover {
+      border-color: rgba(0,245,160,0.3);
+      background: rgba(0,245,160,0.04);
+    }
+
+    .cl-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #8a94a6;
+      margin-bottom: 6px;
+    }
+
+    .cl-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .cl-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .cl-arrow {
+      font-size: 20px;
+      color: #00f5a0;
+      transition: transform 0.2s;
+    }
+    .contact-link:hover .cl-arrow { transform: translate(4px, -4px); }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 40px 60px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: #8a94a6;
+      letter-spacing: 0.08em;
+    }
+
+    .footer-status {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: #00f5a0;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #00f5a0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ANIMATIONS */
+    .fade-up {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.animate {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .fade-up.animate.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Hero content sits above logo */
+    .hero-eyebrow,
+    .hero-name,
+    .hero-title,
+    .hero-tags {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Figma LOGO asset — background layer */
+    .hero-logo {
+      position: absolute;
+      top: 8%;
+      right: 0;
+      width: 43vw;
+      max-width: 820px;
+      aspect-ratio: 818 / 891;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .hero-logo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      mix-blend-mode: color-dodge;
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      section { padding: 80px 24px; overflow: hidden; }
+      .behance-all { display: none !important; }
+      .hero { padding: 0 24px 60px; }
+      .hero-scroll { display: none; }
+      .hero-logo { display: block; width: 60vw; top: 6%; right: 0; }
+      .about-grid, .resume-grid, .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+      .projects-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+      .projects-grid .project-card { flex: unset; width: unset; }
+      footer { padding: 28px 24px; flex-direction: column; gap: 16px; text-align: center; }
+    }
+
+    @media (max-width: 560px) {
+      /* Hero */
+      section { padding: 40px 24px; overflow: hidden; }
+      .hero { min-height: 620px; padding: 0 24px 60px; }
+      .hero-logo { display: block; width: 100%; top: 0; right: auto; left: 0; max-width: none; z-index: 1; }
+      .hero-logo img { opacity: 0.7; width: 100%; }
+      .hero-title { font-size: 15px; margin-bottom: 24px; }
+
+      /* Carousel */
+      #projects { overflow: visible; padding-right: 0; }
+      .projects-grid {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 24px;
+        scrollbar-width: none;
+        width: auto;
+      }
+      .projects-grid::-webkit-scrollbar { display: none; }
+      .projects-grid .project-card {
+        flex: 0 0 88vw;
+        scroll-snap-align: start;
+        width: 88vw;
+      }
+      .project-thumb { height: 360px; }
+      .project-info { padding: 16px 20px 20px; }
+      .project-desc { font-size: 16px; line-height: 1.6; }
+
+      /* Resume — card style */
+      .resume-grid { margin-top: 20px; gap: 20px; }
+      .resume-col h3 { margin-bottom: 12px; padding-bottom: 8px; }
+      .resume-item { padding: 12px; background: #0e1114; border-bottom: none; gap: 4px; }
+      .resume-item:last-child { border-bottom: none; }
+
+      /* Formation */
+      .formation-item { padding: 12px; }
+      .resume-download { display: block; width: 100%; text-align: center; margin-top: 8px; box-sizing: border-box; }
+    }
+    /* CASE STUDY BLOCK */
+    .case-study-block {
+      margin-top: 80px;
+      border: 1px solid rgba(0,245,160,0.2);
+      background: linear-gradient(135deg, rgba(0,245,160,0.04) 0%, rgba(0,200,255,0.02) 100%);
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .case-study-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+    }
+    .cs-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      margin-bottom: 28px;
+    }
+    .cs-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 48px;
+    }
+    .cs-left { flex: 1; }
+    .cs-company {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #00c8ff;
+      margin-bottom: 12px;
+    }
+    .cs-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .cs-body {
+      font-size: 15px;
+      color: #8a94a6;
+      line-height: 1.7;
+      max-width: 580px;
+    }
+    .cs-body strong { color: #e8eaed; }
+    .cs-cta {
+      flex-shrink: 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      text-decoration: none;
+      border: 1px solid rgba(0,245,160,0.3);
+      padding: 16px 28px;
+      white-space: nowrap;
+      transition: background 0.2s, color 0.2s;
+      align-self: center;
+    }
+    .cs-cta:hover {
+      background: #00f5a0;
+      color: #080a0c;
+    }
+    @media (max-width: 900px) {
+      .cs-inner { flex-direction: column; gap: 24px; }
+      .case-study-block { padding: 28px 24px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">EDF · Portfolio</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#tools">Skills</a></li>
+      <li><a href="#work">Projects</a></li>
+      <li><a href="#resume">Resume</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Hire me →</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-orb"></div>
+
+    <!-- Figma LOGO asset -->
+    <div class="hero-logo">
+      <img src="img/img_logo.png" alt="">
+    </div>
+
+    <div class="hero-eyebrow">Product Designer · UX/UI · Web3</div>
+    <h1 class="hero-name">Ezequiel<br><span>de Francisco</span></h1>
+    <p class="hero-title"><span class="title-highlight">22 years trying to simplify complex systems</span> — from Web3 marketplaces to mobile games. Bridging blockchain complexity into an intuitive user experience.</p>
+    <div class="hero-tags">
+      <span class="tag">Web3 & DeFi</span>
+      <span class="tag">Gaming UX</span>
+      <span class="tag">Mobile Design</span>
+      <span class="tag">Art Direction</span>
+      <span class="tag">Design Leadership</span>
+      <span class="tag">Figma</span>
+    </div>
+    <div class="hero-scroll">Scroll</div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">01 · About</div>
+    <h2 class="section-title">A bit<br>about me</h2>
+    <div class="about-grid">
+      <div class="about-text fade-up">
+        <p>I'm a <strong>Senior Product Designer with 22 years of experience</strong> — started in 2004 with a non-stop journey across Press, Editorial, Web, Gaming, and Mobile. I've worked on-site for major companies and remotely with startups, as well as a freelancer across LATAM, USA, and Israel.</p>
+        <p>In recent years I've focused on <strong>UX/UI for Mobile, Product, and Gaming</strong>, and expanded into Web3 — most recently at <strong>Big Time Studios / OpenLoot</strong>, bridging blockchain infrastructure and intuitive marketplace UX. As a former Creative Leader, I've managed multidisciplinary teams of up to 12, optimizing workflows that directly drive business growth.</p>
+        <p>Based in <strong>Buenos Aires, Argentina</strong> · UBA graduate · Available for remote freelance and full-time opportunities worldwide.</p>
+        <div class="skills-label">tools</div>
+        <div class="skills-row">
+          <span class="skill-pill">Figma</span>
+          <span class="skill-pill">Photoshop</span>
+          <span class="skill-pill">Illustrator</span>
+          <span class="skill-pill">After Effects</span>
+          <span class="skill-pill">Web3 / NFT</span>
+          <span class="skill-pill">Gaming UX</span>
+          <span class="skill-pill">Mobile Design</span>
+          <span class="skill-pill">Art Direction</span>
+          <span class="skill-pill">Design Leadership</span>
+          <span class="skill-pill">Branding</span>
+          <span class="skill-pill">Illustration</span>
+          <span class="skill-pill">Motion</span>
+        </div>
+      </div>
+      <div class="about-stats fade-up">
+        <div class="stat-card">
+          <div class="stat-num">22<span>+</span></div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">40<span>+</span></div>
+          <div class="stat-label">Projects Shipped</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Industries: Web3 · Gaming · Mobile</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Pixels Perfected</div>
+        </div>
+        <div class="about-ctas" style="grid-column: 1 / -1;">
+          <a href="resume_EdeFco_2026.pdf" class="about-cta" download>View Full CV +</a>
+          <a href="https://www.figma.com/design/b2GLXl0WYcimNR0ttpoxYi/PORTFOLIO-2026" target="_blank" rel="noopener" class="about-cta">View in Figma +</a>
+        </div>
+        <div class="jazz-block" style="grid-column: 1 / -1;">
+          <div class="jazz-label">i'm also a jazz guitarist</div>
+          <div class="jazz-links">
+            <a href="https://open.spotify.com/intl-es/artist/7gHkOVCTBSEGAZvdiwKhev?si=0ysc4OLyRbS9nIToA3--4g" target="_blank" rel="noopener" class="jazz-link">
+              <div class="jazz-link-label">listen my ep in spotify →</div>
+            </a>
+            <a href="https://www.youtube.com/watch?v=W45Y7mkjOfA" target="_blank" rel="noopener" class="jazz-link">
+              <div class="jazz-link-label">watch in youtube →</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS & EXPERTISE -->
+  <section id="tools">
+    <div class="section-label">02 · Skills</div>
+    <h2 class="section-title">Tools &amp; Expertise</h2>
+    <div class="tools-grid fade-up">
+      <div class="skill-item">
+        <div class="skill-header"><span>Figma</span><span class="skill-pct">100%</span></div>
+        <div class="skill-track"><div class="skill-bar" style="width:100%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span>Product Design / UX / UI</span><span class="skill-pct">100%</span></div>
+        <div class="skill-track"><div class="skill-bar" style="width:100%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span>Photoshop + Photo Retouch</span><span class="skill-pct">100%</span></div>
+        <div class="skill-track"><div class="skill-bar" style="width:100%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span>Web3 / NFT</span><span class="skill-pct">90%</span></div>
+        <div class="skill-track"><div class="skill-bar" style="width:90%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span>Illustrator</span><span class="skill-pct">90%</span></div>
+        <div class="skill-track"><div class="skill-bar" style="width:90%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span>Gaming</span><span class="skill-pct">90%</span></div>
+        <div class="skill-track"><div class="skill-bar" style="width:90%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span>Art Direction / Leadership</span><span class="skill-pct">80%</span></div>
+        <div class="skill-track"><div class="skill-bar" style="width:80%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span>Branding</span><span class="skill-pct">90%</span></div>
+        <div class="skill-track"><div class="skill-bar" style="width:90%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span>After Effects</span><span class="skill-pct">50%</span></div>
+        <div class="skill-track"><div class="skill-bar" style="width:50%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span>Sketchup + ENSCAPE</span><span class="skill-pct">60%</span></div>
+        <div class="skill-track"><div class="skill-bar" style="width:60%"></div></div>
+      </div>
+    </div>
+    <div class="skills-label fade-up" style="margin-top:48px;">areas of expertise</div>
+    <div class="skills-row fade-up">
+      <span class="skill-pill">Web3 &amp; DeFi</span>
+      <span class="skill-pill">Web/Mobile Design</span>
+      <span class="skill-pill">Gaming UX</span>
+      <span class="skill-pill">User Research</span>
+      <span class="skill-pill">Prototyping</span>
+      <span class="skill-pill">Design Systems</span>
+      <span class="skill-pill">Art Direction</span>
+      <span class="skill-pill">Marketing &amp; Social Media</span>
+      <span class="skill-pill">Pixel Perfect</span>
+      <span class="skill-pill">Design Leadership</span>
+      <span class="skill-pill">Product Strategy</span>
+      <span class="skill-pill">JIRA</span>
+      <span class="skill-pill">Discovery</span>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section id="work">
+    <div class="work-header">
+      <div>
+        <div class="section-label">03 · Selected Work</div>
+        <h2 class="section-title">Portfolio</h2>
+      </div>
+      
+      <a href="https://www.behance.net/defranez" target="_blank" rel="noopener" class="behance-all">
+        View all on Behance →
+      </a> 
+    </div>
+
+    <!-- OLD GRID — hidden, do not remove -->
+    <div class="projects-grid" style="display:none">
+
+      <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="project-card fade-up">
+        <div class="project-thumb thumb-1">
+          <img src="img/cover-1.png" alt="Product Design at OpenLoot">
+          <div class="project-overlay">
+            <div class="overlay-cta">View on Behance →</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-cat">Web3 · NFT Marketplace</div>
+          <div class="project-name">Product Design at OpenLoot</div>
+          <div class="project-desc">Bridging blockchain complexity with intuitive marketplace UX — balancing security flows, two-step verification, and high-conversion commerce for two distinct user personas.</div>
+        </div>
+      </a>
+
+      <a href="https://www.behance.net/gallery/46636791/analyzelife-iOS-app" target="_blank" rel="noopener" class="project-card fade-up">
+        <div class="project-thumb thumb-2">
+          <img src="img/cover-2.png" alt="analyze.life iOS App">
+          <div class="project-overlay">
+            <div class="overlay-cta">View on Behance →</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-cat">UX/UI · Web App</div>
+          <div class="project-name">Our Dipper — Landing + Web app</div>
+          <div class="project-desc">Developed an intuitive service-management platform to streamline the interaction between providers and clients. Implemented the full user journey, from discovery to booking.</div>
+        </div>
+      </a>
+
+      <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="project-card fade-up">
+        <div class="project-thumb thumb-3">
+          <img src="img/cover-3.png" alt="My Congress — Roche">
+          <div class="project-overlay">
+            <div class="overlay-cta">View on Behance →</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-cat">UX · UI · Enterprise · Health</div>
+          <div class="project-name">Roche</div>
+          <div class="project-desc">UX/UI design for a global pharmaceutical brand. Event and congress management platform with a focus on usability and enterprise-grade experience.</div>
+        </div>
+      </a>
+
+      <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="project-card fade-up">
+        <div class="project-thumb thumb-4">
+          <img src="img/cover-4.png" alt="Mobile Games">
+          <div class="project-overlay">
+            <div class="overlay-cta">View on Behance →</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-cat">Gaming · Mobile</div>
+          <div class="project-name">Mobile Games</div>
+          <div class="project-desc">Game UI design for mobile platforms — visual systems, HUDs, and interaction design for high-engagement gameplay experiences.</div>
+        </div>
+      </a>
+
+      <a href="https://www.behance.net/gallery/46637147/UX-UI-Design" target="_blank" rel="noopener" class="project-card fade-up">
+        <div class="project-thumb thumb-5">
+          <img src="img/cover-5.png" alt="UX / UI Design">
+          <div class="project-overlay">
+            <div class="overlay-cta">View on Behance →</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-cat">Logo · Design System · Social Media</div>
+          <div class="project-name">UX / UI Design</div>
+          <div class="project-desc">A curated selection of UX and UI work spanning multiple industries — research-driven design, wireframes, and high-fidelity interfaces.</div>
+        </div>
+      </a>
+
+      <a href="https://www.behance.net/gallery/66848937/Brand-Concept-(logo-Styles-Guide)" target="_blank" rel="noopener" class="project-card fade-up">
+        <div class="project-thumb thumb-6">
+          <img src="img/cover-6.png" alt="Brand Concept — Logo + Style Guide">
+          <div class="project-overlay">
+            <div class="overlay-cta">View on Behance →</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-cat">Branding · Identity</div>
+          <div class="project-name">Sketchup: 3D Modelling + Render</div>
+          <div class="project-desc">Complete brand identity system including logo design, color system, typography, and visual guidelines for a digital-first brand.</div>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- NEW GRID — from Figma -->
+    <div class="projects-grid">
+
+      <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="project-card fade-up">
+        <div class="project-thumb thumb-1">
+          <img src="img/cover-1.png" alt="Product Design at OpenLoot">
+          <div class="project-overlay">
+            <div class="overlay-cta">View on Behance →</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-cat">Web3 · NFT Marketplace</div>
+          <div class="project-name">Product Design at OpenLoot</div>
+          <div class="project-desc">Bridging blockchain complexity with intuitive marketplace UX — balancing security flows, two-step verification, and high-conversion commerce for two distinct user personas.</div>
+        </div>
+      </a>
+
+      <a href="https://www.behance.net/gallery/46636791/analyzelife-iOS-app" target="_blank" rel="noopener" class="project-card fade-up">
+        <div class="project-thumb thumb-2">
+          <img src="img/cover-2.png" alt="Our Dipper">
+          <div class="project-overlay">
+            <div class="overlay-cta">View on Behance →</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-cat">UX/UI · Web App</div>
+          <div class="project-name">Our Dipper — Landing + Web app</div>
+          <div class="project-desc">Developed an intuitive service-management platform to streamline the interaction between providers and clients. I implemented the full user journey, from discovery to booking, ensuring a seamless and functional navigation experience.</div>
+        </div>
+      </a>
+
+      <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="project-card fade-up">
+        <div class="project-thumb thumb-3">
+          <img src="img/cover-3.png" alt="UX/UI for Roche">
+          <div class="project-overlay">
+            <div class="overlay-cta">View on Behance →</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-cat">UX · UI · Enterprise · Health</div>
+          <div class="project-name">UX/UI for Roche</div>
+          <div class="project-desc">UX/UI design for a global pharmaceutical brand. Event and congress management platform with a focus on usability and enterprise-grade experience.</div>
+        </div>
+      </a>
+
+      <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="project-card fade-up">
+        <div class="project-thumb thumb-4">
+          <img src="img/cover-4.png" alt="Mobile Games">
+          <div class="project-overlay">
+            <div class="overlay-cta">View on Behance →</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-cat">Gaming · Mobile</div>
+          <div class="project-name">Mobile Games</div>
+          <div class="project-desc">Game UI design for mobile platforms — visual systems, HUDs, and interaction design for high-engagement gameplay experiences.</div>
+        </div>
+      </a>
+
+      <a href="https://www.behance.net/gallery/46637147/UX-UI-Design" target="_blank" rel="noopener" class="project-card fade-up">
+        <div class="project-thumb thumb-5">
+          <img src="img/cover-5.png" alt="Branding + Social">
+          <div class="project-overlay">
+            <div class="overlay-cta">View on Behance →</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-cat">Logo · Design System · Social Media</div>
+          <div class="project-name">Branding + Social</div>
+          <div class="project-desc">A curated selection of UX and UI work spanning multiple industries — research-driven design, wireframes, and high-fidelity interfaces.</div>
+        </div>
+      </a>
+
+      <a href="https://www.behance.net/gallery/66848937/Brand-Concept-(logo-Styles-Guide)" target="_blank" rel="noopener" class="project-card fade-up">
+        <div class="project-thumb thumb-6">
+          <img src="img/cover-6.png" alt="Sketchup: 3D Modelling + Render">
+          <div class="project-overlay">
+            <div class="overlay-cta">View on Behance →</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-cat">Branding · Identity</div>
+          <div class="project-name">Sketchup: 3D Modelling + Render</div>
+          <div class="project-desc">Complete brand identity system including logo design, color system, typography, and visual guidelines for a digital-first brand.</div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- RESUME -->
+  <section id="resume">
+    <div class="section-label">04 · Resume</div>
+    <h2 class="section-title">Career.</h2>
+
+    <div class="resume-grid fade-up">
+      <div class="resume-col">
+        <h3>Work Experience</h3>
+
+        <div class="resume-item">
+          <div class="resume-period">2022 — Present · USA (Remote)</div>
+          <div class="resume-role">UX / UI / Product Designer</div>
+          <div class="resume-company">Big Time Studios / OpenLoot</div>
+          <div class="resume-desc">Product Designer at OpenLoot.com, bridging complex Web3 infrastructure with intuitive UX for a leading crypto-game marketplace. Designed data-heavy dashboards, real-time transaction tracking, and developer-ready UI kits. Translated blockchain technicalities — wallet integration, asset ownership — into seamless interfaces for non-native users.</div>
+        </div>
+
+        <div class="resume-item">
+          <div class="resume-period">2020 — 2021 · Buenos Aires</div>
+          <div class="resume-role">Creative Leader</div>
+          <div class="resume-company">PSh</div>
+          <div class="resume-desc">Operational and cross-functional management of a 12-member team (web, graphic, motion). Implemented scalable workflows and mentored talent to exceed KPIs. Bridged high-level business goals and day-to-day execution, ensuring on-time delivery while managing client budgets and long-term roadmaps.</div>
+        </div>
+
+        <div class="resume-item">
+          <div class="resume-period">2019 — 2020 · Buenos Aires</div>
+          <div class="resume-role">UX / UI Design Leader</div>
+          <div class="resume-company">_coderio</div>
+          <div class="resume-desc">Design Lead managing a cross-functional team of 5, overseeing complex UX/UI and Branding for gaming and mobile sectors. Optimized internal production workflows and led conceptualization of design proposals for outsourced clients to drive business growth.</div>
+        </div>
+
+        <div class="resume-item">
+          <div class="resume-period">2015 — 2018 · Tel Aviv, Israel (Contract)</div>
+          <div class="resume-role">Product Design</div>
+          <div class="resume-company">SIMPLY.VISION (analyze.life)</div>
+          <div class="resume-desc">UX / UI / Product, Branding, Website, and Mobile App design for an Israeli tech startup. Full end-to-end design ownership across the product lifecycle.</div>
+        </div>
+
+        <div class="resume-item">
+          <div class="resume-period">2011 — 2015 · Buenos Aires</div>
+          <div class="resume-role">Senior Advance UI &amp; Visual Designer</div>
+          <div class="resume-company">Globant</div>
+          <div class="resume-desc">Art Direction, Illustration, and UX/UI for "Bola" mobile game (Disney Argentina). UX/UI Admin platform for DreamWorks, On Site (CA, USA).</div>
+        </div>
+      </div>
+
+      <div class="resume-col">
+        <h3>Formation</h3>
+
+        <div class="formation-item">
+          <div class="resume-period">Education</div>
+          <div class="resume-role">Graphic Design</div>
+          <div class="resume-company">FADU/UBA — Universidad de Buenos Aires (GRADUATED)</div>
+          <div class="resume-period">2001–2007</div>
+        </div>
+
+        <div class="formation-item">
+          <div class="resume-period">Education</div>
+          <div class="resume-role">Jazz Guitar Professor</div>
+          <div class="resume-company">EMPA — Escuela de Música Popular de Avellaneda</div>
+          <div class="resume-period">2016–2020</div>
+        </div>
+
+        <div class="formation-item">
+          <div class="resume-period">Languages</div>
+          <div class="resume-role">Spanish · English · Italian</div>
+          <div class="resume-company">Native · Advanced · Basic</div>
+        </div>
+
+        <a href="img/resume_EdeFco_2026.pdf" class="resume-download" download="Ezequiel_deFrancisco_CV_2026.pdf">
+          Download Full CV ↓
+        </a>
+      </div>
+    </div>
+
+    <!-- Featured Case Study -->
+    <div class="case-study-block fade-up" style="display:none">
+      <div class="cs-eyebrow">Featured Case Study</div>
+      <div class="cs-inner">
+        <div class="cs-left">
+          <div class="cs-company">OpenLoot · Web3 Gaming Marketplace</div>
+          <h3 class="cs-title">Balancing Security, Trust & Conversion in a Blockchain Marketplace</h3>
+          <p class="cs-body">Defined two distinct user personas — the <strong>casual player</strong> seeking quick, frictionless transactions, and the <strong>advanced trader</strong> managing high-stakes assets. Coordinated with legal and engineering teams to standardize secure two-step verification flows and transparent balance reporting, while simultaneously driving marketing objectives to keep the platform commercially engaging.</p>
+        </div>
+        <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="cs-cta">
+          View Case Study →
+        </a>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label">05 · Contact</div>
+    <div class="contact-inner">
+      <div class="fade-up">
+        <h2 class="contact-headline">Let's build<br>something<br><span class="headline-accent">great.</span></h2>
+        <p class="contact-sub" style="margin-top:24px;">Available for freelance and full-time remote opportunities in <strong>Product Design</strong> and <strong>WEB3.</strong></p>
+      </div>
+      <div class="contact-links fade-up">
+        <a href="mailto:ezequiel.defrancisco@gmail.com" class="contact-link">
+          <div class="cl-inner">
+            <div class="cl-label">Email</div>
+            <div class="cl-value">ezequiel.defrancisco@gmail.com</div>
+          </div>
+          <div class="cl-arrow">↗</div>
+        </a>
+        <a href="https://wa.me/5491161624371" target="_blank" rel="noopener" class="contact-link">
+          <div class="cl-inner">
+            <div class="cl-label">Phone</div>
+            <div class="cl-value">+54 11 6162 4371</div>
+          </div>
+          <div class="cl-arrow">↗</div>
+        </a>
+        <a href="https://www.linkedin.com/in/ezequiel-de-francisco/" target="_blank" rel="noopener" class="contact-link">
+          <div class="cl-inner">
+            <div class="cl-label">LinkedIn</div>
+            <div class="cl-value">ezequiel-de-francisco</div>
+          </div>
+          <div class="cl-arrow">↗</div>
+        </a>
+        <a href="https://www.behance.net/defranez" target="_blank" rel="noopener" class="contact-link">
+          <div class="cl-inner">
+            <div class="cl-label">Behance</div>
+            <div class="cl-value">behance.net/defranez</div>
+          </div>
+          <div class="cl-arrow">↗</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-copy">© 2026 Ezequiel De Francisco · All rights reserved</div>
+    <div class="footer-status">
+      <span class="status-dot"></span>
+      Available for new projects
+    </div>
+  </footer>
+
+  <script>
+    // Fade-up observer
+    const fadeEls = document.querySelectorAll('.fade-up');
+    fadeEls.forEach(el => el.classList.add('animate'));
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.08 });
+
+    fadeEls.forEach(el => observer.observe(el));
+
+    // Nav scroll effect
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      nav.style.borderBottomColor = window.scrollY > 20
+        ? 'rgba(255,255,255,0.1)'
+        : 'rgba(255,255,255,0.06)';
+    });
+
+    // ── Visit tracker ────────────────────────────────────────────────────────
+    (function () {
+      const SUPABASE_URL = 'YOUR_SUPABASE_URL';       // ← replace
+      const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // ← replace
+
+      // Skip localhost / dev environments and repeated views in same session
+      if (location.hostname === 'localhost' || sessionStorage.getItem('visit_logged')) return;
+      sessionStorage.setItem('visit_logged', '1');
+
+      function getDeviceType() {
+        const w = window.innerWidth;
+        if (w < 768) return 'mobile';
+        if (w < 1024) return 'tablet';
+        return 'desktop';
+      }
+
+      fetch(SUPABASE_URL + '/rest/v1/visits', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({
+          device_type: getDeviceType(),
+          screen_width: window.innerWidth,
+          referrer: document.referrer || 'direct',
+          language: navigator.language,
+          user_agent: navigator.userAgent
+        })
+      }).catch(function () {}); // silent fail — never break the page
+    })();
+  </script>
+</body>
+</html>
