@@ -59,12 +59,13 @@
     /* NAV */
     .top-stack {
       display: flex;
-     flex-direction: column; /* Esto pone el disclaimer debajo del nav */
-      width: 100%;
-      position: fixed; /* O absolute, dependiendo de tu diseño */
-      top: 0;
-      left: 0;
-      z-index: 5000;
+     flex-direction: column; /* Apila nav arriba y disclaimer abajo */
+     width: 100%;
+     position: fixed;
+     top: 0;
+     left: 0;
+     z-index: 1000;
+     background: #000; /* Asegura que el fondo cubra todo el bloque */
     }
     .disclaimer-bar {
       display: flex;
