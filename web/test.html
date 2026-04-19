@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0"/>
   <title>EDF · Arcade — Mobile V2 Prototype</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Press+Start+2P&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --bg: #080a0c;
@@ -79,13 +79,13 @@
       margin-bottom: 18px;
     }
     .hub-logo {
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 11px;
       color: var(--accent);
       letter-spacing: 0.05em;
     }
     .hub-score {
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 9px;
       color: var(--text);
       padding: 6px 10px;
@@ -156,7 +156,7 @@
     .hub-tile.unlocked::before { opacity: 1; }
     .hub-tile.unlocked .tile-status { color: var(--accent); }
     .tile-num {
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 13px;
       color: var(--accent);
       min-width: 28px;
@@ -178,7 +178,7 @@
     }
     .tile-game .tile-diff { color: var(--accent); margin-left: 6px; }
     .tile-status {
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 10px;
       color: var(--muted);
     }
@@ -213,7 +213,7 @@
       border-bottom: 1px solid var(--border);
     }
     .game-title {
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 11px;
       color: var(--accent);
       letter-spacing: 0.05em;
@@ -259,7 +259,7 @@
     }
     .game-win.active { display: flex; }
     .win-label {
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 18px;
       color: var(--accent);
       animation: winPulse 0.6s ease-out;
@@ -280,7 +280,7 @@
     }
     .win-btn {
       margin-top: 12px;
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 10px;
       letter-spacing: 0.05em;
       background: var(--accent);
@@ -292,14 +292,72 @@
     .win-btn:active { transform: translateY(1px); }
 
     .knock-hud {
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 12px;
       color: var(--text);
       margin-bottom: 6px;
     }
     .knock-hud span { color: var(--accent); }
+    .rhythm-beats {
+      display: flex;
+      gap: 16px;
+      margin: 4px 0 16px;
+      justify-content: center;
+    }
+    .rhythm-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: transparent;
+      transition: background 0.1s, border-color 0.1s, transform 0.1s;
+    }
+    .rhythm-dot.play {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      transform: scale(1.4);
+    }
+    .rhythm-dot.tap {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: scale(1.3);
+    }
+    .rhythm-dot.miss {
+      background: #ff5470;
+      border-color: #ff5470;
+    }
+    .rhythm-listen {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 10px 18px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: all 0.2s;
+    }
+    .rhythm-listen:hover, .rhythm-listen:active {
+      border-color: var(--accent2);
+      color: var(--accent2);
+    }
+    .rhythm-listen.playing {
+      border-color: var(--accent2);
+      color: var(--accent2);
+      pointer-events: none;
+    }
+    .rhythm-hint {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+      min-height: 14px;
+    }
     .knock-target {
-      width: 220px; height: 220px;
+      width: 200px; height: 200px;
       border-radius: 50%;
       border: 2px solid var(--accent);
       position: relative;
@@ -308,8 +366,10 @@
       justify-content: center;
       cursor: pointer;
       background: radial-gradient(circle, rgba(0,245,160,0.12), transparent 70%);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
-    .knock-target::before {
+    .knock-target.idle::before {
       content: '';
       position: absolute;
       inset: 0;
@@ -322,11 +382,14 @@
       100% { transform: scale(1.25); opacity: 0; }
     }
     .knock-target-label {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
       color: var(--accent);
+      letter-spacing: 0.12em;
       position: relative;
       z-index: 1;
+      text-align: center;
+      padding: 0 14px;
     }
     .knock-target.hit {
       animation: knockHit 0.25s;
@@ -336,6 +399,12 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(0.92); }
     }
+    .knock-target.listening {
+      border-color: var(--accent2);
+      background: radial-gradient(circle, rgba(0,200,255,0.14), transparent 70%);
+      pointer-events: none;
+    }
+    .knock-target.listening .knock-target-label { color: var(--accent2); }
 
     .match-grid {
       display: grid;
@@ -357,7 +426,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 12px;
       transition: transform 0.5s;
       border: 1px solid var(--border);
@@ -387,7 +456,7 @@
       justify-content: space-between;
       width: 100%;
       max-width: 320px;
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 10px;
     }
     .snake-hud .score { color: var(--accent); }
@@ -438,7 +507,7 @@
       justify-content: space-between;
     }
     .hop-year {
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 11px;
       color: var(--muted);
       position: relative;
@@ -492,7 +561,7 @@
       padding: 14px 16px;
       background: var(--bg2);
       border: 1px solid var(--accent);
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 14px;
       color: var(--accent);
       text-align: center;
@@ -557,7 +626,7 @@
       100% { opacity: 1; transform: translateY(0); }
     }
     .section-eyebrow {
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 10px;
       color: var(--accent);
       margin-bottom: 12px;
@@ -586,6 +655,74 @@
       margin-bottom: 14px;
     }
     .section-p strong { color: var(--text); font-weight: 600; }
+
+    .jazz-label {
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      margin: 22px 0 18px;
+    }
+    .jazz-links { display: flex; flex-direction: column; gap: 12px; }
+    .jazz-card {
+      padding: 12px;
+      background: linear-gradient(133deg, rgba(0,245,160,0.04) 0%, rgba(0,200,255,0.02) 100%);
+      border: 1px solid rgba(0,245,160,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .jazz-card iframe { width: 100%; border: none; border-radius: 4px; display: block; }
+    .jazz-yt-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px;
+      background: linear-gradient(133deg, rgba(0,245,160,0.04) 0%, rgba(0,200,255,0.02) 100%);
+      text-decoration: none;
+      border: 1px solid rgba(0,245,160,0.2);
+      overflow: hidden;
+    }
+    .jazz-link-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      flex: 1;
+    }
+    .jazz-thumb {
+      width: 120px;
+      height: 68px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.5);
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .jazz-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .jazz-thumb-play {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 34px; height: 34px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .jazz-thumb-play::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 55%;
+      transform: translate(-50%, -50%);
+      width: 0; height: 0;
+      border-style: solid;
+      border-width: 7px 0 7px 11px;
+      border-color: transparent transparent transparent #fff;
+    }
 
     .deck {
       display: flex;
@@ -623,7 +760,7 @@
       position: absolute;
       top: 12px;
       left: 12px;
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 9px;
       color: var(--accent);
       background: rgba(8,10,12,0.85);
@@ -667,7 +804,7 @@
       margin-bottom: 14px;
     }
     .deck-cta {
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 9px;
       letter-spacing: 0.05em;
       color: var(--accent);
@@ -679,10 +816,22 @@
       border: 1px solid rgba(0,245,160,0.3);
     }
 
-    .career-row { padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .career-row {
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .career-row-head {
+      padding: 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .career-row-main { flex: 1; min-width: 0; }
     .career-row-year {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 9px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
       color: var(--accent);
       margin-bottom: 4px;
     }
@@ -691,8 +840,63 @@
       font-weight: 700;
       font-size: 15px;
       color: #fff;
+      line-height: 1.2;
     }
-    .career-row-company { font-size: 12px; color: var(--muted); }
+    .career-row-company {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+      font-family: 'Syne', sans-serif;
+    }
+    .career-row-arrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 16px;
+      color: var(--muted);
+      transition: transform 0.25s ease, color 0.25s ease;
+      flex-shrink: 0;
+    }
+    .career-row.open .career-row-arrow {
+      transform: rotate(180deg);
+      color: var(--accent);
+    }
+    .career-row-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+    .career-row.open .career-row-body { max-height: 400px; }
+    .career-row-body-inner {
+      padding: 0 0 18px;
+    }
+    .career-row-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .career-row-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      text-transform: lowercase;
+    }
+    .career-row-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+    .career-row-desc {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+    .career-row-desc strong { color: var(--text); font-weight: 600; }
 
     .contact-row {
       padding: 16px 0;
@@ -715,27 +919,67 @@
       font-size: 14px;
       color: #fff;
     }
-    .contact-row-arrow { font-family: 'Press Start 2P', monospace; color: var(--accent); }
+    .contact-row-arrow { font-family: 'DM Mono', monospace; color: var(--accent); font-size: 16px; }
 
-    .tools-list { margin-top: 18px; }
-    .tools-row {
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
+    .tools-col-label {
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 20px 0 14px;
+    }
+    .tool-item { display: flex; flex-direction: column; }
+    .tool-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: baseline;
+      padding: 12px 0 10px;
+      gap: 10px;
     }
-    .tools-row-name {
+    .tool-name {
       font-family: 'Syne', sans-serif;
       font-weight: 600;
       font-size: 14px;
       color: #fff;
     }
-    .tools-row-pct {
-      font-family: 'Press Start 2P', monospace;
+    .tool-subtitle {
+      font-family: 'DM Mono', monospace;
       font-size: 10px;
-      color: var(--accent);
+      color: var(--muted);
+      letter-spacing: 0.03em;
+      text-align: right;
     }
+    .skill-track {
+      background: rgba(255,255,255,0.06);
+      height: 4px;
+      border-radius: 100px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .skill-bar {
+      height: 4px;
+      width: 0%;
+      background: linear-gradient(to right, var(--accent), var(--accent2));
+      border-radius: 100px;
+    }
+    .expertise-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .expertise-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.03em;
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .expertise-tag:hover { border-color: rgba(0,245,160,0.3); color: var(--accent); }
 
     .end-banner {
       display: none;
@@ -747,7 +991,7 @@
     }
     .end-banner.active { display: block; }
     .end-banner-label {
-      font-family: 'Press Start 2P', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 12px;
       color: var(--accent);
       margin-bottom: 10px;
@@ -843,17 +1087,67 @@
       <p class="section-p"><strong>Senior Product Designer</strong> with 22 years of experience. From Press & Editorial to Web3 marketplaces and mobile games.</p>
       <p class="section-p">Recently at <strong>Big Time Studios / OpenLoot</strong>, bridging blockchain infrastructure and intuitive UX.</p>
       <p class="section-p">Based in <strong>Buenos Aires</strong>. Available for remote work worldwide.</p>
+
+      <div class="jazz-label">i'm also a jazz guitarist</div>
+      <div class="jazz-links">
+        <div class="jazz-card">
+          <iframe src="https://open.spotify.com/embed/artist/7gHkOVCTBSEGAZvdiwKhev?utm_source=generator&theme=0" height="152" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+        <a href="https://www.youtube.com/watch?v=yau-W_WeHPs" target="_blank" rel="noopener" class="jazz-yt-link">
+          <div class="jazz-link-label">watch on youtube →</div>
+          <div class="jazz-thumb">
+            <img src="https://img.youtube.com/vi/yau-W_WeHPs/hqdefault.jpg" alt="Jazz guitar video">
+            <div class="jazz-thumb-play"></div>
+          </div>
+        </a>
+      </div>
     </section>
 
     <section class="section" id="section-tools">
       <div class="section-eyebrow">02 · TOOLS</div>
       <h2 class="section-h"><span>Tools</span><br/>& Expertise.</h2>
-      <div class="tools-list">
-        <div class="tools-row"><span class="tools-row-name">Figma</span><span class="tools-row-pct">100</span></div>
-        <div class="tools-row"><span class="tools-row-name">Photoshop</span><span class="tools-row-pct">100</span></div>
-        <div class="tools-row"><span class="tools-row-name">Illustrator</span><span class="tools-row-pct">85</span></div>
-        <div class="tools-row"><span class="tools-row-name">Claude Code</span><span class="tools-row-pct">75</span></div>
-        <div class="tools-row"><span class="tools-row-name">JIRA</span><span class="tools-row-pct">75</span></div>
+
+      <div class="tools-col-label">Design Tools</div>
+      <div class="tool-item">
+        <div class="tool-header"><span class="tool-name">Figma</span><span class="tool-subtitle">Primary · 5+ yrs</span></div>
+        <div class="skill-track"><div class="skill-bar" data-pct="100"></div></div>
+      </div>
+      <div class="tool-item">
+        <div class="tool-header"><span class="tool-name">Photoshop</span><span class="tool-subtitle">Retouch · 20+ yrs</span></div>
+        <div class="skill-track"><div class="skill-bar" data-pct="100"></div></div>
+      </div>
+      <div class="tool-item">
+        <div class="tool-header"><span class="tool-name">Illustrator</span><span class="tool-subtitle">Visual · 15+ yrs</span></div>
+        <div class="skill-track"><div class="skill-bar" data-pct="85"></div></div>
+      </div>
+      <div class="tool-item">
+        <div class="tool-header"><span class="tool-name">Claude Code</span><span class="tool-subtitle">AI + MCP · WIP</span></div>
+        <div class="skill-track"><div class="skill-bar" data-pct="75"></div></div>
+      </div>
+      <div class="tool-item">
+        <div class="tool-header"><span class="tool-name">JIRA / Confluence</span><span class="tool-subtitle">Agile workflow</span></div>
+        <div class="skill-track"><div class="skill-bar" data-pct="75"></div></div>
+      </div>
+
+      <div class="tools-col-label" style="margin-top:30px">Areas of Expertise</div>
+      <div class="expertise-tags">
+        <span class="expertise-tag">Product Design</span>
+        <span class="expertise-tag">UX Research</span>
+        <span class="expertise-tag">UX/UI</span>
+        <span class="expertise-tag">Design Systems</span>
+        <span class="expertise-tag">Interaction Design</span>
+        <span class="expertise-tag">Prototyping</span>
+        <span class="expertise-tag">Motion Design</span>
+        <span class="expertise-tag">Web Design</span>
+        <span class="expertise-tag">Branding</span>
+        <span class="expertise-tag">Art Direction</span>
+        <span class="expertise-tag">Visual Design</span>
+        <span class="expertise-tag">Figma-to-Code</span>
+        <span class="expertise-tag">HTML / CSS</span>
+        <span class="expertise-tag">Web3 &amp; DeFi</span>
+        <span class="expertise-tag">Gaming UX</span>
+        <span class="expertise-tag">Design Leadership</span>
+        <span class="expertise-tag">Product Strategy</span>
       </div>
     </section>
 
@@ -950,11 +1244,134 @@
     <section class="section" id="section-career">
       <div class="section-eyebrow">04 · CAREER</div>
       <h2 class="section-h"><span>Career</span><br/>timeline.</h2>
-      <div class="career-row"><div class="career-row-year">2022 — NOW</div><div class="career-row-role">UX/UI/Product Designer</div><div class="career-row-company">OpenLoot · Remote</div></div>
-      <div class="career-row"><div class="career-row-year">2020 — 2021</div><div class="career-row-role">Creative Leader</div><div class="career-row-company">PSh · Buenos Aires</div></div>
-      <div class="career-row"><div class="career-row-year">2019 — 2020</div><div class="career-row-role">UX/UI Lead</div><div class="career-row-company">_coderio</div></div>
-      <div class="career-row"><div class="career-row-year">2015 — 2018</div><div class="career-row-role">Product Design</div><div class="career-row-company">SIMPLY.VISION · Tel Aviv</div></div>
-      <div class="career-row"><div class="career-row-year">2011 — 2015</div><div class="career-row-role">Senior UI/Visual Designer</div><div class="career-row-company">Globant</div></div>
+
+      <div class="career-row" data-career>
+        <div class="career-row-head">
+          <div class="career-row-main">
+            <div class="career-row-year">2022 — NOW</div>
+            <div class="career-row-role">Product Designer</div>
+            <div class="career-row-company">Big Time Studios / OpenLoot</div>
+          </div>
+          <div class="career-row-arrow">˅</div>
+        </div>
+        <div class="career-row-body"><div class="career-row-body-inner">
+          <div class="career-row-tags"><span class="career-row-tag">gaming</span><span class="career-row-tag">web3</span><span class="career-row-tag">defi</span><span class="career-row-tag">marketplace</span></div>
+          <div class="career-row-meta">Jul 2022 — Mar 2026 · United States</div>
+          <div class="career-row-desc">Product Designer at <strong>OpenLoot.com</strong>, specializing in bridging the gap between complex Web3 infrastructure and intuitive UX for a leading crypto-game marketplace. Expert at translating blockchain technicalities — wallet integration, asset ownership — into seamless interfaces for non-native users.</div>
+        </div></div>
+      </div>
+
+      <div class="career-row" data-career>
+        <div class="career-row-head">
+          <div class="career-row-main">
+            <div class="career-row-year">2020 — 2021</div>
+            <div class="career-row-role">Creative Leader</div>
+            <div class="career-row-company">PSh</div>
+          </div>
+          <div class="career-row-arrow">˅</div>
+        </div>
+        <div class="career-row-body"><div class="career-row-body-inner">
+          <div class="career-row-tags"><span class="career-row-tag">web</span><span class="career-row-tag">motion</span><span class="career-row-tag">multimedia</span></div>
+          <div class="career-row-meta">Jul 2020 — Jun 2021 · Buenos Aires, Argentina</div>
+          <div class="career-row-desc">Cross-functional 12-member team management (web, graphic, motion). Scalable workflows, technical delivery guidelines, stakeholder engagement, measurable processes. Collaborated with senior leadership on roadmaps and operational growth.</div>
+        </div></div>
+      </div>
+
+      <div class="career-row" data-career>
+        <div class="career-row-head">
+          <div class="career-row-main">
+            <div class="career-row-year">2019 — 2020</div>
+            <div class="career-row-role">UX / UI Design Leader</div>
+            <div class="career-row-company">_coderio</div>
+          </div>
+          <div class="career-row-arrow">˅</div>
+        </div>
+        <div class="career-row-body"><div class="career-row-body-inner">
+          <div class="career-row-tags"><span class="career-row-tag">b2b</span><span class="career-row-tag">ux/ui</span><span class="career-row-tag">design lead</span></div>
+          <div class="career-row-meta">Sep 2019 — Jul 2020 · Buenos Aires, Argentina</div>
+          <div class="career-row-desc">Design Lead of a cross-functional team of 8, delivering complex UX/UI and website projects (B2B tech). Adopted Design Thinking / Jobs-to-be-Done, improved project efficiency and team performance, led process optimization to drive business growth.</div>
+        </div></div>
+      </div>
+
+      <div class="career-row" data-career>
+        <div class="career-row-head">
+          <div class="career-row-main">
+            <div class="career-row-year">2015 — 2018</div>
+            <div class="career-row-role">Design Manager</div>
+            <div class="career-row-company">SIMPLY.VISION</div>
+          </div>
+          <div class="career-row-arrow">˅</div>
+        </div>
+        <div class="career-row-body"><div class="career-row-body-inner">
+          <div class="career-row-tags"><span class="career-row-tag">mobile app</span><span class="career-row-tag">health &amp; wellness</span><span class="career-row-tag">startup</span></div>
+          <div class="career-row-meta">Jan 2015 — Dec 2018 · Tel Aviv, Israel (contract)</div>
+          <div class="career-row-desc">UX / UI, Product, Branding, Website, Mobile App.</div>
+        </div></div>
+      </div>
+
+      <div class="career-row" data-career>
+        <div class="career-row-head">
+          <div class="career-row-main">
+            <div class="career-row-year">2011 — 2015</div>
+            <div class="career-row-role">Senior Advance UI &amp; Visual Designer</div>
+            <div class="career-row-company">Globant</div>
+          </div>
+          <div class="career-row-arrow">˅</div>
+        </div>
+        <div class="career-row-body"><div class="career-row-body-inner">
+          <div class="career-row-tags"><span class="career-row-tag">mobile</span><span class="career-row-tag">disney</span><span class="career-row-tag">dreamworks</span></div>
+          <div class="career-row-meta">Jul 2011 — Jan 2015 · Buenos Aires, Argentina</div>
+          <div class="career-row-desc">UX / Art Direction / Concept development. UX and UI for mobile game (<strong>Disney</strong> Arg.), analysis + UX/UI for <strong>Dreamworks</strong> "On Site" admin platform (CA-USA).</div>
+        </div></div>
+      </div>
+
+      <div class="career-row" data-career>
+        <div class="career-row-head">
+          <div class="career-row-main">
+            <div class="career-row-year">2009 — 2011</div>
+            <div class="career-row-role">Senior UI &amp; Visual Designer</div>
+            <div class="career-row-company">Nextive Solutions</div>
+          </div>
+          <div class="career-row-arrow">˅</div>
+        </div>
+        <div class="career-row-body"><div class="career-row-body-inner">
+          <div class="career-row-tags"><span class="career-row-tag">mobile</span><span class="career-row-tag">illustration</span><span class="career-row-tag">gaming</span></div>
+          <div class="career-row-meta">Aug 2009 — Jul 2011 · California, USA</div>
+          <div class="career-row-desc">Design, illustration &amp; motion for mobile games (<strong>Zynga</strong>, <strong>Big Fish Games</strong>).</div>
+        </div></div>
+      </div>
+
+      <div class="career-row" data-career>
+        <div class="career-row-head">
+          <div class="career-row-main">
+            <div class="career-row-year">2007 — 2009</div>
+            <div class="career-row-role">Web Designer</div>
+            <div class="career-row-company">e-Volution</div>
+          </div>
+          <div class="career-row-arrow">˅</div>
+        </div>
+        <div class="career-row-body"><div class="career-row-body-inner">
+          <div class="career-row-tags"><span class="career-row-tag">web2.0</span><span class="career-row-tag">html+css</span><span class="career-row-tag">dreamweaver</span></div>
+          <div class="career-row-meta">Jul 2007 — May 2009 · Buenos Aires, Argentina</div>
+          <div class="career-row-desc">External proposals front-end development, microsites, mailing. HTML + CSS for <strong>Microsoft Latam</strong>.</div>
+        </div></div>
+      </div>
+
+      <div class="career-row" data-career>
+        <div class="career-row-head">
+          <div class="career-row-main">
+            <div class="career-row-year">2001 — 2007</div>
+            <div class="career-row-role">Graphic Design — Graduation</div>
+            <div class="career-row-company">FADU / UBA — Universidad de Buenos Aires</div>
+          </div>
+          <div class="career-row-arrow">˅</div>
+        </div>
+        <div class="career-row-body"><div class="career-row-body-inner">
+          <div class="career-row-tags"><span class="career-row-tag">education</span><span class="career-row-tag">graphic design</span></div>
+          <div class="career-row-meta">2001 — 2007 · Buenos Aires, Argentina</div>
+          <div class="career-row-desc">Bachelor's degree in Graphic Design — six-year program at Universidad de Buenos Aires, Facultad de Arquitectura, Diseño y Urbanismo.</div>
+        </div></div>
+      </div>
     </section>
 
     <section class="section" id="section-contact">
@@ -982,11 +1399,19 @@
     <div class="game-title">LV 01 · KNOCK</div>
     <button class="game-close">×</button>
   </div>
-  <div class="game-instruction">Tap the door <strong>3 times</strong> to say hi.</div>
+  <div class="game-instruction">Listen. <strong>Tap the tempo</strong> back.</div>
   <div class="game-body">
-    <div class="knock-hud">HITS <span id="knock-count">0</span>/3</div>
-    <div class="knock-target" id="knock-target">
-      <div class="knock-target-label">KNOCK</div>
+    <div class="knock-hud">TAPS <span id="knock-count">0</span>/<span id="knock-total">4</span></div>
+    <div class="rhythm-beats" id="rhythm-beats">
+      <div class="rhythm-dot"></div>
+      <div class="rhythm-dot"></div>
+      <div class="rhythm-dot"></div>
+      <div class="rhythm-dot"></div>
+    </div>
+    <button class="rhythm-listen" id="rhythm-listen" type="button">▶ LISTEN</button>
+    <div class="rhythm-hint" id="rhythm-hint">Tap LISTEN to hear the beat</div>
+    <div class="knock-target idle" id="knock-target">
+      <div class="knock-target-label">TAP<br/>HERE</div>
     </div>
   </div>
   <div class="game-win" id="win-knock">
@@ -1133,30 +1558,176 @@ function completeGame(game, section) {
   const sec = document.getElementById('section-' + section);
   sec.classList.add('revealed');
   setTimeout(() => sec.scrollIntoView({ behavior: 'smooth' }), 180);
+  if (section === 'tools') animateSkillBars();
   if (STATE.unlocked.size === 5) {
     document.getElementById('end-banner').classList.add('active');
   }
 }
 
-/* KNOCK */
-let knockCount = 0;
-function initKnock() {
-  knockCount = 0;
-  document.getElementById('knock-count').textContent = '0';
+function animateSkillBars() {
+  const bars = document.querySelectorAll('#section-tools .skill-bar');
+  bars.forEach((bar, i) => {
+    const pct = bar.getAttribute('data-pct') || '0';
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+    setTimeout(() => {
+      bar.style.transition = 'width 900ms cubic-bezier(0.22,1,0.36,1)';
+      bar.style.width = pct + '%';
+    }, 400 + i * 120);
+  });
+}
+
+document.querySelectorAll('[data-career]').forEach(row => {
+  row.addEventListener('click', () => row.classList.toggle('open'));
+});
+
+/* KNOCK — tempo-match rhythm game */
+const RHYTHM_PATTERN = [0, 500, 1000, 1800];
+const RHYTHM_PITCHES = [440, 370, 440, 294];
+const RHYTHM_TOLERANCE = 260;
+
+let audioCtx = null;
+function getAudio() {
+  if (!audioCtx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) audioCtx = new AC();
+  }
+  return audioCtx;
+}
+function beep(freq, durationMs) {
+  const ctx = getAudio();
+  if (!ctx) return;
+  if (ctx.state === 'suspended') ctx.resume();
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.22, now + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + durationMs / 1000);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + durationMs / 1000 + 0.02);
+}
+
+let rhythmTaps = [];
+let rhythmListenTimers = [];
+let rhythmReady = false;
+
+function rhythmResetDots(state) {
+  document.querySelectorAll('#rhythm-beats .rhythm-dot').forEach(d => {
+    d.classList.remove('play', 'tap', 'miss');
+    if (state) d.classList.add(state);
+  });
+}
+function rhythmPlayPattern() {
+  const listenBtn = document.getElementById('rhythm-listen');
   const target = document.getElementById('knock-target');
+  const hint = document.getElementById('rhythm-hint');
+  const dots = document.querySelectorAll('#rhythm-beats .rhythm-dot');
+
+  rhythmListenTimers.forEach(clearTimeout);
+  rhythmListenTimers = [];
+  rhythmResetDots();
+  rhythmReady = false;
+  rhythmTaps = [];
+  document.getElementById('knock-count').textContent = '0';
+
+  listenBtn.classList.add('playing');
+  listenBtn.textContent = '♪ playing';
+  target.classList.add('listening');
+  target.classList.remove('idle');
+  hint.textContent = 'Listen carefully...';
+
+  RHYTHM_PATTERN.forEach((t, i) => {
+    rhythmListenTimers.push(setTimeout(() => {
+      beep(RHYTHM_PITCHES[i], 260);
+      dots[i].classList.add('play');
+      setTimeout(() => dots[i].classList.remove('play'), 260);
+    }, t));
+  });
+
+  const totalDur = RHYTHM_PATTERN[RHYTHM_PATTERN.length - 1] + 400;
+  rhythmListenTimers.push(setTimeout(() => {
+    listenBtn.classList.remove('playing');
+    listenBtn.textContent = '▶ LISTEN again';
+    target.classList.remove('listening');
+    target.classList.add('idle');
+    hint.textContent = 'Now tap the tempo →';
+    rhythmReady = true;
+  }, totalDur));
+}
+
+function rhythmEvaluate() {
+  const dots = document.querySelectorAll('#rhythm-beats .rhythm-dot');
+  const hint = document.getElementById('rhythm-hint');
+  let passed = 0;
+  rhythmTaps.forEach((tapTime, i) => {
+    const expected = RHYTHM_PATTERN[i];
+    const diff = Math.abs(tapTime - expected);
+    if (diff <= RHYTHM_TOLERANCE) {
+      dots[i].classList.remove('tap');
+      dots[i].classList.add('tap');
+      passed++;
+    } else {
+      dots[i].classList.remove('tap');
+      dots[i].classList.add('miss');
+    }
+  });
+  if (passed >= 3) {
+    hint.textContent = 'Perfect tempo ✓';
+    setTimeout(() => winGame('knock'), 500);
+  } else {
+    hint.textContent = 'Off beat — try again';
+    setTimeout(() => {
+      rhythmResetDots();
+      rhythmTaps = [];
+      document.getElementById('knock-count').textContent = '0';
+      rhythmReady = false;
+      hint.textContent = 'Tap LISTEN to try again';
+      document.getElementById('rhythm-listen').textContent = '▶ LISTEN';
+    }, 1200);
+  }
+}
+
+function initKnock() {
+  rhythmListenTimers.forEach(clearTimeout);
+  rhythmListenTimers = [];
+  rhythmTaps = [];
+  rhythmReady = false;
+  document.getElementById('knock-count').textContent = '0';
+  document.getElementById('rhythm-hint').textContent = 'Tap LISTEN to hear the beat';
+  const listenBtn = document.getElementById('rhythm-listen');
+  listenBtn.textContent = '▶ LISTEN';
+  listenBtn.classList.remove('playing');
+  rhythmResetDots();
+
+  listenBtn.onclick = rhythmPlayPattern;
+
+  const target = document.getElementById('knock-target');
+  target.classList.add('idle');
+  target.classList.remove('listening');
+
   const handler = () => {
-    knockCount++;
-    document.getElementById('knock-count').textContent = String(knockCount);
+    if (!rhythmReady) return;
+    if (rhythmTaps.length === 0) rhythmStart = performance.now();
+    const t = performance.now() - rhythmStart;
+    const idx = rhythmTaps.length;
+    rhythmTaps.push(t);
+    document.getElementById('knock-count').textContent = String(rhythmTaps.length);
     target.classList.remove('hit');
     void target.offsetWidth;
     target.classList.add('hit');
-    if (knockCount >= 3) {
-      setTimeout(() => winGame('knock'), 260);
-      target.removeEventListener('click', handler);
+    beep(RHYTHM_PITCHES[idx] || 440, 120);
+    if (rhythmTaps.length >= RHYTHM_PATTERN.length) {
+      rhythmReady = false;
+      setTimeout(rhythmEvaluate, 300);
     }
   };
-  target.addEventListener('click', handler);
+  target.onclick = handler;
 }
+let rhythmStart = 0;
 
 /* MATCH */
 const MATCH_SYMBOLS = ['F','P','A'];
