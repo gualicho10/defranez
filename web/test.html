@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0"/>
+  <title>EDF · Arcade — Mobile V2 Prototype</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Press+Start+2P&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #080a0c;
+      --bg2: #0e1114;
+      --border: rgba(255,255,255,0.08);
+      --accent: #00f5a0;
+      --accent2: #00c8ff;
+      --text: #e8eaed;
+      --muted: #6b7280;
+      --danger: #ff4d4d;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        repeating-linear-gradient(0deg, rgba(0,245,160,0.02) 0, rgba(0,245,160,0.02) 1px, transparent 1px, transparent 3px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.55) 100%);
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    .frame-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 20px 0;
+      min-height: 100vh;
+    }
+    .phone {
+      width: 390px;
+      max-width: 100vw;
+      min-height: 100vh;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    @media (max-width: 560px) {
+      .frame-wrap { padding: 0; }
+      .phone { border: none; width: 100vw; }
+    }
+
+    .hub {
+      padding: 28px 20px 40px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .hub-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .hub-logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+    .hub-score {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--text);
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+    }
+    .hub-score .score-num { color: var(--accent); }
+
+    .hub-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 44px;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-top: 12px;
+    }
+    .hub-title span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hub-sub {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hub-sub::before {
+      content: '▸';
+      color: var(--accent);
+      animation: blink 1.4s infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hub-grid { display: flex; flex-direction: column; gap: 10px; }
+    .hub-tile {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.1s;
+    }
+    .hub-tile::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(0,245,160,0.04), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .hub-tile:active { transform: scale(0.98); }
+    .hub-tile.unlocked {
+      border-color: rgba(0,245,160,0.3);
+      background: linear-gradient(133deg, rgba(0,245,160,0.06) 0%, rgba(0,200,255,0.02) 100%);
+    }
+    .hub-tile.unlocked::before { opacity: 1; }
+    .hub-tile.unlocked .tile-status { color: var(--accent); }
+    .tile-num {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      min-width: 28px;
+    }
+    .tile-main { flex: 1; }
+    .tile-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    .tile-game {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+    .tile-game .tile-diff { color: var(--accent); margin-left: 6px; }
+    .tile-status {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .tile-arrow { font-size: 16px; color: var(--muted); margin-left: 4px; }
+    .hub-tile.unlocked .tile-arrow { color: var(--accent); }
+
+    .hub-foot {
+      margin-top: auto;
+      padding-top: 40px;
+      text-align: center;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .game-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 500;
+      display: none;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .game-overlay.active { display: flex; }
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .game-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+    .game-close {
+      width: 32px; height: 32px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .game-instruction {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--muted);
+      text-align: center;
+      margin: 24px 0 10px;
+    }
+    .game-instruction strong { color: var(--accent); font-weight: 700; }
+    .game-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .game-win {
+      position: absolute;
+      inset: 0;
+      background: var(--bg);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      z-index: 2;
+      padding: 20px;
+    }
+    .game-win.active { display: flex; }
+    .win-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 18px;
+      color: var(--accent);
+      animation: winPulse 0.6s ease-out;
+    }
+    @keyframes winPulse {
+      0% { transform: scale(0.5); opacity: 0; }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .win-msg {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--text);
+      text-align: center;
+      max-width: 280px;
+      line-height: 1.4;
+    }
+    .win-btn {
+      margin-top: 12px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      background: var(--accent);
+      color: #080a0c;
+      border: none;
+      padding: 16px 28px;
+      cursor: pointer;
+    }
+    .win-btn:active { transform: translateY(1px); }
+
+    .knock-hud {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .knock-hud span { color: var(--accent); }
+    .knock-target {
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: radial-gradient(circle, rgba(0,245,160,0.12), transparent 70%);
+    }
+    .knock-target::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      animation: knockRing 1.2s ease-out infinite;
+    }
+    @keyframes knockRing {
+      0% { transform: scale(0.6); opacity: 1; }
+      100% { transform: scale(1.25); opacity: 0; }
+    }
+    .knock-target-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      position: relative;
+      z-index: 1;
+    }
+    .knock-target.hit {
+      animation: knockHit 0.25s;
+      background: radial-gradient(circle, rgba(0,245,160,0.35), transparent 70%);
+    }
+    @keyframes knockHit {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.92); }
+    }
+
+    .match-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 90px);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .match-card {
+      width: 90px;
+      height: 112px;
+      position: relative;
+      cursor: pointer;
+      perspective: 600px;
+    }
+    .match-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      transition: transform 0.5s;
+      border: 1px solid var(--border);
+    }
+    .match-back {
+      background: linear-gradient(135deg, rgba(0,245,160,0.08), rgba(0,200,255,0.04));
+      color: var(--accent);
+      border-color: rgba(0,245,160,0.25);
+    }
+    .match-front {
+      background: var(--bg2);
+      color: var(--accent);
+      transform: rotateY(180deg);
+      font-size: 22px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+    }
+    .match-card.flipped .match-back { transform: rotateY(180deg); }
+    .match-card.flipped .match-front { transform: rotateY(360deg); }
+    .match-card.matched .match-front {
+      border-color: var(--accent);
+      background: rgba(0,245,160,0.12);
+    }
+
+    .snake-hud {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 320px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+    }
+    .snake-hud .score { color: var(--accent); }
+    #snake-canvas {
+      background: #05070a;
+      border: 1px solid var(--border);
+      image-rendering: pixelated;
+      touch-action: none;
+    }
+    .snake-controls {
+      display: grid;
+      grid-template-columns: 64px 64px 64px;
+      grid-template-rows: 64px 64px;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .snake-btn {
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--accent);
+      font-size: 22px;
+      font-family: 'DM Mono', monospace;
+      cursor: pointer;
+      user-select: none;
+    }
+    .snake-btn:active { background: rgba(0,245,160,0.15); }
+    .snake-btn.up { grid-column: 2; grid-row: 1; }
+    .snake-btn.left { grid-column: 1; grid-row: 2; }
+    .snake-btn.down { grid-column: 2; grid-row: 2; }
+    .snake-btn.right { grid-column: 3; grid-row: 2; }
+
+    .hop-wrap {
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .hop-track {
+      height: 50vh;
+      min-height: 340px;
+      border-left: 2px solid var(--accent);
+      margin-left: 20px;
+      position: relative;
+      padding: 8px 0 8px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .hop-year {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      position: relative;
+      padding-left: 4px;
+      transition: color 0.2s;
+    }
+    .hop-year::before {
+      content: '';
+      position: absolute;
+      left: -32px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--bg2);
+      border: 2px solid var(--muted);
+      transition: all 0.2s;
+    }
+    .hop-year.done { color: var(--accent); }
+    .hop-year.done::before {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .hop-pin {
+      position: absolute;
+      left: -34px;
+      top: 0;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      cursor: grab;
+      touch-action: none;
+      box-shadow: 0 0 12px var(--accent);
+      transition: top 0.05s linear;
+    }
+    .hop-pin:active { cursor: grabbing; transform: scale(1.1); }
+    .hop-instruction {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      letter-spacing: 0.1em;
+    }
+
+    .dial-display {
+      width: 260px;
+      min-height: 60px;
+      padding: 14px 16px;
+      background: var(--bg2);
+      border: 1px solid var(--accent);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      color: var(--accent);
+      text-align: center;
+      letter-spacing: 0.08em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+    .digit-slot {
+      width: 20px;
+      display: inline-block;
+      text-align: center;
+    }
+    .digit-on { color: var(--accent); }
+    .digit-off { color: var(--muted); opacity: 0.3; }
+    .dial-prompt {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: -8px;
+    }
+    .dial-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 70px);
+      gap: 8px;
+    }
+    .dial-key {
+      width: 70px;
+      height: 62px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .dial-key:active { background: rgba(0,245,160,0.12); color: var(--accent); }
+    .dial-key.wrong {
+      background: rgba(255,77,77,0.18);
+      animation: shake 0.3s;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .section {
+      padding: 40px 20px 60px;
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+    .section.revealed {
+      display: block;
+      animation: revealUp 0.6s ease-out;
+    }
+    @keyframes revealUp {
+      0% { opacity: 0; transform: translateY(24px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .section-eyebrow {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+    }
+    .section-h {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 34px;
+      letter-spacing: -0.03em;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 18px;
+    }
+    .section-h span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-p {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .section-p strong { color: var(--text); font-weight: 600; }
+
+    .deck {
+      display: flex;
+      flex-direction: row;
+      gap: 14px;
+      margin: 16px -20px 0;
+      padding: 0 20px 14px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .deck::-webkit-scrollbar { display: none; }
+    .deck-card {
+      flex: 0 0 82%;
+      scroll-snap-align: center;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      overflow: hidden;
+      position: relative;
+    }
+    .deck-cover {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: #13171c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .deck-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .deck-counter {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--accent);
+      background: rgba(8,10,12,0.85);
+      padding: 6px 8px;
+      border: 1px solid rgba(0,245,160,0.25);
+      letter-spacing: 0.05em;
+    }
+    .deck-cat {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text);
+      background: rgba(8,10,12,0.85);
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+    }
+    .deck-info { padding: 16px 18px 18px; }
+    .deck-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: #fff;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+    .deck-meta {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .deck-desc {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .deck-cta {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid rgba(0,245,160,0.3);
+    }
+
+    .career-row { padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .career-row-year {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .career-row-role {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: #fff;
+    }
+    .career-row-company { font-size: 12px; color: var(--muted); }
+
+    .contact-row {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-decoration: none;
+    }
+    .contact-row-label {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .contact-row-val {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: #fff;
+    }
+    .contact-row-arrow { font-family: 'Press Start 2P', monospace; color: var(--accent); }
+
+    .tools-list { margin-top: 18px; }
+    .tools-row {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .tools-row-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: #fff;
+    }
+    .tools-row-pct {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: var(--accent);
+    }
+
+    .end-banner {
+      display: none;
+      margin: 40px 20px;
+      padding: 26px 22px;
+      border: 1px solid rgba(0,245,160,0.4);
+      background: linear-gradient(133deg, rgba(0,245,160,0.08), rgba(0,200,255,0.03));
+      text-align: center;
+    }
+    .end-banner.active { display: block; }
+    .end-banner-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .end-banner-msg {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+
+<div class="frame-wrap">
+  <div class="phone">
+
+    <div class="hub" id="hub">
+      <div class="hub-top">
+        <div class="hub-logo">EDF ARCADE</div>
+        <div class="hub-score">LV <span class="score-num" id="score-num">0</span>/5</div>
+      </div>
+
+      <h1 class="hub-title">Play to<br/><span>unlock me.</span></h1>
+
+      <div class="hub-sub">Pick a level</div>
+
+      <div class="hub-grid">
+
+        <div class="hub-tile" data-game="knock" data-section="about">
+          <div class="tile-num">01</div>
+          <div class="tile-main">
+            <div class="tile-name">About</div>
+            <div class="tile-game">Knock · <span class="tile-diff">★☆☆☆☆</span></div>
+          </div>
+          <div class="tile-status">LOCKED</div>
+          <div class="tile-arrow">›</div>
+        </div>
+
+        <div class="hub-tile" data-game="match" data-section="tools">
+          <div class="tile-num">02</div>
+          <div class="tile-main">
+            <div class="tile-name">Tools</div>
+            <div class="tile-game">Match · <span class="tile-diff">★★☆☆☆</span></div>
+          </div>
+          <div class="tile-status">LOCKED</div>
+          <div class="tile-arrow">›</div>
+        </div>
+
+        <div class="hub-tile" data-game="snake" data-section="portfolio">
+          <div class="tile-num">03</div>
+          <div class="tile-main">
+            <div class="tile-name">Portfolio</div>
+            <div class="tile-game">Snake · <span class="tile-diff">★★★★★</span></div>
+          </div>
+          <div class="tile-status">LOCKED</div>
+          <div class="tile-arrow">›</div>
+        </div>
+
+        <div class="hub-tile" data-game="hop" data-section="career">
+          <div class="tile-num">04</div>
+          <div class="tile-main">
+            <div class="tile-name">Career</div>
+            <div class="tile-game">Hop · <span class="tile-diff">★★★☆☆</span></div>
+          </div>
+          <div class="tile-status">LOCKED</div>
+          <div class="tile-arrow">›</div>
+        </div>
+
+        <div class="hub-tile" data-game="dial" data-section="contact">
+          <div class="tile-num">05</div>
+          <div class="tile-main">
+            <div class="tile-name">Contact</div>
+            <div class="tile-game">Dial · <span class="tile-diff">★★☆☆☆</span></div>
+          </div>
+          <div class="tile-status">LOCKED</div>
+          <div class="tile-arrow">›</div>
+        </div>
+
+      </div>
+
+      <div class="hub-foot">v2 mobile · prototype</div>
+    </div>
+
+    <div class="end-banner" id="end-banner">
+      <div class="end-banner-label">★ ALL UNLOCKED ★</div>
+      <div class="end-banner-msg">you beat the game.<br/>let's work together.</div>
+    </div>
+
+    <section class="section" id="section-about">
+      <div class="section-eyebrow">01 · ABOUT</div>
+      <h2 class="section-h">A bit<br/><span>about me.</span></h2>
+      <p class="section-p"><strong>Senior Product Designer</strong> with 22 years of experience. From Press & Editorial to Web3 marketplaces and mobile games.</p>
+      <p class="section-p">Recently at <strong>Big Time Studios / OpenLoot</strong>, bridging blockchain infrastructure and intuitive UX.</p>
+      <p class="section-p">Based in <strong>Buenos Aires</strong>. Available for remote work worldwide.</p>
+    </section>
+
+    <section class="section" id="section-tools">
+      <div class="section-eyebrow">02 · TOOLS</div>
+      <h2 class="section-h"><span>Tools</span><br/>& Expertise.</h2>
+      <div class="tools-list">
+        <div class="tools-row"><span class="tools-row-name">Figma</span><span class="tools-row-pct">100</span></div>
+        <div class="tools-row"><span class="tools-row-name">Photoshop</span><span class="tools-row-pct">100</span></div>
+        <div class="tools-row"><span class="tools-row-name">Illustrator</span><span class="tools-row-pct">85</span></div>
+        <div class="tools-row"><span class="tools-row-name">Claude Code</span><span class="tools-row-pct">75</span></div>
+        <div class="tools-row"><span class="tools-row-name">JIRA</span><span class="tools-row-pct">75</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="section-portfolio">
+      <div class="section-eyebrow">03 · PORTFOLIO</div>
+      <h2 class="section-h"><span>Projects</span><br/>unlocked.</h2>
+      <div class="deck">
+        <article class="deck-card">
+          <div class="deck-cover">
+            <img src="img/cover-1.png" alt="OpenLoot" onerror="this.style.display='none'">
+            <div class="deck-counter">01/06</div>
+            <div class="deck-cat">WEB3 · NFT</div>
+          </div>
+          <div class="deck-info">
+            <div class="deck-title">Product Design at OpenLoot</div>
+            <div class="deck-meta">OpenLoot · 2022–Now</div>
+            <div class="deck-desc">Bridging blockchain complexity with intuitive marketplace UX — security flows, 2FA, high-conversion commerce.</div>
+            <a href="https://www.behance.net/defranez" target="_blank" class="deck-cta">OPEN CASE →</a>
+          </div>
+        </article>
+
+        <article class="deck-card">
+          <div class="deck-cover">
+            <img src="img/cover-2.png" alt="Our Dipper" onerror="this.style.display='none'">
+            <div class="deck-counter">02/06</div>
+            <div class="deck-cat">UX/UI · WEB APP</div>
+          </div>
+          <div class="deck-info">
+            <div class="deck-title">Our Dipper — Landing + Web app</div>
+            <div class="deck-meta">Our Dipper · 2023</div>
+            <div class="deck-desc">Intuitive service-management platform. Full user journey from discovery to booking.</div>
+            <a href="https://www.behance.net/defranez" target="_blank" class="deck-cta">OPEN CASE →</a>
+          </div>
+        </article>
+
+        <article class="deck-card">
+          <div class="deck-cover">
+            <img src="img/cover-3.png" alt="Roche" onerror="this.style.display='none'">
+            <div class="deck-counter">03/06</div>
+            <div class="deck-cat">ENTERPRISE · HEALTH</div>
+          </div>
+          <div class="deck-info">
+            <div class="deck-title">UX/UI for Roche</div>
+            <div class="deck-meta">Roche · 2020</div>
+            <div class="deck-desc">Event/congress management platform with enterprise-grade UX.</div>
+            <a href="https://www.behance.net/defranez" target="_blank" class="deck-cta">OPEN CASE →</a>
+          </div>
+        </article>
+
+        <article class="deck-card">
+          <div class="deck-cover">
+            <img src="img/cover-4.png" alt="Mobile Games" onerror="this.style.display='none'">
+            <div class="deck-counter">04/06</div>
+            <div class="deck-cat">GAMING · MOBILE</div>
+          </div>
+          <div class="deck-info">
+            <div class="deck-title">Mobile Games</div>
+            <div class="deck-meta">Globant · 2013</div>
+            <div class="deck-desc">Game UI for mobile — HUDs, visual systems, high-engagement interaction.</div>
+            <a href="https://www.behance.net/defranez" target="_blank" class="deck-cta">OPEN CASE →</a>
+          </div>
+        </article>
+
+        <article class="deck-card">
+          <div class="deck-cover">
+            <img src="img/cover-5.png" alt="Branding" onerror="this.style.display='none'">
+            <div class="deck-counter">05/06</div>
+            <div class="deck-cat">BRAND · SOCIAL</div>
+          </div>
+          <div class="deck-info">
+            <div class="deck-title">Branding + Social</div>
+            <div class="deck-meta">Freelance · 2018</div>
+            <div class="deck-desc">Logo systems, visual guidelines, social content across industries.</div>
+            <a href="https://www.behance.net/defranez" target="_blank" class="deck-cta">OPEN CASE →</a>
+          </div>
+        </article>
+
+        <article class="deck-card">
+          <div class="deck-cover">
+            <img src="img/cover-6.png" alt="Sketchup" onerror="this.style.display='none'">
+            <div class="deck-counter">06/06</div>
+            <div class="deck-cat">3D · RENDER</div>
+          </div>
+          <div class="deck-info">
+            <div class="deck-title">Sketchup: 3D + Render</div>
+            <div class="deck-meta">Personal · 2025</div>
+            <div class="deck-desc">3D modelling + ENSCAPE render for architectural exploration.</div>
+            <a href="https://www.behance.net/defranez" target="_blank" class="deck-cta">OPEN CASE →</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="section-career">
+      <div class="section-eyebrow">04 · CAREER</div>
+      <h2 class="section-h"><span>Career</span><br/>timeline.</h2>
+      <div class="career-row"><div class="career-row-year">2022 — NOW</div><div class="career-row-role">UX/UI/Product Designer</div><div class="career-row-company">OpenLoot · Remote</div></div>
+      <div class="career-row"><div class="career-row-year">2020 — 2021</div><div class="career-row-role">Creative Leader</div><div class="career-row-company">PSh · Buenos Aires</div></div>
+      <div class="career-row"><div class="career-row-year">2019 — 2020</div><div class="career-row-role">UX/UI Lead</div><div class="career-row-company">_coderio</div></div>
+      <div class="career-row"><div class="career-row-year">2015 — 2018</div><div class="career-row-role">Product Design</div><div class="career-row-company">SIMPLY.VISION · Tel Aviv</div></div>
+      <div class="career-row"><div class="career-row-year">2011 — 2015</div><div class="career-row-role">Senior UI/Visual Designer</div><div class="career-row-company">Globant</div></div>
+    </section>
+
+    <section class="section" id="section-contact">
+      <div class="section-eyebrow">05 · CONTACT</div>
+      <h2 class="section-h">Let's build<br/><span>smtg great.</span></h2>
+      <a class="contact-row" href="mailto:ezequiel.defrancisco@gmail.com">
+        <div><div class="contact-row-label">EMAIL</div><div class="contact-row-val">ezequiel.defrancisco@gmail.com</div></div>
+        <div class="contact-row-arrow">↗</div>
+      </a>
+      <a class="contact-row" href="https://www.linkedin.com/in/ezequiel-de-francisco/" target="_blank">
+        <div><div class="contact-row-label">LINKEDIN</div><div class="contact-row-val">ezequiel-de-francisco</div></div>
+        <div class="contact-row-arrow">↗</div>
+      </a>
+      <a class="contact-row" href="https://www.behance.net/defranez" target="_blank">
+        <div><div class="contact-row-label">BEHANCE</div><div class="contact-row-val">behance.net/defranez</div></div>
+        <div class="contact-row-arrow">↗</div>
+      </a>
+    </section>
+
+  </div>
+</div>
+
+<div class="game-overlay" id="game-knock">
+  <div class="game-header">
+    <div class="game-title">LV 01 · KNOCK</div>
+    <button class="game-close">×</button>
+  </div>
+  <div class="game-instruction">Tap the door <strong>3 times</strong> to say hi.</div>
+  <div class="game-body">
+    <div class="knock-hud">HITS <span id="knock-count">0</span>/3</div>
+    <div class="knock-target" id="knock-target">
+      <div class="knock-target-label">KNOCK</div>
+    </div>
+  </div>
+  <div class="game-win" id="win-knock">
+    <div class="win-label">★ UNLOCKED ★</div>
+    <div class="win-msg">ABOUT section opened.</div>
+    <button class="win-btn" data-done="knock:about">CONTINUE →</button>
+  </div>
+</div>
+
+<div class="game-overlay" id="game-match">
+  <div class="game-header">
+    <div class="game-title">LV 02 · MATCH</div>
+    <button class="game-close">×</button>
+  </div>
+  <div class="game-instruction">Match the <strong>3 pairs</strong> of tools.</div>
+  <div class="game-body">
+    <div class="match-grid" id="match-grid"></div>
+  </div>
+  <div class="game-win" id="win-match">
+    <div class="win-label">★ UNLOCKED ★</div>
+    <div class="win-msg">TOOLS section opened.</div>
+    <button class="win-btn" data-done="match:tools">CONTINUE →</button>
+  </div>
+</div>
+
+<div class="game-overlay" id="game-snake">
+  <div class="game-header">
+    <div class="game-title">LV 03 · SNAKE</div>
+    <button class="game-close">×</button>
+  </div>
+  <div class="game-instruction">Eat <strong>6 pellets</strong> = 6 projects. Don't bite yourself.</div>
+  <div class="game-body">
+    <div class="snake-hud">
+      <span>PELLETS <span class="score" id="snake-score">0</span>/6</span>
+      <span>LIVES <span class="score" id="snake-lives">∞</span></span>
+    </div>
+    <canvas id="snake-canvas" width="320" height="320"></canvas>
+    <div class="snake-controls">
+      <button class="snake-btn up" data-dir="up">▲</button>
+      <button class="snake-btn left" data-dir="left">◀</button>
+      <button class="snake-btn down" data-dir="down">▼</button>
+      <button class="snake-btn right" data-dir="right">▶</button>
+    </div>
+  </div>
+  <div class="game-win" id="win-snake">
+    <div class="win-label">★ UNLOCKED ★</div>
+    <div class="win-msg">PORTFOLIO deck ready.<br/>6 projects unlocked.</div>
+    <button class="win-btn" data-done="snake:portfolio">CONTINUE →</button>
+  </div>
+</div>
+
+<div class="game-overlay" id="game-hop">
+  <div class="game-header">
+    <div class="game-title">LV 04 · HOP</div>
+    <button class="game-close">×</button>
+  </div>
+  <div class="game-instruction">Drag the pin through <strong>all years</strong>.</div>
+  <div class="game-body">
+    <div class="hop-wrap">
+      <div class="hop-track" id="hop-track">
+        <div class="hop-pin" id="hop-pin"></div>
+        <div class="hop-year">2011 · Globant</div>
+        <div class="hop-year">2015 · SIMPLY.VISION</div>
+        <div class="hop-year">2019 · _coderio</div>
+        <div class="hop-year">2020 · PSh</div>
+        <div class="hop-year">2022 · OpenLoot</div>
+      </div>
+      <div class="hop-instruction">↓ Drag down ↓</div>
+    </div>
+  </div>
+  <div class="game-win" id="win-hop">
+    <div class="win-label">★ UNLOCKED ★</div>
+    <div class="win-msg">CAREER timeline opened.</div>
+    <button class="win-btn" data-done="hop:career">CONTINUE →</button>
+  </div>
+</div>
+
+<div class="game-overlay" id="game-dial">
+  <div class="game-header">
+    <div class="game-title">LV 05 · DIAL</div>
+    <button class="game-close">×</button>
+  </div>
+  <div class="game-instruction">Dial the <strong>last 4 digits</strong>: <strong id="dial-target-str">4371</strong></div>
+  <div class="game-body">
+    <div class="dial-display" id="dial-display"></div>
+    <div class="dial-prompt">TAP IN ORDER</div>
+    <div class="dial-keypad" id="dial-keypad"></div>
+  </div>
+  <div class="game-win" id="win-dial">
+    <div class="win-label">★ UNLOCKED ★</div>
+    <div class="win-msg">CONTACT channels opened.</div>
+    <button class="win-btn" data-done="dial:contact">CONTINUE →</button>
+  </div>
+</div>
+
+<script>
+const STATE = { unlocked: new Set() };
+
+document.querySelectorAll('.hub-tile').forEach(tile => {
+  tile.addEventListener('click', () => {
+    const game = tile.dataset.game;
+    const section = tile.dataset.section;
+    if (STATE.unlocked.has(section)) {
+      document.getElementById('section-' + section).scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    openGame(game);
+  });
+});
+
+document.querySelectorAll('.game-close').forEach(btn => {
+  btn.addEventListener('click', closeGame);
+});
+document.querySelectorAll('.win-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const parts = btn.dataset.done.split(':');
+    completeGame(parts[0], parts[1]);
+  });
+});
+
+function openGame(game) {
+  document.getElementById('game-' + game).classList.add('active');
+  if (game === 'knock') initKnock();
+  if (game === 'match') initMatch();
+  if (game === 'snake') initSnake();
+  if (game === 'hop') initHop();
+  if (game === 'dial') initDial();
+}
+function closeGame() {
+  document.querySelectorAll('.game-overlay.active').forEach(o => o.classList.remove('active'));
+  document.querySelectorAll('.game-win.active').forEach(w => w.classList.remove('active'));
+  stopSnake();
+}
+function winGame(game) {
+  document.getElementById('win-' + game).classList.add('active');
+}
+function completeGame(game, section) {
+  STATE.unlocked.add(section);
+  closeGame();
+  const tile = document.querySelector('.hub-tile[data-section="' + section + '"]');
+  tile.classList.add('unlocked');
+  tile.querySelector('.tile-status').textContent = 'DONE';
+  document.getElementById('score-num').textContent = STATE.unlocked.size;
+  const sec = document.getElementById('section-' + section);
+  sec.classList.add('revealed');
+  setTimeout(() => sec.scrollIntoView({ behavior: 'smooth' }), 180);
+  if (STATE.unlocked.size === 5) {
+    document.getElementById('end-banner').classList.add('active');
+  }
+}
+
+/* KNOCK */
+let knockCount = 0;
+function initKnock() {
+  knockCount = 0;
+  document.getElementById('knock-count').textContent = '0';
+  const target = document.getElementById('knock-target');
+  const handler = () => {
+    knockCount++;
+    document.getElementById('knock-count').textContent = String(knockCount);
+    target.classList.remove('hit');
+    void target.offsetWidth;
+    target.classList.add('hit');
+    if (knockCount >= 3) {
+      setTimeout(() => winGame('knock'), 260);
+      target.removeEventListener('click', handler);
+    }
+  };
+  target.addEventListener('click', handler);
+}
+
+/* MATCH */
+const MATCH_SYMBOLS = ['F','P','A'];
+function initMatch() {
+  const grid = document.getElementById('match-grid');
+  while (grid.firstChild) grid.removeChild(grid.firstChild);
+  const cards = [...MATCH_SYMBOLS, ...MATCH_SYMBOLS];
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+  let flipped = [];
+  let matched = 0;
+  cards.forEach((sym) => {
+    const card = document.createElement('div');
+    card.className = 'match-card';
+    const back = document.createElement('div');
+    back.className = 'match-face match-back';
+    back.textContent = '?';
+    const front = document.createElement('div');
+    front.className = 'match-face match-front';
+    front.textContent = sym;
+    card.appendChild(back);
+    card.appendChild(front);
+    card.addEventListener('click', () => {
+      if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+      if (flipped.length === 2) return;
+      card.classList.add('flipped');
+      flipped.push({ card, sym });
+      if (flipped.length === 2) {
+        if (flipped[0].sym === flipped[1].sym) {
+          flipped.forEach(f => f.card.classList.add('matched'));
+          matched++;
+          flipped = [];
+          if (matched === 3) setTimeout(() => winGame('match'), 400);
+        } else {
+          setTimeout(() => {
+            flipped.forEach(f => f.card.classList.remove('flipped'));
+            flipped = [];
+          }, 700);
+        }
+      }
+    });
+    grid.appendChild(card);
+  });
+}
+
+/* SNAKE */
+let snakeLoop = null;
+function initSnake() {
+  const canvas = document.getElementById('snake-canvas');
+  const ctx = canvas.getContext('2d');
+  const SIZE = 16;
+  const COLS = canvas.width / SIZE;
+  const ROWS = canvas.height / SIZE;
+  let snake = [{x:8,y:8},{x:7,y:8},{x:6,y:8}];
+  let dir = {x:1,y:0};
+  let nextDir = {x:1,y:0};
+  let pellet = randomPellet();
+  let eaten = 0;
+  const TARGET = 6;
+  document.getElementById('snake-score').textContent = '0';
+
+  function randomPellet() {
+    while (true) {
+      const p = { x: Math.floor(Math.random()*COLS), y: Math.floor(Math.random()*ROWS) };
+      if (!snake.some(s => s.x===p.x && s.y===p.y)) return p;
+    }
+  }
+  function setDir(nx, ny) {
+    if (snake.length > 1 && dir.x === -nx && dir.y === -ny) return;
+    nextDir = {x:nx, y:ny};
+  }
+  function tick() {
+    dir = nextDir;
+    const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+    if (head.x < 0) head.x = COLS - 1;
+    if (head.x >= COLS) head.x = 0;
+    if (head.y < 0) head.y = ROWS - 1;
+    if (head.y >= ROWS) head.y = 0;
+    if (snake.some((s, i) => i > 0 && s.x === head.x && s.y === head.y)) {
+      snake = [{x:8,y:8},{x:7,y:8},{x:6,y:8}];
+      dir = {x:1,y:0};
+      nextDir = {x:1,y:0};
+      draw();
+      return;
+    }
+    snake.unshift(head);
+    if (head.x === pellet.x && head.y === pellet.y) {
+      eaten++;
+      document.getElementById('snake-score').textContent = String(eaten);
+      if (eaten >= TARGET) {
+        stopSnake();
+        setTimeout(() => winGame('snake'), 250);
+        return;
+      }
+      pellet = randomPellet();
+    } else {
+      snake.pop();
+    }
+    draw();
+  }
+  function draw() {
+    ctx.fillStyle = '#05070a';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+    for (let i = 0; i < COLS; i++) {
+      ctx.beginPath(); ctx.moveTo(i*SIZE,0); ctx.lineTo(i*SIZE,canvas.height); ctx.stroke();
+    }
+    for (let i = 0; i < ROWS; i++) {
+      ctx.beginPath(); ctx.moveTo(0,i*SIZE); ctx.lineTo(canvas.width,i*SIZE); ctx.stroke();
+    }
+    ctx.fillStyle = '#00c8ff';
+    ctx.fillRect(pellet.x*SIZE+3, pellet.y*SIZE+3, SIZE-6, SIZE-6);
+    snake.forEach((s, i) => {
+      ctx.fillStyle = i === 0 ? '#00f5a0' : 'rgba(0,245,160,0.75)';
+      ctx.fillRect(s.x*SIZE+1, s.y*SIZE+1, SIZE-2, SIZE-2);
+    });
+  }
+  draw();
+
+  document.querySelectorAll('.snake-btn').forEach(btn => {
+    btn.onclick = () => {
+      const d = btn.dataset.dir;
+      if (d === 'up') setDir(0,-1);
+      if (d === 'down') setDir(0,1);
+      if (d === 'left') setDir(-1,0);
+      if (d === 'right') setDir(1,0);
+    };
+  });
+
+  let touchStart = null;
+  canvas.ontouchstart = (e) => { touchStart = e.touches[0]; e.preventDefault(); };
+  canvas.ontouchmove = (e) => { e.preventDefault(); };
+  canvas.ontouchend = (e) => {
+    if (!touchStart) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchStart.clientX;
+    const dy = t.clientY - touchStart.clientY;
+    if (Math.abs(dx) > Math.abs(dy)) {
+      if (Math.abs(dx) > 20) setDir(dx > 0 ? 1 : -1, 0);
+    } else {
+      if (Math.abs(dy) > 20) setDir(0, dy > 0 ? 1 : -1);
+    }
+    touchStart = null;
+  };
+
+  stopSnake();
+  snakeLoop = setInterval(tick, 160);
+}
+function stopSnake() {
+  if (snakeLoop) { clearInterval(snakeLoop); snakeLoop = null; }
+}
+
+/* HOP */
+function initHop() {
+  const track = document.getElementById('hop-track');
+  const pin = document.getElementById('hop-pin');
+  const years = document.querySelectorAll('.hop-year');
+  years.forEach(y => y.classList.remove('done'));
+  pin.style.top = '0px';
+  let dragging = false;
+  let hit = 0;
+
+  function setPin(clientY) {
+    const rect = track.getBoundingClientRect();
+    let y = clientY - rect.top;
+    y = Math.max(0, Math.min(rect.height - 18, y));
+    pin.style.top = y + 'px';
+    years.forEach(yr => {
+      if (yr.classList.contains('done')) return;
+      const yrRect = yr.getBoundingClientRect();
+      const yrCenter = yrRect.top + yrRect.height/2 - rect.top;
+      if (Math.abs(y + 9 - yrCenter) < 16) {
+        yr.classList.add('done');
+        hit++;
+        if (hit >= years.length) {
+          setTimeout(() => winGame('hop'), 300);
+        }
+      }
+    });
+  }
+
+  pin.ontouchstart = (e) => { dragging = true; e.preventDefault(); };
+  pin.onmousedown = (e) => { dragging = true; e.preventDefault(); };
+  document.ontouchmove = (e) => { if (dragging) setPin(e.touches[0].clientY); };
+  document.onmousemove = (e) => { if (dragging) setPin(e.clientY); };
+  document.ontouchend = () => { dragging = false; };
+  document.onmouseup = () => { dragging = false; };
+}
+
+/* DIAL */
+const DIAL_TARGET = '4371';
+function initDial() {
+  const keypad = document.getElementById('dial-keypad');
+  const display = document.getElementById('dial-display');
+  let entered = '';
+  while (keypad.firstChild) keypad.removeChild(keypad.firstChild);
+  const layout = ['1','2','3','4','5','6','7','8','9','*','0','#'];
+  layout.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'dial-key';
+    btn.textContent = d;
+    btn.addEventListener('click', () => {
+      if (d === '*' || d === '#') return;
+      const expected = DIAL_TARGET[entered.length];
+      if (d === expected) {
+        entered += d;
+        render();
+        if (entered === DIAL_TARGET) setTimeout(() => winGame('dial'), 280);
+      } else {
+        btn.classList.add('wrong');
+        entered = '';
+        setTimeout(() => { btn.classList.remove('wrong'); render(); }, 350);
+      }
+    });
+    keypad.appendChild(btn);
+  });
+  function render() {
+    while (display.firstChild) display.removeChild(display.firstChild);
+    for (let i = 0; i < DIAL_TARGET.length; i++) {
+      const slot = document.createElement('span');
+      slot.className = 'digit-slot ' + (i < entered.length ? 'digit-on' : 'digit-off');
+      slot.textContent = i < entered.length ? entered[i] : '_';
+      display.appendChild(slot);
+    }
+  }
+  render();
+}
+</script>
+
+</body>
+</html>
