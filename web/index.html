@@ -3,12 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ezequiel De Francisco — Product Designer v2</title>
+  
+  <title>Ezequiel De Francisco — Product Designer & Web3 Expert</title>
+  <meta name="description" content="Senior Product Designer with 22+ years of experience in UI/UX, Web3, and Gaming. Discover the portfolio of Ezequiel De Francisco.">
+  <meta name="keywords" content="Product Design, UI/UX, Web3, Gaming Design, Ezequiel De Francisco, Portfolio">
+  <meta name="author" content="Ezequiel De Francisco">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.defranez.com/">
+  <meta property="og:title" content="Ezequiel De Francisco — Product Designer v2">
+  <meta property="og:description" content="Bridging complex systems into intuitive experiences. Portfolio v2 focusing on Web3 and Gaming.">
+  <meta property="og:image" content="https://www.defranez.com/img/og-image.png"> <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Ezequiel De Francisco — Product Designer">
+  <meta property="twitter:image" content="https://www.defranez.com/img/og-image.png">
+
   <link rel="icon" type="image/png" href="img/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
-  <style>
+ <style>
     :root {
       --bg: #080a0c;
       --surface: #0e1114;
@@ -26,7 +40,7 @@
     html { scroll-behavior: smooth; }
 
     body {
-      margin-top: 100px; /* Para compensar el nav fijo */
+      padding-top: 110px; /* Compensación para el Nav + Disclaimer */
       background: #080a0c;
       color: #e8eaed;
       font-family: 'Syne', sans-serif;
@@ -57,52 +71,43 @@
       z-index: 0;
     }
 
-    /* NAV */
+    /* --- BLOQUE DE NAVEGACIÓN CORREGIDO --- */
     .top-stack {
-    display: flex !important;
-    flex-direction: column !important; /* Fuerza el orden vertical */
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    z-index: 9999 !important;
-    background: rgba(0, 0, 0, 0.8) !important;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-}
-
-/* EL NAVBAR: Debe ser relativo para quedarse arriba */
-nav {
-    display: flex !important;
-    position: relative !important; /* Cambia esto si decía fixed */
-    width: 100% !important;
-    height: auto !important;
-    padding: 1rem 2rem !important;
-    background: transparent !important;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* EL DISCLAIMER: Ahora sí aparecerá abajo */
-.disclaimer-bar {
-    display: block !important;
-    position: relative !important; /* Asegura que no flote sobre el nav */
-    width: 100% !important;
-    text-align: center !important;
-    padding: 10px 0 !important;
-    color: #00ff80 !important;
-    font-family: monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    /* Gradiente */
-    background: linear-gradient(90deg, rgba(0,255,128,0) 0%, rgba(0,255,128,0.1) 50%, rgba(0,255,128,0) 100%) !important;
-    border-top: 1px solid rgba(0, 255, 128, 0.2);
-}
-    @keyframes disclaimerShift {
-      0% { background-position: 0% 0; }
-      100% { background-position: 200% 0; }
+      display: flex;
+      flex-direction: column; 
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 9999;
+      background: rgba(8, 10, 12, 0.7); 
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
-    @media (max-width: 560px) { .disclaimer-bar { display: none; } }
+
+    nav {
+      display: flex;
+      width: 100%;
+      padding: 1.2rem 60px;
+      justify-content: space-between;
+      align-items: center;
+      background: transparent;
+    }
+
+    .disclaimer-bar {
+      width: 100%;
+      text-align: center;
+      padding: 10px 0;
+      color: #00f5a0;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, rgba(0,245,160,0) 0%, rgba(0,245,160,0.12) 50%, rgba(0,245,160,0) 100%);
+      border-top: 1px solid rgba(0, 245, 160, 0.1);
+    }
+    /* -------------------------------------- */
 
     .nav-logo {
       font-size: 13px;
@@ -147,19 +152,6 @@ nav {
       gap: 12px;
       align-items: center;
     }
-
-    .nav-version {
-      font-size: 12px;
-      font-family: 'DM Mono', monospace;
-      color: #00f5a0;
-      border: 1px solid #00f5a0;
-      padding: 10px 22px;
-      text-decoration: none;
-      letter-spacing: 0.96px;
-      text-transform: uppercase;
-      transition: background 0.2s, color 0.2s;
-    }
-    .nav-version:hover { background: rgba(0,245,160,0.1); }
 
     .nav-cta {
       font-size: 12px;
@@ -228,10 +220,6 @@ nav {
       max-width: 700px;
       line-height: 1.5;
     }
-    .hero-title .title-highlight {
-      color: #ffffff;
-      font-weight: 400;
-    }
 
     .hero-tags {
       display: flex;
@@ -248,70 +236,9 @@ nav {
       padding: 9px 17px;
       color: #8a94a6;
       border: 1px solid rgba(255,255,255,0.06);
-      transition: color 0.2s, border-color 0.2s;
+      transition: all 0.2s;
     }
     .tag:hover { color: #00f5a0; border-color: rgba(0,245,160,0.3); }
-
-    .hero-scroll {
-      position: absolute;
-      right: 60px;
-      bottom: 80px;
-      writing-mode: vertical-rl;
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #8a94a6;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      z-index: 2;
-    }
-    .hero-scroll::after {
-      content: '';
-      width: 1px;
-      height: 60px;
-      background: linear-gradient(to bottom, var(--accent), transparent);
-      animation: scrollLine 2s ease-in-out infinite;
-    }
-    @keyframes scrollLine {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 1; }
-    }
-
-    .hero-orb {
-      position: absolute;
-      top: 15%;
-      right: 10%;
-      width: 500px; height: 500px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,245,160,0.08) 0%, rgba(0,200,255,0.04) 40%, transparent 70%);
-      pointer-events: none;
-      animation: orbFloat 8s ease-in-out infinite;
-    }
-    @keyframes orbFloat {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-30px) scale(1.05); }
-    }
-
-    .hero-lines {
-      position: absolute;
-      top: 0; right: 0;
-      width: 50%;
-      height: 100%;
-      overflow: hidden;
-      pointer-events: none;
-      opacity: 0.15;
-    }
-
-    /* Hero content sits above logo */
-    .hero-eyebrow,
-    .hero-name,
-    .hero-title,
-    .hero-tags {
-      position: relative;
-      z-index: 2;
-    }
 
     .hero-logo {
       position: absolute;
@@ -320,24 +247,21 @@ nav {
       width: 43vw;
       max-width: 820px;
       aspect-ratio: 818 / 891;
-      overflow: hidden;
       pointer-events: none;
       z-index: 1;
     }
-    @keyframes logoSpin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
 
     .hero-logo img {
-      position: absolute;
-      inset: 0;
       width: 100%;
-      transform-origin: center center;
-      animation: logoSpin 40s linear infinite;
       height: 100%;
       object-fit: contain;
+      animation: logoSpin 40s linear infinite;
       mix-blend-mode: color-dodge;
+    }
+
+    @keyframes logoSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     /* SECTION BASE */
@@ -358,11 +282,7 @@ nav {
       gap: 12px;
       margin-bottom: 64px;
     }
-    .section-label::before {
-      content: '';
-      width: 30px; height: 1px;
-      background: #00f5a0;
-    }
+    .section-label::before { content: ''; width: 30px; height: 1px; background: #00f5a0; }
 
     .section-title {
       font-size: clamp(36px, 5vw, 72px);
@@ -373,916 +293,68 @@ nav {
     }
 
     /* ABOUT */
-    #about {
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .about-grid {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      margin-top: 24px;
-    }
+    .about-grid { display: flex; gap: 20px; align-items: flex-start; margin-top: 24px; }
     .about-text { max-width: 820px; flex-shrink: 0; }
-
-    .about-text p {
-      font-size: 18px;
-      line-height: 1.7;
-      color: #8a94a6;
-      margin-bottom: 24px;
-    }
-
-    .about-text p strong {
-      color: #e8eaed;
-      font-weight: 600;
-    }
-
-    .about-stats {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-    }
-
+    .about-text p { font-size: 18px; line-height: 1.7; color: #8a94a6; margin-bottom: 24px; }
+    
     .stat-card {
       background: #0e1114;
       padding: 33px;
       border: 1px solid rgba(255,255,255,0.06);
-      position: relative;
-      overflow: hidden;
       transition: border-color 0.3s;
     }
     .stat-card:hover { border-color: rgba(0,245,160,0.3); }
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .stat-card:hover::before { opacity: 1; }
 
-    .stat-num {
-      font-size: 48px;
-      font-weight: 800;
-      color: #ffffff;
-      letter-spacing: -0.03em;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
+    .stat-num { font-size: 48px; font-weight: 800; color: #ffffff; line-height: 1; }
     .stat-num span { color: #00f5a0; }
 
-    .stat-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #8a94a6;
-    }
-
-    /* SKILLS */
-    .skills-label {
-      font-family: 'DM Mono', monospace;
-      font-weight: 500;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #00f5a0;
-      margin-top: 40px;
-      margin-bottom: 12px;
-    }
-
-    .skills-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 0;
-    }
-
-    .skill-pill {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 0.05em;
-      padding: 10px 20px;
-      border: 1px solid rgba(255,255,255,0.06);
-      color: #e8eaed;
-      background: #0e1114;
-      transition: all 0.2s;
-    }
-    .skill-pill:hover {
-      border-color: #00f5a0;
-      color: #00f5a0;
-      background: rgba(0,245,160,0.05);
-    }
-
-    /* ABOUT — below-grid sections (full width) */
-    .about-below {
-      display: flex;
-      flex-direction: column;
-      gap: 50px;
-      margin-top: 50px;
-    }
-
-    .about-tools-label {
-      font-family: 'DM Mono', monospace;
-      font-weight: 500;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #00f5a0;
-      padding-bottom: 17px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      margin-bottom: 24px;
-    }
-
-    /* JAZZ / MUSIC CARDS (v2) */
-    .jazz-label {
-      font-family: 'DM Mono', monospace;
-      font-weight: 500;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #00f5a0;
-      padding-bottom: 17px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      margin-bottom: 24px;
-    }
-
-    .jazz-links {
-      display: flex;
-      gap: 20px;
-    }
-
-    .jazz-card {
-      flex: 1;
-      padding: 13px;
-      background: linear-gradient(133deg, rgba(0,245,160,0.04) 0%, rgba(0,200,255,0.02) 100%);
-      border: 1px solid rgba(0,245,160,0.2);
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.3s;
-      min-width: 0;
-    }
-    .jazz-card:hover { border-color: rgba(0,245,160,0.4); }
-    .jazz-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(0,245,160,0), #00f5a0, rgba(0,245,160,0));
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .jazz-card:hover::before { opacity: 1; }
-
-    .jazz-card iframe {
-      width: 100%;
-      border: none;
-      border-radius: 4px;
-    }
-
-    .jazz-yt-link {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      gap: 28px;
-      padding: 13px;
-      background: linear-gradient(133deg, rgba(0,245,160,0.04) 0%, rgba(0,200,255,0.02) 100%);
-      text-decoration: none;
-      border: 1px solid rgba(0,245,160,0.2);
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.3s;
-      justify-content: center;
-      min-width: 0;
-    }
-    .jazz-yt-link:hover { border-color: rgba(0,245,160,0.4); }
-    .jazz-yt-link::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(0,245,160,0), #00f5a0, rgba(0,245,160,0));
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .jazz-yt-link:hover::before { opacity: 1; }
-
-    .jazz-link-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #00f5a0;
-      white-space: nowrap;
-    }
-
-    .jazz-thumb {
-      width: 181px;
-      height: 104px;
-      border-radius: 5px;
-      border: 1px solid rgba(255,255,255,0.5);
-      overflow: hidden;
-      flex-shrink: 0;
-      position: relative;
-    }
-    .jazz-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .jazz-thumb-play {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 40px; height: 40px;
-      background: rgba(0,0,0,0.6);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
-    .jazz-thumb-play::after {
-      content: '';
-      display: block;
-      width: 0; height: 0;
-      border-style: solid;
-      border-width: 8px 0 8px 14px;
-      border-color: transparent transparent transparent #fff;
-      margin-left: 3px;
-    }
-
-    /* TOOLS & EXPERTISE (v2) */
-    #tools {
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .tools-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      margin-top: 48px;
-    }
-
-    .tools-col-label {
-      font-family: 'DM Mono', monospace;
-      font-weight: 500;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #00f5a0;
-      margin-bottom: 24px;
-    }
-
-    .tool-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .tool-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .tool-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      color: #ffffff;
-    }
-
-    .tool-subtitle {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: #8a94a6;
-      letter-spacing: 0.05em;
-    }
-
-    .skill-track {
-      background: rgba(255,255,255,0.06);
-      height: 4px;
-      border-radius: 100px;
-      overflow: hidden;
-    }
-
-    .skill-bar {
-      height: 4px;
-      background: linear-gradient(to right, #00f5a0, #00c8ff);
-      border-radius: 100px;
-    }
-
-    .expertise-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .expertise-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.05em;
-      padding: 10px 18px;
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #8a94a6;
-      transition: all 0.2s;
-    }
-    .expertise-tag:hover {
-      border-color: rgba(0,245,160,0.3);
-      color: #00f5a0;
-    }
-
-    /* PORTFOLIO — sticky-sync layout (v2) */
-    #work {
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .work-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 64px;
-    }
-
-    .work-header a {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      color: #00f5a0;
-      text-decoration: underline;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: gap 0.2s;
-    }
-    .work-header a:hover { gap: 14px; }
-
-    .portfolio-sticky-layout {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-    }
-
-    .portfolio-nav {
-      position: sticky;
-      top: 120px;
-      width: 315px;
-      flex-shrink: 0;
-      padding: 32px 0;
-    }
-
-    .portfolio-nav-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #8a94a6;
-      padding: 0 0 16px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      margin-bottom: 0;
-    }
-
+    /* TOOLS & PORTFOLIO */
+    .tools-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-top: 48px; }
+    .tool-header { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    
+    .portfolio-sticky-layout { display: flex; gap: 20px; align-items: flex-start; }
+    .portfolio-nav { position: sticky; top: 120px; width: 315px; flex-shrink: 0; }
+    
     .portfolio-nav-item {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
       padding: 20px 18px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
-      border-top: none; border-left: none; border-right: none;
-      cursor: pointer;
       transition: all 0.3s;
-      position: relative;
     }
-    .portfolio-nav-item:last-child { border-bottom: none; }
+    .portfolio-nav-item.active { background: rgba(0,245,161,0.03); color: #fff; }
 
-    .portfolio-nav-num {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 1px;
-      color: rgba(138,148,166,0.5);
-      flex-shrink: 0;
-      transition: color 0.3s;
-    }
-
-    .portfolio-nav-cat {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: rgba(138,148,166,0.5);
-      transition: color 0.3s;
-    }
-
-    .portfolio-nav-info {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-    }
-
-    .portfolio-nav-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px;
-      font-weight: 500;
-      color: rgba(138,148,166,0.5);
-      letter-spacing: -0.3px;
-      transition: color 0.3s;
-    }
-
-    .portfolio-nav-arrow {
-      font-family: 'Syne', sans-serif;
-      font-size: 20px;
-      color: #00f5a1;
-      opacity: 0;
-      transition: opacity 0.3s;
-      flex-shrink: 0;
-    }
-
-    .portfolio-nav-year {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: rgba(138,148,166,0.6);
-      letter-spacing: 0.5px;
-    }
-
-    /* Active state */
-    .portfolio-nav-item.active {
-      background: rgba(0,245,161,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      padding: 24px 18px;
-      gap: 6px;
-    }
-    .portfolio-nav-item.active .portfolio-nav-num { color: #00f5a1; }
-    .portfolio-nav-item.active .portfolio-nav-cat { color: rgba(0,245,161,0.8); }
-    .portfolio-nav-item.active .portfolio-nav-name { color: #ffffff; font-weight: 700; }
-    .portfolio-nav-item.active .portfolio-nav-arrow { opacity: 1; }
-
-    /* Hover state */
-    .portfolio-nav-item:not(.active):hover {
-      border: 1px solid rgba(0,245,161,0.2);
-      padding: 24px 28px;
-      gap: 6px;
-    }
-    .portfolio-nav-item:not(.active):hover .portfolio-nav-num { color: rgba(0,245,161,0.3); }
-    .portfolio-nav-item:not(.active):hover .portfolio-nav-cat { color: rgba(0,245,161,0.3); }
-    .portfolio-nav-item:not(.active):hover .portfolio-nav-name { color: rgba(0,245,161,0.3); }
-    .portfolio-nav-item:not(.active):hover .portfolio-nav-year { color: rgba(0,245,161,0.3); }
-
-    .portfolio-scroll {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 120px;
-    }
-
-    .portfolio-project {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .proj-counter {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .proj-counter-num {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(0,245,161,0.6);
-    }
-
-    .proj-counter-dot {
-      width: 3px; height: 3px;
-      border-radius: 50%;
-      background: #8a94a6;
-    }
-
-    .proj-counter-cat {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #8a94a6;
-    }
-
-    .proj-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
-
-    .proj-title-info {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .proj-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 28px;
-      font-weight: 800;
-      color: #ffffff;
-      letter-spacing: -1.2px;
-    }
-
-    .proj-company {
-      font-family: 'Syne', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      color: #00f5a1;
-    }
-
-    .proj-cta {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #00f5a0;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: gap 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .proj-cta:hover { gap: 8px; }
-
-    .proj-desc {
-      font-family: 'Syne', sans-serif;
-      font-size: 16px;
-      font-weight: 400;
-      color: #8a94a6;
-      line-height: 26px;
-    }
-
-    .proj-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .proj-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.06em;
-      padding: 7px 14px;
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #8a94a6;
-    }
-
-    .proj-visual {
-      width: 100%;
-      background: #0e1114;
-      border: 1px solid rgba(255,255,255,0.06);
-      overflow: hidden;
-      position: relative;
-    }
-    .proj-visual img {
-      width: 100%;
-      display: block;
-    }
-    .proj-color-bar {
-      position: absolute;
-      top: -1px; left: -1px; right: -1px;
-      height: 4px;
-    }
-
-    /* CAREER (v2 — table rows) */
-    #resume {
-      border-top: 1px solid rgba(255,255,255,0.06);
-      padding-bottom: 80px;
-    }
-
-    .career-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 48px;
-    }
-
-    .career-more-link {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #00f5a0;
-      text-decoration: none;
-    }
-    .career-more-link:hover { text-decoration: underline; }
-
-    .career-table {
-      display: flex;
-      flex-direction: column;
-    }
-
+    /* CAREER */
     .career-row {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      padding: 20px 18px;
+      display: flex; gap: 20px; padding: 20px 18px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
-      border-left: 1px solid transparent;
-      border-right: 1px solid transparent;
-      border-top: 1px solid transparent;
       transition: all 0.3s;
     }
-    .career-row:last-child { border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .career-row:hover {
-      background: rgba(0,245,161,0.03);
-      border: 1px solid rgba(0,245,161,0.15);
-    }
-    .career-row:hover .career-role { color: #ffffff; }
-    .career-row:hover .career-company { color: #00f5a0; }
-
-    .career-period {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: #8a94a6;
-      letter-spacing: 0.08em;
-      width: 148px;
-      flex-shrink: 0;
-    }
-
-    .career-role {
-      font-family: 'Syne', sans-serif;
-      font-size: 17px;
-      font-weight: 700;
-      color: #ffffff;
-      width: 315px;
-      flex-shrink: 0;
-    }
-
-    .career-company {
-      font-family: 'Syne', sans-serif;
-      font-size: 15px;
-      font-weight: 500;
-      color: #00f5a1;
-      width: 316px;
-      flex-shrink: 0;
-    }
-
-    .career-location {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: rgba(138,148,166,0.7);
-      flex: 1;
-    }
-
-    .career-bottom {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      margin-top: 48px;
-    }
-
-    .resume-download {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #080a0c;
-      background: #00f5a0;
-      padding: 14px 28px;
-      text-decoration: none;
-      transition: opacity 0.2s;
-      width: 315px;
-      flex-shrink: 0;
-    }
-    .resume-download:hover { opacity: 0.85; }
-
-    .career-formation-info {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      flex: 1;
-    }
-
-    .career-formation-item {
-      font-family: 'Syne', sans-serif;
-      font-size: 13px;
-      color: #8a94a6;
-    }
-    .career-formation-item strong {
-      font-weight: 600;
-      color: #e8eaed;
-    }
-
-    .career-formation-dot {
-      display: inline-block;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #00f5a0;
-      flex-shrink: 0;
-    }
+    .career-row:hover { background: rgba(0,245,161,0.03); border-color: rgba(0,245,161,0.15); }
+    .career-role { font-size: 17px; font-weight: 700; color: #fff; width: 315px; }
+    .career-company { color: #00f5a1; width: 316px; }
 
     /* CONTACT */
-    #contact {
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .contact-inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      margin-top: 64px;
-      align-items: start;
-    }
-
-    .contact-headline {
-      font-size: clamp(32px, 5vw, 56px);
-      font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      color: #ffffff;
-      margin-bottom: 0;
-    }
-    .contact-headline .headline-accent { color: #00f5a0; }
-
-    .contact-sub {
-      font-size: 16px;
-      color: #8a94a6;
-      line-height: 1.6;
-      max-width: 500px;
-    }
-    .contact-sub strong { color: #e8eaed; font-weight: 700; }
-
-    .contact-links {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
     .contact-link {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 29px 33px;
-      background: #0e1114;
-      border: 1px solid rgba(255,255,255,0.06);
-      text-decoration: none;
-      transition: border-color 0.3s, background 0.3s;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 29px 33px; background: #0e1114; border: 1px solid rgba(255,255,255,0.06);
+      text-decoration: none; transition: all 0.3s;
     }
-    .contact-link:hover {
-      border-color: rgba(0,245,160,0.3);
-      background: rgba(0,245,160,0.04);
-    }
-
-    .cl-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #8a94a6;
-      margin-bottom: 6px;
-    }
-
-    .cl-value {
-      font-size: 18px;
-      font-weight: 600;
-      color: #ffffff;
-      letter-spacing: -0.01em;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .cl-inner {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .cl-arrow {
-      font-size: 20px;
-      font-family: 'DM Mono', monospace;
-      font-variant-emoji: text;
-      color: #00f5a0;
-      transition: transform 0.2s;
-    }
-    .contact-link:hover .cl-arrow { transform: translate(4px, -4px); }
-
-    /* FOOTER */
-    footer {
-      position: relative;
-      z-index: 1;
-      padding: 40px 60px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .footer-copy {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: #8a94a6;
-      letter-spacing: 0.08em;
-    }
-
-    .footer-status {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: #00f5a0;
-      letter-spacing: 0.08em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .status-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #00f5a0;
-      animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    /* ANIMATIONS */
-    .fade-up {
-      opacity: 1;
-      transform: translateY(0);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .fade-up.animate {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    .fade-up.animate.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .contact-link:hover { border-color: rgba(0,245,160,0.3); background: rgba(0,245,160,0.04); }
 
     /* RESPONSIVE */
     @media (max-width: 900px) {
+      body { padding-top: 70px; }
       nav { padding: 20px 24px; }
-      .nav-links { display: none; }
-      .nav-version { padding: 8px 14px; font-size: 11px; }
-      section { padding: 80px 24px; overflow: hidden; }
-      .hero { padding: 0 24px 60px; }
-      .hero-scroll { display: none; }
-      .hero-logo { display: block; width: 60vw; top: 6%; right: 0; }
-      .about-grid { flex-direction: column; }
-      .about-text { max-width: 100%; }
-      .contact-inner { grid-template-columns: 1fr; gap: 40px; }
-      .career-row { flex-wrap: wrap; }
-      .career-period, .career-role, .career-company { width: auto; flex: 1; }
-      .career-bottom { flex-wrap: wrap; }
-      .resume-download { width: auto; }
-      .career-formation-info { flex-wrap: wrap; gap: 12px; }
-      .tools-layout { grid-template-columns: 1fr; gap: 40px; }
-      .portfolio-sticky-layout { flex-direction: column; }
-      .portfolio-nav { position: static; width: 100%; display: flex; flex-wrap: wrap; gap: 0; }
-      .portfolio-nav-label { width: 100%; }
-      .portfolio-nav-item { flex: 1; min-width: 45%; }
-      .portfolio-nav-name { font-size: 18px; }
-      .behance-all { display: none !important; }
-      footer { padding: 28px 24px; flex-direction: column; gap: 16px; text-align: center; }
+      .nav-links, .disclaimer-bar { display: none; }
+      section { padding: 80px 24px; }
+      .about-grid, .portfolio-sticky-layout, .tools-layout { flex-direction: column; grid-template-columns: 1fr; }
+      .portfolio-nav { position: static; width: 100%; }
     }
 
     @media (max-width: 560px) {
-      section { padding: 40px 24px; overflow: hidden; }
-      .hero { height: 100dvh; min-height: unset; padding: 0 24px 32px; }
-      .hero-logo { display: block; width: 100%; top: 0; right: auto; left: 0; max-width: none; z-index: 1; }
-      .hero-logo img { opacity: 0.7; width: 100%; }
-      .hero-title { font-size: 15px; margin-bottom: 20px; }
-      .hero-tags { margin-bottom: 0; }
-      .jazz-links { flex-direction: column; }
-      .jazz-thumb { width: 100%; height: auto; aspect-ratio: 16/9; }
-      .career-row { flex-direction: column; gap: 8px; padding: 16px 0; }
-      .career-period, .career-role, .career-company { width: 100%; }
-      .career-bottom { flex-direction: column; gap: 16px; }
-      .resume-download { width: 100%; text-align: center; box-sizing: border-box; }
-      .proj-title-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .hero { padding: 0 24px 32px; height: 100dvh; }
+      .hero-logo { width: 100%; top: 0; left: 0; }
     }
-    
-
-/* Ocultar en móviles */
-@media (max-width: 768px) {
-    .disclaimer-bar {
-        display: none;
-    }
-}
-  </style>
+</style>
 </head>
 <body>
 
