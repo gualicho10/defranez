@@ -57,10 +57,33 @@
     }
 
     /* NAV */
-    nav {
+    .top-stack {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 500;
+    }
+    .disclaimer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 11px;
+      border-bottom: 1px solid rgba(0,245,160,0.2);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      background: linear-gradient(90deg, rgba(0,245,160,0.2) 0%, rgba(4,38,26,0.2) 50%, rgba(0,245,160,0.2) 100%);
+      background-size: 200% 100%;
+      animation: disclaimerShift 6s linear infinite;
+    }
+    @keyframes disclaimerShift {
+      0% { background-position: 0% 0; }
+      100% { background-position: 200% 0; }
+    }
+    @media (max-width: 560px) { .disclaimer-bar { display: none; } }
+
+    nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -77,7 +100,19 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
     }
+    .nav-logo-v {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 0;
+      text-transform: lowercase;
+      color: #00f5a0;
+    }
+    .nav-link-accent { color: #00f5a0 !important; }
 
     .nav-links {
       display: flex;
@@ -1233,20 +1268,21 @@
 <body>
 
   <!-- NAV -->
-  <nav>
-    <a href="#" class="nav-logo">EDF · Portfolio V2</a>
-    <ul class="nav-links">
-      <li><a href="#about">About me</a></li>
-      <li><a href="#work">Portfolio</a></li>
-      <li><a href="#tools">Tools</a></li>
-      <li><a href="#resume">Career</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <div class="nav-right">
-      <a href="../v1.html" class="nav-version">V1</a>
+  <div class="top-stack">
+    <div class="disclaimer-bar">Open in mobile to play!!</div>
+    <nav>
+      <a href="#" class="nav-logo">EDF · Portfolio <span class="nav-logo-v">v2</span></a>
+      <ul class="nav-links">
+        <li><a href="#about">About me</a></li>
+        <li><a href="#tools">Tools</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#resume">Career</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="../v1.html" class="nav-link-accent">Visit v1</a></li>
+      </ul>
       <a href="#contact" class="nav-cta">Hire me →</a>
-    </div>
-  </nav>
+    </nav>
+  </div>
 
   <!-- HERO -->
   <section class="hero">
