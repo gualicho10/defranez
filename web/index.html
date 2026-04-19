@@ -26,6 +26,7 @@
     html { scroll-behavior: smooth; }
 
     body {
+      margin-top: 100px; /* Para compensar el nav fijo */
       background: #080a0c;
       color: #e8eaed;
       font-family: 'Syne', sans-serif;
@@ -92,10 +93,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px 60px;
-      background: rgba(8,10,12,0.8);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 1rem 2rem;
+      width: 100%;
+    /* Asegúrate de NO tener position: fixed aquí, ya lo tiene el padre */
     }
 
     .nav-logo {
@@ -1268,7 +1268,21 @@
       .resume-download { width: 100%; text-align: center; box-sizing: border-box; }
       .proj-title-row { flex-direction: column; align-items: flex-start; gap: 12px; }
     }
-    @media (max-width: 768px) {
+    .disclaimer-bar {
+    width: 100%;
+    text-align: center;
+    background-color: rgba(0, 255, 128, 0.1); /* Fondo sutil */
+    color: #00ff80;
+    padding: 8px 0;
+    font-family: monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-top: 1px solid rgba(0, 255, 128, 0.2);
+}
+
+/* Ocultar en móviles */
+@media (max-width: 768px) {
     .disclaimer-bar {
         display: none;
     }
