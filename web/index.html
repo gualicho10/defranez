@@ -59,30 +59,30 @@
 
     /* NAV */
     .top-stack {
-      display: flex;
-     flex-direction: column; /* Apila nav arriba y disclaimer abajo */
+     display: flex;
+     flex-direction: column; /* Esto pone el nav arriba y el disclaimer abajo */
      width: 100%;
      position: fixed;
      top: 0;
      left: 0;
-     z-index: 1000;
-     background: #000; /* Asegura que el fondo cubra todo el bloque */
+     z-index: 1000; 
+     /* Efecto de desenfoque y fondo con transparencia */
+     backdrop-filter: blur(12px); 
+     -webkit-backdrop-filter: blur(12px);
+     background-color: rgba(0, 0, 0, 0.7);
     }
     .disclaimer-bar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 11px;
-      border-bottom: 1px solid rgba(0,245,160,0.2);
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #00f5a0;
-      background: linear-gradient(90deg, rgba(0,245,160,0.2) 0%, rgba(4,38,26,0.2) 50%, rgba(0,245,160,0.2) 100%);
-      background-color: #000, 40%;
-      background-size: 200% 100%;
-      animation: disclaimerShift 6s linear infinite;
+     width: 100%;
+     text-align: center;
+     padding: 6px 0;
+     font-family: monospace;
+     font-size: 10px;
+     letter-spacing: 2px;
+     text-transform: uppercase;
+     color: #00ff80;
+     /* Gradiente sutil */
+     background: linear-gradient(90deg, rgba(0,255,128,0) 0%, rgba(0,255,128,0.15) 50%, rgba(0,255,128,0) 100%);
+     border-top: 1px solid rgba(0, 255, 128, 0.1);
     }
     @keyframes disclaimerShift {
       0% { background-position: 0% 0; }
@@ -91,12 +91,12 @@
     @media (max-width: 560px) { .disclaimer-bar { display: none; } }
 
     nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      width: 100%;
-    /* Asegúrate de NO tener position: fixed aquí, ya lo tiene el padre */
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 1rem 2rem;
+     width: 100%;
+     background: transparent; /* Importante para ver el blur del padre */
     }
 
     .nav-logo {
