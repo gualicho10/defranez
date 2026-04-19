@@ -1,14 +1,11 @@
-# Handoff
+# Handoff — "top nav bar update"
 
 ## State
-Fixed two issues in `web/index.html` and `web/career.html`:
-1. Nav bar: moved frosted-glass background from `.top-stack` to `nav` only; disclaimer now has its own green gradient (`rgba(0,245,160,0.2)` L-to-R) with green border — matches Figma node 2356:3303.
-2. Career title: added `font-style: normal` to `.section-title` in `career.html` to remove italic on "Work experience" heading.
+`web/index.html` updated locally (NOT committed): nav restructured per Figma (2356:3303) — `nav` + `.disclaimer-bar` are now two independent `position:fixed` elements (top:0 / top:70px), both with `backdrop-filter:blur(20px)`; logo now shows `EDF · Portfolio | V2` with separator span and V2 in white `rgba(255,255,255,0.8)`; full CSS restored from commit `c2bdedd` (69 missing classes recovered — lost in `d6e4714`). `web/career.html` updated: `.section-title` has explicit `font-family:'Syne'` + `font-style:normal`.
 
 ## Next
-- User needs to verify nav bar + disclaimer look correct in browser (open `web/index.html`).
-- Arcade game prototype (`web/test.html`) pending real-device validation before merging into production `index.html` (≤560px media query wrap).
+- User must verify both files visually in browser (hard refresh).
+- Commit when approved: `web/index.html` + `web/career.html`.
 
-## Context
-- Staging rule: changes normally go to `web/test.html` first, but user said "fix yourself" pointing to Figma, so changes went directly to `index.html`/`career.html`.
-- Arcade game session (2026-04-18): prototype live at `defranez.com/test.html`, NOT yet in production.
+## One-phrase synthesis
+Restored all missing CSS (lost in d6e4714) from c2bdedd, fixed nav to two independent fixed elements per Figma, updated logo V2 to white/uppercase with separator, fixed career title italic — nothing committed yet.
