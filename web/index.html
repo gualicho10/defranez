@@ -73,39 +73,51 @@
 
     /* --- BLOQUE DE NAVEGACIÓN CORREGIDO --- */
     .top-stack {
-      display: flex;
-      flex-direction: column; 
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
+      height: 100px; /* 70px (nav) + 30px (disclaimer) */
       z-index: 9999;
-      background: rgba(8, 10, 12, 0.7); 
+      background: rgba(8, 10, 12, 0.7);
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
+    /* EL NAVBAR: Anclado arriba */
     nav {
-      display: flex;
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      padding: 1.2rem 60px;
+      height: 70px; 
+      display: flex;
+      padding: 0 60px;
       justify-content: space-between;
       align-items: center;
       background: transparent;
+      margin: 0;
     }
 
+    /* EL DISCLAIMER: Anclado abajo (con gradiente) */
     .disclaimer-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
       width: 100%;
+      height: 30px;
+      line-height: 30px; /* Centra el texto verticalmente exacto */
       text-align: center;
-      padding: 10px 0;
       color: #00f5a0;
       font-family: 'DM Mono', monospace;
       font-size: 10px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      background: linear-gradient(90deg, rgba(0,245,160,0) 0%, rgba(0,245,160,0.12) 50%, rgba(0,245,160,0) 100%);
+      background: linear-gradient(90deg, rgba(0,245,160,0) 0%, rgba(0,245,160,0.15) 50%, rgba(0,245,160,0) 100%);
       border-top: 1px solid rgba(0, 245, 160, 0.1);
+      margin: 0;
+      padding: 0;
     }
     /* -------------------------------------- */
 
@@ -354,6 +366,7 @@
       .hero { padding: 0 24px 32px; height: 100dvh; }
       .hero-logo { width: 100%; top: 0; left: 0; }
     }
+    
 </style>
 </head>
 <body>
