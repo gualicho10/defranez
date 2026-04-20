@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
+  
   <title>Ezequiel De Francisco — Product Designer & Web3 Expert</title>
   <meta name="description" content="Senior Product Designer with 22+ years of experience in UI/UX, Web3, and Gaming. Discover the portfolio of Ezequiel De Francisco.">
   <meta name="keywords" content="Product Design, UI/UX, Web3, Gaming Design, Ezequiel De Francisco, Portfolio">
@@ -957,6 +957,9 @@
       border: 1px solid rgba(255,255,255,0.06);
       overflow: hidden;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
     .proj-visual img {
       width: 100%;
@@ -967,6 +970,140 @@
       top: -1px; left: -1px; right: -1px;
       height: 4px;
     }
+
+    /* CASE STUDY CTA — bottom */
+    .proj-cta-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 18px;
+      background: none;
+      border: 1px solid rgba(0,245,160,0.15);
+      cursor: pointer;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      transition: background 0.2s, border-color 0.2s, gap 0.2s;
+      width: 100%;
+    }
+    .proj-cta-bottom:hover {
+      background: rgba(0,245,160,0.05);
+      border-color: rgba(0,245,160,0.35);
+      gap: 14px;
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(8,10,12,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      overflow-y: auto;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal {
+      position: relative;
+      width: calc(100vw - 160px);
+      max-width: 1200px;
+      margin: 60px auto 80px;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+    .modal-backdrop.open .modal { transform: translateY(0); }
+
+    .modal-close {
+      position: fixed;
+      top: 24px;
+      right: 32px;
+      z-index: 2100;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(14,17,20,0.9);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #8a94a6;
+      font-family: 'DM Mono', monospace;
+      font-size: 18px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      line-height: 1;
+    }
+    .modal-close:hover { color: #00f5a0; border-color: rgba(0,245,160,0.4); }
+
+    .modal-header {
+      padding: 40px 0 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 32px;
+    }
+    .modal-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .modal-eyebrow::before {
+      content: '';
+      width: 24px; height: 1px;
+      background: #00f5a0;
+    }
+    .modal-title {
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .modal-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: #6b7280;
+      letter-spacing: 0.08em;
+    }
+    .modal-image-wrap {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+    .modal-image-wrap img { width: 100%; display: block; }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 40px;
+    }
+    .modal-behance-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #080a0c;
+      background: #00f5a0;
+      padding: 12px 24px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .modal-behance-link:hover { opacity: 0.85; }
 
     /* CAREER (v2 — table rows) */
     #resume {
@@ -1279,7 +1416,7 @@
       .resume-download { width: 100%; text-align: center; box-sizing: border-box; }
       .proj-title-row { flex-direction: column; align-items: flex-start; gap: 12px; }
     }
-
+    
 
 /* Ocultar en móviles */
 @media (max-width: 768px) {
@@ -1287,7 +1424,7 @@
         display: none;
     }
 }
-
+  
 </style>
 </head>
 <body>
@@ -1301,7 +1438,7 @@
       <li><a href="#work">Work</a></li>
       <li><a href="#resume">Career</a></li>
       <li><a href="#contact">Contact</a></li>
-      <li><a href="v1.html" class="nav-link-accent">Visit v1</a></li>
+      <li><a href="../v1.html" class="nav-link-accent">Visit v1</a></li>
     </ul>
     <a href="#contact" class="nav-cta">Hire me →</a>
   </nav>
@@ -1481,7 +1618,7 @@
               <div class="proj-title">OpenLoot</div>
               <div class="proj-company">Big Time Studios · 2022 — 2026</div>
             </div>
-            <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="proj-cta">View case study →</a>
+            <a href="#" onclick="openModal('openloot'); return false;" class="proj-cta">View case study →</a>
           </div>
           <p class="proj-desc">Bridging blockchain complexity with intuitive marketplace UX — designing security flows, two-step verification, and high-conversion commerce for crypto-native and non-native user personas.</p>
           <div class="proj-tags">
@@ -1493,6 +1630,7 @@
           <div class="proj-visual">
             <img src="img/cover-1_expanded.png" alt="OpenLoot — Product Design">
           </div>
+          <a href="#" onclick="openModal('openloot'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
 
         <!-- 02 Our Dipper -->
@@ -1507,7 +1645,7 @@
               <div class="proj-title">Our Dipper</div>
               <div class="proj-company">Startup · 2021</div>
             </div>
-            <a href="https://www.behance.net/gallery/245507671/Our-Dipper-Landing-Web-app" target="_blank" rel="noopener" class="proj-cta">View case study →</a>
+            <a href="#" onclick="openModal('dipper'); return false;" class="proj-cta">View case study →</a>
           </div>
           <p class="proj-desc">Intuitive service-management platform streamlining the full user journey from provider discovery to booking confirmation, with a focus on seamless navigation and conversion.</p>
           <div class="proj-tags">
@@ -1517,8 +1655,14 @@
           </div>
           <div class="proj-visual">
             <div class="proj-color-bar" style="background: rgba(0,153,229,0.3);"></div>
-            <img src="img/cover-2_expanded.png" alt="Our Dipper">
+            <img src="img/cover-2_dipper_1_01.png" alt="Our Dipper 01">
+            <img src="img/cover-2_dipper_1_07.png" alt="Our Dipper 07">
+            <img src="img/cover-2_dipper_1_09.png" alt="Our Dipper 10">
+            <img src="img/cover-2_dipper_1_10.png" alt="Our Dipper 11">
+            <img src="img/cover-2_dipper_1_14.png" alt="Our Dipper 14">
+            <img src="img/cover-2_dipper_1_15.png" alt="Our Dipper 15">
           </div>
+          <a href="#" onclick="openModal('dipper'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
 
         <!-- 03 Roche Congress -->
@@ -1533,7 +1677,7 @@
               <div class="proj-title">Roche Congress</div>
               <div class="proj-company">Roche · 2020</div>
             </div>
-            <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="proj-cta">View case study →</a>
+            <a href="#" onclick="openModal('roche'); return false;" class="proj-cta">View case study →</a>
           </div>
           <p class="proj-desc">Event and congress management platform for a global pharmaceutical brand. UX/UI with enterprise-grade usability for complex stakeholder workflows.</p>
           <div class="proj-tags">
@@ -1545,6 +1689,7 @@
             <div class="proj-color-bar" style="background: rgba(229,51,77,0.3);"></div>
             <img src="img/cover-3_expanded.png" alt="Roche Congress">
           </div>
+          <a href="#" onclick="openModal('roche'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
 
         <!-- 04 Mobile Games -->
@@ -1559,7 +1704,7 @@
               <div class="proj-title">Mobile Games</div>
               <div class="proj-company">Disney / Globant · 2013 — 2015</div>
             </div>
-            <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="proj-cta">View case study →</a>
+            <a href="#" onclick="openModal('games'); return false;" class="proj-cta">View case study →</a>
           </div>
           <p class="proj-desc">Art direction, illustration, and UX/UI for 'Bola' mobile game (Disney Argentina). Visual systems, HUDs, and interaction design for high-engagement gameplay.</p>
           <div class="proj-tags">
@@ -1571,6 +1716,7 @@
             <div class="proj-color-bar" style="background: rgba(242,140,26,0.3);"></div>
             <img src="img/cover-4_expanded.png" alt="Mobile Games">
           </div>
+          <a href="#" onclick="openModal('games'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
 
         <!-- 05 Branding + Social -->
@@ -1585,7 +1731,7 @@
               <div class="proj-title">Branding + Social</div>
               <div class="proj-company">Various · 2019 — 2021</div>
             </div>
-            <a href="https://www.behance.net/gallery/66848937/Brand-Concept-(logo-Styles-Guide)" target="_blank" rel="noopener" class="proj-cta">View case study →</a>
+            <a href="#" onclick="openModal('branding'); return false;" class="proj-cta">View case study →</a>
           </div>
           <p class="proj-desc">UX and UI work spanning multiple industries — research-driven design, wireframes, high-fidelity interfaces, and a curated selection of design system assets.</p>
           <div class="proj-tags">
@@ -1597,6 +1743,7 @@
             <div class="proj-color-bar" style="background: rgba(0,245,161,0.3);"></div>
             <img src="img/cover-5_expanded.png" alt="Branding + Social">
           </div>
+          <a href="#" onclick="openModal('branding'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
 
         <!-- 06 Sketchup Renders -->
@@ -1611,7 +1758,7 @@
               <div class="proj-title">Sketchup Renders</div>
               <div class="proj-company">Personal · 2023</div>
             </div>
-            <a href="https://www.behance.net/gallery/245216341/Sketchup-ModellingRender" target="_blank" rel="noopener" class="proj-cta">View case study →</a>
+            <a href="#" onclick="openModal('sketchup'); return false;" class="proj-cta">View case study →</a>
           </div>
           <p class="proj-desc">3D modelling and rendering experiments — architectural visualization, interior concepts, and exploratory visual storytelling using Sketchup + Enscape.</p>
           <div class="proj-tags">
@@ -1623,6 +1770,7 @@
             <div class="proj-color-bar" style="background: rgba(153,153,153,0.3);"></div>
             <img src="img/cover-6_expanded.png" alt="Sketchup Renders">
           </div>
+          <a href="#" onclick="openModal('sketchup'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
 
       </div>
@@ -1812,6 +1960,97 @@
     </div>
   </footer>
 
+  <!-- MODALS -->
+  <div class="modal-backdrop" id="modal-openloot">
+    <button class="modal-close" onclick="closeModal('openloot')">✕</button>
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">Web3 · NFT Marketplace · 2022–2026</div>
+        <div class="modal-title">Product Design<br>at OpenLoot</div>
+        <div class="modal-sub">UX / UI / Gaming · Big Time Studios</div>
+      </div>
+      <div class="modal-image-wrap"><img src="img/cover-1_expanded.png" alt="OpenLoot case study"></div>
+      <div class="modal-footer">
+        <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-dipper">
+    <button class="modal-close" onclick="closeModal('dipper')">✕</button>
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">UX/UI · Web App · 2021</div>
+        <div class="modal-title">Our Dipper</div>
+        <div class="modal-sub">Service Design · Startup</div>
+      </div>
+      <div class="modal-image-wrap"><img src="img/cover-2_expanded.png" alt="Our Dipper case study"></div>
+      <div class="modal-footer">
+        <a href="https://www.behance.net/gallery/245507671/Our-Dipper-Landing-Web-app" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-roche">
+    <button class="modal-close" onclick="closeModal('roche')">✕</button>
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">Enterprise · Health · 2020</div>
+        <div class="modal-title">Roche Congress</div>
+        <div class="modal-sub">Enterprise UX · Roche</div>
+      </div>
+      <div class="modal-image-wrap"><img src="img/cover-3_expanded.png" alt="Roche Congress case study"></div>
+      <div class="modal-footer">
+        <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-games">
+    <button class="modal-close" onclick="closeModal('games')">✕</button>
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">Gaming · Mobile · 2013–2015</div>
+        <div class="modal-title">Mobile Games</div>
+        <div class="modal-sub">Art Direction · Disney / Globant</div>
+      </div>
+      <div class="modal-image-wrap"><img src="img/cover-4_expanded.png" alt="Mobile Games case study"></div>
+      <div class="modal-footer">
+        <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-branding">
+    <button class="modal-close" onclick="closeModal('branding')">✕</button>
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">Logo · Design System · 2019–2021</div>
+        <div class="modal-title">Branding + Social</div>
+        <div class="modal-sub">Visual Design · Various</div>
+      </div>
+      <div class="modal-image-wrap"><img src="img/cover-5_expanded.png" alt="Branding + Social case study"></div>
+      <div class="modal-footer">
+        <a href="https://www.behance.net/gallery/66848937/Brand-Concept-(logo-Styles-Guide)" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-sketchup">
+    <button class="modal-close" onclick="closeModal('sketchup')">✕</button>
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">3D · Architecture · 2023</div>
+        <div class="modal-title">Sketchup Renders</div>
+        <div class="modal-sub">3D · Visualization · Personal</div>
+      </div>
+      <div class="modal-image-wrap"><img src="img/cover-6_expanded.png" alt="Sketchup Renders case study"></div>
+      <div class="modal-footer">
+        <a href="https://www.behance.net/gallery/245216341/Sketchup-ModellingRender" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ── Fade-up observer ──────────────────────────────────────────────────
     const fadeEls = document.querySelectorAll('.fade-up');
@@ -1821,7 +2060,7 @@
       entries.forEach((e) => {
         if (e.isIntersecting) e.target.classList.add('visible');
       });
-    }, { threshold: 0.08 });
+    }, { threshold: 0.01 });
 
     fadeEls.forEach(el => observer.observe(el));
 
@@ -1996,6 +2235,36 @@
       const project = document.querySelector('.portfolio-project[data-index="' + idx + '"]');
       if (project) project.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+
+    // ── Modal ─────────────────────────────────────────────────────────────
+    function openModal(id) {
+      const backdrop = document.getElementById('modal-' + id);
+      if (!backdrop) return;
+      backdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      backdrop.scrollTop = 0;
+    }
+    function closeModal(id) {
+      const backdrop = document.getElementById('modal-' + id);
+      if (!backdrop) return;
+      backdrop.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+      backdrop.addEventListener('click', e => {
+        if (e.target === backdrop) {
+          const id = backdrop.id.replace('modal-', '');
+          closeModal(id);
+        }
+      });
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-backdrop.open').forEach(m => {
+          closeModal(m.id.replace('modal-', ''));
+        });
+      }
+    });
   </script>
 
 </body>
