@@ -1002,9 +1002,125 @@
       font-size: 16px;
       color: var(--text);
     }
+
+    /* MODE CHOOSER — Screen 00 */
+    .mode-chooser {
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background: var(--bg);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: max(40px, env(safe-area-inset-top)) 28px max(40px, env(safe-area-inset-bottom));
+      text-align: center;
+      -webkit-overflow-scrolling: touch;
+    }
+    .mode-chooser.hidden { display: none; }
+    .mode-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 22px;
+    }
+    .mode-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 38px;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .mode-title span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .mode-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 52px;
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+      max-width: 240px;
+    }
+    .mode-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 300px;
+    }
+    .mode-btn-fun {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 20px 24px;
+      background: var(--accent);
+      color: #080a0c;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: opacity 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mode-btn-fun:active { opacity: 0.82; }
+    .mode-btn-boring {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 20px 24px;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mode-btn-boring:active { border-color: rgba(255,255,255,0.2); color: var(--text); }
+    .mode-btn-label {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      opacity: 0.7;
+    }
+    .mode-btn-fun .mode-btn-label { color: rgba(8,10,12,0.7); opacity: 1; }
   </style>
 </head>
 <body>
+
+<div class="mode-chooser" id="mode-chooser">
+  <div class="mode-eyebrow">EDF · Arcade</div>
+  <h1 class="mode-title">How do you<br/><span>want to play?</span></h1>
+  <p class="mode-sub">each section unlocks when you beat its mini-game</p>
+  <div class="mode-btns">
+    <button class="mode-btn-fun" id="btn-fun-mode" touch-action="manipulation">
+      <span class="mode-btn-label">FUN MODE</span>
+      Play to unlock →
+    </button>
+    <button class="mode-btn-boring" id="btn-boring-mode" touch-action="manipulation">
+      <span class="mode-btn-label">BORING MODE</span>
+      Just browse →
+    </button>
+  </div>
+</div>
 
 <div class="frame-wrap">
   <div class="phone">
@@ -1957,6 +2073,29 @@ function initDial() {
   }
   render();
 }
+
+/* MODE CHOOSER */
+document.getElementById('btn-fun-mode').addEventListener('click', () => {
+  document.getElementById('mode-chooser').classList.add('hidden');
+});
+
+document.getElementById('btn-boring-mode').addEventListener('click', () => {
+  document.getElementById('mode-chooser').classList.add('hidden');
+  ['about', 'tools', 'portfolio', 'career', 'contact'].forEach(section => {
+    STATE.unlocked.add(section);
+    const tile = document.querySelector('.hub-tile[data-section="' + section + '"]');
+    if (tile) {
+      tile.classList.add('unlocked');
+      tile.querySelector('.tile-status').textContent = 'DONE';
+    }
+    const sec = document.getElementById('section-' + section);
+    if (sec) sec.classList.add('revealed');
+  });
+  document.getElementById('score-num').textContent = '5';
+  document.getElementById('end-banner').classList.add('active');
+  animateSkillBars();
+  setTimeout(() => document.getElementById('section-about').scrollIntoView({ behavior: 'smooth' }), 200);
+});
 </script>
 
 </body>
