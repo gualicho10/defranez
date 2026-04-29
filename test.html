@@ -209,23 +209,26 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--border);
+      padding: 12px 0 14px;
     }
     .game-title {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
       color: var(--accent);
-      letter-spacing: 0.05em;
+      letter-spacing: 0.55px;
     }
     .game-close {
-      width: 32px; height: 32px;
-      border: 1px solid var(--border);
+      width: 26px; height: 26px;
+      border: 1px solid rgba(138,148,166,0.2);
       background: transparent;
       color: var(--text);
       font-family: 'DM Mono', monospace;
-      font-size: 14px;
+      font-size: 16px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
     }
     .game-instruction {
       font-family: 'Syne', sans-serif;
@@ -242,7 +245,23 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 20px;
+      gap: 40px;
+    }
+    .knock-instruction-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 0;
+    }
+    .knock-instruction-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: #00c8ff;
+      text-align: center;
+      letter-spacing: 1.8px;
+      line-height: 1.6;
+      white-space: pre-line;
     }
 
     .game-win {
@@ -293,23 +312,22 @@
 
     .knock-hud {
       font-family: 'DM Mono', monospace;
-      font-size: 12px;
+      font-size: 18px;
       color: var(--text);
-      margin-bottom: 6px;
+      letter-spacing: 0.9px;
     }
-    .knock-hud span { color: var(--accent); }
+    .knock-hud span { color: var(--text); }
     .rhythm-beats {
       display: flex;
-      gap: 16px;
-      margin: 4px 0 16px;
+      gap: 23px;
       justify-content: center;
     }
     .rhythm-dot {
-      width: 14px;
-      height: 14px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: transparent;
+      border: 1px solid rgba(107,114,128,0.4);
+      background: rgba(107,114,128,0.25);
       transition: background 0.1s, border-color 0.1s, transform 0.1s;
     }
     .rhythm-dot.play {
@@ -329,32 +347,43 @@
     .rhythm-listen {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 10px 18px;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
+      padding: 0 40px;
+      height: 46px;
+      background: var(--accent);
+      border: none;
+      color: #000;
       cursor: pointer;
-      margin-bottom: 20px;
-      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: opacity 0.15s;
+      -webkit-tap-highlight-color: transparent;
     }
-    .rhythm-listen:hover, .rhythm-listen:active {
-      border-color: var(--accent2);
-      color: var(--accent2);
-    }
+    .rhythm-listen:active { opacity: 0.85; }
     .rhythm-listen.playing {
-      border-color: var(--accent2);
-      color: var(--accent2);
+      opacity: 0.7;
       pointer-events: none;
     }
     .rhythm-hint {
       font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-      margin-bottom: 14px;
-      min-height: 14px;
+      font-size: 12px;
+      color: #00c8ff;
+      letter-spacing: 1.8px;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .knock-ring-outer {
+      width: 240px; height: 240px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,245,160,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
     .knock-target {
       width: 200px; height: 200px;
@@ -364,10 +393,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      background: radial-gradient(circle, rgba(0,245,160,0.12), transparent 70%);
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
+      pointer-events: none;
+    }
+    .knock-inner-fill {
+      position: absolute;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(0,245,160,0.06);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
     }
     .knock-target.idle::before {
       content: '';
@@ -382,29 +416,28 @@
       100% { transform: scale(1.25); opacity: 0; }
     }
     .knock-target-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
       color: var(--accent);
-      letter-spacing: 0.12em;
       position: relative;
       z-index: 1;
       text-align: center;
-      padding: 0 14px;
     }
-    .knock-target.hit {
+    .knock-ring-outer.hit .knock-target {
       animation: knockHit 0.25s;
-      background: radial-gradient(circle, rgba(0,245,160,0.35), transparent 70%);
     }
     @keyframes knockHit {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(0.92); }
     }
-    .knock-target.listening {
+    .knock-ring-outer.listening .knock-target {
       border-color: var(--accent2);
-      background: radial-gradient(circle, rgba(0,200,255,0.14), transparent 70%);
-      pointer-events: none;
     }
-    .knock-target.listening .knock-target-label { color: var(--accent2); }
+    .knock-ring-outer.listening .knock-inner-fill {
+      background: rgba(0,200,255,0.1);
+    }
+    .knock-ring-outer.listening .knock-target-label { color: var(--accent2); }
 
     .match-grid {
       display: grid;
@@ -1038,8 +1071,8 @@
     .mode-title {
       font-family: 'Syne', sans-serif;
       font-weight: 800;
-      font-size: 22px;
-      line-height: 1.25;
+      font-size: 28px;
+      line-height: 1.1;
       letter-spacing: -0.015em;
       color: #fff;
     }
@@ -1051,78 +1084,60 @@
       line-height: 1.5;
     }
     .mode-divider { height: 1px; background: #18191b; }
-    .mode-option { display: flex; flex-direction: column; }
-    .mode-option-head {
-      background: #040c06;
-      border: 1px solid rgba(0,245,160,0.4);
-      border-bottom: none;
-      padding: 12px;
+    .mode-block {
       display: flex;
       flex-direction: column;
       gap: 4px;
-    }
-    .mode-option-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      color: var(--accent);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-    .mode-option-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 22px;
-      color: #fff;
-      letter-spacing: -0.015em;
-    }
-    .mode-option-desc {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.02em;
-      line-height: 1.5;
-    }
-    .mode-btn-play {
-      background: var(--accent);
-      color: #000;
-      height: 46px;
-      border: none;
+      padding: 12px;
       width: 100%;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.08em;
+      text-align: left;
+      border: none;
       cursor: pointer;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
+      font-family: inherit;
     }
-    .mode-btn-play:active { opacity: 0.85; }
+    .mode-block:active { filter: brightness(0.88); }
+    .mode-block-fun { background: var(--accent); }
+    .mode-block-boring {
+      background: rgba(0,245,160,0.05);
+      border: 1px solid rgba(0,245,160,0.3);
+    }
+    .mode-block-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      display: block;
+    }
+    .mode-block-fun .mode-block-label { color: rgba(0,0,0,0.55); }
+    .mode-block-boring .mode-block-label { color: var(--accent); }
+    .mode-block-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      letter-spacing: -0.015em;
+      line-height: 1.1;
+      display: block;
+    }
+    .mode-block-fun .mode-block-title { color: #000; }
+    .mode-block-boring .mode-block-title { color: #fff; }
+    .mode-block-desc {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.02em;
+      line-height: 1.5;
+      display: block;
+    }
+    .mode-block-fun .mode-block-desc { color: rgba(0,0,0,0.65); }
+    .mode-block-boring .mode-block-desc { color: var(--muted); }
     .mode-or {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
-      color: #00c8ff;
+      color: var(--muted);
       letter-spacing: 0.02em;
       text-align: center;
-    }
-    .mode-btn-browse {
-      background: rgba(0,245,160,0.05);
-      color: var(--accent);
-      height: 48px;
-      border: 1px solid rgba(0,245,160,0.3);
-      width: 100%;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      cursor: pointer;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .mode-btn-browse:active { background: rgba(0,245,160,0.1); }
-    .mode-saved {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-      text-align: center;
+      line-height: 1.5;
     }
     .mode-proto {
       font-family: 'DM Mono', monospace;
@@ -1136,32 +1151,21 @@
 
 <div class="mode-chooser" id="mode-chooser">
   <div class="mode-card">
-    <div class="mode-eyebrow">WELCOME</div>
-    <h1 class="mode-title">How do you<br/>want to explore?</h1>
-    <p class="mode-sub">Pick a mode.<br/>You can switch anytime from the menu.</p>
+    <div class="mode-eyebrow">WELCOME TO EDF PORTFOLIO ON MOBILE</div>
+    <h1 class="mode-title">Pick a mode<br/>to explore</h1>
+    <p class="mode-sub">You can switch anytime from the menu.</p>
     <div class="mode-divider"></div>
-
-    <div class="mode-option">
-      <div class="mode-option-head">
-        <div class="mode-option-label">FUN MODE</div>
-        <div class="mode-option-title">Play to unlock</div>
-        <div class="mode-option-desc">Complete 5 mini-games to reveal each portfolio section.</div>
-      </div>
-      <button class="mode-btn-play" id="btn-fun-mode">PLAY NOW  →</button>
-    </div>
-
+    <button class="mode-block mode-block-fun" id="btn-fun-mode">
+      <span class="mode-block-label">FUN MODE</span>
+      <span class="mode-block-title">Play to unlock →</span>
+      <span class="mode-block-desc">Complete 5 mini-games to reveal each portfolio section.</span>
+    </button>
     <div class="mode-or">OR</div>
-
-    <div class="mode-option">
-      <div class="mode-option-head">
-        <div class="mode-option-label">BORING MODE</div>
-        <div class="mode-option-title">Just browse</div>
-        <div class="mode-option-desc">Responsive desktop portfolio adapted for mobile. No games.</div>
-      </div>
-      <button class="mode-btn-browse" id="btn-boring-mode">BROWSE  →</button>
-    </div>
-
-    <div class="mode-saved">Your choice is saved  ·  Switch anytime</div>
+    <button class="mode-block mode-block-boring" id="btn-boring-mode">
+      <span class="mode-block-label">BORING MODE</span>
+      <span class="mode-block-title">Just browse →</span>
+      <span class="mode-block-desc">Responsive desktop portfolio adapted for mobile. No games.</span>
+    </button>
   </div>
   <div class="mode-proto">v2 mobile · prototype</div>
 </div>
@@ -1559,20 +1563,24 @@
     <div class="game-title">LV 01 · KNOCK</div>
     <button class="game-close">×</button>
   </div>
-  <div class="game-instruction">Listen. <strong>Tap the tempo</strong> back.</div>
   <div class="game-body">
-    <div class="knock-hud">TAPS <span id="knock-count">0</span>/<span id="knock-total">4</span></div>
+    <div class="knock-instruction-area">
+      <div class="knock-instruction-text" id="rhythm-hint">Tap LISTEN to hear the beat<br/>Tap the tempo back.</div>
+    </div>
     <div class="rhythm-beats" id="rhythm-beats">
       <div class="rhythm-dot"></div>
       <div class="rhythm-dot"></div>
       <div class="rhythm-dot"></div>
       <div class="rhythm-dot"></div>
     </div>
-    <button class="rhythm-listen" id="rhythm-listen" type="button">▶ LISTEN</button>
-    <div class="rhythm-hint" id="rhythm-hint">Tap LISTEN to hear the beat</div>
-    <div class="knock-target idle" id="knock-target">
-      <div class="knock-target-label">TAP<br/>HERE</div>
+    <button class="rhythm-listen" id="rhythm-listen" type="button">LISTEN &nbsp;▶</button>
+    <div class="knock-ring-outer" id="knock-ring">
+      <div class="knock-target idle" id="knock-target">
+        <div class="knock-inner-fill"></div>
+        <div class="knock-target-label">TAP<br/>HERE</div>
+      </div>
     </div>
+    <div class="knock-hud">TAPS &nbsp;&nbsp;<span id="knock-count">0</span>/<span id="knock-total">4</span></div>
   </div>
   <div class="game-win" id="win-knock">
     <div class="win-label">★ UNLOCKED ★</div>
@@ -1783,6 +1791,7 @@ function rhythmResetDots(state) {
 }
 function rhythmPlayPattern() {
   const listenBtn = document.getElementById('rhythm-listen');
+  const ring = document.getElementById('knock-ring');
   const target = document.getElementById('knock-target');
   const hint = document.getElementById('rhythm-hint');
   const dots = document.querySelectorAll('#rhythm-beats .rhythm-dot');
@@ -1795,8 +1804,8 @@ function rhythmPlayPattern() {
   document.getElementById('knock-count').textContent = '0';
 
   listenBtn.classList.add('playing');
-  listenBtn.textContent = '♪ playing';
-  target.classList.add('listening');
+  listenBtn.textContent = '\u266A playing';
+  ring.classList.add('listening');
   target.classList.remove('idle');
   hint.textContent = 'Listen carefully...';
 
@@ -1811,10 +1820,10 @@ function rhythmPlayPattern() {
   const totalDur = RHYTHM_PATTERN[RHYTHM_PATTERN.length - 1] + 400;
   rhythmListenTimers.push(setTimeout(() => {
     listenBtn.classList.remove('playing');
-    listenBtn.textContent = '▶ LISTEN again';
-    target.classList.remove('listening');
+    listenBtn.textContent = 'LISTEN again  \u25B6';
+    ring.classList.remove('listening');
     target.classList.add('idle');
-    hint.textContent = 'Now tap the tempo →';
+    hint.textContent = 'Now tap the tempo \u2192';
     rhythmReady = true;
   }, totalDur));
 }
@@ -1857,17 +1866,18 @@ function initKnock() {
   rhythmTaps = [];
   rhythmReady = false;
   document.getElementById('knock-count').textContent = '0';
-  document.getElementById('rhythm-hint').textContent = 'Tap LISTEN to hear the beat';
+  document.getElementById('rhythm-hint').textContent = 'Tap LISTEN to hear the beat\nTap the tempo back.';
   const listenBtn = document.getElementById('rhythm-listen');
-  listenBtn.textContent = '▶ LISTEN';
+  listenBtn.textContent = 'LISTEN  \u25B6';
   listenBtn.classList.remove('playing');
   rhythmResetDots();
 
   listenBtn.onclick = rhythmPlayPattern;
 
+  const ring = document.getElementById('knock-ring');
   const target = document.getElementById('knock-target');
   target.classList.add('idle');
-  target.classList.remove('listening');
+  ring.classList.remove('listening', 'hit');
 
   const handler = () => {
     if (!rhythmReady) return;
@@ -1876,16 +1886,16 @@ function initKnock() {
     const idx = rhythmTaps.length;
     rhythmTaps.push(t);
     document.getElementById('knock-count').textContent = String(rhythmTaps.length);
-    target.classList.remove('hit');
-    void target.offsetWidth;
-    target.classList.add('hit');
+    ring.classList.remove('hit');
+    void ring.offsetWidth;
+    ring.classList.add('hit');
     beep(RHYTHM_PITCHES[idx] || 440, 120);
     if (rhythmTaps.length >= RHYTHM_PATTERN.length) {
       rhythmReady = false;
       setTimeout(rhythmEvaluate, 300);
     }
   };
-  target.onclick = handler;
+  ring.onclick = handler;
 }
 let rhythmStart = 0;
 
