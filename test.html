@@ -545,30 +545,35 @@
       gap: 4px;
     }
     .beats-note {
-      font-size: 28px;
-      line-height: 1;
+      width: 28px;
+      height: 36px;
+      display: inline-block;
       color: var(--text);
-      font-family: 'Apple Symbols', 'Noto Music', sans-serif;
+      flex-shrink: 0;
     }
+    .beats-note svg { width: 100%; height: 100%; display: block; overflow: visible; }
     .beats-val {
       font-family: 'DM Mono', monospace;
-      font-size: 10px;
+      font-size: 13px;
       color: var(--accent);
-      letter-spacing: 0.1em;
+      letter-spacing: 0.05em;
+      font-weight: 500;
     }
     .beats-equation {
       width: 100%;
-      padding: 22px 12px;
+      padding: 18px 12px;
       background: var(--bg2);
       border: 1px solid var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      font-family: 'Apple Symbols', 'Noto Music', sans-serif;
-      font-size: 32px;
+      gap: 8px;
       color: var(--text);
       flex-wrap: wrap;
+    }
+    .beats-equation .beats-note {
+      width: 32px;
+      height: 42px;
     }
     .beats-eq-op {
       font-family: 'Syne', sans-serif;
@@ -589,15 +594,20 @@
       width: 100%;
     }
     .beats-opt, .tune-opt {
-      padding: 14px 6px;
+      padding: 12px 6px;
       border: 1px solid var(--border);
       background: var(--bg2);
       color: var(--text);
       cursor: pointer;
-      font-family: 'Apple Symbols', 'Noto Music', sans-serif;
-      font-size: 28px;
-      line-height: 1;
       transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+    }
+    .beats-opt .beats-note {
+      width: 26px;
+      height: 36px;
     }
     .tune-opt {
       font-family: 'Syne', sans-serif;
@@ -632,18 +642,24 @@
       text-transform: uppercase;
     }
     .tune-play {
-      width: 100%;
-      padding: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0 40px;
+      height: 46px;
       background: var(--accent);
-      color: #000;
       border: none;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 16px;
-      letter-spacing: 0.1em;
+      color: #000;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: opacity 0.15s;
+      -webkit-tap-highlight-color: transparent;
     }
     .tune-play:active { opacity: 0.85; }
+    .tune-play.playing { opacity: 0.7; pointer-events: none; }
     .tune-dots {
       display: flex;
       gap: 8px;
@@ -1171,6 +1187,27 @@
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="note-whole" viewBox="0 0 16 22">
+      <ellipse cx="8" cy="11" rx="6.5" ry="4" fill="none" stroke="currentColor" stroke-width="1.6" transform="rotate(-18 8 11)"/>
+    </symbol>
+    <symbol id="note-half" viewBox="0 0 16 36">
+      <ellipse cx="6" cy="29" rx="5.2" ry="3.6" fill="none" stroke="currentColor" stroke-width="1.6" transform="rotate(-22 6 29)"/>
+      <line x1="10.6" y1="27" x2="10.6" y2="3" stroke="currentColor" stroke-width="1.5"/>
+    </symbol>
+    <symbol id="note-quarter" viewBox="0 0 16 36">
+      <ellipse cx="6" cy="29" rx="5.2" ry="3.6" fill="currentColor" transform="rotate(-22 6 29)"/>
+      <line x1="10.6" y1="27" x2="10.6" y2="3" stroke="currentColor" stroke-width="1.5"/>
+    </symbol>
+    <symbol id="note-eighth" viewBox="0 0 18 36">
+      <ellipse cx="6" cy="29" rx="5.2" ry="3.6" fill="currentColor" transform="rotate(-22 6 29)"/>
+      <line x1="10.6" y1="27" x2="10.6" y2="3" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M10.6 3 Q17 8 14 16 Q16 11 10.6 10 Z" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
 <div class="mode-chooser" id="mode-chooser">
   <div class="mode-card">
     <div class="mode-divider"></div>
@@ -1687,7 +1724,7 @@
     <div class="tune-wrap">
       <div class="tune-scale-label" id="tune-scale-label">C MAJOR</div>
       <div class="tune-dots" id="tune-dots"></div>
-      <button class="tune-play" id="tune-play">▶ PLAY SCALE</button>
+      <button class="tune-play" id="tune-play" type="button">LISTEN &nbsp;▶</button>
       <div class="tune-options" id="tune-options"></div>
       <div class="tune-progress" id="tune-progress">ROUND 1 / 2</div>
     </div>
@@ -2078,11 +2115,24 @@ function stopSnake() {
 
 /* BEATS — note-value math */
 const BEATS_NOTES = [
-  { sym: '\u{1D15D}', val: 4, label: 'WHOLE' },
-  { sym: '\u{1D15E}', val: 2, label: 'HALF' },
-  { sym: '\u2669',    val: 1, label: 'QUARTER' },
-  { sym: '\u266A',    val: 0.5, label: 'EIGHTH' }
+  { id: 'note-whole',   val: 4, label: 'WHOLE' },
+  { id: 'note-half',    val: 2, label: 'HALF' },
+  { id: 'note-quarter', val: 1, label: 'QUARTER' },
+  { id: 'note-eighth',  val: 0.5, label: 'EIGHTH' }
 ];
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const XLINK_NS = 'http://www.w3.org/1999/xlink';
+function noteEl(id) {
+  const wrap = document.createElement('span');
+  wrap.className = 'beats-note';
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  const use = document.createElementNS(SVG_NS, 'use');
+  use.setAttributeNS(XLINK_NS, 'xlink:href', '#' + id);
+  use.setAttribute('href', '#' + id);
+  svg.appendChild(use);
+  wrap.appendChild(svg);
+  return wrap;
+}
 const BEATS_ROUNDS = [
   { parts: [0.5, 0.5],          answer: 1 },
   { parts: [1, 1],              answer: 2 },
@@ -2108,13 +2158,10 @@ function initBeats() {
   BEATS_NOTES.forEach(n => {
     const item = document.createElement('div');
     item.className = 'beats-legend-item';
-    const s = document.createElement('span');
-    s.className = 'beats-note';
-    s.textContent = n.sym;
+    item.appendChild(noteEl(n.id));
     const v = document.createElement('span');
     v.className = 'beats-val';
-    v.textContent = n.val === 0.5 ? '\u00BD' : String(n.val);
-    item.appendChild(s);
+    v.textContent = n.val === 0.5 ? '1/2' : String(n.val);
     item.appendChild(v);
     legend.appendChild(item);
   });
@@ -2134,10 +2181,7 @@ function initBeats() {
         op.textContent = '+';
         eq.appendChild(op);
       }
-      const n = document.createElement('span');
-      n.className = 'beats-note';
-      n.textContent = noteForValue(p).sym;
-      eq.appendChild(n);
+      eq.appendChild(noteEl(noteForValue(p).id));
     });
     const eq2 = document.createElement('span');
     eq2.className = 'beats-eq-op';
@@ -2153,7 +2197,7 @@ function initBeats() {
     BEATS_NOTES.forEach(n => {
       const b = document.createElement('button');
       b.className = 'beats-opt';
-      b.textContent = n.sym;
+      b.appendChild(noteEl(n.id));
       b.addEventListener('click', () => {
         if (b.disabled) return;
         if (n.val === round.answer) {
@@ -2176,12 +2220,15 @@ function initBeats() {
 }
 
 /* TUNE — missing note in scale */
-const TUNE_FREQ = { 'C':261.63,'D':293.66,'E':329.63,'F':349.23,'G':392.00,'A':440.00,'B':493.88,'C2':523.25,
-                    'Eb':311.13,'Ab':415.30,'Bb':466.16 };
+const TUNE_FREQ = {
+  'C4':261.63,'D4':293.66,'E4':329.63,'F4':349.23,'G4':392.00,'A4':440.00,'B4':493.88,
+  'C5':523.25,'D5':587.33,'E5':659.25,'F5':698.46,'G5':783.99,'A5':880.00
+};
 const TUNE_SCALES = [
-  { name: 'C MAJOR', notes: ['C','D','E','F','G','A','B','C2'] },
-  { name: 'A MINOR', notes: ['A','B','C2','D','E','F','G','C'] }
+  { name: 'C MAJOR', notes: ['C4','D4','E4','F4','G4','A4','B4','C5'] },
+  { name: 'A MINOR', notes: ['A4','B4','C5','D5','E5','F5','G5','A5'] }
 ];
+function letterOf(note) { return note.replace(/[0-9]/g, ''); }
 let TUNE_PLAYING = false;
 function initTune() {
   const rounds = TUNE_SCALES.map(s => {
@@ -2207,9 +2254,9 @@ function initTune() {
     const opts = document.getElementById('tune-options');
     while (opts.firstChild) opts.removeChild(opts.firstChild);
     const correct = round.scale.notes[round.missIdx];
-    const correctLetter = correct.replace('2','');
+    const correctLetter = letterOf(correct);
     const distractorPool = round.scale.notes
-      .map(n => n.replace('2',''))
+      .map(letterOf)
       .filter(n => n !== correctLetter);
     const distractors = shuffle([...new Set(distractorPool)]).slice(0, 3);
     const choices = shuffle([correctLetter, ...distractors]);
@@ -2242,6 +2289,8 @@ function initTune() {
   function playScale(round) {
     if (TUNE_PLAYING) return;
     TUNE_PLAYING = true;
+    const playBtn = document.getElementById('tune-play');
+    playBtn.classList.add('playing');
     const dots = document.getElementById('tune-dots').children;
     [...dots].forEach(d => d.classList.remove('active'));
     round.scale.notes.forEach((note, i) => {
@@ -2251,7 +2300,10 @@ function initTune() {
         }
         dots[i].classList.add('active');
         if (i === round.scale.notes.length - 1) {
-          setTimeout(() => { TUNE_PLAYING = false; }, 320);
+          setTimeout(() => {
+            TUNE_PLAYING = false;
+            playBtn.classList.remove('playing');
+          }, 320);
         }
       }, i * 360);
     });
