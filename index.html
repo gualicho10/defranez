@@ -1105,6 +1105,45 @@
     }
     .modal-behance-link:hover { opacity: 0.85; }
 
+    .modal-gallery { display: flex; flex-direction: column; gap: 4px; margin-bottom: 40px; }
+    .modal-gallery img { width: 100%; display: block; }
+
+    .modal-proj-nav { display: none; }
+
+    @media (max-width: 768px) {
+      .modal { width: calc(100vw - 32px); margin: 16px auto 60px; }
+      .modal-close { top: 12px; right: 12px; }
+      .modal-proj-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0 8px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        margin-top: 8px;
+        gap: 12px;
+      }
+      .modal-proj-nav-btn {
+        font-family: 'DM Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 10px 16px;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: none;
+        transition: color 0.2s, border-color 0.2s;
+      }
+      .modal-proj-nav-btn:not(:disabled):hover { color: #00f5a0; border-color: rgba(0,245,160,0.4); }
+      .modal-proj-nav-btn:disabled { opacity: 0.25; cursor: default; }
+      .modal-proj-nav-label {
+        font-family: 'DM Mono', monospace;
+        font-size: 10px;
+        color: #3d4450;
+        letter-spacing: 0.1em;
+      }
+    }
+
     /* CAREER (v2 — table rows) */
     #resume {
       border-top: 1px solid rgba(255,255,255,0.06);
@@ -1979,9 +2018,16 @@
         <div class="modal-title">Product Design<br>at OpenLoot</div>
         <div class="modal-sub">UX / UI / Gaming · Big Time Studios</div>
       </div>
-      <div class="modal-image-wrap"><img src="img/cover-1_expanded.png" alt="OpenLoot case study"></div>
+      <div class="modal-gallery">
+        <img src="img/cover-1_expanded.png" alt="OpenLoot case study">
+      </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+      </div>
+      <div class="modal-proj-nav">
+        <button class="modal-proj-nav-btn" disabled>← Prev</button>
+        <span class="modal-proj-nav-label">01 / 06</span>
+        <button class="modal-proj-nav-btn" onclick="openModalByIndex(1)">Next →</button>
       </div>
     </div>
   </div>
@@ -1994,9 +2040,21 @@
         <div class="modal-title">Our Dipper</div>
         <div class="modal-sub">Service Design · Startup</div>
       </div>
-      <div class="modal-image-wrap"><img src="img/cover-2_expanded.png" alt="Our Dipper case study"></div>
+      <div class="modal-gallery">
+        <img src="img/cover-2_dipper_1_01.png" alt="Our Dipper 01">
+        <img src="img/cover-2_dipper_1_07.png" alt="Our Dipper 07">
+        <img src="img/cover-2_dipper_1_09.png" alt="Our Dipper 09">
+        <img src="img/cover-2_dipper_1_10.png" alt="Our Dipper 10">
+        <img src="img/cover-2_dipper_1_14.png" alt="Our Dipper 14">
+        <img src="img/cover-2_dipper_1_15.png" alt="Our Dipper 15">
+      </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/245507671/Our-Dipper-Landing-Web-app" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+      </div>
+      <div class="modal-proj-nav">
+        <button class="modal-proj-nav-btn" onclick="openModalByIndex(0)">← Prev</button>
+        <span class="modal-proj-nav-label">02 / 06</span>
+        <button class="modal-proj-nav-btn" onclick="openModalByIndex(2)">Next →</button>
       </div>
     </div>
   </div>
@@ -2009,9 +2067,19 @@
         <div class="modal-title">Roche Congress</div>
         <div class="modal-sub">Enterprise UX · Roche</div>
       </div>
-      <div class="modal-image-wrap"><img src="img/cover-3_expanded.png" alt="Roche Congress case study"></div>
+      <div class="modal-gallery">
+        <img src="img/cover-3_expanded_1.png" alt="Roche Congress 01">
+        <img src="img/cover-3_expanded_3.png" alt="Roche Congress 03">
+        <img src="img/cover-3_expanded_4.png" alt="Roche Congress 04">
+        <img src="img/cover-3_expanded_5.png" alt="Roche Congress 05">
+      </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+      </div>
+      <div class="modal-proj-nav">
+        <button class="modal-proj-nav-btn" onclick="openModalByIndex(1)">← Prev</button>
+        <span class="modal-proj-nav-label">03 / 06</span>
+        <button class="modal-proj-nav-btn" onclick="openModalByIndex(3)">Next →</button>
       </div>
     </div>
   </div>
@@ -2024,9 +2092,18 @@
         <div class="modal-title">Mobile Games</div>
         <div class="modal-sub">Art Direction · Disney / Globant</div>
       </div>
-      <div class="modal-image-wrap"><img src="img/cover-4_expanded.png" alt="Mobile Games case study"></div>
+      <div class="modal-gallery">
+        <img src="img/cover-4_expanded_1.png" alt="Mobile Games 01">
+        <img src="img/cover-4_expanded_2.png" alt="Mobile Games 02">
+        <img src="img/cover-4_expanded_3.png" alt="Mobile Games 03">
+      </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+      </div>
+      <div class="modal-proj-nav">
+        <button class="modal-proj-nav-btn" onclick="openModalByIndex(2)">← Prev</button>
+        <span class="modal-proj-nav-label">04 / 06</span>
+        <button class="modal-proj-nav-btn" onclick="openModalByIndex(4)">Next →</button>
       </div>
     </div>
   </div>
@@ -2039,9 +2116,18 @@
         <div class="modal-title">Branding + Social</div>
         <div class="modal-sub">Visual Design · Various</div>
       </div>
-      <div class="modal-image-wrap"><img src="img/cover-5_expanded.png" alt="Branding + Social case study"></div>
+      <div class="modal-gallery">
+        <img src="img/cover-5_expanded_2.png" alt="Branding 02">
+        <img src="img/cover-5_expanded_3.png" alt="Branding 03">
+        <img src="img/cover-5_expanded_4.png" alt="Branding 04">
+      </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/66848937/Brand-Concept-(logo-Styles-Guide)" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+      </div>
+      <div class="modal-proj-nav">
+        <button class="modal-proj-nav-btn" onclick="openModalByIndex(3)">← Prev</button>
+        <span class="modal-proj-nav-label">05 / 06</span>
+        <button class="modal-proj-nav-btn" onclick="openModalByIndex(5)">Next →</button>
       </div>
     </div>
   </div>
@@ -2054,9 +2140,19 @@
         <div class="modal-title">Sketchup Renders</div>
         <div class="modal-sub">3D · Visualization · Personal</div>
       </div>
-      <div class="modal-image-wrap"><img src="img/cover-6_expanded.png" alt="Sketchup Renders case study"></div>
+      <div class="modal-gallery">
+        <img src="img/cover-6_expanded_1.png" alt="Sketchup 01">
+        <img src="img/cover-6_expanded_2.png" alt="Sketchup 02">
+        <img src="img/cover-6_expanded_3.png" alt="Sketchup 03">
+        <img src="img/cover-6_expanded_4.png" alt="Sketchup 04">
+      </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/245216341/Sketchup-ModellingRender" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+      </div>
+      <div class="modal-proj-nav">
+        <button class="modal-proj-nav-btn" onclick="openModalByIndex(4)">← Prev</button>
+        <span class="modal-proj-nav-label">06 / 06</span>
+        <button class="modal-proj-nav-btn" disabled>Next →</button>
       </div>
     </div>
   </div>
@@ -2247,6 +2343,11 @@
     }
 
     // ── Modal ─────────────────────────────────────────────────────────────
+    const PROJECT_IDS = ['openloot', 'dipper', 'roche', 'games', 'branding', 'sketchup'];
+    function openModalByIndex(i) {
+      document.querySelectorAll('.modal-backdrop.open').forEach(m => closeModal(m.id.replace('modal-', '')));
+      if (i >= 0 && i < PROJECT_IDS.length) openModal(PROJECT_IDS[i]);
+    }
     function openModal(id) {
       const backdrop = document.getElementById('modal-' + id);
       if (!backdrop) return;
