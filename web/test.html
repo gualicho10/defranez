@@ -521,123 +521,151 @@
     .snake-btn.down { grid-column: 2; grid-row: 2; }
     .snake-btn.right { grid-column: 3; grid-row: 2; }
 
-    .hop-wrap {
+    .beats-wrap, .tune-wrap {
       width: 100%;
       max-width: 320px;
       display: flex;
       flex-direction: column;
       gap: 18px;
+      align-items: center;
     }
-    .hop-track {
-      height: 50vh;
-      min-height: 340px;
-      border-left: 2px solid var(--accent);
-      margin-left: 20px;
-      position: relative;
-      padding: 8px 0 8px 24px;
+    .beats-legend {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      width: 100%;
+      padding: 10px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+    }
+    .beats-legend-item {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
     }
-    .hop-year {
+    .beats-note {
+      font-size: 28px;
+      line-height: 1;
+      color: var(--text);
+      font-family: 'Apple Symbols', 'Noto Music', sans-serif;
+    }
+    .beats-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .beats-equation {
+      width: 100%;
+      padding: 22px 12px;
+      background: var(--bg2);
+      border: 1px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: 'Apple Symbols', 'Noto Music', sans-serif;
+      font-size: 32px;
+      color: var(--text);
+      flex-wrap: wrap;
+    }
+    .beats-eq-op {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--accent);
+    }
+    .beats-eq-q {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      color: var(--accent2);
+    }
+    .beats-options, .tune-options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      width: 100%;
+    }
+    .beats-opt, .tune-opt {
+      padding: 14px 6px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text);
+      cursor: pointer;
+      font-family: 'Apple Symbols', 'Noto Music', sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      transition: all 0.15s;
+    }
+    .tune-opt {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+    }
+    .beats-opt:active, .tune-opt:active {
+      background: rgba(0,245,160,0.12);
+      border-color: var(--accent);
+    }
+    .beats-opt.wrong, .tune-opt.wrong {
+      background: rgba(255,77,77,0.18);
+      border-color: var(--danger);
+      animation: shake 0.3s;
+    }
+    .beats-opt.right, .tune-opt.right {
+      background: rgba(0,245,160,0.18);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .beats-progress, .tune-progress {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+    }
+    .tune-scale-label {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
-      color: var(--muted);
-      position: relative;
-      padding-left: 4px;
-      transition: color 0.2s;
+      color: var(--accent2);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
     }
-    .hop-year::before {
-      content: '';
-      position: absolute;
-      left: -32px;
-      top: 50%;
-      transform: translateY(-50%);
+    .tune-play {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+    }
+    .tune-play:active { opacity: 0.85; }
+    .tune-dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+    }
+    .tune-dot {
       width: 14px;
       height: 14px;
       border-radius: 50%;
       background: var(--bg2);
-      border: 2px solid var(--muted);
-      transition: all 0.2s;
+      border: 1.5px solid var(--muted);
+      transition: all 0.15s;
     }
-    .hop-year.done { color: var(--accent); }
-    .hop-year.done::before {
+    .tune-dot.active {
       background: var(--accent);
       border-color: var(--accent);
-      box-shadow: 0 0 10px var(--accent);
+      box-shadow: 0 0 8px var(--accent);
     }
-    .hop-pin {
-      position: absolute;
-      left: -34px;
-      top: 0;
-      width: 18px;
-      height: 18px;
-      background: #fff;
-      border: 2px solid var(--accent);
-      border-radius: 50%;
-      cursor: grab;
-      touch-action: none;
-      box-shadow: 0 0 12px var(--accent);
-      transition: top 0.05s linear;
-    }
-    .hop-pin:active { cursor: grabbing; transform: scale(1.1); }
-    .hop-instruction {
-      font-size: 11px;
-      color: var(--muted);
-      text-align: center;
-      letter-spacing: 0.1em;
-    }
-
-    .dial-display {
-      width: 260px;
-      min-height: 60px;
-      padding: 14px 16px;
-      background: var(--bg2);
-      border: 1px solid var(--accent);
-      font-family: 'DM Mono', monospace;
-      font-size: 14px;
-      color: var(--accent);
-      text-align: center;
-      letter-spacing: 0.08em;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 6px;
-    }
-    .digit-slot {
-      width: 20px;
-      display: inline-block;
-      text-align: center;
-    }
-    .digit-on { color: var(--accent); }
-    .digit-off { color: var(--muted); opacity: 0.3; }
-    .dial-prompt {
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: -8px;
-    }
-    .dial-keypad {
-      display: grid;
-      grid-template-columns: repeat(3, 70px);
-      gap: 8px;
-    }
-    .dial-key {
-      width: 70px;
-      height: 62px;
-      border: 1px solid var(--border);
-      background: var(--bg2);
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 22px;
-      color: var(--text);
-      cursor: pointer;
-    }
-    .dial-key:active { background: rgba(0,245,160,0.12); color: var(--accent); }
-    .dial-key.wrong {
-      background: rgba(255,77,77,0.18);
-      animation: shake 0.3s;
+    .tune-dot.miss {
+      border-color: var(--accent2);
+      border-style: dashed;
     }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
@@ -1212,21 +1240,21 @@
           <div class="tile-arrow">›</div>
         </div>
 
-        <div class="hub-tile" data-game="hop" data-section="career">
+        <div class="hub-tile" data-game="beats" data-section="career">
           <div class="tile-num">04</div>
           <div class="tile-main">
             <div class="tile-name">Career</div>
-            <div class="tile-game">Hop · <span class="tile-diff">★★★☆☆</span></div>
+            <div class="tile-game">Beats · <span class="tile-diff">★★★☆☆</span></div>
           </div>
           <div class="tile-status">LOCKED</div>
           <div class="tile-arrow">›</div>
         </div>
 
-        <div class="hub-tile" data-game="dial" data-section="contact">
+        <div class="hub-tile" data-game="tune" data-section="contact">
           <div class="tile-num">05</div>
           <div class="tile-main">
             <div class="tile-name">Contact</div>
-            <div class="tile-game">Dial · <span class="tile-diff">★★☆☆☆</span></div>
+            <div class="tile-game">Tune · <span class="tile-diff">★★☆☆☆</span></div>
           </div>
           <div class="tile-status">LOCKED</div>
           <div class="tile-arrow">›</div>
@@ -1628,47 +1656,46 @@
   </div>
 </div>
 
-<div class="game-overlay" id="game-hop">
+<div class="game-overlay" id="game-beats">
   <div class="game-header">
-    <div class="game-title">LV 04 · HOP</div>
+    <div class="game-title">LV 04 · BEATS</div>
     <button class="game-close">×</button>
   </div>
-  <div class="game-instruction">Drag the pin through <strong>all years</strong>.</div>
+  <div class="game-instruction">Solve <strong>3 rhythm equations</strong>.</div>
   <div class="game-body">
-    <div class="hop-wrap">
-      <div class="hop-track" id="hop-track">
-        <div class="hop-pin" id="hop-pin"></div>
-        <div class="hop-year">2011 · Globant</div>
-        <div class="hop-year">2015 · SIMPLY.VISION</div>
-        <div class="hop-year">2019 · _coderio</div>
-        <div class="hop-year">2020 · PSh</div>
-        <div class="hop-year">2022 · OpenLoot</div>
-      </div>
-      <div class="hop-instruction">↓ Drag down ↓</div>
+    <div class="beats-wrap">
+      <div class="beats-legend" id="beats-legend"></div>
+      <div class="beats-equation" id="beats-equation"></div>
+      <div class="beats-options" id="beats-options"></div>
+      <div class="beats-progress" id="beats-progress">ROUND 1 / 3</div>
     </div>
   </div>
-  <div class="game-win" id="win-hop">
+  <div class="game-win" id="win-beats">
     <div class="win-label">★ UNLOCKED ★</div>
     <div class="win-msg">CAREER timeline opened.</div>
-    <button class="win-btn" data-done="hop:career">CONTINUE →</button>
+    <button class="win-btn" data-done="beats:career">CONTINUE →</button>
   </div>
 </div>
 
-<div class="game-overlay" id="game-dial">
+<div class="game-overlay" id="game-tune">
   <div class="game-header">
-    <div class="game-title">LV 05 · DIAL</div>
+    <div class="game-title">LV 05 · TUNE</div>
     <button class="game-close">×</button>
   </div>
-  <div class="game-instruction">Dial the <strong>last 4 digits</strong>: <strong id="dial-target-str">4371</strong></div>
+  <div class="game-instruction">Find the <strong>missing note</strong> in the scale.</div>
   <div class="game-body">
-    <div class="dial-display" id="dial-display"></div>
-    <div class="dial-prompt">TAP IN ORDER</div>
-    <div class="dial-keypad" id="dial-keypad"></div>
+    <div class="tune-wrap">
+      <div class="tune-scale-label" id="tune-scale-label">C MAJOR</div>
+      <div class="tune-dots" id="tune-dots"></div>
+      <button class="tune-play" id="tune-play">▶ PLAY SCALE</button>
+      <div class="tune-options" id="tune-options"></div>
+      <div class="tune-progress" id="tune-progress">ROUND 1 / 2</div>
+    </div>
   </div>
-  <div class="game-win" id="win-dial">
+  <div class="game-win" id="win-tune">
     <div class="win-label">★ UNLOCKED ★</div>
     <div class="win-msg">CONTACT channels opened.</div>
-    <button class="win-btn" data-done="dial:contact">CONTINUE →</button>
+    <button class="win-btn" data-done="tune:contact">CONTINUE →</button>
   </div>
 </div>
 
@@ -1702,8 +1729,8 @@ function openGame(game) {
   if (game === 'knock') initKnock();
   if (game === 'match') initMatch();
   if (game === 'snake') initSnake();
-  if (game === 'hop') initHop();
-  if (game === 'dial') initDial();
+  if (game === 'beats') initBeats();
+  if (game === 'tune') initTune();
 }
 function closeGame() {
   document.querySelectorAll('.game-overlay.active').forEach(o => o.classList.remove('active'));
@@ -2049,80 +2076,191 @@ function stopSnake() {
   if (snakeLoop) { clearInterval(snakeLoop); snakeLoop = null; }
 }
 
-/* HOP */
-function initHop() {
-  const track = document.getElementById('hop-track');
-  const pin = document.getElementById('hop-pin');
-  const years = document.querySelectorAll('.hop-year');
-  years.forEach(y => y.classList.remove('done'));
-  pin.style.top = '0px';
-  let dragging = false;
-  let hit = 0;
+/* BEATS — note-value math */
+const BEATS_NOTES = [
+  { sym: '\u{1D15D}', val: 4, label: 'WHOLE' },
+  { sym: '\u{1D15E}', val: 2, label: 'HALF' },
+  { sym: '\u2669',    val: 1, label: 'QUARTER' },
+  { sym: '\u266A',    val: 0.5, label: 'EIGHTH' }
+];
+const BEATS_ROUNDS = [
+  { parts: [0.5, 0.5],          answer: 1 },
+  { parts: [1, 1],              answer: 2 },
+  { parts: [1, 0.5, 0.5],       answer: 2 },
+  { parts: [2, 2],              answer: 4 },
+  { parts: [2, 1, 1],           answer: 4 },
+  { parts: [0.5, 0.5, 0.5, 0.5],answer: 2 }
+];
+function noteForValue(v) {
+  return BEATS_NOTES.find(n => n.val === v);
+}
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function initBeats() {
+  const legend = document.getElementById('beats-legend');
+  while (legend.firstChild) legend.removeChild(legend.firstChild);
+  BEATS_NOTES.forEach(n => {
+    const item = document.createElement('div');
+    item.className = 'beats-legend-item';
+    const s = document.createElement('span');
+    s.className = 'beats-note';
+    s.textContent = n.sym;
+    const v = document.createElement('span');
+    v.className = 'beats-val';
+    v.textContent = n.val === 0.5 ? '\u00BD' : String(n.val);
+    item.appendChild(s);
+    item.appendChild(v);
+    legend.appendChild(item);
+  });
 
-  function setPin(clientY) {
-    const rect = track.getBoundingClientRect();
-    let y = clientY - rect.top;
-    y = Math.max(0, Math.min(rect.height - 18, y));
-    pin.style.top = y + 'px';
-    years.forEach(yr => {
-      if (yr.classList.contains('done')) return;
-      const yrRect = yr.getBoundingClientRect();
-      const yrCenter = yrRect.top + yrRect.height/2 - rect.top;
-      if (Math.abs(y + 9 - yrCenter) < 16) {
-        yr.classList.add('done');
-        hit++;
-        if (hit >= years.length) {
-          setTimeout(() => winGame('hop'), 300);
-        }
+  const rounds = shuffle(BEATS_ROUNDS).slice(0, 3);
+  let idx = 0;
+
+  function renderRound() {
+    document.getElementById('beats-progress').textContent = 'ROUND ' + (idx + 1) + ' / 3';
+    const eq = document.getElementById('beats-equation');
+    while (eq.firstChild) eq.removeChild(eq.firstChild);
+    const round = rounds[idx];
+    round.parts.forEach((p, i) => {
+      if (i > 0) {
+        const op = document.createElement('span');
+        op.className = 'beats-eq-op';
+        op.textContent = '+';
+        eq.appendChild(op);
       }
+      const n = document.createElement('span');
+      n.className = 'beats-note';
+      n.textContent = noteForValue(p).sym;
+      eq.appendChild(n);
+    });
+    const eq2 = document.createElement('span');
+    eq2.className = 'beats-eq-op';
+    eq2.textContent = '=';
+    eq.appendChild(eq2);
+    const q = document.createElement('span');
+    q.className = 'beats-eq-q';
+    q.textContent = '?';
+    eq.appendChild(q);
+
+    const opts = document.getElementById('beats-options');
+    while (opts.firstChild) opts.removeChild(opts.firstChild);
+    BEATS_NOTES.forEach(n => {
+      const b = document.createElement('button');
+      b.className = 'beats-opt';
+      b.textContent = n.sym;
+      b.addEventListener('click', () => {
+        if (b.disabled) return;
+        if (n.val === round.answer) {
+          b.classList.add('right');
+          [...opts.children].forEach(c => c.disabled = true);
+          setTimeout(() => {
+            idx++;
+            if (idx >= rounds.length) winGame('beats');
+            else renderRound();
+          }, 450);
+        } else {
+          b.classList.add('wrong');
+          setTimeout(() => b.classList.remove('wrong'), 350);
+        }
+      });
+      opts.appendChild(b);
     });
   }
-
-  pin.ontouchstart = (e) => { dragging = true; e.preventDefault(); };
-  pin.onmousedown = (e) => { dragging = true; e.preventDefault(); };
-  document.ontouchmove = (e) => { if (dragging) setPin(e.touches[0].clientY); };
-  document.onmousemove = (e) => { if (dragging) setPin(e.clientY); };
-  document.ontouchend = () => { dragging = false; };
-  document.onmouseup = () => { dragging = false; };
+  renderRound();
 }
 
-/* DIAL */
-const DIAL_TARGET = '4371';
-function initDial() {
-  const keypad = document.getElementById('dial-keypad');
-  const display = document.getElementById('dial-display');
-  let entered = '';
-  while (keypad.firstChild) keypad.removeChild(keypad.firstChild);
-  const layout = ['1','2','3','4','5','6','7','8','9','*','0','#'];
-  layout.forEach(d => {
-    const btn = document.createElement('button');
-    btn.className = 'dial-key';
-    btn.textContent = d;
-    btn.addEventListener('click', () => {
-      if (d === '*' || d === '#') return;
-      const expected = DIAL_TARGET[entered.length];
-      if (d === expected) {
-        entered += d;
-        render();
-        if (entered === DIAL_TARGET) setTimeout(() => winGame('dial'), 280);
-      } else {
-        btn.classList.add('wrong');
-        entered = '';
-        setTimeout(() => { btn.classList.remove('wrong'); render(); }, 350);
-      }
-    });
-    keypad.appendChild(btn);
+/* TUNE — missing note in scale */
+const TUNE_FREQ = { 'C':261.63,'D':293.66,'E':329.63,'F':349.23,'G':392.00,'A':440.00,'B':493.88,'C2':523.25,
+                    'Eb':311.13,'Ab':415.30,'Bb':466.16 };
+const TUNE_SCALES = [
+  { name: 'C MAJOR', notes: ['C','D','E','F','G','A','B','C2'] },
+  { name: 'A MINOR', notes: ['A','B','C2','D','E','F','G','C'] }
+];
+let TUNE_PLAYING = false;
+function initTune() {
+  const rounds = TUNE_SCALES.map(s => {
+    const missIdx = 2 + Math.floor(Math.random() * (s.notes.length - 3));
+    return { scale: s, missIdx: missIdx };
   });
-  function render() {
-    while (display.firstChild) display.removeChild(display.firstChild);
-    for (let i = 0; i < DIAL_TARGET.length; i++) {
-      const slot = document.createElement('span');
-      slot.className = 'digit-slot ' + (i < entered.length ? 'digit-on' : 'digit-off');
-      slot.textContent = i < entered.length ? entered[i] : '_';
-      display.appendChild(slot);
-    }
+  let idx = 0;
+
+  function renderRound() {
+    const round = rounds[idx];
+    document.getElementById('tune-progress').textContent = 'ROUND ' + (idx + 1) + ' / 2';
+    document.getElementById('tune-scale-label').textContent = round.scale.name;
+
+    const dots = document.getElementById('tune-dots');
+    while (dots.firstChild) dots.removeChild(dots.firstChild);
+    round.scale.notes.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'tune-dot';
+      if (i === round.missIdx) d.classList.add('miss');
+      dots.appendChild(d);
+    });
+
+    const opts = document.getElementById('tune-options');
+    while (opts.firstChild) opts.removeChild(opts.firstChild);
+    const correct = round.scale.notes[round.missIdx];
+    const correctLetter = correct.replace('2','');
+    const distractorPool = round.scale.notes
+      .map(n => n.replace('2',''))
+      .filter(n => n !== correctLetter);
+    const distractors = shuffle([...new Set(distractorPool)]).slice(0, 3);
+    const choices = shuffle([correctLetter, ...distractors]);
+    choices.forEach(letter => {
+      const b = document.createElement('button');
+      b.className = 'tune-opt';
+      b.textContent = letter;
+      b.addEventListener('click', () => {
+        if (b.disabled || TUNE_PLAYING) return;
+        if (letter === correctLetter) {
+          b.classList.add('right');
+          [...opts.children].forEach(c => c.disabled = true);
+          beep(TUNE_FREQ[correct], 300);
+          setTimeout(() => {
+            idx++;
+            if (idx >= rounds.length) winGame('tune');
+            else renderRound();
+          }, 600);
+        } else {
+          b.classList.add('wrong');
+          setTimeout(() => b.classList.remove('wrong'), 350);
+        }
+      });
+      opts.appendChild(b);
+    });
+
+    setTimeout(() => playScale(round), 250);
   }
-  render();
+
+  function playScale(round) {
+    if (TUNE_PLAYING) return;
+    TUNE_PLAYING = true;
+    const dots = document.getElementById('tune-dots').children;
+    [...dots].forEach(d => d.classList.remove('active'));
+    round.scale.notes.forEach((note, i) => {
+      setTimeout(() => {
+        if (i !== round.missIdx) {
+          beep(TUNE_FREQ[note], 280);
+        }
+        dots[i].classList.add('active');
+        if (i === round.scale.notes.length - 1) {
+          setTimeout(() => { TUNE_PLAYING = false; }, 320);
+        }
+      }, i * 360);
+    });
+  }
+
+  const playBtn = document.getElementById('tune-play');
+  playBtn.onclick = () => playScale(rounds[idx]);
+
+  renderRound();
 }
 
 /* MODE CHOOSER */
