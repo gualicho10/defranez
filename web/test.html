@@ -1061,34 +1061,12 @@
       flex-direction: column;
       gap: 12px;
     }
-    .mode-eyebrow {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      color: var(--accent);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-    }
-    .mode-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 28px;
-      line-height: 1.1;
-      letter-spacing: -0.015em;
-      color: #fff;
-    }
-    .mode-sub {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      color: #00c8ff;
-      letter-spacing: 0.02em;
-      line-height: 1.5;
-    }
     .mode-divider { height: 1px; background: #18191b; }
     .mode-block {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      padding: 12px;
+      gap: 8px;
+      padding: 24px;
       width: 100%;
       text-align: left;
       border: none;
@@ -1112,25 +1090,41 @@
     }
     .mode-block-fun .mode-block-label { color: rgba(0,0,0,0.55); }
     .mode-block-boring .mode-block-label { color: var(--accent); }
+    .mode-block-title-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+    }
     .mode-block-title {
       font-family: 'Syne', sans-serif;
       font-weight: 700;
       font-size: 24px;
       letter-spacing: -0.015em;
-      line-height: 1.1;
-      display: block;
+      line-height: 1.15;
+      white-space: pre-line;
+      flex: 1;
     }
     .mode-block-fun .mode-block-title { color: #000; }
     .mode-block-boring .mode-block-title { color: #fff; }
+    .mode-block-arrow {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      flex-shrink: 0;
+      align-self: center;
+    }
+    .mode-block-fun .mode-block-arrow { color: #000; }
+    .mode-block-boring .mode-block-arrow { color: #fff; }
     .mode-block-desc {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.022px;
       line-height: 1.5;
       display: block;
     }
-    .mode-block-fun .mode-block-desc { color: rgba(0,0,0,0.65); }
-    .mode-block-boring .mode-block-desc { color: var(--muted); }
+    .mode-block-fun .mode-block-desc { color: rgba(0,0,0,0.6); }
+    .mode-block-boring .mode-block-desc { color: rgba(255,255,255,0.6); }
     .mode-or {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
@@ -1151,19 +1145,22 @@
 
 <div class="mode-chooser" id="mode-chooser">
   <div class="mode-card">
-    <div class="mode-eyebrow">WELCOME TO EDF PORTFOLIO ON MOBILE</div>
-    <h1 class="mode-title">Pick a mode<br/>to explore</h1>
-    <p class="mode-sub">You can switch anytime from the menu.</p>
     <div class="mode-divider"></div>
     <button class="mode-block mode-block-fun" id="btn-fun-mode">
       <span class="mode-block-label">FUN MODE</span>
-      <span class="mode-block-title">Play to unlock →</span>
+      <div class="mode-block-title-row">
+        <span class="mode-block-title">Play to unlock&#10;PORTFOLIO</span>
+        <span class="mode-block-arrow">→</span>
+      </div>
       <span class="mode-block-desc">Complete 5 mini-games to reveal each portfolio section.</span>
     </button>
     <div class="mode-or">OR</div>
     <button class="mode-block mode-block-boring" id="btn-boring-mode">
       <span class="mode-block-label">BORING MODE</span>
-      <span class="mode-block-title">Just browse →</span>
+      <div class="mode-block-title-row">
+        <span class="mode-block-title">Just browse it,&#10;I don&#39;t have time</span>
+        <span class="mode-block-arrow">→</span>
+      </div>
       <span class="mode-block-desc">Responsive desktop portfolio adapted for mobile. No games.</span>
     </button>
   </div>
