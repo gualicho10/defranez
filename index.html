@@ -1107,41 +1107,118 @@
 
     .modal-gallery { display: flex; flex-direction: column; gap: 4px; margin-bottom: 40px; }
     .modal-gallery img { width: 100%; display: block; }
-
+    .modal-topbar { display: none; }
     .modal-proj-nav { display: none; }
 
+    /* Fixed bottom project nav — mobile only, driven by JS */
+    #modal-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 3000;
+      background: rgba(8,10,12,0.98);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 12px 20px env(safe-area-inset-bottom, 0px);
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      backdrop-filter: blur(12px);
+    }
+    #modal-bottom-nav.active { display: flex; }
+    .modal-nav-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      border: 1px solid rgba(0,245,160,0.3);
+      background: none;
+      color: #00f5a0;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .modal-nav-btn:active { background: rgba(0,245,160,0.08); }
+    .modal-nav-btn:disabled {
+      color: #3d4450;
+      border-color: rgba(255,255,255,0.06);
+      cursor: default;
+    }
+    .modal-nav-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: #3d4450;
+      letter-spacing: 0.1em;
+    }
+
     @media (max-width: 768px) {
-      .modal { width: calc(100vw - 32px); margin: 16px auto 60px; }
-      .modal-close { top: 12px; right: 12px; }
-      .modal-proj-nav {
+      /* ── Portfolio carousel ── */
+      .portfolio-nav { display: none; }
+      .portfolio-scroll {
+        display: flex;
+        flex-direction: row;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 16px;
+        margin: 0 -24px;
+        padding: 0 24px 24px;
+      }
+      .portfolio-scroll::-webkit-scrollbar { display: none; }
+      .portfolio-project {
+        min-width: calc(85vw);
+        max-width: calc(85vw);
+        flex-shrink: 0;
+        scroll-snap-align: start;
+        background: var(--surface);
+        border: 1px solid rgba(255,255,255,0.06);
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      /* Only show cover image in carousel card */
+      .proj-visual img:not(:first-child) { display: none; }
+      /* Hide top CTA (keep bottom full-width one) */
+      .proj-cta { display: none; }
+
+      /* ── Modal topbar ── */
+      .modal { width: 100vw; margin: 0 auto 80px; }
+      .modal-close { display: none; }
+      .modal-topbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px 0 8px;
-        border-top: 1px solid rgba(255,255,255,0.06);
-        margin-top: 8px;
-        gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(8,10,12,0.97);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 14px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        margin-bottom: 24px;
       }
-      .modal-proj-nav-btn {
-        font-family: 'DM Mono', monospace;
-        font-size: 10px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: #6b7280;
+      .modal-topbar-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: -0.01em;
+      }
+      .modal-topbar-close {
+        width: 36px; height: 36px;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        color: #8a94a6;
+        font-size: 16px;
         cursor: pointer;
-        padding: 10px 16px;
-        border: 1px solid rgba(255,255,255,0.1);
-        background: none;
-        transition: color 0.2s, border-color 0.2s;
+        flex-shrink: 0;
       }
-      .modal-proj-nav-btn:not(:disabled):hover { color: #00f5a0; border-color: rgba(0,245,160,0.4); }
-      .modal-proj-nav-btn:disabled { opacity: 0.25; cursor: default; }
-      .modal-proj-nav-label {
-        font-family: 'DM Mono', monospace;
-        font-size: 10px;
-        color: #3d4450;
-        letter-spacing: 0.1em;
-      }
+      .modal-topbar-close:active { color: #00f5a0; }
+
+      /* Extra bottom padding so last image doesn't hide behind fixed nav */
+      .modal-footer { margin-bottom: 80px; }
     }
 
     /* CAREER (v2 — table rows) */
@@ -2013,6 +2090,10 @@
   <div class="modal-backdrop" id="modal-openloot">
     <button class="modal-close" onclick="closeModal('openloot')">✕</button>
     <div class="modal">
+      <div class="modal-topbar">
+        <span class="modal-topbar-title">OpenLoot</span>
+        <button class="modal-topbar-close" onclick="closeModal('openloot')">✕</button>
+      </div>
       <div class="modal-header">
         <div class="modal-eyebrow">Web3 · NFT Marketplace · 2022–2026</div>
         <div class="modal-title">Product Design<br>at OpenLoot</div>
@@ -2022,7 +2103,7 @@
         <img src="img/cover-1_expanded.png" alt="OpenLoot case study">
       </div>
       <div class="modal-footer">
-        <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+        <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="modal-behance-link">View full case study on Behance ↗&#xFE0E;</a>
       </div>
       <div class="modal-proj-nav">
         <button class="modal-proj-nav-btn" disabled>← Prev</button>
@@ -2035,6 +2116,10 @@
   <div class="modal-backdrop" id="modal-dipper">
     <button class="modal-close" onclick="closeModal('dipper')">✕</button>
     <div class="modal">
+      <div class="modal-topbar">
+        <span class="modal-topbar-title">Our Dipper</span>
+        <button class="modal-topbar-close" onclick="closeModal('dipper')">✕</button>
+      </div>
       <div class="modal-header">
         <div class="modal-eyebrow">UX/UI · Web App · 2021</div>
         <div class="modal-title">Our Dipper</div>
@@ -2049,7 +2134,7 @@
         <img src="img/cover-2_dipper_1_15.png" alt="Our Dipper 15">
       </div>
       <div class="modal-footer">
-        <a href="https://www.behance.net/gallery/245507671/Our-Dipper-Landing-Web-app" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+        <a href="https://www.behance.net/gallery/245507671/Our-Dipper-Landing-Web-app" target="_blank" rel="noopener" class="modal-behance-link">View full case study on Behance ↗&#xFE0E;</a>
       </div>
       <div class="modal-proj-nav">
         <button class="modal-proj-nav-btn" onclick="openModalByIndex(0)">← Prev</button>
@@ -2062,6 +2147,10 @@
   <div class="modal-backdrop" id="modal-roche">
     <button class="modal-close" onclick="closeModal('roche')">✕</button>
     <div class="modal">
+      <div class="modal-topbar">
+        <span class="modal-topbar-title">Roche Congress</span>
+        <button class="modal-topbar-close" onclick="closeModal('roche')">✕</button>
+      </div>
       <div class="modal-header">
         <div class="modal-eyebrow">Enterprise · Health · 2020</div>
         <div class="modal-title">Roche Congress</div>
@@ -2074,7 +2163,7 @@
         <img src="img/cover-3_expanded_5.png" alt="Roche Congress 05">
       </div>
       <div class="modal-footer">
-        <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+        <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="modal-behance-link">View full case study on Behance ↗&#xFE0E;</a>
       </div>
       <div class="modal-proj-nav">
         <button class="modal-proj-nav-btn" onclick="openModalByIndex(1)">← Prev</button>
@@ -2087,6 +2176,10 @@
   <div class="modal-backdrop" id="modal-games">
     <button class="modal-close" onclick="closeModal('games')">✕</button>
     <div class="modal">
+      <div class="modal-topbar">
+        <span class="modal-topbar-title">Mobile Games</span>
+        <button class="modal-topbar-close" onclick="closeModal('games')">✕</button>
+      </div>
       <div class="modal-header">
         <div class="modal-eyebrow">Gaming · Mobile · 2013–2015</div>
         <div class="modal-title">Mobile Games</div>
@@ -2098,7 +2191,7 @@
         <img src="img/cover-4_expanded_3.png" alt="Mobile Games 03">
       </div>
       <div class="modal-footer">
-        <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+        <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="modal-behance-link">View full case study on Behance ↗&#xFE0E;</a>
       </div>
       <div class="modal-proj-nav">
         <button class="modal-proj-nav-btn" onclick="openModalByIndex(2)">← Prev</button>
@@ -2111,6 +2204,10 @@
   <div class="modal-backdrop" id="modal-branding">
     <button class="modal-close" onclick="closeModal('branding')">✕</button>
     <div class="modal">
+      <div class="modal-topbar">
+        <span class="modal-topbar-title">Branding + Social</span>
+        <button class="modal-topbar-close" onclick="closeModal('branding')">✕</button>
+      </div>
       <div class="modal-header">
         <div class="modal-eyebrow">Logo · Design System · 2019–2021</div>
         <div class="modal-title">Branding + Social</div>
@@ -2122,7 +2219,7 @@
         <img src="img/cover-5_expanded_4.png" alt="Branding 04">
       </div>
       <div class="modal-footer">
-        <a href="https://www.behance.net/gallery/66848937/Brand-Concept-(logo-Styles-Guide)" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+        <a href="https://www.behance.net/gallery/66848937/Brand-Concept-(logo-Styles-Guide)" target="_blank" rel="noopener" class="modal-behance-link">View full case study on Behance ↗&#xFE0E;</a>
       </div>
       <div class="modal-proj-nav">
         <button class="modal-proj-nav-btn" onclick="openModalByIndex(3)">← Prev</button>
@@ -2135,6 +2232,10 @@
   <div class="modal-backdrop" id="modal-sketchup">
     <button class="modal-close" onclick="closeModal('sketchup')">✕</button>
     <div class="modal">
+      <div class="modal-topbar">
+        <span class="modal-topbar-title">Sketchup Renders</span>
+        <button class="modal-topbar-close" onclick="closeModal('sketchup')">✕</button>
+      </div>
       <div class="modal-header">
         <div class="modal-eyebrow">3D · Architecture · 2023</div>
         <div class="modal-title">Sketchup Renders</div>
@@ -2147,7 +2248,7 @@
         <img src="img/cover-6_expanded_4.png" alt="Sketchup 04">
       </div>
       <div class="modal-footer">
-        <a href="https://www.behance.net/gallery/245216341/Sketchup-ModellingRender" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
+        <a href="https://www.behance.net/gallery/245216341/Sketchup-ModellingRender" target="_blank" rel="noopener" class="modal-behance-link">View full case study on Behance ↗&#xFE0E;</a>
       </div>
       <div class="modal-proj-nav">
         <button class="modal-proj-nav-btn" onclick="openModalByIndex(4)">← Prev</button>
@@ -2155,6 +2256,13 @@
         <button class="modal-proj-nav-btn" disabled>Next →</button>
       </div>
     </div>
+  </div>
+
+  <!-- Fixed bottom project nav (mobile only) -->
+  <div id="modal-bottom-nav">
+    <button class="modal-nav-btn" id="modal-nav-prev">← Prev</button>
+    <span class="modal-nav-label" id="modal-nav-label">01 / 06</span>
+    <button class="modal-nav-btn" id="modal-nav-next">Next →</button>
   </div>
 
   <script>
@@ -2344,6 +2452,20 @@
 
     // ── Modal ─────────────────────────────────────────────────────────────
     const PROJECT_IDS = ['openloot', 'dipper', 'roche', 'games', 'branding', 'sketchup'];
+    const bottomNav = document.getElementById('modal-bottom-nav');
+    const navPrev = document.getElementById('modal-nav-prev');
+    const navNext = document.getElementById('modal-nav-next');
+    const navLabel = document.getElementById('modal-nav-label');
+
+    function updateBottomNav(idx) {
+      bottomNav.classList.add('active');
+      navLabel.textContent = '0' + (idx + 1) + ' / 06';
+      navPrev.disabled = idx === 0;
+      navPrev.onclick = () => openModalByIndex(idx - 1);
+      navNext.disabled = idx === PROJECT_IDS.length - 1;
+      navNext.onclick = () => openModalByIndex(idx + 1);
+    }
+
     function openModalByIndex(i) {
       document.querySelectorAll('.modal-backdrop.open').forEach(m => closeModal(m.id.replace('modal-', '')));
       if (i >= 0 && i < PROJECT_IDS.length) openModal(PROJECT_IDS[i]);
@@ -2354,12 +2476,14 @@
       backdrop.classList.add('open');
       document.body.style.overflow = 'hidden';
       backdrop.scrollTop = 0;
+      updateBottomNav(PROJECT_IDS.indexOf(id));
     }
     function closeModal(id) {
       const backdrop = document.getElementById('modal-' + id);
       if (!backdrop) return;
       backdrop.classList.remove('open');
       document.body.style.overflow = '';
+      bottomNav.classList.remove('active');
     }
     document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
       backdrop.addEventListener('click', e => {
