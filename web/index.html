@@ -972,6 +972,77 @@
       height: 4px;
     }
 
+    /* OPENLOOT SCREENSHOT GRID */
+    .proj-grid-divider {
+      width: 100%;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+    }
+    .proj-grid {
+      width: 100%;
+      aspect-ratio: 985 / 1735;
+      background: #0e1114;
+      border: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      gap: 20px;
+      overflow: hidden;
+    }
+    .proj-grid img {
+      display: block;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-sizing: border-box;
+    }
+    .proj-grid-left {
+      flex: 1;
+      min-width: 0;
+    }
+    .proj-grid-left img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+    .proj-grid-right {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .proj-grid-wide {
+      width: 100%;
+      aspect-ratio: 382 / 215;
+      object-fit: cover;
+    }
+    .proj-grid-mobiles {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      gap: 10px;
+    }
+    .proj-grid-mob {
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      object-fit: cover;
+    }
+    .proj-grid-mob-mid { object-position: 50% 56%; }
+    .proj-grid-mob-top { object-position: top; }
+    .proj-grid-mob-stack {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .proj-grid-mob-stack img {
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+      object-fit: cover;
+      object-position: top;
+    }
+
     /* CASE STUDY CTA — bottom */
     .proj-cta-bottom {
       display: flex;
@@ -1086,6 +1157,8 @@
       margin-bottom: 40px;
     }
     .modal-image-wrap img { width: 100%; display: block; }
+    .modal .proj-grid-divider { margin-bottom: 24px; }
+    .modal .proj-grid { margin-bottom: 40px; }
     .modal-footer {
       display: flex;
       justify-content: flex-end;
@@ -1416,6 +1489,14 @@
       .career-bottom { flex-direction: column; gap: 16px; }
       .resume-download { width: 100%; text-align: center; box-sizing: border-box; }
       .proj-title-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+      /* OpenLoot grid → simple vertical stack */
+      .proj-grid { flex-direction: column; gap: 12px; aspect-ratio: auto; background: none; border: none; }
+      .proj-grid-left img { height: auto; }
+      .proj-grid-right { gap: 12px; }
+      .proj-grid-mobiles { flex-direction: column; gap: 12px; flex: none; }
+      .proj-grid-mob { width: 100%; height: auto; aspect-ratio: 9 / 16; }
+      .proj-grid-mob-stack { gap: 12px; flex: none; }
+      .proj-grid-mob-stack img { flex: none; aspect-ratio: 9 / 16; }
     }
     
 
@@ -1636,6 +1717,25 @@
           </div>
           <div class="proj-visual">
             <img src="img/cover-1.png" alt="OpenLoot — Product Design">
+          </div>
+          <div class="proj-grid-divider"></div>
+          <div class="proj-grid">
+            <div class="proj-grid-left">
+              <img src="img/cover-1_grid_home.png" alt="OpenLoot — marketplace home, full page" loading="lazy">
+            </div>
+            <div class="proj-grid-right">
+              <img class="proj-grid-wide" src="img/cover-1_grid_wallet.png" alt="OpenLoot — Wallet" loading="lazy">
+              <img class="proj-grid-wide" src="img/cover-1_grid_collection-1.png" alt="OpenLoot — My Collection, filters open" loading="lazy">
+              <img class="proj-grid-wide" src="img/cover-1_grid_collection-2.png" alt="OpenLoot — My Collection, items available to sell" loading="lazy">
+              <div class="proj-grid-mobiles">
+                <img class="proj-grid-mob proj-grid-mob-mid" src="img/cover-1_grid_mobile-1.png" alt="OpenLoot — mobile home" loading="lazy">
+                <img class="proj-grid-mob proj-grid-mob-top" src="img/cover-1_grid_mobile-2.png" alt="OpenLoot — mobile featured games and stats" loading="lazy">
+                <div class="proj-grid-mob-stack">
+                  <img src="img/cover-1_grid_mobile-3.png" alt="OpenLoot — mobile item detail" loading="lazy">
+                  <img src="img/cover-1_grid_mobile-4.png" alt="OpenLoot — mobile checkout" loading="lazy">
+                </div>
+              </div>
+            </div>
           </div>
           <a href="#" onclick="openModal('openloot'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
@@ -1987,6 +2087,25 @@
         <div class="modal-sub">UX / UI / Gaming · Big Time Studios</div>
       </div>
       <div class="modal-image-wrap"><img src="img/cover-1_expanded.png" alt="OpenLoot case study"></div>
+      <div class="proj-grid-divider"></div>
+      <div class="proj-grid">
+        <div class="proj-grid-left">
+          <img src="img/cover-1_grid_home.png" alt="OpenLoot — marketplace home, full page" loading="lazy">
+        </div>
+        <div class="proj-grid-right">
+          <img class="proj-grid-wide" src="img/cover-1_grid_wallet.png" alt="OpenLoot — Wallet" loading="lazy">
+          <img class="proj-grid-wide" src="img/cover-1_grid_collection-1.png" alt="OpenLoot — My Collection, filters open" loading="lazy">
+          <img class="proj-grid-wide" src="img/cover-1_grid_collection-2.png" alt="OpenLoot — My Collection, items available to sell" loading="lazy">
+          <div class="proj-grid-mobiles">
+            <img class="proj-grid-mob proj-grid-mob-mid" src="img/cover-1_grid_mobile-1.png" alt="OpenLoot — mobile home" loading="lazy">
+            <img class="proj-grid-mob proj-grid-mob-top" src="img/cover-1_grid_mobile-2.png" alt="OpenLoot — mobile featured games and stats" loading="lazy">
+            <div class="proj-grid-mob-stack">
+              <img src="img/cover-1_grid_mobile-3.png" alt="OpenLoot — mobile item detail" loading="lazy">
+              <img src="img/cover-1_grid_mobile-4.png" alt="OpenLoot — mobile checkout" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/245270059/Produc-Design-at-OpenLoot" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
       </div>
