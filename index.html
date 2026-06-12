@@ -1159,6 +1159,162 @@
     .modal-image-wrap img { width: 100%; display: block; }
     .modal .proj-grid-divider { margin-bottom: 24px; }
     .modal .proj-grid { margin-bottom: 40px; }
+    .modal-image-nogap { margin-bottom: 0; border: none; }
+    .modal-image-seamless {
+      width: 100%;
+      font-size: 0;
+      line-height: 0;
+      margin-bottom: 40px;
+    }
+    .modal-image-seamless img {
+      width: 100%;
+      display: block;
+      margin: 0;
+      padding: 0;
+      border: none;
+    }
+
+    /* OpenLoot grid layout */
+    .openloot-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      width: 100%;
+      margin-bottom: 40px;
+    }
+    .openloot-hero {
+      width: 100%;
+      aspect-ratio: 985 / 477;
+      overflow: hidden;
+      background: #0e1114;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .openloot-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .openloot-sep {
+      width: 100%;
+      height: 0;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    .openloot-grid {
+      display: flex;
+      gap: 20px;
+    }
+    .openloot-grid-left {
+      flex: 1;
+      min-width: 0;
+      border: 0.5px solid rgba(255,255,255,0.2);
+      overflow: hidden;
+    }
+    .openloot-grid-left img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .openloot-grid-right {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .openloot-right-top {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .openloot-right-top .ol-img {
+      width: 100%;
+      border: 0.5px solid rgba(255,255,255,0.2);
+      overflow: hidden;
+    }
+    .openloot-right-top .ol-img img {
+      width: 100%;
+      display: block;
+    }
+    .openloot-right-top .ol-img-ratio {
+      aspect-ratio: 382 / 215;
+    }
+    .openloot-right-top .ol-img-ratio img {
+      height: 100%;
+      object-fit: cover;
+    }
+    .openloot-right-bottom {
+      display: flex;
+      gap: 10px;
+      flex: 1;
+      min-height: 0;
+    }
+    .openloot-right-bottom .ol-col {
+      flex: 1;
+      min-width: 0;
+      border: 0.5px solid rgba(255,255,255,0.2);
+      overflow: hidden;
+    }
+    .openloot-right-bottom .ol-col img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .openloot-right-bottom .ol-col-stack {
+      flex: 0 0 32%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .openloot-right-bottom .ol-col-stack .ol-col {
+      flex: none;
+    }
+    .openloot-right-bottom .ol-col-stack .ol-col:first-child {
+      flex: 0 0 60%;
+    }
+    .openloot-right-bottom .ol-col-stack .ol-col:last-child {
+      flex: 1;
+    }
+
+    @media (max-width: 700px) {
+      .openloot-grid { flex-direction: column; }
+      .openloot-right-bottom { flex-wrap: wrap; }
+      .openloot-right-bottom .ol-col-stack { flex: 1 1 100%; flex-direction: row; }
+      .openloot-right-bottom .ol-col-stack .ol-col:first-child { flex: 1; }
+      .openloot-right-bottom .ol-col-stack .ol-col:last-child { flex: 1; }
+    }
+
+    /* Roche case study layout */
+    .roche-layout {
+      position: relative;
+      width: 100%;
+      margin-bottom: 40px;
+    }
+    .roche-layout > img {
+      width: 100%;
+      display: block;
+    }
+    .roche-float {
+      position: absolute;
+      left: 0;
+      top: 20%;
+      width: 47%;
+      border: 0.5px solid rgba(255,255,255,0.4);
+      box-shadow: 3px 5px 11.4px 1px rgba(0,0,0,0.35);
+      overflow: hidden;
+    }
+    .roche-float img {
+      width: 100%;
+      display: block;
+    }
+
+    @media (max-width: 700px) {
+      .roche-float { width: 55%; top: 10%; }
+    }
+
     .modal-footer {
       display: flex;
       justify-content: flex-end;
@@ -1716,7 +1872,7 @@
             <span class="proj-tag">Design Systems</span>
           </div>
           <div class="proj-visual">
-            <img src="img/cover-1.png" alt="OpenLoot — Product Design">
+            <img src="img/OpenLoot_cover.png" alt="OpenLoot — Product Design">
           </div>
           <div class="proj-grid-divider"></div>
           <div class="proj-grid">
@@ -1761,15 +1917,7 @@
             <span class="proj-tag">Service Design</span>
           </div>
           <div class="proj-visual">
-            <div class="proj-color-bar" style="background: rgba(0,153,229,0.3);"></div>
-            <img src="img/OurDipper_1.png" alt="Our Dipper" style="width:100%;display:block;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px;">
-              <div style="display:flex;flex-direction:column;gap:4px;">
-                <img src="img/OurDipper_2.png" alt="Our Dipper" style="width:100%;display:block;">
-                <img src="img/OurDipper_3.png" alt="Our Dipper" style="width:100%;display:block;">
-              </div>
-              <img src="img/OurDipper_4.png" alt="Our Dipper" style="width:100%;display:block;object-fit:cover;">
-            </div>
+            <img src="img/OurDipper_cover.png" alt="Our Dipper — Product Design">
           </div>
           <a href="#" onclick="openModal('dipper'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
@@ -1795,11 +1943,7 @@
             <span class="proj-tag">Complex Flows</span>
           </div>
           <div class="proj-visual">
-            <div class="proj-color-bar" style="background: rgba(229,51,77,0.3);"></div>
-            <img src="img/cover-3_expanded_1.png" alt="Roche Congress 01">
-            <img src="img/cover-3_expanded_3.png" alt="Roche Congress 03">
-            <img src="img/cover-3_expanded_4.png" alt="Roche Congress 04">
-            <img src="img/cover-3_expanded_5.png" alt="Roche Congress 05">
+            <img src="img/Roche_cover.png" alt="Roche Congress — Product Design">
           </div>
           <a href="#" onclick="openModal('roche'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
@@ -1825,10 +1969,7 @@
             <span class="proj-tag">Art Direction</span>
           </div>
           <div class="proj-visual">
-            <div class="proj-color-bar" style="background: rgba(242,140,26,0.3);"></div>
-            <img src="img/cover-4_expanded_1.png" alt="Mobile Games 01">
-            <img src="img/cover-4_expanded_2.png" alt="Mobile Games 02">
-            <img src="img/cover-4_expanded_3.png" alt="Mobile Games 03">
+            <img src="img/games_cover.png" alt="Mobile Games — Product Design">
           </div>
           <a href="#" onclick="openModal('games'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
@@ -1854,10 +1995,7 @@
             <span class="proj-tag">Social Media</span>
           </div>
           <div class="proj-visual">
-            <div class="proj-color-bar" style="background: rgba(0,245,161,0.3);"></div>
-            <img src="img/cover-5_expanded_2.png" alt="Branding 02">
-            <img src="img/cover-5_expanded_3.png" alt="Branding 03">
-            <img src="img/cover-5_expanded_4.png" alt="Branding 04">
+            <img src="img/Branding_cover.png" alt="Branding — Product Design">
           </div>
           <a href="#" onclick="openModal('branding'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
@@ -1883,11 +2021,7 @@
             <span class="proj-tag">Visualization</span>
           </div>
           <div class="proj-visual">
-            <div class="proj-color-bar" style="background: rgba(153,153,153,0.3);"></div>
-            <img src="img/cover-6_expanded_1.png" alt="Sketchup 01">
-            <img src="img/cover-6_expanded_2.png" alt="Sketchup 02">
-            <img src="img/cover-6_expanded_3.png" alt="Sketchup 03">
-            <img src="img/cover-6_expanded_4.png" alt="Sketchup 04">
+            <img src="img/Renders_cover.png" alt="Renders — Product Design">
           </div>
           <a href="#" onclick="openModal('sketchup'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
@@ -2088,22 +2222,43 @@
         <div class="modal-title">Product Design<br>at OpenLoot</div>
         <div class="modal-sub">UX / UI / Gaming · Big Time Studios</div>
       </div>
-      <div class="modal-image-wrap"><img src="img/cover-1_expanded.png" alt="OpenLoot case study"></div>
-      <div class="proj-grid-divider"></div>
-      <div class="proj-grid">
-        <div class="proj-grid-left">
-          <img src="img/cover-1_grid_home.png" alt="OpenLoot — marketplace home, full page" loading="lazy">
+      <!-- OpenLoot grid layout from Figma -->
+      <div class="openloot-layout">
+        <div class="openloot-hero">
+          <img src="img/OpenLoot_img1.png" alt="OpenLoot — Hero">
         </div>
-        <div class="proj-grid-right">
-          <img class="proj-grid-wide" src="img/cover-1_grid_wallet.png" alt="OpenLoot — Wallet" loading="lazy">
-          <img class="proj-grid-wide" src="img/cover-1_grid_collection-1.png" alt="OpenLoot — My Collection, filters open" loading="lazy">
-          <img class="proj-grid-wide" src="img/cover-1_grid_collection-2.png" alt="OpenLoot — My Collection, items available to sell" loading="lazy">
-          <div class="proj-grid-mobiles">
-            <img class="proj-grid-mob proj-grid-mob-mid" src="img/cover-1_grid_mobile-1.png" alt="OpenLoot — mobile home" loading="lazy">
-            <img class="proj-grid-mob proj-grid-mob-top" src="img/cover-1_grid_mobile-2.png" alt="OpenLoot — mobile featured games and stats" loading="lazy">
-            <div class="proj-grid-mob-stack">
-              <img src="img/cover-1_grid_mobile-3.png" alt="OpenLoot — mobile item detail" loading="lazy">
-              <img src="img/cover-1_grid_mobile-4.png" alt="OpenLoot — mobile checkout" loading="lazy">
+        <div class="openloot-sep"></div>
+        <div class="openloot-grid">
+          <div class="openloot-grid-left">
+            <img src="img/OpenLoot_img2.png" alt="OpenLoot — Overview">
+          </div>
+          <div class="openloot-grid-right">
+            <div class="openloot-right-top">
+              <div class="ol-img">
+                <img src="img/OpenLoot_img3.png" alt="OpenLoot — Detail 3">
+              </div>
+              <div class="ol-img ol-img-ratio">
+                <img src="img/OpenLoot_img4.png" alt="OpenLoot — Detail 4">
+              </div>
+              <div class="ol-img ol-img-ratio">
+                <img src="img/OpenLoot_img5.png" alt="OpenLoot — Detail 5">
+              </div>
+            </div>
+            <div class="openloot-right-bottom">
+              <div class="ol-col">
+                <img src="img/OpenLoot_img6.png" alt="OpenLoot — Detail 6">
+              </div>
+              <div class="ol-col">
+                <img src="img/OpenLoot_img7.png" alt="OpenLoot — Detail 7">
+              </div>
+              <div class="ol-col-stack">
+                <div class="ol-col">
+                  <img src="img/OpenLoot_img8.png" alt="OpenLoot — Detail 8">
+                </div>
+                <div class="ol-col">
+                  <img src="img/OpenLoot_img9.png" alt="OpenLoot — Detail 9">
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -2137,7 +2292,15 @@
         <div class="modal-title">Roche Congress</div>
         <div class="modal-sub">Enterprise UX · Roche</div>
       </div>
-      <div class="modal-image-wrap"><img src="img/cover-3_expanded.png" alt="Roche Congress case study"></div>
+      <div class="modal-image-seamless">
+        <img src="img/Roche_01.png" alt="Roche 01">
+        <img src="img/Roche_02.png" alt="Roche 02">
+        <img src="img/Roche_03.png" alt="Roche 03">
+        <img src="img/Roche_04.png" alt="Roche 04">
+        <img src="img/Roche_05.png" alt="Roche 05">
+        <img src="img/Roche_06.png" alt="Roche 06">
+        <img src="img/Roche_07.png" alt="Roche 07">
+      </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
       </div>
@@ -2152,7 +2315,9 @@
         <div class="modal-title">Mobile Games</div>
         <div class="modal-sub">Art Direction · Disney / Globant</div>
       </div>
-      <div class="modal-image-wrap"><img src="img/cover-4_expanded.png" alt="Mobile Games case study"></div>
+      <div class="modal-image-wrap"><img src="img/Games_01.png" alt="Mobile Games 01"></div>
+      <div class="modal-image-wrap"><img src="img/Games_02.png" alt="Mobile Games 02"></div>
+      <div class="modal-image-wrap"><img src="img/Games_03.png" alt="Mobile Games 03"></div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
       </div>
