@@ -1072,9 +1072,6 @@
       position: fixed;
       inset: 0;
       z-index: 2000;
-      background: rgba(8,10,12,0.96);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       display: flex;
       align-items: flex-start;
       justify-content: center;
@@ -1083,9 +1080,19 @@
       transition: opacity 0.3s ease;
       overflow-y: auto;
     }
+    .modal-backdrop::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(8,10,12,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      pointer-events: none;
+    }
     .modal-backdrop.open {
       opacity: 1;
       pointer-events: all;
+      z-index: 10000;
     }
     .modal {
       position: relative;
@@ -1101,7 +1108,7 @@
       position: fixed;
       top: 24px;
       right: 32px;
-      z-index: 2100;
+      z-index: 10001;
       width: 44px; height: 44px;
       display: flex; align-items: center; justify-content: center;
       background: rgba(14,17,20,0.9);
@@ -1279,8 +1286,22 @@
       flex: 1;
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 560px) {
+      .modal { width: calc(100vw - 32px); margin: 24px auto 40px; }
+      .modal-close {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        width: 36px; height: 36px;
+        font-size: 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--accent);
+        backdrop-filter: blur(12px);
+      }
+      .openloot-layout { gap: 12px; }
       .openloot-grid { flex-direction: column; }
+      .openloot-right-top { gap: 12px; }
       .openloot-right-bottom { flex-wrap: wrap; }
       .openloot-right-bottom .ol-col-stack { flex: 1 1 100%; flex-direction: row; }
       .openloot-right-bottom .ol-col-stack .ol-col:first-child { flex: 1; }
@@ -1311,7 +1332,7 @@
       display: block;
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 560px) {
       .roche-float { width: 55%; top: 10%; }
     }
 
@@ -1874,25 +1895,6 @@
           <div class="proj-visual">
             <img src="img/OpenLoot_cover.png" alt="OpenLoot — Product Design">
           </div>
-          <div class="proj-grid-divider"></div>
-          <div class="proj-grid">
-            <div class="proj-grid-left">
-              <img src="img/cover-1_grid_home.png" alt="OpenLoot — marketplace home, full page" loading="lazy">
-            </div>
-            <div class="proj-grid-right">
-              <img class="proj-grid-wide" src="img/cover-1_grid_wallet.png" alt="OpenLoot — Wallet" loading="lazy">
-              <img class="proj-grid-wide" src="img/cover-1_grid_collection-1.png" alt="OpenLoot — My Collection, filters open" loading="lazy">
-              <img class="proj-grid-wide" src="img/cover-1_grid_collection-2.png" alt="OpenLoot — My Collection, items available to sell" loading="lazy">
-              <div class="proj-grid-mobiles">
-                <img class="proj-grid-mob proj-grid-mob-mid" src="img/cover-1_grid_mobile-1.png" alt="OpenLoot — mobile home" loading="lazy">
-                <img class="proj-grid-mob proj-grid-mob-top" src="img/cover-1_grid_mobile-2.png" alt="OpenLoot — mobile featured games and stats" loading="lazy">
-                <div class="proj-grid-mob-stack">
-                  <img src="img/cover-1_grid_mobile-3.png" alt="OpenLoot — mobile item detail" loading="lazy">
-                  <img src="img/cover-1_grid_mobile-4.png" alt="OpenLoot — mobile checkout" loading="lazy">
-                </div>
-              </div>
-            </div>
-          </div>
           <a href="#" onclick="openModal('openloot'); return false;" class="proj-cta-bottom">View case study →</a>
         </div>
 
@@ -2315,9 +2317,11 @@
         <div class="modal-title">Mobile Games</div>
         <div class="modal-sub">Art Direction · Disney / Globant</div>
       </div>
-      <div class="modal-image-wrap"><img src="img/Games_01.png" alt="Mobile Games 01"></div>
-      <div class="modal-image-wrap"><img src="img/Games_02.png" alt="Mobile Games 02"></div>
-      <div class="modal-image-wrap"><img src="img/Games_03.png" alt="Mobile Games 03"></div>
+      <div class="modal-image-seamless">
+        <img src="img/Games_01.png" alt="Mobile Games 01">
+        <img src="img/Games_02.png" alt="Mobile Games 02">
+        <img src="img/Games_03.png" alt="Mobile Games 03">
+      </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
       </div>
