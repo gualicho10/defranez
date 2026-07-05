@@ -788,6 +788,55 @@
       overflow: visible;
     }
 
+    /* Mobile skills bar list */
+    .skills-mobile-list { display: none; }
+    .skill-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 14px 0 8px;
+    }
+    .skill-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #e8eaed;
+      white-space: nowrap;
+    }
+    .skill-desc {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: rgba(138,148,166,0.8);
+      text-align: right;
+      white-space: nowrap;
+    }
+    .skill-bar-track {
+      width: 100%;
+      height: 2px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      margin-bottom: 4px;
+    }
+    .skill-bar-fill {
+      height: 100%;
+      background: #00f5a0;
+      border-radius: 2px;
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 0.8s cubic-bezier(0.4,0,0.2,1);
+    }
+    .skill-bar-fill.bar-animated { transform: scaleX(1); }
+    .skill-section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      text-decoration: underline;
+      margin-bottom: 4px;
+    }
+
     /* Areas of expertise */
     .tools-expertise-section {
       padding-top: 40px;
@@ -1813,11 +1862,24 @@
     @media (max-width: 560px) {
       section { padding: 40px 24px; overflow: hidden; }
       .hero { height: auto; min-height: 100dvh; padding: 100px 24px 40px; gap: 16px; }
-      .hero-name-1, .hero-name-2 { white-space: normal; }
+      .hero-name-1, .hero-name-2 { font-size: min(10vw, 56px); white-space: nowrap; }
       .hero-title { font-size: 16px; }
       .about-stats { flex-direction: column; }
 
       .jazz-thumb { width: 120px; }
+      .contact-headline { font-size: clamp(20px, 7vw, 30px); }
+      .contact-link { padding: 20px 18px; }
+      .cl-value { font-size: 14px; }
+      .cl-arrow { font-size: 16px; }
+      .section-title { font-size: clamp(28px, 8vw, 40px); }
+      .career-title-row { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 28px; }
+      .contact-cta { padding: 40px 20px; }
+      .contact-cta-title { font-size: clamp(24px, 7.5vw, 34px); }
+      .contact-cta-btn { display: block; text-align: center; box-sizing: border-box; }
+      .experience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      .exp-item { flex: unset; }
+      .tools-chart-svg { display: none; }
+      .skills-mobile-list { display: block; }
       .career-row { flex-direction: column; gap: 8px; padding: 16px 0; }
       .career-period, .career-role, .career-company { width: 100%; }
       .career-bottom { flex-direction: column; gap: 16px; }
@@ -2381,6 +2443,31 @@
       </svg>
     </div>
 
+    <!-- SKILLS — mobile bar list (hidden on desktop) -->
+    <div class="skills-mobile-list tools-chart-section">
+      <div class="tools-sub-label">Skills Level</div>
+      <div class="skill-section-label">Design Tools</div>
+      <div class="skill-row"><span class="skill-name">Figma</span><span class="skill-desc">Primary · 5+ years</span></div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:100%"></div></div>
+      <div class="skill-row"><span class="skill-name">Photoshop</span><span class="skill-desc">Photo retouch · 20+ years</span></div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:100%"></div></div>
+      <div class="skill-row"><span class="skill-name">Illustrator</span><span class="skill-desc">Vector & icon design · 20+ years</span></div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div>
+      <div class="skill-row"><span class="skill-name">After Effects</span><span class="skill-desc">Motion & micro-interactions</span></div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%"></div></div>
+      <div class="skill-row"><span class="skill-name">Claude Code</span><span class="skill-desc">AI + MCP integrations · WIP</span></div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%"></div></div>
+      <div class="skill-section-label" style="margin-top:20px">Workflow & 3D</div>
+      <div class="skill-row"><span class="skill-name">JIRA / Confluence</span><span class="skill-desc">Agile workflow</span></div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%"></div></div>
+      <div class="skill-row"><span class="skill-name">Premier / Final Cut</span><span class="skill-desc">Video editing</span></div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div>
+      <div class="skill-row"><span class="skill-name">SketchUp + Enscape</span><span class="skill-desc">3D visualization</span></div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div>
+      <div class="skill-row"><span class="skill-name">Ableton / Logic Pro</span><span class="skill-desc">Music production</span></div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%"></div></div>
+    </div>
+
     <!-- AREAS OF EXPERTISE -->
     <div class="tools-expertise-section fade-up">
       <div class="tools-sub-label">Areas of Expertise</div>
@@ -2852,6 +2939,22 @@
         });
       }, { threshold: 0.3 });
       gaugeObs.observe(exp);
+    })();
+
+    // ── MOBILE SKILL BARS ANIMATION — scroll triggered, runs once ────────
+    (function () {
+      const list = document.querySelector('.skills-mobile-list');
+      if (!list) return;
+      let fired = false;
+      const barObs = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting || fired) return;
+        fired = true;
+        barObs.disconnect();
+        list.querySelectorAll('.skill-bar-fill').forEach((el, i) => {
+          setTimeout(() => el.classList.add('bar-animated'), i * 80);
+        });
+      }, { threshold: 0.2 });
+      barObs.observe(list);
     })();
 
     // ── PORTFOLIO STICKY SYNC — scroll-based ──────────────────────────
