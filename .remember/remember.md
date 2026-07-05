@@ -1,44 +1,42 @@
-# Handoff — Sessions 2026-06-11 / 2026-06-12 / 2026-07-02
+# Handoff — Session v4 "jazz section + about stats" — 2026-07-05
 
-## Commits (as of 2026-07-02 — NOT yet pushed)
-- `feda1ad` — feat: new cover images + modal layouts for all projects
-- `36c8ce9` — fix: modal z-index, seamless games images, OpenLoot cover only, mobile close button
-- `959292b` — chore: remove 37 unused legacy images ← last committed, not pushed
+## Git state (as of end of session)
+- Pushed to: github.com/gualicho10/defranez (main)
+- Live at: www.defranez.com
 
-## Session 2026-07-02 — "Session v3-website update" (desktop only, local only)
+## Working repo
+`/Users/ezedefran/Library/CloudStorage/GoogleDrive-.../2_Laburos/web/defranez/` → github.com/gualicho10/defranez (main branch)
 
-### Working repo
-`web\defranez\` is the ONE true repo (connected to github.com/gualicho10/defranez).
-The outer `web\` folder is a stale orphan — ignore it.
+---
 
-### Changes made (NOT committed yet, not pushed)
-1. **stat-word font fix** — `.stat-word` → font-weight 800, color #fff, letter-spacing -0.065em, vertical-align bottom
-2. **Skills chart — full rework** (Tools section):
-   - % labels all on same horizontal line (y=70 fixed, not following curve)
-   - 20px gap above/below % row
-   - Data point dots → 5×5 squares (`<rect>`)
-   - Icons at bottom: SVG files downloaded from Figma, saved in `img/icon-*.svg`
-     - icon-figma.svg (17×24), icon-claude.svg (27×24), icon-ps.svg (24×24),
-       icon-ai.svg (22×24), icon-ae.svg (24×24), icon-pr.svg (24×24),
-       icon-sketchup.svg (22×24), icon-ableton.svg (23×24), icon-asana.svg (20×24)
-     - All fixed: `preserveAspectRatio="xMidYMid meet"` (was "none" from Figma export)
-   - Bottom lines per column: `<rect>` 140×3px, opacity ∝ skill %
-   - Scroll-triggered animation (runs once):
-     - Line draws left→right (stroke-dashoffset)
-     - % counters count 0→value (JS rAF, ease-out cubic)
-     - Area fades in
-     - Squares pop in staggered per column
-     - Bottom lines scaleX in staggered
+## Changes pushed this session
 
-### Backups
-- V8: `backups/defranez.com_V8_2026-07-02` (pre-animation state)
-- V9: `backups/defranez.com_V9_2026-07-02` (current, post-animation)
+### 1. ABOUT — stat cards richer content
+- 3 cards now have: large number + label + horizontal divider + detail lines
+- CSS classes added: `.stat-divider`, `.stat-detail`, `.stat-detail strong`
+- Card 1: `22+` Years of Experience / 6 countries · 3 continents / Microsoft · Globant · Disney · Zynga
+- Card 2: `10+` As Product Designer · UX · UI / End-to-end · Design systems · Team lead / FLORA · Motion · Brand direction
+- Card 3: `6 disciplines` Range of craft / UX · Visual · Motion / Brand · Print · Design systems
 
-### Pending / next steps (Session v3 — desktop only)
-- [ ] HERO: change background image + add 2 quick-access buttons
-- [ ] ABOUT: typo adjustments in highlighted boxes
-- [ ] TOOLS & EXPERTISE: full redesign to new Figma layout
-- [ ] CONTACT: add CTA "ready to start a project"
-- [ ] Push to GitHub when desktop pass is done
-- [ ] Branding and Renders modals — still use old single expanded images
-- [ ] Mobile arcade game prototype in `test.html` (separate, untouched)
+### 2. HERO — height fix
+- Changed `height: min(50vw, 720px)` → `min-height: min(50vw, 720px)` to prevent CTA clipping
+
+### 3. JAZZ section — YouTube card layout
+- `.jazz-links` → `display: grid; grid-template-columns: 1fr 1fr` (was flex)
+- `.jazz-yt-link` → `flex-direction: row; align-items: center` — label left, thumb right
+- `.jazz-link-label` → `flex: 1`
+- `.jazz-thumb` → `flex-shrink: 0; width: 180px; align-self: stretch` (fixed right side)
+- Responsive 900px: `grid-template-columns: 1fr` (single column)
+- Responsive 560px: `.jazz-thumb { width: 120px }`
+
+---
+
+## Pending
+- [ ] OpenLoot portfolio section: scrolling images on right side (original task, still pending)
+- [ ] Hero mobile view (user said "despues vemos mobile")
+- [ ] CONTACT section: add CTA "ready to start a project"
+
+## Figma references
+- File key: `CrtBFn6cPjOcBAVQ5qPdm2` — PORTFOLIO-2026
+- HERO v2: node `2696-1807`
+- ABOUT (wide layout): node `2722-931`
