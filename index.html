@@ -215,6 +215,14 @@
       object-fit: cover;
       object-position: right center;
     }
+    /* interactive dot overlay — desktop only, driven by JS */
+    .hero-bg canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
     .hero-bg::after {
       content: '';
       position: absolute;
@@ -1927,6 +1935,7 @@
   <section class="hero">
     <div class="hero-bg" aria-hidden="true">
       <img src="img/hero-bg.jpg" alt="">
+      <canvas id="hero-dotfield"></canvas>
     </div>
     <div class="hero-eyebrow">Product Designer · UX/UI · Web3</div>
     <p class="hero-name-1">Ezequiel</p>
@@ -3032,6 +3041,169 @@
         });
       }
     });
+  </script>
+
+  <!-- Hero background: interactive dot field (desktop only).
+       Samples the halftone artwork and overlays live dots:
+       mouse = magnetic green wake, scroll = staggered quiet vanish. -->
+  <script>
+    (function () {
+      // desktop only — mobile keeps the static image untouched
+      if (!window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 901px)').matches) return;
+
+      const canvas = document.getElementById('hero-dotfield');
+      const hero = document.querySelector('.hero');
+      const baseImg = document.querySelector('.hero-bg img');
+      if (!canvas || !hero || !baseImg) return;
+      const ctx = canvas.getContext('2d');
+
+      let W = 0, H = 0, dpr = 1;
+      let dots = [];
+
+      function rand(x, y) {
+        const s = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
+        return s - Math.floor(s);
+      }
+
+      // Sample the real artwork so the overlay dots sit exactly on the
+      // picture's own halftone dots.
+      function build() {
+        if (!baseImg.complete || !baseImg.naturalWidth) return;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = hero.clientWidth; H = hero.clientHeight;
+        canvas.width = W * dpr; canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        // replicate object-fit: cover; object-position: right center
+        const iw = baseImg.naturalWidth, ih = baseImg.naturalHeight;
+        const scale = Math.max(W / iw, H / ih);
+        const dw = iw * scale, dh = ih * scale;
+        const dx = W - dw;
+        const dy = (H - dh) / 2;
+
+        const off = document.createElement('canvas');
+        off.width = W; off.height = H;
+        const octx = off.getContext('2d', { willReadFrequently: true });
+        octx.drawImage(baseImg, dx, dy, dw, dh);
+        let px;
+        try {
+          px = octx.getImageData(0, 0, W, H).data;
+        } catch (e) {
+          return;   // tainted canvas (e.g. file://) — keep the static image
+        }
+
+        function lum(x, y) {
+          x = Math.max(0, Math.min(W - 1, x | 0));
+          y = Math.max(0, Math.min(H - 1, y | 0));
+          const i = (y * W + x) * 4;
+          return 0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2];
+        }
+
+        const spacing = 14;
+        dots = [];
+        for (let gy = 0, row = 0; gy < H + spacing; gy += spacing, row++) {
+          const xOff = (row % 2) * spacing * 0.5;
+          for (let gx = xOff; gx < W + spacing; gx += spacing) {
+            let L = 0;
+            for (let sy2 = -4; sy2 <= 4; sy2 += 4)
+              for (let sx2 = -4; sx2 <= 4; sx2 += 4)
+                L = Math.max(L, lum(gx + sx2, gy + sy2));
+            const a0 = Math.pow(L / 255, 0.8);
+            if (a0 < 0.22) continue;   // only dots clearly visible in the artwork
+            const n = rand(gx, gy);
+            dots.push({
+              x: gx, y: gy,
+              ox: 0, oy: 0,
+              r0: 1.0 + a0 * 2.7,
+              a0: Math.min(a0 * 1.1, 0.95),
+              death: 0.05 + n * 0.85
+            });
+          }
+        }
+      }
+
+      let mx = -9999, my = -9999, sy = 0;
+
+      window.addEventListener('mousemove', (e) => {
+        const rect = hero.getBoundingClientRect();
+        mx = e.clientX - rect.left;
+        my = e.clientY - rect.top;
+      }, { passive: true });
+      window.addEventListener('mouseout', () => { mx = my = -9999; }, { passive: true });
+      window.addEventListener('scroll', () => { sy = window.scrollY; }, { passive: true });
+      window.addEventListener('resize', build);
+
+      const R_MOUSE = 150;
+      const DEATH_SPAN = 0.22;
+
+      function frame() {
+        ctx.clearRect(0, 0, W, H);
+
+        const heroH = hero.offsetHeight || 720;
+        const p = Math.max(0, Math.min(1.1, sy / (heroH * 0.8)));
+
+        baseImg.style.opacity = Math.max(0, 1 - p * 1.6).toFixed(3);
+
+        const scrollVis = Math.min(1, p * 5);
+        const imgVis = Math.max(0, 1 - p * 1.6);
+
+        for (const d of dots) {
+          // magnetic repel + glow around the cursor
+          let f = 0;
+          const ddx = d.x - mx, ddy = d.y - my;
+          const dist = Math.hypot(ddx, ddy);
+          if (dist < R_MOUSE) {
+            f = 1 - dist / R_MOUSE;
+            const push = f * f * 26;
+            d.ox += ((ddx / (dist || 1)) * push - d.ox) * 0.2;
+            d.oy += ((ddy / (dist || 1)) * push - d.oy) * 0.2;
+          } else {
+            d.ox *= 0.88; d.oy *= 0.88;
+          }
+          const moving = Math.abs(d.ox) + Math.abs(d.oy) > 0.3;
+
+          const vis = Math.max(f > 0.02 || moving ? 1 : 0, scrollVis);
+          if (vis <= 0.01) continue;
+
+          let alpha = Math.min(1, d.a0 * (1 + 0.25 * scrollVis)) * vis;
+          let rad = d.r0;
+
+          // scroll: staggered quiet vanish, no color
+          if (p > d.death) {
+            const k = Math.min(1, (p - d.death) / DEATH_SPAN);
+            alpha *= (1 - k) * (1 - k);
+            rad *= 1 - 0.25 * k;
+            if (alpha < 0.01) continue;
+          }
+
+          // cover the dot's white original while displaced, to avoid doubling
+          if (moving && imgVis > 0.01) {
+            ctx.fillStyle = 'rgba(10,12,15,' + (Math.min(1, f * 4 + 0.35) * imgVis).toFixed(3) + ')';
+            ctx.beginPath();
+            ctx.arc(d.x, d.y, d.r0 * 1.45, 0, 6.2832);
+            ctx.fill();
+          }
+
+          alpha = Math.min(1, alpha * (1 + f * 1.6));
+          rad *= 1 + f * 1.1;
+
+          // white -> brand green (#00f5a0) with proximity
+          const g = f;
+          const cr = (215 * (1 - g)) | 0;
+          const cg = (222 * (1 - g) + 245 * g) | 0;
+          const cb = (230 * (1 - g) + 160 * g) | 0;
+
+          ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + alpha.toFixed(3) + ')';
+          ctx.beginPath();
+          ctx.arc(d.x + d.ox, d.y + d.oy, rad, 0, 6.2832);
+          ctx.fill();
+        }
+        requestAnimationFrame(frame);
+      }
+
+      if (baseImg.complete) build(); else baseImg.addEventListener('load', build);
+      requestAnimationFrame(frame);
+    })();
   </script>
 
 </body>
