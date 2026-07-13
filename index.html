@@ -241,6 +241,8 @@
       gap: 12px;
       position: relative;
       z-index: 2;
+      opacity: 0;
+      transform: translateY(14px);
     }
     .hero-eyebrow::before {
       content: '';
@@ -249,14 +251,33 @@
       flex-shrink: 0;
     }
 
+    /* word-mask reveal: each word sits inside an overflow-hidden box so its
+       inner span can slide up on load without reflowing the line above */
+    .hero-name-1 .word, .hero-name-2 .word, .hero-title .word {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: top;
+      padding-bottom: 0.12em;
+    }
+    .hero-name-1 .word-inner, .hero-name-2 .word-inner, .hero-title .word-inner {
+      display: inline-block;
+      transform: translateY(115%);
+    }
+
+    .hero-name {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
     .hero-name-1 {
       font-family: 'Syne', sans-serif;
       font-size: clamp(56px, 6.67vw, 96px);
       font-weight: 800;
-      line-height: 1;
+      line-height: 0.9;
       letter-spacing: -0.03125em;
       color: #ffffff;
       white-space: nowrap;
+      margin: 0;
       position: relative;
       z-index: 2;
     }
@@ -264,27 +285,36 @@
       font-family: 'Syne', sans-serif;
       font-size: clamp(56px, 6.67vw, 96px);
       font-weight: 800;
-      line-height: 1;
+      line-height: 0.9;
       letter-spacing: -0.03125em;
-      background: linear-gradient(90deg, #00f5a1, #00c7ff);
+      white-space: nowrap;
+      margin: 0;
+      position: relative;
+      z-index: 2;
+    }
+    /* gradient + clip must live on the element that actually contains the
+       text — the word-mask wrapper spans, not the (now text-less) parent */
+    .hero-name-2 .word-inner {
+      background: linear-gradient(123deg, #00f5a0, #00c8ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      white-space: nowrap;
-      position: relative;
-      z-index: 2;
     }
 
     .hero-title {
       font-family: 'Syne', sans-serif;
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 22px;
+      font-weight: 400;
       color: #8a94a6;
-      max-width: 620px;
-      line-height: 1.6;
+      opacity: 0.8;
+      max-width: 1070px;
+      line-height: 1.45;
+      letter-spacing: 0.44px;
+      margin: 0;
       position: relative;
       z-index: 2;
     }
+    .hero-title-strong { color: #ffffff; }
 
     .hero-trusted {
       display: flex;
@@ -293,6 +323,8 @@
       flex-wrap: wrap;
       position: relative;
       z-index: 2;
+      opacity: 0;
+      transform: translateY(14px);
     }
     .trusted-label {
       font-family: 'DM Mono', monospace;
@@ -327,6 +359,13 @@
       align-items: center;
       position: relative;
       z-index: 2;
+      opacity: 0;
+      transform: translateY(14px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-eyebrow, .hero-trusted, .hero-cta { opacity: 1; transform: none; }
+      .hero-name-1 .word-inner, .hero-name-2 .word-inner, .hero-title .word-inner { transform: none; }
     }
     .btn-primary {
       font-family: 'DM Mono', monospace;
@@ -1871,7 +1910,7 @@
       section { padding: 40px 24px; overflow: hidden; }
       .hero { height: auto; min-height: 100dvh; padding: 100px 24px 40px; gap: 16px; }
       .hero-name-1, .hero-name-2 { font-size: min(10vw, 56px); white-space: nowrap; }
-      .hero-title { font-size: 16px; }
+      .hero-title { font-size: 16px; max-width: 100%; }
       .about-stats { flex-direction: column; }
 
       .jazz-thumb { width: 120px; }
@@ -1938,9 +1977,32 @@
       <canvas id="hero-dotfield"></canvas>
     </div>
     <div class="hero-eyebrow">Product Designer · UX/UI · Web3</div>
-    <p class="hero-name-1">Ezequiel</p>
-    <p class="hero-name-2">de Francisco</p>
-    <p class="hero-title">22 years simplifying complex systems — from Web3 marketplaces<br>to mobile games. Bridging blockchain complexity into intuitive UX.</p>
+    <div class="hero-name">
+      <p class="hero-name-1"><span class="word"><span class="word-inner">Ezequiel</span></span></p>
+      <p class="hero-name-2"><span class="word"><span class="word-inner">de Francisco</span></span></p>
+    </div>
+    <p class="hero-title">
+      <span class="hero-title-strong">
+        <span class="word"><span class="word-inner">22</span></span>
+        <span class="word"><span class="word-inner">years</span></span>
+        <span class="word"><span class="word-inner">simplifying</span></span>
+        <span class="word"><span class="word-inner">complex</span></span>
+        <span class="word"><span class="word-inner">systems</span></span>
+      </span>
+      <span class="word"><span class="word-inner">—</span></span>
+      <span class="word"><span class="word-inner">from</span></span>
+      <span class="word"><span class="word-inner">Web3</span></span>
+      <span class="word"><span class="word-inner">marketplaces</span></span>
+      <span class="word"><span class="word-inner">to</span></span>
+      <span class="word"><span class="word-inner">mobile</span></span>
+      <span class="word"><span class="word-inner">games.</span></span>
+      <span class="word"><span class="word-inner">Bridging</span></span>
+      <span class="word"><span class="word-inner">blockchain</span></span>
+      <span class="word"><span class="word-inner">complexity</span></span>
+      <span class="word"><span class="word-inner">into</span></span>
+      <span class="word"><span class="word-inner">intuitive</span></span>
+      <span class="word"><span class="word-inner">UX.</span></span>
+    </p>
     <div class="hero-trusted">
       <span class="trusted-label">Trusted by</span>
       <span class="trusted-sep"></span>
@@ -3041,6 +3103,37 @@
         });
       }
     });
+  </script>
+
+  <!-- Hero intro: GSAP word-mask reveal + staggered fade-in on load. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
+  <script>
+    (function () {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return;   // CSS fallback already shows the end state
+
+      if (typeof gsap === 'undefined') {
+        // CDN failed to load — reveal everything instead of leaving it hidden
+        document.querySelectorAll('.hero-eyebrow, .hero-trusted, .hero-cta').forEach(function (el) {
+          el.style.opacity = 1; el.style.transform = 'none';
+        });
+        document.querySelectorAll('.hero-name-1 .word-inner, .hero-name-2 .word-inner, .hero-title .word-inner').forEach(function (el) {
+          el.style.transform = 'none';
+        });
+        return;
+      }
+
+      gsap.timeline({ defaults: { ease: 'power2.out' } })
+        .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.8 })
+        .to('.hero-name-1 .word-inner, .hero-name-2 .word-inner', {
+          y: '0%', duration: 1.2, stagger: 0.06,
+        }, '-=0.3')
+        .to('.hero-title .word-inner', {
+          y: '0%', duration: 0.9, stagger: 0.025,
+        }, '-=0.7')
+        .to('.hero-trusted', { opacity: 1, y: 0, duration: 0.8 }, '-=0.35')
+        .to('.hero-cta', { opacity: 1, y: 0, duration: 0.8 }, '-=0.5');
+    })();
   </script>
 
   <!-- Hero background: interactive dot field (desktop only).

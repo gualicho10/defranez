@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hero Intro Example — GSAP Word Reveal — defranez.com</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+
+<style>
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #080a0c;
+    color: #ffffff;
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .hero {
+    position: relative;
+    min-height: min(50vw, 720px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 140px 60px 80px;
+    overflow: hidden;
+    gap: 28px;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-bg img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center;
+  }
+  .hero-bg canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 90% at 74% 37%, rgba(8,10,12,0) 0%, rgba(8,10,12,0.3) 50%, rgba(8,10,12,0.85) 100%);
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #00f5a0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 30px; height: 1px;
+    background: #00f5a0;
+    flex-shrink: 0;
+  }
+
+  .hero-name {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hero-name-1, .hero-name-2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(56px, 6.67vw, 96px);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.03125em;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-name-1 { color: #ffffff; }
+  /* gradient + clip must live on the word-inner span that actually
+     contains the text, not the (now text-less) parent */
+  .hero-name-2 .word-inner {
+    background: linear-gradient(123deg, #00f5a0, #00c8ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: #8a94a6;
+    opacity: 0.8;
+    max-width: 1070px;
+    line-height: 1.45;
+    letter-spacing: 0.44px;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-title-strong { color: #ffffff; }
+
+  /* word-mask reveal: each word sits inside an overflow-hidden box
+     so its inner span can slide up without reflowing the line above */
+  .word {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-bottom: 0.12em;
+  }
+  .word-inner {
+    display: inline-block;
+    transform: translateY(115%);
+  }
+
+  .hero-trusted {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .trusted-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(138,148,166,0.5);
+    white-space: nowrap;
+  }
+  .trusted-sep {
+    width: 1px;
+    height: 16px;
+    background: rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+  .trusted-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a94a6;
+    padding: 9px 17px;
+    border: 1px solid rgba(255,255,255,0.06);
+    white-space: nowrap;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .btn-primary {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #080a0c;
+    background: #00f5a0;
+    padding: 10px 22px;
+    text-decoration: none;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .btn-secondary {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a94a6;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 10px 22px;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .replay {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #8a94a6;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    padding: 8px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    z-index: 5;
+  }
+  .replay:hover { border-color: #00f5a0; color: #00f5a0; }
+
+  @media (max-width: 900px) {
+    .hero { padding: 100px 24px 40px; gap: 16px; }
+    .hero-name-1, .hero-name-2 { font-size: min(10vw, 56px); white-space: nowrap; }
+    .hero-title { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <img src="../img/hero-bg.jpg" alt="" />
+    <canvas id="hero-dotfield"></canvas>
+  </div>
+
+  <p class="hero-eyebrow">Product Designer · UX/UI · Web3</p>
+
+  <div class="hero-name">
+    <h1 class="hero-name-1">
+      <span class="word"><span class="word-inner">Ezequiel</span></span>
+    </h1>
+    <h1 class="hero-name-2">
+      <span class="word"><span class="word-inner">de Francisco</span></span>
+    </h1>
+  </div>
+
+  <p class="hero-title">
+    <span class="hero-title-strong">
+      <span class="word"><span class="word-inner">22</span></span>
+      <span class="word"><span class="word-inner">years</span></span>
+      <span class="word"><span class="word-inner">simplifying</span></span>
+      <span class="word"><span class="word-inner">complex</span></span>
+      <span class="word"><span class="word-inner">systems</span></span>
+    </span>
+    <span class="word"><span class="word-inner">—</span></span>
+    <span class="word"><span class="word-inner">from</span></span>
+    <span class="word"><span class="word-inner">Web3</span></span>
+    <span class="word"><span class="word-inner">marketplaces</span></span>
+    <span class="word"><span class="word-inner">to</span></span>
+    <span class="word"><span class="word-inner">mobile</span></span>
+    <span class="word"><span class="word-inner">games.</span></span>
+    <span class="word"><span class="word-inner">Bridging</span></span>
+    <span class="word"><span class="word-inner">blockchain</span></span>
+    <span class="word"><span class="word-inner">complexity</span></span>
+    <span class="word"><span class="word-inner">into</span></span>
+    <span class="word"><span class="word-inner">intuitive</span></span>
+    <span class="word"><span class="word-inner">UX.</span></span>
+  </p>
+
+  <div class="hero-trusted">
+    <span class="trusted-label">Trusted by</span>
+    <span class="trusted-sep"></span>
+    <span class="trusted-name">OpenLoot</span>
+    <span class="trusted-name">Roche</span>
+    <span class="trusted-name">Globant</span>
+    <span class="trusted-name">Disney</span>
+    <span class="trusted-name">DreamWorks</span>
+  </div>
+
+  <div class="hero-cta">
+    <a href="#" class="btn-primary">View my work</a>
+    <a href="#" class="btn-secondary">Download CV</a>
+  </div>
+
+  <button class="replay" id="replayBtn">↺ replay animation</button>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
+<script>
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function buildTimeline() {
+    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+
+    tl.to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.8 })
+      .to('.hero-name-1 .word-inner, .hero-name-2 .word-inner', {
+        y: '0%',
+        duration: 1.2,
+        stagger: 0.06,
+      }, '-=0.3')
+      .to('.hero-title .word-inner', {
+        y: '0%',
+        duration: 0.9,
+        stagger: 0.025,
+      }, '-=0.7')
+      .to('.hero-trusted', { opacity: 1, y: 0, duration: 0.8 }, '-=0.35')
+      .to('.hero-cta', { opacity: 1, y: 0, duration: 0.8 }, '-=0.5');
+
+    return tl;
+  }
+
+  let tl;
+
+  if (reduced) {
+    gsap.set(['.hero-eyebrow', '.word-inner', '.hero-trusted', '.hero-cta'], { opacity: 1, y: 0 });
+    document.getElementById('replayBtn').style.display = 'none';
+  } else {
+    tl = buildTimeline();
+    document.getElementById('replayBtn').addEventListener('click', () => tl.restart());
+  }
+</script>
+
+<!-- Hero background: interactive dot field (desktop only), ported verbatim
+     from index.html. Samples the halftone artwork and overlays live dots:
+     mouse = magnetic green wake, scroll = staggered quiet vanish. -->
+<script>
+  (function () {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 901px)').matches) return;
+
+    const canvas = document.getElementById('hero-dotfield');
+    const hero = document.querySelector('.hero');
+    const baseImg = document.querySelector('.hero-bg img');
+    if (!canvas || !hero || !baseImg) return;
+    const ctx = canvas.getContext('2d');
+
+    let W = 0, H = 0, dpr = 1;
+    let dots = [];
+
+    function rand(x, y) {
+      const s = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
+      return s - Math.floor(s);
+    }
+
+    function build() {
+      if (!baseImg.complete || !baseImg.naturalWidth) return;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = hero.clientWidth; H = hero.clientHeight;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const iw = baseImg.naturalWidth, ih = baseImg.naturalHeight;
+      const scale = Math.max(W / iw, H / ih);
+      const dw = iw * scale, dh = ih * scale;
+      const dx = W - dw;
+      const dy = (H - dh) / 2;
+
+      const off = document.createElement('canvas');
+      off.width = W; off.height = H;
+      const octx = off.getContext('2d', { willReadFrequently: true });
+      octx.drawImage(baseImg, dx, dy, dw, dh);
+      let px;
+      try {
+        px = octx.getImageData(0, 0, W, H).data;
+      } catch (e) {
+        return;
+      }
+
+      function lum(x, y) {
+        x = Math.max(0, Math.min(W - 1, x | 0));
+        y = Math.max(0, Math.min(H - 1, y | 0));
+        const i = (y * W + x) * 4;
+        return 0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2];
+      }
+
+      const spacing = 14;
+      dots = [];
+      for (let gy = 0, row = 0; gy < H + spacing; gy += spacing, row++) {
+        const xOff = (row % 2) * spacing * 0.5;
+        for (let gx = xOff; gx < W + spacing; gx += spacing) {
+          let L = 0;
+          for (let sy2 = -4; sy2 <= 4; sy2 += 4)
+            for (let sx2 = -4; sx2 <= 4; sx2 += 4)
+              L = Math.max(L, lum(gx + sx2, gy + sy2));
+          const a0 = Math.pow(L / 255, 0.8);
+          if (a0 < 0.22) continue;
+          const n = rand(gx, gy);
+          dots.push({
+            x: gx, y: gy,
+            ox: 0, oy: 0,
+            r0: 1.0 + a0 * 2.7,
+            a0: Math.min(a0 * 1.1, 0.95),
+            death: 0.05 + n * 0.85
+          });
+        }
+      }
+    }
+
+    let mx = -9999, my = -9999, sy = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      mx = e.clientX - rect.left;
+      my = e.clientY - rect.top;
+    }, { passive: true });
+    window.addEventListener('mouseout', () => { mx = my = -9999; }, { passive: true });
+    window.addEventListener('scroll', () => { sy = window.scrollY; }, { passive: true });
+    window.addEventListener('resize', build);
+
+    const R_MOUSE = 150;
+    const DEATH_SPAN = 0.22;
+
+    function frame() {
+      ctx.clearRect(0, 0, W, H);
+
+      const heroH = hero.offsetHeight || 720;
+      const p = Math.max(0, Math.min(1.1, sy / (heroH * 0.8)));
+
+      baseImg.style.opacity = Math.max(0, 1 - p * 1.6).toFixed(3);
+
+      const scrollVis = Math.min(1, p * 5);
+      const imgVis = Math.max(0, 1 - p * 1.6);
+
+      for (const d of dots) {
+        let f = 0;
+        const ddx = d.x - mx, ddy = d.y - my;
+        const dist = Math.hypot(ddx, ddy);
+        if (dist < R_MOUSE) {
+          f = 1 - dist / R_MOUSE;
+          const push = f * f * 26;
+          d.ox += ((ddx / (dist || 1)) * push - d.ox) * 0.2;
+          d.oy += ((ddy / (dist || 1)) * push - d.oy) * 0.2;
+        } else {
+          d.ox *= 0.88; d.oy *= 0.88;
+        }
+        const moving = Math.abs(d.ox) + Math.abs(d.oy) > 0.3;
+
+        const vis = Math.max(f > 0.02 || moving ? 1 : 0, scrollVis);
+        if (vis <= 0.01) continue;
+
+        let alpha = Math.min(1, d.a0 * (1 + 0.25 * scrollVis)) * vis;
+        let rad = d.r0;
+
+        if (p > d.death) {
+          const k = Math.min(1, (p - d.death) / DEATH_SPAN);
+          alpha *= (1 - k) * (1 - k);
+          rad *= 1 - 0.25 * k;
+          if (alpha < 0.01) continue;
+        }
+
+        if (moving && imgVis > 0.01) {
+          ctx.fillStyle = 'rgba(10,12,15,' + (Math.min(1, f * 4 + 0.35) * imgVis).toFixed(3) + ')';
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, d.r0 * 1.45, 0, 6.2832);
+          ctx.fill();
+        }
+
+        alpha = Math.min(1, alpha * (1 + f * 1.6));
+        rad *= 1 + f * 1.1;
+
+        const g = f;
+        const cr = (215 * (1 - g)) | 0;
+        const cg = (222 * (1 - g) + 245 * g) | 0;
+        const cb = (230 * (1 - g) + 160 * g) | 0;
+
+        ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + alpha.toFixed(3) + ')';
+        ctx.beginPath();
+        ctx.arc(d.x + d.ox, d.y + d.oy, rad, 0, 6.2832);
+        ctx.fill();
+      }
+      requestAnimationFrame(frame);
+    }
+
+    if (baseImg.complete) build(); else baseImg.addEventListener('load', build);
+    requestAnimationFrame(frame);
+  })();
+</script>
+
+</body>
+</html>
