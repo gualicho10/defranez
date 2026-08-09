@@ -412,15 +412,18 @@
   <script>
     const SB_URL = 'https://aqtfbzrdwbdymaoskxpt.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxdGZienJkd2JkeW1hb3NreHB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NzUwMzMsImV4cCI6MjA5MTI1MTAzM30.zCtyQBXjt3-s0bMITXDCIZmtEKdDIx39xirLw2u9wX4';
-    const PASS = 'Pacho1983';
+    // No password lives here anymore — verified server-side via RPC against a hashed value.
+    let _pass = sessionStorage.getItem('_tracker_pass') || '';
 
     // ── AUTH ─────────────────────────────────────────────────
-    function checkPass() {
+    async function checkPass() {
       const val = document.getElementById('pass-input').value;
-      if (val === PASS) {
+      const ok = await verifyPass(val);
+      if (ok) {
+        _pass = val;
+        sessionStorage.setItem('_tracker_pass', val);
         document.getElementById('gate').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
-        sessionStorage.setItem('_tracker_auth', '1');
         loadData();
       } else {
         document.getElementById('gate-error').classList.add('show');
@@ -429,23 +432,43 @@
       }
     }
 
+    async function verifyPass(val) {
+      try {
+        const res = await fetch(SB_URL + '/rest/v1/rpc/verify_tracker_password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY },
+          body: JSON.stringify({ pass: val })
+        });
+        if (!res.ok) return false;
+        return await res.json() === true;
+      } catch (_) { return false; }
+    }
+
     document.getElementById('pass-input').addEventListener('keydown', e => {
       if (e.key === 'Enter') checkPass();
       document.getElementById('gate-error').classList.remove('show');
     });
 
     function logout() {
-      sessionStorage.removeItem('_tracker_auth');
+      _pass = '';
+      sessionStorage.removeItem('_tracker_pass');
       document.getElementById('dashboard').style.display = 'none';
       document.getElementById('gate').style.display = 'flex';
       document.getElementById('pass-input').value = '';
     }
 
     // Auto-login if already authenticated this session
-    if (sessionStorage.getItem('_tracker_auth') === '1') {
-      document.getElementById('gate').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      loadData();
+    if (_pass) {
+      verifyPass(_pass).then(ok => {
+        if (ok) {
+          document.getElementById('gate').style.display = 'none';
+          document.getElementById('dashboard').style.display = 'block';
+          loadData();
+        } else {
+          sessionStorage.removeItem('_tracker_pass');
+          _pass = '';
+        }
+      });
     }
 
     // ── DATA ─────────────────────────────────────────────────
@@ -458,13 +481,14 @@
           &nbsp;Loading data...
         </div>`;
 
-      const H = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
+      const H = { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
 
       try {
         const [visRes, clkRes] = await Promise.all([
-          fetch(SB_URL + '/rest/v1/visits?select=*&order=created_at.desc&limit=500', { headers: H }),
-          fetch(SB_URL + '/rest/v1/link_clicks?select=*&order=created_at.desc&limit=300', { headers: H })
+          fetch(SB_URL + '/rest/v1/rpc/get_visits', { method: 'POST', headers: H, body: JSON.stringify({ pass: _pass }) }),
+          fetch(SB_URL + '/rest/v1/rpc/get_link_clicks', { method: 'POST', headers: H, body: JSON.stringify({ pass: _pass }) })
         ]);
+        if (!visRes.ok || !clkRes.ok) throw new Error('unauthorized');
         const visits = await visRes.json();
         const clicks = await clkRes.json();
         renderAll(visits, clicks);
