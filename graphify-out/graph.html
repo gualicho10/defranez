@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>graphify - /Users/ezedefran/Library/CloudStorage/GoogleDrive-ezequiel.defrancisco@gmail.com/My Drive/2_Laburos/web/defranez/graphify-out/graph.html</title>
+<script src="https://unpkg.com/vis-network@9.1.6/standalone/umd/vis-network.min.js"
+        integrity="sha384-Ux6phic9PEHJ38YtrijhkzyJ8yQlH8i/+buBR8s3mAZOJrP1gwyvAcIYl3GWtpX1"
+        crossorigin="anonymous"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f0f1a; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; display: flex; height: 100vh; overflow: hidden; }
+  #graph { flex: 1; }
+  #sidebar { width: 280px; background: #1a1a2e; border-left: 1px solid #2a2a4e; display: flex; flex-direction: column; overflow: hidden; }
+  #search-wrap { padding: 12px; border-bottom: 1px solid #2a2a4e; }
+  #search { width: 100%; background: #0f0f1a; border: 1px solid #3a3a5e; color: #e0e0e0; padding: 7px 10px; border-radius: 6px; font-size: 13px; outline: none; }
+  #search:focus { border-color: #4E79A7; }
+  #search-results { max-height: 140px; overflow-y: auto; padding: 4px 12px; border-bottom: 1px solid #2a2a4e; display: none; }
+  .search-item { padding: 4px 6px; cursor: pointer; border-radius: 4px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .search-item:hover { background: #2a2a4e; }
+  #info-panel { padding: 14px; border-bottom: 1px solid #2a2a4e; min-height: 140px; }
+  #info-panel h3 { font-size: 13px; color: #aaa; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  #info-content { font-size: 13px; color: #ccc; line-height: 1.6; }
+  #info-content .field { margin-bottom: 5px; }
+  #info-content .field b { color: #e0e0e0; }
+  #info-content .empty { color: #555; font-style: italic; }
+  .neighbor-link { display: block; padding: 2px 6px; margin: 2px 0; border-radius: 3px; cursor: pointer; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 3px solid #333; }
+  .neighbor-link:hover { background: #2a2a4e; }
+  #neighbors-list { max-height: 160px; overflow-y: auto; margin-top: 4px; }
+  #legend-wrap { flex: 1; overflow-y: auto; padding: 12px; }
+  #legend-wrap h3 { font-size: 13px; color: #aaa; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .legend-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; cursor: pointer; border-radius: 4px; font-size: 12px; }
+  .legend-item:hover { background: #2a2a4e; padding-left: 4px; }
+  .legend-item.dimmed { opacity: 0.35; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .legend-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .legend-count { color: #666; font-size: 11px; }
+  #stats { padding: 10px 14px; border-top: 1px solid #2a2a4e; font-size: 11px; color: #555; }
+  #legend-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding: 4px 0; }
+  #legend-controls label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; color: #aaa; user-select: none; }
+  #legend-controls label:hover { color: #e0e0e0; }
+  .legend-cb, #select-all-cb { appearance: none; -webkit-appearance: none; width: 14px; height: 14px; border: 1.5px solid #3a3a5e; border-radius: 3px; background: #0f0f1a; cursor: pointer; position: relative; flex-shrink: 0; }
+  .legend-cb:checked, #select-all-cb:checked { background: #4E79A7; border-color: #4E79A7; }
+  .legend-cb:checked::after, #select-all-cb:checked::after { content: ''; position: absolute; left: 3.5px; top: 1px; width: 4px; height: 7px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  #select-all-cb:indeterminate { background: #4E79A7; border-color: #4E79A7; }
+  #select-all-cb:indeterminate::after { content: ''; position: absolute; left: 2px; top: 5px; width: 8px; height: 2px; background: #fff; border: none; transform: none; }
+</style>
+</head>
+<body>
+<div id="graph"></div>
+<div id="sidebar">
+  <div id="search-wrap">
+    <input id="search" type="text" placeholder="Search nodes..." autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+  <div id="info-panel">
+    <h3>Node Info</h3>
+    <div id="info-content"><span class="empty">Click a node to inspect it</span></div>
+  </div>
+  <div id="legend-wrap">
+    <h3>Communities</h3>
+    <div id="legend-controls">
+      <label><input type="checkbox" id="select-all-cb" checked onchange="toggleAllCommunities(!this.checked)">Select All</label>
+    </div>
+    <div id="legend"></div>
+  </div>
+  <div id="stats">57 nodes &middot; 64 edges &middot; 9 communities</div>
+</div>
+<script>
+const RAW_NODES = [{"id": "docs_superpowers_specs_2026_07_13_hero_intro_example_design", "label": "2026-07-13-hero-intro-example-design.md", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "2026-07-13-hero-intro-example-design.md", "community": 11, "community_name": "Hero Intro Animation Example \u2014 Design", "source_file": "docs/superpowers/specs/2026-07-13-hero-intro-example-design.md", "file_type": "document", "degree": 1}, {"id": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_hero_intro_animation_example_design", "label": "Hero Intro Animation Example \u2014 Design", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 31.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Hero Intro Animation Example \u2014 Design", "community": 11, "community_name": "Hero Intro Animation Example \u2014 Design", "source_file": "docs/superpowers/specs/2026-07-13-hero-intro-example-design.md", "file_type": "document", "degree": 7}, {"id": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_purpose", "label": "Purpose", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Purpose", "community": 11, "community_name": "Hero Intro Animation Example \u2014 Design", "source_file": "docs/superpowers/specs/2026-07-13-hero-intro-example-design.md", "file_type": "document", "degree": 1}, {"id": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_file", "label": "File", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "File", "community": 11, "community_name": "Hero Intro Animation Example \u2014 Design", "source_file": "docs/superpowers/specs/2026-07-13-hero-intro-example-design.md", "file_type": "document", "degree": 1}, {"id": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_content", "label": "Content", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Content", "community": 11, "community_name": "Hero Intro Animation Example \u2014 Design", "source_file": "docs/superpowers/specs/2026-07-13-hero-intro-example-design.md", "file_type": "document", "degree": 1}, {"id": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_visuals", "label": "Visuals", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Visuals", "community": 11, "community_name": "Hero Intro Animation Example \u2014 Design", "source_file": "docs/superpowers/specs/2026-07-13-hero-intro-example-design.md", "file_type": "document", "degree": 1}, {"id": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_animation", "label": "Animation", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Animation", "community": 11, "community_name": "Hero Intro Animation Example \u2014 Design", "source_file": "docs/superpowers/specs/2026-07-13-hero-intro-example-design.md", "file_type": "document", "degree": 1}, {"id": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_out_of_scope", "label": "Out of scope", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Out of scope", "community": 11, "community_name": "Hero Intro Animation Example \u2014 Design", "source_file": "docs/superpowers/specs/2026-07-13-hero-intro-example-design.md", "file_type": "document", "degree": 1}, {"id": "claude_graphify_workflow", "label": "Graphify Knowledge Graph Workflow", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 10.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Graphify Knowledge Graph Workflow", "community": 10, "community_name": "Graphify Workflow", "source_file": "CLAUDE.md", "file_type": "concept", "degree": 0}, {"id": "designsystem_design_system_v2", "label": "Defranez Design System v2", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 40.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Defranez Design System v2", "community": 1, "community_name": "Design System Tokens", "source_file": "DesignSystem.html", "file_type": "rationale", "degree": 10}, {"id": "designsystem_color_tokens", "label": "Color Tokens (Mint on Near-Black)", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Color Tokens (Mint on Near-Black)", "community": 1, "community_name": "Design System Tokens", "source_file": "DesignSystem.html", "file_type": "concept", "degree": 1}, {"id": "designsystem_type_system", "label": "Two-Face Type System (Syne + DM Mono)", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Two-Face Type System (Syne + DM Mono)", "community": 1, "community_name": "Design System Tokens", "source_file": "DesignSystem.html", "file_type": "concept", "degree": 1}, {"id": "designsystem_components", "label": "Component Library (Sharp / Hairline / Flat)", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Component Library (Sharp / Hairline / Flat)", "community": 1, "community_name": "Design System Tokens", "source_file": "DesignSystem.html", "file_type": "concept", "degree": 2}, {"id": "designsystem_iconography", "label": "Unicode Iconography in Mono", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Unicode Iconography in Mono", "community": 1, "community_name": "Design System Tokens", "source_file": "DesignSystem.html", "file_type": "concept", "degree": 1}, {"id": "designsystem_spacing_scale", "label": "Spacing Scale and Breakpoints", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Spacing Scale and Breakpoints", "community": 1, "community_name": "Design System Tokens", "source_file": "DesignSystem.html", "file_type": "concept", "degree": 2}, {"id": "designsystem_motion_tokens", "label": "Motion Tokens (Gentle, Never Bouncy)", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Motion Tokens (Gentle, Never Bouncy)", "community": 1, "community_name": "Design System Tokens", "source_file": "DesignSystem.html", "file_type": "concept", "degree": 1}, {"id": "designsystem_space_rail_builder", "label": "Space-Rail Builder Script", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Space-Rail Builder Script", "community": 1, "community_name": "Design System Tokens", "source_file": "DesignSystem.html", "file_type": "code", "degree": 1}, {"id": "career_work_experience_timeline", "label": "Career Timeline Page", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 28.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Career Timeline Page", "community": 1, "community_name": "Design System Tokens", "source_file": "career.html", "file_type": "code", "degree": 6}, {"id": "career_fade_up_observer", "label": "Fade-Up IntersectionObserver (career)", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Fade-Up IntersectionObserver (career)", "community": 1, "community_name": "Design System Tokens", "source_file": "career.html", "file_type": "code", "degree": 1}, {"id": "career_big_time_studios_openloot", "label": "Big Time Studios / OpenLoot (Employer)", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Big Time Studios / OpenLoot (Employer)", "community": 1, "community_name": "Design System Tokens", "source_file": "career.html", "file_type": "concept", "degree": 1}, {"id": "career_fadu_uba", "label": "FADU/UBA Graphic Design Degree", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "FADU/UBA Graphic Design Degree", "community": 1, "community_name": "Design System Tokens", "source_file": "career.html", "file_type": "concept", "degree": 1}, {"id": "memory_project_v2_mobile_game_v2_mobile_game_session", "label": "V2 Mobile Game Session Record", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 19.0, "font": {"size": 12, "color": "#ffffff"}, "title": "V2 Mobile Game Session Record", "community": 3, "community_name": "Mobile V2 Arcade Redesign", "source_file": "memory/project_v2_mobile_game.md", "file_type": "document", "degree": 3}, {"id": "memory_project_v2_mobile_game_arcade_hub_concept", "label": "Arcade Hub (Nav-as-Minigame) Concept", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 19.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Arcade Hub (Nav-as-Minigame) Concept", "community": 3, "community_name": "Mobile V2 Arcade Redesign", "source_file": "memory/project_v2_mobile_game.md", "file_type": "rationale", "degree": 3}, {"id": "memory_project_v2_mobile_game_minigame_difficulty_curve", "label": "Mini-Game Difficulty Curve", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Mini-Game Difficulty Curve", "community": 3, "community_name": "Mobile V2 Arcade Redesign", "source_file": "memory/project_v2_mobile_game.md", "file_type": "rationale", "degree": 1}, {"id": "test_arcade_hub", "label": "EDF Arcade Hub (Mobile V2 Prototype)", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 22.0, "font": {"size": 12, "color": "#ffffff"}, "title": "EDF Arcade Hub (Mobile V2 Prototype)", "community": 3, "community_name": "Mobile V2 Arcade Redesign", "source_file": "test.html", "file_type": "code", "degree": 4}, {"id": "test_mode_chooser", "label": "Mode Chooser (Fun / Boring)", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Mode Chooser (Fun / Boring)", "community": 3, "community_name": "Mobile V2 Arcade Redesign", "source_file": "test.html", "file_type": "code", "degree": 2}, {"id": "test_game_state", "label": "Arcade Game State and Unlock Flow", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 28.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Arcade Game State and Unlock Flow", "community": 4, "community_name": "Arcade Mini-Games", "source_file": "test.html", "file_type": "code", "degree": 6}, {"id": "test_knock_game", "label": "Knock Rhythm Game (About)", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Knock Rhythm Game (About)", "community": 4, "community_name": "Arcade Mini-Games", "source_file": "test.html", "file_type": "code", "degree": 2}, {"id": "test_match_game", "label": "Match Pairs Game (Tools)", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Match Pairs Game (Tools)", "community": 4, "community_name": "Arcade Mini-Games", "source_file": "test.html", "file_type": "code", "degree": 1}, {"id": "test_snake_game", "label": "Snake Game (Portfolio)", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Snake Game (Portfolio)", "community": 4, "community_name": "Arcade Mini-Games", "source_file": "test.html", "file_type": "code", "degree": 2}, {"id": "test_beats_game", "label": "Beats Note-Math Game (Career)", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Beats Note-Math Game (Career)", "community": 4, "community_name": "Arcade Mini-Games", "source_file": "test.html", "file_type": "code", "degree": 1}, {"id": "test_tune_game", "label": "Tune Missing-Note Game (Contact)", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Tune Missing-Note Game (Contact)", "community": 4, "community_name": "Arcade Mini-Games", "source_file": "test.html", "file_type": "code", "degree": 2}, {"id": "test_web_audio_beep", "label": "Web Audio Beep Helper", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Web Audio Beep Helper", "community": 4, "community_name": "Arcade Mini-Games", "source_file": "test.html", "file_type": "code", "degree": 2}, {"id": "test_portfolio_deck", "label": "Swipeable Portfolio Card Deck (mobile)", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 19.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Swipeable Portfolio Card Deck (mobile)", "community": 3, "community_name": "Mobile V2 Arcade Redesign", "source_file": "test.html", "file_type": "code", "degree": 3}, {"id": "test_animate_skill_bars", "label": "animateSkillBars (arcade tools reveal)", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 19.0, "font": {"size": 12, "color": "#ffffff"}, "title": "animateSkillBars (arcade tools reveal)", "community": 3, "community_name": "Mobile V2 Arcade Redesign", "source_file": "test.html", "file_type": "code", "degree": 3}, {"id": "v1_portfolio_v1", "label": "Portfolio v1 (Legacy Page)", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 19.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Portfolio v1 (Legacy Page)", "community": 1, "community_name": "Design System Tokens", "source_file": "v1.html", "file_type": "code", "degree": 3}, {"id": "v1_visit_tracker", "label": "Supabase Visit Tracker (v1)", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Supabase Visit Tracker (v1)", "community": 5, "community_name": "Supabase Visit Tracking", "source_file": "v1.html", "file_type": "code", "degree": 1}, {"id": "v1_modal_system", "label": "Case Study Modal System (v1, arrow-key nav)", "color": {"background": "#BAB0AC", "border": "#BAB0AC", "highlight": {"background": "#ffffff", "border": "#BAB0AC"}}, "size": 10.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Case Study Modal System (v1, arrow-key nav)", "community": 9, "community_name": "Modal System", "source_file": "v1.html", "file_type": "code", "degree": 0}, {"id": "v1_mobile_carousel", "label": "v1 Mobile Scroll-Snap Carousel (88vw cards)", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "v1 Mobile Scroll-Snap Carousel (88vw cards)", "community": 3, "community_name": "Mobile V2 Arcade Redesign", "source_file": "v1.html", "file_type": "code", "degree": 2}, {"id": "v1_skill_bar_animation", "label": "Skill Bar Column-Order Animation (v1)", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Skill Bar Column-Order Animation (v1)", "community": 3, "community_name": "Mobile V2 Arcade Redesign", "source_file": "v1.html", "file_type": "code", "degree": 1}, {"id": "v1_card_reveal", "label": "Portfolio Card Staggered Reveal (v1)", "color": {"background": "#FF9DA7", "border": "#FF9DA7", "highlight": {"background": "#ffffff", "border": "#FF9DA7"}}, "size": 10.0, "font": {"size": 0, "color": "#ffffff"}, "title": "Portfolio Card Staggered Reveal (v1)", "community": 7, "community_name": "Scroll Animations", "source_file": "v1.html", "file_type": "code", "degree": 0}, {"id": "web_tracker_dashboard", "label": "Web Tracker Dashboard", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Web Tracker Dashboard", "community": 5, "community_name": "Supabase Visit Tracking", "source_file": "web_tracker.html", "file_type": "code", "degree": 2}, {"id": "web_tracker_password_gate", "label": "Password Gate (checkPass/logout)", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Password Gate (checkPass/logout)", "community": 5, "community_name": "Supabase Visit Tracking", "source_file": "web_tracker.html", "file_type": "code", "degree": 2}, {"id": "web_tracker_load_data", "label": "loadData (Supabase fetch)", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 19.0, "font": {"size": 12, "color": "#ffffff"}, "title": "loadData (Supabase fetch)", "community": 5, "community_name": "Supabase Visit Tracking", "source_file": "web_tracker.html", "file_type": "code", "degree": 3}, {"id": "web_tracker_render_all", "label": "renderAll (dashboard render)", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 13.0, "font": {"size": 0, "color": "#ffffff"}, "title": "renderAll (dashboard render)", "community": 5, "community_name": "Supabase Visit Tracking", "source_file": "web_tracker.html", "file_type": "code", "degree": 1}, {"id": "web_tracker_supabase_backend", "label": "Supabase Tracking Backend (visits, link_clicks)", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Supabase Tracking Backend (visits, link_clicks)", "community": 5, "community_name": "Supabase Visit Tracking", "source_file": "web_tracker.html", "file_type": "concept", "degree": 2}, {"id": "img_resume_edefco_2026_resume_pdf", "label": "Resume PDF 2026 (Downloadable CV)", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Resume PDF 2026 (Downloadable CV)", "community": 1, "community_name": "Design System Tokens", "source_file": "img/resume_EdeFco_2026.pdf", "file_type": "document", "degree": 2}, {"id": "img_icon_ableton_ableton_live", "label": "Ableton Live Icon", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Ableton Live Icon", "community": 0, "community_name": "Skill/Tool Icon Set", "source_file": "img/icon-ableton.svg", "file_type": "image", "degree": 2}, {"id": "img_icon_ae_after_effects", "label": "Adobe After Effects Icon", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Adobe After Effects Icon", "community": 0, "community_name": "Skill/Tool Icon Set", "source_file": "img/icon-ae.svg", "file_type": "image", "degree": 2}, {"id": "img_icon_ai_illustrator", "label": "Adobe Illustrator Icon", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 19.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Adobe Illustrator Icon", "community": 0, "community_name": "Skill/Tool Icon Set", "source_file": "img/icon-ai.svg", "file_type": "image", "degree": 3}, {"id": "img_icon_asana_asana", "label": "Asana Icon", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Asana Icon", "community": 0, "community_name": "Skill/Tool Icon Set", "source_file": "img/icon-asana.svg", "file_type": "image", "degree": 2}, {"id": "img_icon_claude_claude", "label": "Claude AI Icon", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Claude AI Icon", "community": 0, "community_name": "Skill/Tool Icon Set", "source_file": "img/icon-claude.svg", "file_type": "image", "degree": 2}, {"id": "img_icon_figma_figma", "label": "Figma Icon", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 22.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Figma Icon", "community": 0, "community_name": "Skill/Tool Icon Set", "source_file": "img/icon-figma.svg", "file_type": "image", "degree": 4}, {"id": "img_icon_pr_premiere_pro", "label": "Adobe Premiere Pro Icon", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 19.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Adobe Premiere Pro Icon", "community": 0, "community_name": "Skill/Tool Icon Set", "source_file": "img/icon-pr.svg", "file_type": "image", "degree": 3}, {"id": "img_icon_ps_photoshop", "label": "Adobe Photoshop Icon", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 19.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Adobe Photoshop Icon", "community": 0, "community_name": "Skill/Tool Icon Set", "source_file": "img/icon-ps.svg", "file_type": "image", "degree": 3}, {"id": "img_icon_sketchup_sketchup", "label": "SketchUp Icon", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 16.0, "font": {"size": 12, "color": "#ffffff"}, "title": "SketchUp Icon", "community": 0, "community_name": "Skill/Tool Icon Set", "source_file": "img/icon-sketchup.svg", "file_type": "image", "degree": 2}, {"id": "img_icon_figma_fill_0_css_variable", "label": "Shared --fill-0 CSS Variable Theming", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 37.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Shared --fill-0 CSS Variable Theming", "community": 0, "community_name": "Skill/Tool Icon Set", "source_file": "img/icon-figma.svg", "file_type": "concept", "degree": 9}];
+const RAW_EDGES = [{"from": "docs_superpowers_specs_2026_07_13_hero_intro_example_design", "to": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_hero_intro_animation_example_design", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_hero_intro_animation_example_design", "to": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_animation", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_hero_intro_animation_example_design", "to": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_content", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_hero_intro_animation_example_design", "to": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_file", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_hero_intro_animation_example_design", "to": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_out_of_scope", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_hero_intro_animation_example_design", "to": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_purpose", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_hero_intro_animation_example_design", "to": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_visuals", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "career_work_experience_timeline", "to": "designsystem_design_system_v2", "label": "implements", "title": "implements [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "designsystem_color_tokens", "to": "designsystem_design_system_v2", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "designsystem_components", "to": "designsystem_design_system_v2", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "designsystem_iconography", "to": "designsystem_design_system_v2", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "designsystem_motion_tokens", "to": "designsystem_design_system_v2", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "designsystem_spacing_scale", "to": "designsystem_design_system_v2", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "designsystem_type_system", "to": "designsystem_design_system_v2", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_arcade_hub", "to": "designsystem_design_system_v2", "label": "implements", "title": "implements [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "v1_portfolio_v1", "to": "designsystem_design_system_v2", "label": "implements", "title": "implements [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "web_tracker_dashboard", "to": "designsystem_design_system_v2", "label": "implements", "title": "implements [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "designsystem_components", "to": "v1_portfolio_v1", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "designsystem_space_rail_builder", "to": "designsystem_spacing_scale", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "career_work_experience_timeline", "to": "career_big_time_studios_openloot", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "career_work_experience_timeline", "to": "career_fade_up_observer", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "career_work_experience_timeline", "to": "career_fadu_uba", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "img_resume_edefco_2026_resume_pdf", "to": "career_work_experience_timeline", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "test_arcade_hub", "to": "career_work_experience_timeline", "label": "semantically_similar_to", "title": "semantically_similar_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "memory_project_v2_mobile_game_v2_mobile_game_session", "to": "test_arcade_hub", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "memory_project_v2_mobile_game_v2_mobile_game_session", "to": "v1_mobile_carousel", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_portfolio_deck", "to": "memory_project_v2_mobile_game_v2_mobile_game_session", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "memory_project_v2_mobile_game_minigame_difficulty_curve", "to": "memory_project_v2_mobile_game_arcade_hub_concept", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_arcade_hub", "to": "memory_project_v2_mobile_game_arcade_hub_concept", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_mode_chooser", "to": "memory_project_v2_mobile_game_arcade_hub_concept", "label": "conceptually_related_to", "title": "conceptually_related_to [AMBIGUOUS]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "AMBIGUOUS"}, {"from": "test_mode_chooser", "to": "test_animate_skill_bars", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_game_state", "to": "test_animate_skill_bars", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_game_state", "to": "test_beats_game", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_game_state", "to": "test_knock_game", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_game_state", "to": "test_match_game", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_game_state", "to": "test_snake_game", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_game_state", "to": "test_tune_game", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_knock_game", "to": "test_web_audio_beep", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_snake_game", "to": "test_portfolio_deck", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_tune_game", "to": "test_web_audio_beep", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "test_portfolio_deck", "to": "v1_mobile_carousel", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "v1_skill_bar_animation", "to": "test_animate_skill_bars", "label": "semantically_similar_to", "title": "semantically_similar_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "v1_portfolio_v1", "to": "img_resume_edefco_2026_resume_pdf", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "v1_visit_tracker", "to": "web_tracker_supabase_backend", "label": "shares_data_with", "title": "shares_data_with [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "web_tracker_dashboard", "to": "web_tracker_password_gate", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "web_tracker_password_gate", "to": "web_tracker_load_data", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "web_tracker_load_data", "to": "web_tracker_render_all", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "web_tracker_load_data", "to": "web_tracker_supabase_backend", "label": "shares_data_with", "title": "shares_data_with [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "img_icon_ableton_ableton_live", "to": "img_icon_figma_fill_0_css_variable", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "img_icon_ableton_ableton_live", "to": "img_icon_pr_premiere_pro", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "img_icon_ae_after_effects", "to": "img_icon_figma_fill_0_css_variable", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "img_icon_ae_after_effects", "to": "img_icon_pr_premiere_pro", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "img_icon_ai_illustrator", "to": "img_icon_figma_fill_0_css_variable", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "img_icon_figma_figma", "to": "img_icon_ai_illustrator", "label": "semantically_similar_to", "title": "semantically_similar_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "img_icon_ps_photoshop", "to": "img_icon_ai_illustrator", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "img_icon_asana_asana", "to": "img_icon_claude_claude", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "img_icon_asana_asana", "to": "img_icon_figma_fill_0_css_variable", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "img_icon_claude_claude", "to": "img_icon_figma_fill_0_css_variable", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "img_icon_figma_figma", "to": "img_icon_figma_fill_0_css_variable", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "img_icon_figma_figma", "to": "img_icon_ps_photoshop", "label": "semantically_similar_to", "title": "semantically_similar_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "img_icon_sketchup_sketchup", "to": "img_icon_figma_figma", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "img_icon_pr_premiere_pro", "to": "img_icon_figma_fill_0_css_variable", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "img_icon_ps_photoshop", "to": "img_icon_figma_fill_0_css_variable", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "img_icon_sketchup_sketchup", "to": "img_icon_figma_fill_0_css_variable", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}];
+const LEGEND = [{"cid": 0, "color": "#4E79A7", "label": "Skill/Tool Icon Set", "count": 10}, {"cid": 1, "color": "#F28E2B", "label": "Design System Tokens", "count": 14}, {"cid": 3, "color": "#76B7B2", "label": "Mobile V2 Arcade Redesign", "count": 9}, {"cid": 4, "color": "#59A14F", "label": "Arcade Mini-Games", "count": 7}, {"cid": 5, "color": "#EDC948", "label": "Supabase Visit Tracking", "count": 6}, {"cid": 7, "color": "#FF9DA7", "label": "Scroll Animations", "count": 1}, {"cid": 9, "color": "#BAB0AC", "label": "Modal System", "count": 1}, {"cid": 10, "color": "#4E79A7", "label": "Graphify Workflow", "count": 1}, {"cid": 11, "color": "#F28E2B", "label": "Hero Intro Animation Example \u2014 Design", "count": 8}];
+
+// HTML-escape helper — prevents XSS when injecting graph data into innerHTML
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Build vis datasets
+const nodesDS = new vis.DataSet(RAW_NODES.map(n => ({
+  id: n.id, label: n.label, color: n.color, size: n.size,
+  font: n.font, title: n.title,
+  _community: n.community, _community_name: n.community_name,
+  _source_file: n.source_file, _file_type: n.file_type, _degree: n.degree,
+})));
+
+const edgesDS = new vis.DataSet(RAW_EDGES.map((e, i) => ({
+  id: i, from: e.from, to: e.to,
+  label: '',
+  title: e.title,
+  dashes: e.dashes,
+  width: e.width,
+  color: e.color,
+  arrows: { to: { enabled: true, scaleFactor: 0.5 } },
+})));
+
+const container = document.getElementById('graph');
+const network = new vis.Network(container, { nodes: nodesDS, edges: edgesDS }, {
+  physics: {
+    enabled: true,
+    solver: 'forceAtlas2Based',
+    forceAtlas2Based: {
+      gravitationalConstant: -60,
+      centralGravity: 0.005,
+      springLength: 120,
+      springConstant: 0.08,
+      damping: 0.4,
+      avoidOverlap: 0.8,
+    },
+    stabilization: { iterations: 200, fit: true },
+  },
+  interaction: {
+    hover: true,
+    tooltipDelay: 100,
+    hideEdgesOnDrag: true,
+    navigationButtons: false,
+    keyboard: false,
+  },
+  nodes: { shape: 'dot', borderWidth: 1.5 },
+  edges: { smooth: { type: 'continuous', roundness: 0.2 }, selectionWidth: 3 },
+});
+
+network.once('stabilizationIterationsDone', () => {
+  network.setOptions({ physics: { enabled: false } });
+});
+
+function showInfo(nodeId) {
+  const n = nodesDS.get(nodeId);
+  if (!n) return;
+  const neighborIds = network.getConnectedNodes(nodeId);
+  const neighborItems = neighborIds.map(nid => {
+    const nb = nodesDS.get(nid);
+    const color = nb ? nb.color.background : '#555';
+    return `<span class="neighbor-link" style="border-left-color:${esc(color)}" onclick="focusNode(${JSON.stringify(nid)})">${esc(nb ? nb.label : nid)}</span>`;
+  }).join('');
+  document.getElementById('info-content').innerHTML = `
+    <div class="field"><b>${esc(n.label)}</b></div>
+    <div class="field">Type: ${esc(n._file_type || 'unknown')}</div>
+    <div class="field">Community: ${esc(n._community_name)}</div>
+    <div class="field">Source: ${esc(n._source_file || '-')}</div>
+    <div class="field">Degree: ${n._degree}</div>
+    ${neighborIds.length ? `<div class="field" style="margin-top:8px;color:#aaa;font-size:11px">Neighbors (${neighborIds.length})</div><div id="neighbors-list">${neighborItems}</div>` : ''}
+  `;
+}
+
+function focusNode(nodeId) {
+  network.focus(nodeId, { scale: 1.4, animation: true });
+  network.selectNodes([nodeId]);
+  showInfo(nodeId);
+}
+
+// Track hovered node — hover detection is more reliable than click params
+let hoveredNodeId = null;
+network.on('hoverNode', params => {
+  hoveredNodeId = params.node;
+  container.style.cursor = 'pointer';
+});
+network.on('blurNode', () => {
+  hoveredNodeId = null;
+  container.style.cursor = 'default';
+});
+container.addEventListener('click', () => {
+  if (hoveredNodeId !== null) {
+    showInfo(hoveredNodeId);
+    network.selectNodes([hoveredNodeId]);
+  }
+});
+network.on('click', params => {
+  if (params.nodes.length > 0) {
+    showInfo(params.nodes[0]);
+  } else if (hoveredNodeId === null) {
+    document.getElementById('info-content').innerHTML = '<span class="empty">Click a node to inspect it</span>';
+  }
+});
+
+const searchInput = document.getElementById('search');
+const searchResults = document.getElementById('search-results');
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.toLowerCase().trim();
+  searchResults.innerHTML = '';
+  if (!q) { searchResults.style.display = 'none'; return; }
+  const matches = RAW_NODES.filter(n => n.label.toLowerCase().includes(q)).slice(0, 20);
+  if (!matches.length) { searchResults.style.display = 'none'; return; }
+  searchResults.style.display = 'block';
+  matches.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'search-item';
+    el.textContent = n.label;
+    el.style.borderLeft = `3px solid ${n.color.background}`;
+    el.style.paddingLeft = '8px';
+    el.onclick = () => {
+      network.focus(n.id, { scale: 1.5, animation: true });
+      network.selectNodes([n.id]);
+      showInfo(n.id);
+      searchResults.style.display = 'none';
+      searchInput.value = '';
+    };
+    searchResults.appendChild(el);
+  });
+});
+document.addEventListener('click', e => {
+  if (!searchResults.contains(e.target) && e.target !== searchInput)
+    searchResults.style.display = 'none';
+});
+
+const hiddenCommunities = new Set();
+
+const selectAllCb = document.getElementById('select-all-cb');
+
+function updateSelectAllState() {
+  const total = LEGEND.length;
+  const hidden = hiddenCommunities.size;
+  selectAllCb.checked = hidden === 0;
+  selectAllCb.indeterminate = hidden > 0 && hidden < total;
+}
+
+function toggleAllCommunities(hide) {
+  document.querySelectorAll('.legend-item').forEach(item => {
+    hide ? item.classList.add('dimmed') : item.classList.remove('dimmed');
+  });
+  document.querySelectorAll('.legend-cb').forEach(cb => {
+    cb.checked = !hide;
+  });
+  LEGEND.forEach(c => {
+    if (hide) hiddenCommunities.add(c.cid); else hiddenCommunities.delete(c.cid);
+  });
+  const updates = RAW_NODES.map(n => ({ id: n.id, hidden: hide }));
+  nodesDS.update(updates);
+  updateSelectAllState();
+}
+
+const legendEl = document.getElementById('legend');
+LEGEND.forEach(c => {
+  const item = document.createElement('div');
+  item.className = 'legend-item';
+  const cb = document.createElement('input');
+  cb.type = 'checkbox';
+  cb.className = 'legend-cb';
+  cb.checked = true;
+  cb.addEventListener('change', (e) => {
+    e.stopPropagation();
+    if (cb.checked) {
+      hiddenCommunities.delete(c.cid);
+      item.classList.remove('dimmed');
+    } else {
+      hiddenCommunities.add(c.cid);
+      item.classList.add('dimmed');
+    }
+    const updates = RAW_NODES
+      .filter(n => n.community === c.cid)
+      .map(n => ({ id: n.id, hidden: !cb.checked }));
+    nodesDS.update(updates);
+    updateSelectAllState();
+  });
+  item.innerHTML = `<div class="legend-dot" style="background:${c.color}"></div>
+    <span class="legend-label">${c.label}</span>
+    <span class="legend-count">${c.count}</span>`;
+  item.prepend(cb);
+  item.onclick = (e) => {
+    if (e.target === cb) return;
+    cb.checked = !cb.checked;
+    cb.dispatchEvent(new Event('change'));
+  };
+  legendEl.appendChild(item);
+});
+</script>
+<script>
+// Render hyperedges as shaded regions
+const hyperedges = [{"id": "arcade_unlock_flow", "label": "Arcade Mini-Game Unlock Flow", "nodes": ["test_game_state", "test_knock_game", "test_match_game", "test_snake_game", "test_beats_game", "test_tune_game", "memory_project_v2_mobile_game_minigame_difficulty_curve"], "relation": "implement", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": "test.html"}, {"id": "adobe_creative_cloud_icon_group", "label": "Adobe Creative Cloud Tool Icons", "nodes": ["img_icon_ae_after_effects", "img_icon_ai_illustrator", "img_icon_pr_premiere_pro", "img_icon_ps_photoshop"], "relation": "form", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": "img/icon-ps.svg"}, {"id": "portfolio_tool_icon_set", "label": "Portfolio Skills/Tools Icon Set (uniform monochrome Figma-exported SVGs)", "nodes": ["img_icon_ableton_ableton_live", "img_icon_ae_after_effects", "img_icon_ai_illustrator", "img_icon_asana_asana", "img_icon_claude_claude", "img_icon_figma_figma", "img_icon_pr_premiere_pro", "img_icon_ps_photoshop", "img_icon_sketchup_sketchup"], "relation": "form", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": "img/icon-figma.svg"}];
+// afterDrawing passes ctx already transformed to network coordinate space.
+// Draw node positions raw — no manual pan/zoom/DPR math needed.
+network.on('afterDrawing', function(ctx) {
+    hyperedges.forEach(h => {
+        const positions = h.nodes
+            .map(nid => network.getPositions([nid])[nid])
+            .filter(p => p !== undefined);
+        if (positions.length < 2) return;
+        ctx.save();
+        ctx.globalAlpha = 0.12;
+        ctx.fillStyle = '#6366f1';
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        // Centroid and expanded hull in network coordinates
+        const cx = positions.reduce((s, p) => s + p.x, 0) / positions.length;
+        const cy = positions.reduce((s, p) => s + p.y, 0) / positions.length;
+        const expanded = positions.map(p => ({
+            x: cx + (p.x - cx) * 1.15,
+            y: cy + (p.y - cy) * 1.15
+        }));
+        ctx.moveTo(expanded[0].x, expanded[0].y);
+        expanded.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 0.4;
+        ctx.stroke();
+        // Label
+        ctx.globalAlpha = 0.8;
+        ctx.fillStyle = '#4f46e5';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(h.label, cx, cy - 5);
+        ctx.restore();
+    });
+});
+</script>
+</body>
+</html>

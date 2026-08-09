@@ -1,0 +1,107 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1783734845.722105,
+    "ast_hash": "81f214254cfa09c7ac3dc89b3ec8b237",
+    "semantic_hash": "81f214254cfa09c7ac3dc89b3ec8b237"
+  },
+  ".remember/remember.md": {
+    "mtime": 1783735010.6938827,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "CLAUDE.md": {
+    "mtime": 1783734845.721795,
+    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": "82efb97a359f5c7290bf2513d14686be"
+  },
+  "DesignSystem.html": {
+    "mtime": 1778262670.972,
+    "ast_hash": "7b14f77ee858835467c27e8318f86e34",
+    "semantic_hash": "7b14f77ee858835467c27e8318f86e34"
+  },
+  "career.html": {
+    "mtime": 1776730982.968,
+    "ast_hash": "0339e171340adb34ef5959c88ec776a7",
+    "semantic_hash": "0339e171340adb34ef5959c88ec776a7"
+  },
+  "index.html": {
+    "mtime": 1783312580.7836976,
+    "ast_hash": "84a25f131e6f7c128d27dfd7f884058c",
+    "semantic_hash": "84a25f131e6f7c128d27dfd7f884058c"
+  },
+  "memory/project_v2_mobile_game.md": {
+    "mtime": 1776730984.099,
+    "ast_hash": "82aaa92bccdf3362f7c7be98a5de2613",
+    "semantic_hash": "82aaa92bccdf3362f7c7be98a5de2613"
+  },
+  "test.html": {
+    "mtime": 1777671394.884,
+    "ast_hash": "abd7d63a72076a131bddb1ced1a2da6c",
+    "semantic_hash": "abd7d63a72076a131bddb1ced1a2da6c"
+  },
+  "v1.html": {
+    "mtime": 1776730984.111,
+    "ast_hash": "d9756c5a844fdef1337b5733aa7a017f",
+    "semantic_hash": "d9756c5a844fdef1337b5733aa7a017f"
+  },
+  "web_tracker.html": {
+    "mtime": 1776730988.454,
+    "ast_hash": "16d38c11c308a07134d132e97bc7e0dd",
+    "semantic_hash": "16d38c11c308a07134d132e97bc7e0dd"
+  },
+  "img/resume_EdeFco_2026.pdf": {
+    "mtime": 1783638705.2301,
+    "ast_hash": "1747ac66d83626df95b2f751ca758b6f",
+    "semantic_hash": "1747ac66d83626df95b2f751ca758b6f"
+  },
+  "img/icon-ableton.svg": {
+    "mtime": 1783044147.917,
+    "ast_hash": "525fc07265b3ef4c263f1d24554f35ee",
+    "semantic_hash": "525fc07265b3ef4c263f1d24554f35ee"
+  },
+  "img/icon-ae.svg": {
+    "mtime": 1783044147.886,
+    "ast_hash": "84b693594655bb30d27fac2761587c75",
+    "semantic_hash": "84b693594655bb30d27fac2761587c75"
+  },
+  "img/icon-ai.svg": {
+    "mtime": 1783044147.884,
+    "ast_hash": "cb83157f58ad718990d90a0a35586866",
+    "semantic_hash": "cb83157f58ad718990d90a0a35586866"
+  },
+  "img/icon-asana.svg": {
+    "mtime": 1783044147.873,
+    "ast_hash": "fce90c066a56fe8155e23517823742c2",
+    "semantic_hash": "fce90c066a56fe8155e23517823742c2"
+  },
+  "img/icon-claude.svg": {
+    "mtime": 1783044147.972,
+    "ast_hash": "2ede5ae5b15887173b4747492808c4f2",
+    "semantic_hash": "2ede5ae5b15887173b4747492808c4f2"
+  },
+  "img/icon-figma.svg": {
+    "mtime": 1783044147.833,
+    "ast_hash": "e2c5dd5dfefac9d1c90ddc9c22a8bdeb",
+    "semantic_hash": "e2c5dd5dfefac9d1c90ddc9c22a8bdeb"
+  },
+  "img/icon-pr.svg": {
+    "mtime": 1783044147.928,
+    "ast_hash": "65bc6631620351e0ca86c51fd04c913b",
+    "semantic_hash": "65bc6631620351e0ca86c51fd04c913b"
+  },
+  "img/icon-ps.svg": {
+    "mtime": 1783044147.793,
+    "ast_hash": "117cbcb17234cf6441cd56588b27c7b7",
+    "semantic_hash": "117cbcb17234cf6441cd56588b27c7b7"
+  },
+  "img/icon-sketchup.svg": {
+    "mtime": 1783044147.732,
+    "ast_hash": "c7690701318e7db4be083d2317085370",
+    "semantic_hash": "c7690701318e7db4be083d2317085370"
+  },
+  "docs/superpowers/specs/2026-07-13-hero-intro-example-design.md": {
+    "mtime": 1783913683.3135016,
+    "ast_hash": "3085fb9607291081f22c7302764ed32c",
+    "semantic_hash": ""
+  }
+}
