@@ -188,6 +188,48 @@
     }
     .nav-cta:hover { opacity: 0.85; }
 
+    /* HERO 3D — exploded-layer portrait, mouse-reactive, sits at the right of the hero title.
+       Replaces the old dotfield photo on qualifying desktops; mobile/touch/no-fine-pointer
+       keeps the static img fallback (see media query near .hero-bg img below). */
+    .hero3d-stage-wrap {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      height: 94%;
+      width: auto;
+      aspect-ratio: 455.65 / 469.06;
+      display: none; /* enabled only on desktop + fine pointer, see media query below */
+      align-items: center;
+      justify-content: center;
+      perspective: 2800px;
+      pointer-events: none;
+      z-index: 1; /* below the text (z-index:2) on purpose — it can sit slightly behind the title */
+      opacity: 0.35; /* subtle, "miscelánea" presence — set here (not on .hero3d-rig) so it
+                         doesn't force the preserve-3d child to flatten */
+    }
+    .hero3d-rig {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .hero3d-layer {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .hero3d-layer img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      user-select: none;
+      pointer-events: none;
+      -webkit-user-drag: none;
+    }
+
     /* HERO */
     .hero {
       position: relative;
@@ -223,19 +265,16 @@
       object-fit: cover;
       object-position: right center;
     }
-    /* interactive dot overlay — desktop only, driven by JS */
-    .hero-bg canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
     .hero-bg::after {
       content: '';
       position: absolute;
       inset: 0;
       background: radial-gradient(ellipse 80% 90% at 74% 37%, rgba(8,10,12,0) 0%, rgba(8,10,12,0.3) 50%, rgba(8,10,12,0.85) 100%);
+    }
+    /* desktop + fine pointer only — mobile/touch/reduced-motion keep the static photo */
+    @media (hover: hover) and (pointer: fine) and (min-width: 901px) {
+      .hero3d-stage-wrap { display: flex; }
+      .hero-bg img { display: none; }
     }
 
     .hero-eyebrow {
@@ -2201,7 +2240,22 @@
   <section class="hero">
     <div class="hero-bg" aria-hidden="true">
       <img src="img/hero-bg.jpg" alt="">
-      <canvas id="hero-dotfield"></canvas>
+    </div>
+    <!--
+      Fuera de .hero-bg a proposito: ese contenedor tiene un ::after con un
+      vignette oscuro que taparia el 3D. Orden de profundidad invertido a
+      pedido: depth 1 (la mas clara) queda ADELANTE, y va oscureciendo hacia
+      depth 5 (detalle fino) atras. En el DOM van al reves (depth 5 primero)
+      para que en reposo (capas coincidentes en Z) depth 1 pinte encima.
+    -->
+    <div class="hero3d-stage-wrap" aria-hidden="true">
+      <div class="hero3d-rig" id="hero3dRig">
+        <div class="hero3d-layer" data-depth="5"><img src="img/hero3d/5.svg" alt=""></div>
+        <div class="hero3d-layer" data-depth="4"><img src="img/hero3d/3.svg" alt=""></div>
+        <div class="hero3d-layer" data-depth="3"><img src="img/hero3d/2.svg" alt=""></div>
+        <div class="hero3d-layer" data-depth="2"><img src="img/hero3d/1.svg" alt=""></div>
+        <div class="hero3d-layer" data-depth="1"><img src="img/hero3d/4.svg" alt=""></div>
+      </div>
     </div>
     <div class="hero-eyebrow">Product Designer · UX/UI · Web3</div>
     <div class="hero-name">
@@ -3239,165 +3293,101 @@
     })();
   </script>
 
-  <!-- Hero background: interactive dot field (desktop only).
-       Samples the halftone artwork and overlays live dots:
-       mouse = magnetic green wake, scroll = staggered quiet vanish. -->
+  <!-- Hero 3D: mouse-reactive exploded-layer portrait next to the title.
+       Scrolling PINS the hero (nav/title/CTA stay visible, just frozen in
+       place): first the layers settle back to position 0, then exit one by
+       one; only once the last layer clears does normal page scroll resume.
+       Desktop + fine pointer only — mobile keeps the static img fallback. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script>
     (function () {
-      // desktop only — mobile keeps the static image untouched
+      var rig = document.getElementById('hero3dRig');
+      var hero = document.querySelector('.hero');
+      if (!rig || !hero) return;
       if (!window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 901px)').matches) return;
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-      const canvas = document.getElementById('hero-dotfield');
-      const hero = document.querySelector('.hero');
-      const baseImg = document.querySelector('.hero-bg img');
-      if (!canvas || !hero || !baseImg) return;
-      const ctx = canvas.getContext('2d');
+      gsap.registerPlugin(ScrollTrigger);
 
-      let W = 0, H = 0, dpr = 1;
-      let dots = [];
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var layers = Array.prototype.slice.call(rig.querySelectorAll('.hero3d-layer'));
 
-      function rand(x, y) {
-        const s = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
-        return s - Math.floor(s);
+      var params = {
+        maxRot: 39,           // deg, at full mouse-to-edge distance
+        explodeSpacing: 150,  // px, translateZ spread between adjacent depths
+        lerp: 0.2,             // mouse smoothing factor per frame
+        exitDistance: 150,    // % of the rig's own height, how far each layer flies up on exit
+        stagger: 0.18,         // gap between each layer's exit start (raw units, normalized below)
+        exitDuration: 0.55,    // each layer's own exit duration (raw units, normalized below)
+        settlePortion: 0.14,  // fraction of the pin spent converging back to position 0 first
+        pinDistance: 1.4       // scroll "held" for this many viewport heights before releasing
+      };
+
+      // normalize stagger/duration so the LAST layer finishes exactly at
+      // exitProgress === 1 (i.e. right as the pin releases)
+      var rawTotal = 4 * params.stagger + params.exitDuration;
+      var nStagger = params.stagger / rawTotal;
+      var nDuration = params.exitDuration / rawTotal;
+
+      var target = { rx: 0, ry: 0, spacing: 0 };
+      var current = { rx: 0, ry: 0, spacing: 0 };
+      var pinProgress = 0;
+
+      function onMouseMove(e) {
+        var nx = (e.clientX / window.innerWidth) * 2 - 1;
+        var ny = (e.clientY / window.innerHeight) * 2 - 1;
+        var m = Math.min(1, Math.hypot(nx, ny));
+        target.rx = -ny * params.maxRot;
+        target.ry = nx * params.maxRot;
+        target.spacing = m * params.explodeSpacing;
+      }
+      function onMouseLeave() {
+        target.rx = 0; target.ry = 0; target.spacing = 0;
+      }
+      if (!reduced) {
+        window.addEventListener('mousemove', onMouseMove, { passive: true });
+        window.addEventListener('mouseleave', onMouseLeave, { passive: true });
       }
 
-      // Sample the real artwork so the overlay dots sit exactly on the
-      // picture's own halftone dots.
-      function build() {
-        if (!baseImg.complete || !baseImg.naturalWidth) return;
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
-        W = hero.clientWidth; H = hero.clientHeight;
-        canvas.width = W * dpr; canvas.height = H * dpr;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-        // replicate object-fit: cover; object-position: right center
-        const iw = baseImg.naturalWidth, ih = baseImg.naturalHeight;
-        const scale = Math.max(W / iw, H / ih);
-        const dw = iw * scale, dh = ih * scale;
-        const dx = W - dw;
-        const dy = (H - dh) / 2;
-
-        const off = document.createElement('canvas');
-        off.width = W; off.height = H;
-        const octx = off.getContext('2d', { willReadFrequently: true });
-        octx.drawImage(baseImg, dx, dy, dw, dh);
-        let px;
-        try {
-          px = octx.getImageData(0, 0, W, H).data;
-        } catch (e) {
-          return;   // tainted canvas (e.g. file://) — keep the static image
-        }
-
-        function lum(x, y) {
-          x = Math.max(0, Math.min(W - 1, x | 0));
-          y = Math.max(0, Math.min(H - 1, y | 0));
-          const i = (y * W + x) * 4;
-          return 0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2];
-        }
-
-        const spacing = 14;
-        dots = [];
-        for (let gy = 0, row = 0; gy < H + spacing; gy += spacing, row++) {
-          const xOff = (row % 2) * spacing * 0.5;
-          for (let gx = xOff; gx < W + spacing; gx += spacing) {
-            let L = 0;
-            for (let sy2 = -4; sy2 <= 4; sy2 += 4)
-              for (let sx2 = -4; sx2 <= 4; sx2 += 4)
-                L = Math.max(L, lum(gx + sx2, gy + sy2));
-            const a0 = Math.pow(L / 255, 0.8);
-            if (a0 < 0.22) continue;   // only dots clearly visible in the artwork
-            const n = rand(gx, gy);
-            dots.push({
-              x: gx, y: gy,
-              ox: 0, oy: 0,
-              r0: 1.0 + a0 * 2.7,
-              a0: Math.min(a0 * 1.1, 0.95),
-              death: 0.05 + n * 0.85
-            });
-          }
-        }
-      }
-
-      let mx = -9999, my = -9999, sy = 0;
-
-      window.addEventListener('mousemove', (e) => {
-        const rect = hero.getBoundingClientRect();
-        mx = e.clientX - rect.left;
-        my = e.clientY - rect.top;
-      }, { passive: true });
-      window.addEventListener('mouseout', () => { mx = my = -9999; }, { passive: true });
-      window.addEventListener('scroll', () => { sy = window.scrollY; }, { passive: true });
-      window.addEventListener('resize', build);
-
-      const R_MOUSE = 150;
-      const DEATH_SPAN = 0.22;
+      var st = ScrollTrigger.create({
+        trigger: hero,
+        start: 'top top',
+        end: '+=' + Math.round(window.innerHeight * params.pinDistance),
+        pin: true,
+        scrub: 0.4,
+        onUpdate: function (self) { pinProgress = self.progress; }
+      });
+      window.addEventListener('resize', function () { ScrollTrigger.refresh(); }, { passive: true });
 
       function frame() {
-        ctx.clearRect(0, 0, W, H);
+        current.rx += (target.rx - current.rx) * params.lerp;
+        current.ry += (target.ry - current.ry) * params.lerp;
+        current.spacing += (target.spacing - current.spacing) * params.lerp;
 
-        const heroH = hero.offsetHeight || 720;
-        const p = Math.max(0, Math.min(1.1, sy / (heroH * 0.8)));
+        // phase 1 (0 -> settlePortion): converge back to position 0, killing
+        // whatever mouse-driven rotation/explosion was active
+        var settle = 1 - Math.min(1, pinProgress / params.settlePortion);
 
-        baseImg.style.opacity = Math.max(0, 1 - p * 1.6).toFixed(3);
+        rig.style.transform = 'rotateX(' + (current.rx * settle).toFixed(2) + 'deg) rotateY(' + (current.ry * settle).toFixed(2) + 'deg)';
 
-        const scrollVis = Math.min(1, p * 5);
-        const imgVis = Math.max(0, 1 - p * 1.6);
+        // phase 2 (settlePortion -> 1): staggered layer-by-layer exit
+        var exitProgress = Math.max(0, (pinProgress - params.settlePortion) / (1 - params.settlePortion));
 
-        for (const d of dots) {
-          // magnetic repel + glow around the cursor
-          let f = 0;
-          const ddx = d.x - mx, ddy = d.y - my;
-          const dist = Math.hypot(ddx, ddy);
-          if (dist < R_MOUSE) {
-            f = 1 - dist / R_MOUSE;
-            const push = f * f * 26;
-            d.ox += ((ddx / (dist || 1)) * push - d.ox) * 0.2;
-            d.oy += ((ddy / (dist || 1)) * push - d.oy) * 0.2;
-          } else {
-            d.ox *= 0.88; d.oy *= 0.88;
-          }
-          const moving = Math.abs(d.ox) + Math.abs(d.oy) > 0.3;
+        layers.forEach(function (layer) {
+          var depth = parseInt(layer.dataset.depth, 10); // 1 = front .. 5 = back
+          var z = (3 - depth) * current.spacing * settle;
 
-          const vis = Math.max(f > 0.02 || moving ? 1 : 0, scrollVis);
-          if (vis <= 0.01) continue;
+          var segStart = (depth - 1) * nStagger;
+          var localP = Math.max(0, Math.min(1, (exitProgress - segStart) / nDuration));
+          var eased = localP * localP; // ease-in
 
-          let alpha = Math.min(1, d.a0 * (1 + 0.25 * scrollVis)) * vis;
-          let rad = d.r0;
+          var y = -eased * params.exitDistance;
+          layer.style.transform = 'translateY(' + y.toFixed(2) + '%) translateZ(' + z.toFixed(2) + 'px)';
+          layer.style.opacity = (1 - eased).toFixed(3);
+        });
 
-          // scroll: staggered quiet vanish, no color
-          if (p > d.death) {
-            const k = Math.min(1, (p - d.death) / DEATH_SPAN);
-            alpha *= (1 - k) * (1 - k);
-            rad *= 1 - 0.25 * k;
-            if (alpha < 0.01) continue;
-          }
-
-          // cover the dot's white original while displaced, to avoid doubling
-          if (moving && imgVis > 0.01) {
-            ctx.fillStyle = 'rgba(10,12,15,' + (Math.min(1, f * 4 + 0.35) * imgVis).toFixed(3) + ')';
-            ctx.beginPath();
-            ctx.arc(d.x, d.y, d.r0 * 1.45, 0, 6.2832);
-            ctx.fill();
-          }
-
-          alpha = Math.min(1, alpha * (1 + f * 1.6));
-          rad *= 1 + f * 1.1;
-
-          // white -> brand green (#00f5a0) with proximity
-          const g = f;
-          const cr = (215 * (1 - g)) | 0;
-          const cg = (222 * (1 - g) + 245 * g) | 0;
-          const cb = (230 * (1 - g) + 160 * g) | 0;
-
-          ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + alpha.toFixed(3) + ')';
-          ctx.beginPath();
-          ctx.arc(d.x + d.ox, d.y + d.oy, rad, 0, 6.2832);
-          ctx.fill();
-        }
         requestAnimationFrame(frame);
       }
-
-      if (baseImg.complete) build(); else baseImg.addEventListener('load', build);
       requestAnimationFrame(frame);
     })();
   </script>

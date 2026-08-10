@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hero 3D — prototype</title>
+<style>
+  :root{
+    --bg:#080a0c;
+  }
+  *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:auto; }
+  body{
+    background:var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .pin-section{
+    position:relative;
+    width:100%;
+    height:100vh;
+    overflow:hidden;
+  }
+
+  .scene{
+    position:relative;
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      radial-gradient(ellipse at 50% 42%, rgba(255,255,255,0.05), rgba(255,255,255,0) 60%),
+      var(--bg);
+  }
+
+  .stage-wrap{
+    /* perspective lives on a static wrapper so the vanishing point never drifts */
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    perspective: 1400px;
+  }
+
+  .rig{
+    position:relative;
+    width: min(46vh, 40vw, 460px);
+    aspect-ratio: 455.65 / 469.06;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  /* GSAP-controlled: exit translateY + opacity, scrubbed by scroll */
+  .layer-exit{
+    position:absolute;
+    inset:0;
+    transform-style:preserve-3d;
+  }
+  /* our own rAF-controlled: depth translateZ, driven by mouse */
+  .layer{
+    position:absolute;
+    inset:0;
+    transform-style:preserve-3d;
+    will-change: transform;
+  }
+  .layer img{
+    width:100%;
+    height:100%;
+    display:block;
+    user-select:none;
+    pointer-events:none;
+    -webkit-user-drag:none;
+  }
+
+  /* ---- mock page content, to visualize the reveal ---- */
+  .mock-hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:16px;
+    background:var(--bg);
+    color:#e8eaed;
+    padding:40px;
+  }
+  .mock-hero .eyebrow{
+    color:#00f5a0;
+    font-family:"SF Mono","DM Mono",Consolas,monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .mock-hero h1{ font-size:clamp(36px,7vw,84px); font-weight:800; }
+  .mock-hero p{ color:#9aa0a6; max-width:520px; }
+  .mock-more{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#0e1114;
+    color:#6b7280;
+    font-family:"SF Mono","DM Mono",Consolas,monospace;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    font-size:13px;
+  }
+
+  /* ---- debug panel ---- */
+  .panel{
+    position:fixed;
+    top:16px;
+    right:16px;
+    width:270px;
+    max-height:calc(100vh - 32px);
+    overflow-y:auto;
+    background:rgba(14,17,20,0.9);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:10px;
+    padding:14px 16px 16px;
+    color:#e8eaed;
+    font-size:12px;
+    font-family: "SF Mono", "DM Mono", Consolas, monospace;
+    backdrop-filter: blur(8px);
+    z-index:1000;
+    transition: transform .25s ease, opacity .25s ease;
+  }
+  .panel.hidden{ transform: translateX(290px); opacity:0; pointer-events:none; }
+  .panel h1{
+    font-size:12px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:#6b7280;
+    margin:14px 0 10px;
+    font-weight:600;
+  }
+  .panel h1:first-child{ margin-top:0; }
+  .row{ margin-bottom:10px; }
+  .row label{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:4px;
+    color:#9aa0a6;
+  }
+  .row output{ color:#00f5a0; }
+  input[type=range]{ width:100%; accent-color:#00f5a0; }
+  .toggle{
+    position:fixed;
+    top:16px;
+    right:16px;
+    z-index:1001;
+    width:34px;
+    height:34px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(14,17,20,0.88);
+    color:#e8eaed;
+    font-size:16px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .hint{
+    position:fixed;
+    left:50%;
+    bottom:28px;
+    transform:translateX(-50%);
+    color:#4b5158;
+    font-family: "SF Mono", "DM Mono", Consolas, monospace;
+    font-size:11px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    z-index:5;
+    pointer-events:none;
+    text-align:center;
+  }
+  .hint .progress{ color:#00f5a0; }
+</style>
+</head>
+<body>
+
+  <section class="pin-section" id="pinSection">
+    <div class="scene">
+      <div class="stage-wrap">
+        <div class="rig" id="rig">
+          <!--
+            El numero de archivo no coincide con la profundidad real: cada SVG
+            dibuja una sola "Capa_" interna en un tono de gris distinto, y el
+            orden de profundidad correcto va del tono mas oscuro/detallado
+            (cerca de la camara) al mas claro/masa grande (lejos):
+              depth 1 -> 5.svg (st5 #232220, detalle fino: ojos, cejas, etc.)
+              depth 2 -> 3.svg (st1 #5b5b5b)
+              depth 3 -> 2.svg (st0 #939599)
+              depth 4 -> 1.svg (st2 #a4a8ab)
+              depth 5 -> 4.svg (st3 #c2c4c6, masa grande de fondo/torso)
+            El orden de salida en el scroll sigue el mismo orden (1 sale primero).
+
+            Orden en el DOM: al reposo (mouse en el centro) las 5 capas
+            comparten el mismo plano Z, y ahi el navegador desempata pintando
+            por orden de aparicion en el DOM (la ultima queda arriba). Por eso
+            estan en orden descendente aca: depth 5 (mancha grande y clara,
+            atras) primero, depth 1 (detalle fino y oscuro, adelante) al
+            final, para que en reposo se vea el detalle por encima de todo.
+            Cuando el mouse separa las capas en Z, el orden real de
+            profundidad manda (transform-style: preserve-3d), no el del DOM.
+          -->
+          <div class="layer-exit" data-depth="5"><div class="layer"><img src="img/hero3d/4.svg" alt=""></div></div>
+          <div class="layer-exit" data-depth="4"><div class="layer"><img src="img/hero3d/1.svg" alt=""></div></div>
+          <div class="layer-exit" data-depth="3"><div class="layer"><img src="img/hero3d/2.svg" alt=""></div></div>
+          <div class="layer-exit" data-depth="2"><div class="layer"><img src="img/hero3d/3.svg" alt=""></div></div>
+          <div class="layer-exit" data-depth="1"><div class="layer"><img src="img/hero3d/5.svg" alt=""></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mock-hero">
+    <div class="eyebrow">Product Designer &middot; UX/UI &middot; Web3</div>
+    <h1>Ezequiel<br>de Francisco</h1>
+    <p>Esto simula el hero real (nombre, t&iacute;tulo, CTA). En la integraci&oacute;n final ac&aacute; va el contenido de siempre &mdash; s&oacute;lo cambia el fondo.</p>
+  </section>
+
+  <section class="mock-more">resto de la p&aacute;gina &middot; scroll normal a partir de ac&aacute;</section>
+
+  <div class="hint">scrolleá para ver la salida &middot; progreso <span class="progress" id="progressOut">0%</span></div>
+
+  <button class="toggle" id="toggle" title="Mostrar/ocultar controles">&#9881;</button>
+  <div class="panel" id="panel">
+    <h1>3D mouse</h1>
+    <div class="row">
+      <label>Perspective <output id="out-persp">2800</output>px</label>
+      <input type="range" id="persp" min="600" max="3000" step="50" value="2800">
+    </div>
+    <div class="row">
+      <label>Max rotation <output id="out-maxrot">39</output>&deg;</label>
+      <input type="range" id="maxrot" min="0" max="45" step="1" value="39">
+    </div>
+    <div class="row">
+      <label>Base spacing <output id="out-basesp">0</output>px</label>
+      <input type="range" id="basesp" min="0" max="40" step="1" value="0">
+    </div>
+    <div class="row">
+      <label>Explode spacing <output id="out-explode">150</output>px</label>
+      <input type="range" id="explode" min="0" max="200" step="2" value="150">
+    </div>
+    <div class="row">
+      <label>Smoothing (lerp) <output id="out-lerp">0.2</output></label>
+      <input type="range" id="lerp" min="0.02" max="0.3" step="0.01" value="0.2">
+    </div>
+    <div class="row">
+      <label>Stage size <output id="out-size">80</output>vh</label>
+      <input type="range" id="size" min="20" max="80" step="1" value="80">
+    </div>
+
+    <h1>Scroll reveal</h1>
+    <div class="row">
+      <label>Pin length <output id="out-pinlen">180</output>vh</label>
+      <input type="range" id="pinlen" min="60" max="400" step="10" value="180">
+    </div>
+    <div class="row">
+      <label>Exit distance <output id="out-exitdist">140</output>vh</label>
+      <input type="range" id="exitdist" min="40" max="250" step="10" value="140">
+    </div>
+    <div class="row">
+      <label>Exit stagger <output id="out-stagger">0.18</output></label>
+      <input type="range" id="stagger" min="0" max="0.4" step="0.01" value="0.18">
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    (function () {
+      gsap.registerPlugin(ScrollTrigger);
+
+      var rig = document.getElementById('rig');
+      var stageWrap = document.querySelector('.stage-wrap');
+      var layers = Array.prototype.slice.call(document.querySelectorAll('.layer'));
+      var progressOut = document.getElementById('progressOut');
+
+      var params = {
+        perspective: 2800,
+        maxRot: 39,
+        baseSpacing: 0,
+        explodeSpacing: 150,
+        lerp: 0.2,
+        size: 80,
+        pinLength: 180,
+        exitDistance: 140,
+        stagger: 0.18
+      };
+
+      var target = { rx: 0, ry: 0, spacing: params.baseSpacing };
+      var current = { rx: 0, ry: 0, spacing: params.baseSpacing };
+      var scrollProgress = 0;
+
+      var isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+      function applyStatic() {
+        stageWrap.style.perspective = params.perspective + 'px';
+        rig.style.width = 'min(' + params.size + 'vh, ' + Math.round(params.size * 0.87) + 'vw, ' + Math.round(params.size * 10) + 'px)';
+      }
+
+      function onMouseMove(e) {
+        var nx = (e.clientX / window.innerWidth) * 2 - 1;
+        var ny = (e.clientY / window.innerHeight) * 2 - 1;
+        var m = Math.min(1, Math.hypot(nx, ny));
+        target.rx = -ny * params.maxRot;
+        target.ry = nx * params.maxRot;
+        target.spacing = params.baseSpacing + m * params.explodeSpacing;
+      }
+
+      function onMouseLeave() {
+        target.rx = 0;
+        target.ry = 0;
+        target.spacing = params.baseSpacing;
+      }
+
+      function frame() {
+        current.rx += (target.rx - current.rx) * params.lerp;
+        current.ry += (target.ry - current.ry) * params.lerp;
+        current.spacing += (target.spacing - current.spacing) * params.lerp;
+
+        // as the scroll-exit takes over, fade the mouse-driven rotation/spread
+        // back to flat so the layers fly straight up instead of tumbling out
+        var settle = 1 - Math.min(1, scrollProgress * 3);
+
+        rig.style.transform = 'rotateX(' + (current.rx * settle).toFixed(2) + 'deg) rotateY(' + (current.ry * settle).toFixed(2) + 'deg)';
+
+        layers.forEach(function (layer) {
+          var depth = parseInt(layer.parentElement.dataset.depth, 10); // 1 = closest .. 5 = farthest
+          var z = (3 - depth) * current.spacing * settle;
+          layer.style.transform = 'translateZ(' + z.toFixed(2) + 'px)';
+        });
+
+        progressOut.textContent = Math.round(scrollProgress * 100) + '%';
+
+        requestAnimationFrame(frame);
+      }
+
+      if (isFinePointer) {
+        window.addEventListener('mousemove', onMouseMove, { passive: true });
+        window.addEventListener('mouseleave', onMouseLeave, { passive: true });
+      }
+
+      applyStatic();
+      requestAnimationFrame(frame);
+
+      // ---- scroll-driven exit (pin + stagger) ----
+      var scrollTl = null;
+
+      function buildScrollAnimation() {
+        if (scrollTl) {
+          scrollTl.scrollTrigger.kill();
+          scrollTl.kill();
+        }
+
+        // exit order = depth ascending (closest leaves first)
+        var exitEls = [1, 2, 3, 4, 5].map(function (d) {
+          return document.querySelector('.layer-exit[data-depth="' + d + '"]');
+        });
+
+        scrollTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: '#pinSection',
+            start: 'top top',
+            end: '+=' + (window.innerHeight * (params.pinLength / 100)),
+            pin: true,
+            scrub: 0.5,
+            onUpdate: function (self) { scrollProgress = self.progress; }
+          }
+        });
+
+        scrollTl.to(exitEls, {
+          yPercent: -params.exitDistance,
+          opacity: 0,
+          ease: 'power1.in',
+          duration: 0.55,
+          stagger: params.stagger
+        }, 0);
+      }
+
+      buildScrollAnimation();
+
+      // ---- debug panel wiring ----
+      var panel = document.getElementById('panel');
+      var toggle = document.getElementById('toggle');
+      toggle.addEventListener('click', function () {
+        panel.classList.toggle('hidden');
+      });
+
+      function bind(id, key, outId, isFloat) {
+        var input = document.getElementById(id);
+        var out = document.getElementById(outId);
+        input.addEventListener('input', function () {
+          var v = isFloat ? parseFloat(input.value) : parseInt(input.value, 10);
+          params[key] = v;
+          out.textContent = v;
+          if (key === 'baseSpacing') target.spacing = v; // keep in sync when idle
+          applyStatic();
+        });
+      }
+      bind('persp', 'perspective', 'out-persp');
+      bind('maxrot', 'maxRot', 'out-maxrot');
+      bind('basesp', 'baseSpacing', 'out-basesp');
+      bind('explode', 'explodeSpacing', 'out-explode');
+      bind('lerp', 'lerp', 'out-lerp', true);
+      bind('size', 'size', 'out-size');
+
+      function bindScroll(id, key, outId, isFloat) {
+        var input = document.getElementById(id);
+        var out = document.getElementById(outId);
+        input.addEventListener('input', function () {
+          var v = isFloat ? parseFloat(input.value) : parseInt(input.value, 10);
+          params[key] = v;
+          out.textContent = v;
+        });
+        input.addEventListener('change', function () {
+          buildScrollAnimation();
+          ScrollTrigger.refresh();
+        });
+      }
+      bindScroll('pinlen', 'pinLength', 'out-pinlen');
+      bindScroll('exitdist', 'exitDistance', 'out-exitdist');
+      bindScroll('stagger', 'stagger', 'out-stagger', true);
+
+      window.addEventListener('resize', function () {
+        buildScrollAnimation();
+        ScrollTrigger.refresh();
+      });
+    })();
+  </script>
+</body>
+</html>
