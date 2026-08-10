@@ -2832,7 +2832,10 @@
       if (!gallery) return;
 
       let activeIdx = 0;
-      let fadeTimer = null;
+      const fadeTimers = new Map(); // per-card — a shared timer would let a
+                                     // fast hover sweep cancel a previous
+                                     // card's cleanup and leave it stuck
+                                     // with .transitioning (text hidden) forever
 
       function activate(idx) {
         if (idx === activeIdx) return;
@@ -2844,15 +2847,16 @@
         // Only the expanding card hides its texts during the transition
         items[idx].classList.add('transitioning');
 
-        clearTimeout(fadeTimer);
+        if (fadeTimers.has(idx)) clearTimeout(fadeTimers.get(idx));
 
         items.forEach(function (el, i) {
           el.classList.toggle('active', i === idx);
         });
 
-        fadeTimer = setTimeout(function () {
+        fadeTimers.set(idx, setTimeout(function () {
           items[idx].classList.remove('transitioning');
-        }, 700);
+          fadeTimers.delete(idx);
+        }, 700));
       }
 
       gallery.querySelectorAll('.g-item').forEach(function (el, i) {
