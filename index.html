@@ -955,7 +955,7 @@
       color: #00f5a0;
     }
 
-    /* PORTFOLIO — sticky-sync layout (v2) */
+    /* PORTFOLIO — elastic gallery (v3) */
     #work {
       border-top: 1px solid rgba(255,255,255,0.06);
     }
@@ -980,341 +980,6 @@
     }
     .work-header a:hover { gap: 14px; }
     .work-header-actions { display: flex; align-items: center; gap: 32px; }
-
-    .portfolio-sticky-layout {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-    }
-
-    .portfolio-nav {
-      position: sticky;
-      top: 120px;
-      width: 315px;
-      flex-shrink: 0;
-      padding: 32px 0;
-    }
-
-    .portfolio-nav-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #8a94a6;
-      padding: 0 0 16px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      margin-bottom: 0;
-    }
-
-    .portfolio-nav-item {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-      padding: 20px 18px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      border-top: none; border-left: none; border-right: none;
-      cursor: pointer;
-      transition: all 0.3s;
-      position: relative;
-    }
-    .portfolio-nav-item:last-child { border-bottom: none; }
-
-    .portfolio-nav-num {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 1px;
-      color: rgba(138,148,166,0.5);
-      flex-shrink: 0;
-      transition: color 0.3s;
-    }
-
-    .portfolio-nav-cat {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: rgba(138,148,166,0.5);
-      transition: color 0.3s;
-    }
-
-    .portfolio-nav-info {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-    }
-
-    .portfolio-nav-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px;
-      font-weight: 500;
-      color: rgba(138,148,166,0.5);
-      letter-spacing: -0.3px;
-      transition: color 0.3s;
-    }
-
-    .portfolio-nav-arrow {
-      font-family: 'Syne', sans-serif;
-      font-size: 20px;
-      color: #00f5a1;
-      opacity: 0;
-      transition: opacity 0.3s;
-      flex-shrink: 0;
-    }
-
-    .portfolio-nav-year {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: rgba(138,148,166,0.6);
-      letter-spacing: 0.5px;
-    }
-
-    /* Active state */
-    .portfolio-nav-item.active {
-      background: rgba(0,245,161,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      padding: 24px 18px;
-      gap: 6px;
-    }
-    .portfolio-nav-item.active .portfolio-nav-num { color: #00f5a1; }
-    .portfolio-nav-item.active .portfolio-nav-cat { color: rgba(0,245,161,0.8); }
-    .portfolio-nav-item.active .portfolio-nav-name { color: #ffffff; font-weight: 700; }
-    .portfolio-nav-item.active .portfolio-nav-arrow { opacity: 1; }
-
-    /* Hover state */
-    .portfolio-nav-item:not(.active):hover {
-      border: 1px solid rgba(0,245,161,0.2);
-      padding: 24px 28px;
-      gap: 6px;
-    }
-    .portfolio-nav-item:not(.active):hover .portfolio-nav-num { color: rgba(0,245,161,0.3); }
-    .portfolio-nav-item:not(.active):hover .portfolio-nav-cat { color: rgba(0,245,161,0.3); }
-    .portfolio-nav-item:not(.active):hover .portfolio-nav-name { color: rgba(0,245,161,0.3); }
-    .portfolio-nav-item:not(.active):hover .portfolio-nav-year { color: rgba(0,245,161,0.3); }
-
-    .portfolio-scroll {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 120px;
-    }
-
-    .portfolio-project {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .proj-counter {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .proj-counter-num {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(0,245,161,0.6);
-    }
-
-    .proj-counter-dot {
-      width: 3px; height: 3px;
-      border-radius: 50%;
-      background: #8a94a6;
-    }
-
-    .proj-counter-cat {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #8a94a6;
-    }
-
-    .proj-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
-
-    .proj-title-info {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .proj-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 28px;
-      font-weight: 800;
-      color: #ffffff;
-      letter-spacing: -1.2px;
-    }
-
-    .proj-company {
-      font-family: 'Syne', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      color: #00f5a1;
-    }
-
-    .proj-cta {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #00f5a0;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: gap 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .proj-cta:hover { gap: 8px; }
-
-    .proj-desc {
-      font-family: 'Syne', sans-serif;
-      font-size: 16px;
-      font-weight: 400;
-      color: #8a94a6;
-      line-height: 26px;
-    }
-
-    .proj-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .proj-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.06em;
-      padding: 7px 14px;
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #8a94a6;
-    }
-
-    .proj-visual {
-      width: 100%;
-      background: #0e1114;
-      border: 1px solid rgba(255,255,255,0.06);
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .proj-visual img {
-      width: 100%;
-      display: block;
-    }
-    .proj-color-bar {
-      position: absolute;
-      top: -1px; left: -1px; right: -1px;
-      height: 4px;
-    }
-
-    /* OPENLOOT SCREENSHOT GRID */
-    .proj-grid-divider {
-      width: 100%;
-      height: 1px;
-      background: rgba(255,255,255,0.08);
-    }
-    .proj-grid {
-      width: 100%;
-      aspect-ratio: 985 / 1735;
-      background: #0e1114;
-      border: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      gap: 20px;
-      overflow: hidden;
-    }
-    .proj-grid img {
-      display: block;
-      border: 1px solid rgba(255,255,255,0.15);
-      box-sizing: border-box;
-    }
-    .proj-grid-left {
-      flex: 1;
-      min-width: 0;
-    }
-    .proj-grid-left img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top;
-    }
-    .proj-grid-right {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .proj-grid-wide {
-      width: 100%;
-      aspect-ratio: 382 / 215;
-      object-fit: cover;
-    }
-    .proj-grid-mobiles {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      gap: 10px;
-    }
-    .proj-grid-mob {
-      flex: 1;
-      min-width: 0;
-      height: 100%;
-      object-fit: cover;
-    }
-    .proj-grid-mob-mid { object-position: 50% 56%; }
-    .proj-grid-mob-top { object-position: top; }
-    .proj-grid-mob-stack {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .proj-grid-mob-stack img {
-      width: 100%;
-      flex: 1;
-      min-height: 0;
-      object-fit: cover;
-      object-position: top;
-    }
-
-    /* CASE STUDY CTA — bottom */
-    .proj-cta-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 18px;
-      background: none;
-      border: 1px solid rgba(0,245,160,0.15);
-      cursor: pointer;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #00f5a0;
-      transition: background 0.2s, border-color 0.2s, gap 0.2s;
-      width: 100%;
-    }
-    .proj-cta-bottom:hover {
-      background: rgba(0,245,160,0.05);
-      border-color: rgba(0,245,160,0.35);
-      gap: 14px;
-    }
 
     /* MODAL */
     .modal-backdrop {
@@ -1413,8 +1078,6 @@
       margin-bottom: 40px;
     }
     .modal-image-wrap img { width: 100%; display: block; }
-    .modal .proj-grid-divider { margin-bottom: 24px; }
-    .modal .proj-grid { margin-bottom: 40px; }
     .modal-image-nogap { margin-bottom: 0; border: none; }
     .modal-image-seamless {
       width: 100%;
@@ -1944,11 +1607,6 @@
       .resume-download { width: auto; }
       .career-formation-info { flex-wrap: wrap; gap: 12px; }
 
-      .portfolio-sticky-layout { flex-direction: column; }
-      .portfolio-nav { position: static; width: 100%; display: flex; flex-wrap: wrap; gap: 0; }
-      .portfolio-nav-label { width: 100%; }
-      .portfolio-nav-item { flex: 1; min-width: 45%; }
-      .portfolio-nav-name { font-size: 18px; }
       .behance-all { display: none !important; }
       footer { padding: 28px 24px; flex-direction: column; gap: 16px; text-align: center; }
     }
@@ -1978,15 +1636,6 @@
       .career-period, .career-role, .career-company { width: 100%; }
       .career-bottom { flex-direction: column; gap: 16px; }
       .resume-download { width: 100%; text-align: center; box-sizing: border-box; }
-      .proj-title-row { flex-direction: column; align-items: flex-start; gap: 12px; }
-      /* OpenLoot grid → simple vertical stack */
-      .proj-grid { flex-direction: column; gap: 12px; aspect-ratio: auto; background: none; border: none; }
-      .proj-grid-left img { height: auto; }
-      .proj-grid-right { gap: 12px; }
-      .proj-grid-mobiles { flex-direction: column; gap: 12px; flex: none; }
-      .proj-grid-mob { width: 100%; height: auto; aspect-ratio: 9 / 16; }
-      .proj-grid-mob-stack { gap: 12px; flex: none; }
-      .proj-grid-mob-stack img { flex: none; aspect-ratio: 9 / 16; }
     }
     
 
@@ -2012,6 +1661,9 @@
   flex: 1;
   transition: flex 0.75s cubic-bezier(0.25, 1, 0.5, 1);
   outline: none;
+  /* Own stacking context so the dim/overlay/body children always paint above
+     .g-bg's transformed <img>, regardless of GPU compositing order. */
+  isolation: isolate;
 }
 .g-item:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
 .g-item.active { flex: 4.5; }
@@ -2380,7 +2032,7 @@
     </div>
   </section>
 
-  <!-- PORTFOLIO — sticky-sync -->
+  <!-- PORTFOLIO — elastic gallery (v3) -->
   <section id="work">
     <div class="work-header">
       <div>
@@ -3332,6 +2984,18 @@
       var target = { rx: 0, ry: 0, spacing: 0 };
       var current = { rx: 0, ry: 0, spacing: 0 };
       var pinProgress = 0;
+      var rafRunning = false;
+
+      function isConverged() {
+        return Math.abs(target.rx - current.rx) < 0.01 &&
+               Math.abs(target.ry - current.ry) < 0.01 &&
+               Math.abs(target.spacing - current.spacing) < 0.01;
+      }
+      function startLoop() {
+        if (rafRunning) return;
+        rafRunning = true;
+        requestAnimationFrame(frame);
+      }
 
       function onMouseMove(e) {
         var nx = (e.clientX / window.innerWidth) * 2 - 1;
@@ -3340,30 +3004,21 @@
         target.rx = -ny * params.maxRot;
         target.ry = nx * params.maxRot;
         target.spacing = m * params.explodeSpacing;
+        startLoop();
       }
       function onMouseLeave() {
         target.rx = 0; target.ry = 0; target.spacing = 0;
+        startLoop();
       }
       if (!reduced) {
         window.addEventListener('mousemove', onMouseMove, { passive: true });
         window.addEventListener('mouseleave', onMouseLeave, { passive: true });
       }
 
-      var st = ScrollTrigger.create({
-        trigger: hero,
-        start: 'top top',
-        end: '+=' + Math.round(window.innerHeight * params.pinDistance),
-        pin: true,
-        scrub: 0.4,
-        onUpdate: function (self) { pinProgress = self.progress; }
-      });
-      window.addEventListener('resize', function () { ScrollTrigger.refresh(); }, { passive: true });
-
-      function frame() {
-        current.rx += (target.rx - current.rx) * params.lerp;
-        current.ry += (target.ry - current.ry) * params.lerp;
-        current.spacing += (target.spacing - current.spacing) * params.lerp;
-
+      // Renders the rig/layers from the current (already-lerped) state — called
+      // every animation frame while settling, and once per scroll update so the
+      // pin/exit sequence stays in sync even while the lerp loop is idle.
+      function render() {
         // phase 1 (0 -> settlePortion): converge back to position 0, killing
         // whatever mouse-driven rotation/explosion was active
         var settle = 1 - Math.min(1, pinProgress / params.settlePortion);
@@ -3385,10 +3040,32 @@
           layer.style.transform = 'translateY(' + y.toFixed(2) + '%) translateZ(' + z.toFixed(2) + 'px)';
           layer.style.opacity = (1 - eased).toFixed(3);
         });
+      }
 
+      var st = ScrollTrigger.create({
+        trigger: hero,
+        start: 'top top',
+        end: '+=' + Math.round(window.innerHeight * params.pinDistance),
+        pin: true,
+        scrub: 0.4,
+        onUpdate: function (self) { pinProgress = self.progress; render(); }
+      });
+      window.addEventListener('resize', function () { ScrollTrigger.refresh(); }, { passive: true });
+
+      // Lerp loop: only runs while the mouse-driven rotation/explode is still
+      // settling toward its target. Stops itself once converged instead of
+      // running forever for the rest of the page's life.
+      function frame() {
+        current.rx += (target.rx - current.rx) * params.lerp;
+        current.ry += (target.ry - current.ry) * params.lerp;
+        current.spacing += (target.spacing - current.spacing) * params.lerp;
+
+        render();
+
+        if (isConverged()) { rafRunning = false; return; }
         requestAnimationFrame(frame);
       }
-      requestAnimationFrame(frame);
+      startLoop();
     })();
   </script>
 
