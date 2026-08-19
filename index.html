@@ -3502,6 +3502,11 @@ abcdefghijklmnopqrstuvwxyz
       const totals = Object.create(null);   // slug -> total likes on the server
       let slug = null;                      // modal currently open
       let busy = false;
+      // The button only exists if the backend answered. Until the migration in
+      // docs/supabase/ is applied the RPC 404s, and a heart that fills and then
+      // silently empties is worse than no heart at all. This also means the
+      // feature switches itself on the moment the SQL lands — no second deploy.
+      let backendUp = false;
 
       // Anonymous, random, and only ever compared for equality. Falls back to
       // a session-lived id when storage is blocked (Safari private mode).
@@ -3544,18 +3549,28 @@ abcdefghijklmnopqrstuvwxyz
         label.textContent = total >= FLOOR ? total : '';
       }
 
+      // Reveal is deferred until we know the backend is there, and is re-run
+      // when the totals land, in case a modal was opened while they were still
+      // in flight.
+      function reveal() {
+        if (!backendUp || !slug) return;
+        btn.hidden = false;
+        render();
+        requestAnimationFrame(() => btn.classList.add('visible'));
+      }
+
       async function loadTotals() {
         try {
           const res = await fetch(SB_URL + '/rest/v1/rpc/get_project_likes', {
             method: 'POST', headers: HEADERS, body: '{}'
           });
-          if (!res.ok) return;                       // button still works, just no number
+          if (!res.ok) return;                 // RPC missing or erroring — stay hidden
           const rows = await res.json();
-          if (Array.isArray(rows)) {
-            rows.forEach(r => { totals[r.project_slug] = r.total; });
-          }
-          render();
-        } catch (_) { /* offline — leave totals empty */ }
+          if (!Array.isArray(rows)) return;    // an error object, not our payload
+          rows.forEach(r => { totals[r.project_slug] = r.total; });
+          backendUp = true;                    // an empty array still means "up"
+          reveal();
+        } catch (_) { /* offline — stay hidden */ }
       }
 
       async function toggle() {
@@ -3603,7 +3618,7 @@ abcdefghijklmnopqrstuvwxyz
       loadTotals();   // the one and only totals fetch, fire and forget
 
       return {
-        attach(id) { slug = id; btn.hidden = false; render(); requestAnimationFrame(() => btn.classList.add('visible')); },
+        attach(id) { slug = id; reveal(); },
         detach()   { btn.classList.remove('visible', 'pop'); slug = null; }
       };
     })();
