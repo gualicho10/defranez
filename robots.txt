@@ -1,0 +1,19 @@
+# defranez.com
+
+User-agent: *
+Allow: /
+
+# Prototypes, old versions and internal tooling. These are reachable but are
+# not the portfolio, and indexing them would dilute the site and surface pages
+# that were never meant for visitors. web_tracker.html especially: its UI asks
+# for a password, but nothing stops a crawler listing the URL itself.
+Disallow: /web_tracker.html
+Disallow: /test.html
+Disallow: /hero3d-test.html
+Disallow: /DesignSystem.html
+Disallow: /v1.html
+Disallow: /examples/
+Disallow: /docs/
+Disallow: /graphify-out/
+
+Sitemap: https://defranez.com/sitemap.xml
