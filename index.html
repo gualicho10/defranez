@@ -6,17 +6,62 @@
   
   <title>Ezequiel De Francisco — Product Designer & Web3 Expert</title>
   <meta name="description" content="Senior Product Designer with 22+ years of experience in UI/UX, Web3, and Gaming. Discover the portfolio of Ezequiel De Francisco.">
-  <meta name="keywords" content="Product Design, UI/UX, Web3, Gaming Design, Ezequiel De Francisco, Portfolio">
   <meta name="author" content="Ezequiel De Francisco">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+
+  <!-- The apex is canonical since 2026-08-19; www 301s here. Without this,
+       links that still carry the www split ranking signals across two URLs
+       Google would otherwise treat as separate pages. -->
+  <link rel="canonical" href="https://defranez.com/">
 
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.defranez.com/">
-  <meta property="og:title" content="Ezequiel De Francisco — Product Designer v2">
-  <meta property="og:description" content="Bridging complex systems into intuitive experiences. Portfolio v2 focusing on Web3 and Gaming.">
-  <meta property="og:image" content="https://www.defranez.com/img/og-image.png"> <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:title" content="Ezequiel De Francisco — Product Designer">
-  <meta property="twitter:image" content="https://www.defranez.com/img/og-image.png">
+  <meta property="og:site_name" content="Ezequiel De Francisco">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://defranez.com/">
+  <meta property="og:title" content="Ezequiel De Francisco — Product Designer & Web3 Expert">
+  <meta property="og:description" content="22 years simplifying complex systems — from Web3 marketplaces to mobile games. Lead Product Designer at Open Loot.">
+  <meta property="og:image" content="https://defranez.com/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Ezequiel De Francisco — Product Designer, UX/UI and Web3">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Ezequiel De Francisco — Product Designer & Web3 Expert">
+  <meta name="twitter:description" content="22 years simplifying complex systems — from Web3 marketplaces to mobile games. Lead Product Designer at Open Loot.">
+  <meta name="twitter:image" content="https://defranez.com/img/og-image.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "url": "https://defranez.com/",
+    "mainEntity": {
+      "@type": "Person",
+      "name": "Ezequiel De Francisco",
+      "alternateName": "defranez",
+      "url": "https://defranez.com/",
+      "image": "https://defranez.com/img/og-image.png",
+      "jobTitle": "Senior Product Designer",
+      "description": "Senior Product Designer with 22 years of experience across UX/UI, Web3 and gaming. Lead Product Designer at Open Loot, a Web3 gaming marketplace by Big Time Studios.",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Open Loot",
+        "url": "https://openloot.com/"
+      },
+      "knowsAbout": [
+        "Product Design",
+        "UX/UI Design",
+        "Design Systems",
+        "Web3",
+        "Gaming",
+        "Prototyping"
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/ezequiel-de-francisco/"
+      ]
+    }
+  }
+  </script>
 
   <link rel="icon" type="image/png" href="img/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -319,6 +364,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      margin: 0;   /* it is an h1 now — drop the UA margin */
     }
     .hero-name-1 {
       font-family: 'Syne', sans-serif;
@@ -2486,10 +2532,14 @@
       </div>
     </div>
     <div class="hero-eyebrow">Product Designer · UX/UI · Web3</div>
-    <div class="hero-name">
-      <p class="hero-name-1"><span class="word"><span class="word-inner">Ezequiel</span></span></p>
-      <p class="hero-name-2"><span class="word"><span class="word-inner">de Francisco</span></span></p>
-    </div>
+    <!-- The page's only h1. It was a plain div, which left the home page with
+         no h1 at all — the strongest topical signal a page has, unused.
+         Children are spans rather than p because h1 takes phrasing content;
+         .hero-name is flex, so they blockify anyway and nothing moves. -->
+    <h1 class="hero-name">
+      <span class="hero-name-1"><span class="word"><span class="word-inner">Ezequiel</span></span></span>
+      <span class="hero-name-2"><span class="word"><span class="word-inner">de Francisco</span></span></span>
+    </h1>
     <p class="hero-title">
       <span class="hero-title-strong">
         <span class="word"><span class="word-inner">22</span></span>
