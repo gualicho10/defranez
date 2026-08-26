@@ -1,6 +1,6 @@
 -- Project like button — schema, functions and lockdown.
--- Run this in the Supabase SQL editor for project aqtfbzrdwbdymaoskxpt
--- BEFORE deploying the frontend. Safe to re-run.
+-- APPLIED 2026-08-20 to project aqtfbzrdwbdymaoskxpt. Kept for the record and
+-- because it is idempotent — safe to re-run.
 --
 -- Design: docs/superpowers/specs/2026-08-18-project-like-button-design.md
 --
@@ -51,7 +51,7 @@ alter table public.app_secrets enable row level security;
 revoke all on public.app_secrets from anon, authenticated;
 
 insert into public.app_secrets (key, value)
-values ('like_ip_salt', encode(gen_random_bytes(32), 'hex'))
+values ('like_ip_salt', encode(extensions.gen_random_bytes(32), 'hex'))
 on conflict (key) do nothing;
 
 -- ── Functions ───────────────────────────────────────────────────────────────
@@ -63,7 +63,7 @@ create or replace function public.get_project_likes()
 returns table (project_slug text, total int)
 language sql
 security definer
-set search_path = public
+set search_path = public, extensions
 stable
 as $$
   select l.project_slug, count(*)::int
@@ -83,7 +83,7 @@ create or replace function public.toggle_project_like(
 returns table (total int, liked boolean)
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_cap        constant int := 12;        -- toggles per IP per hour
@@ -115,7 +115,7 @@ begin
   end;
 
   if v_ip <> '' and v_salt is not null then
-    v_hash := encode(digest(v_salt || trim(v_ip), 'sha256'), 'hex');
+    v_hash := encode(extensions.digest(v_salt || trim(v_ip), 'sha256'), 'hex');
 
     insert into public.like_rate (ip_hash, window_start, n)
     values (v_hash, v_window, 1)
@@ -154,9 +154,6 @@ begin
            not v_existed;
 end;
 $$;
-
--- pgcrypto provides digest() and gen_random_bytes().
-create extension if not exists pgcrypto;
 
 grant execute on function public.get_project_likes()               to anon, authenticated;
 grant execute on function public.toggle_project_like(text, uuid)   to anon, authenticated;
