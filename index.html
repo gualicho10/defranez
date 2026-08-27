@@ -1361,6 +1361,26 @@
     .cs2-video { background: #fff; }   /* matches the artwork's own ground while it loads */
     .cs2-figure { margin-top: calc(14 * var(--v)); }
 
+    /* Responsive filmstrip — the individual's mobile product, one screen per view.
+       flex:1 1 0 makes the seven phones share the row equally, so it fits any
+       container width (desktop cqw or the fixed 900px mobile pan) without overflow. */
+    .cs2-phones {
+      display: flex;
+      gap: calc(14 * var(--v));
+      margin-top: calc(24 * var(--v));
+      align-items: flex-start;
+    }
+    .cs2-phones img {
+      flex: 1 1 0;
+      min-width: 0;
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #fff;
+      border-radius: calc(16 * var(--v));
+      box-shadow: 0 calc(8 * var(--v)) calc(24 * var(--v)) rgba(0,0,0,0.35);
+    }
+
     .cs2-two {
       display: grid;
       grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
@@ -3810,6 +3830,17 @@ abcdefghijklmnopqrstuvwxyz
           <p class="cs2-prose cs2-prose--wide">The <strong>mobile-first approach</strong> forced the content to simplify rather than shrink. What came out is minimalist and fully functional on every device people actually use — not a desktop layout squeezed down.</p>
           <img class="cs2-figure" data-src="img/dipper/responsive.webp" decoding="async"
                alt="The Dipper landing page across desktop, laptop, tablet and phone breakpoints">
+
+          <div class="cs2-caption" style="margin-top: calc(30 * var(--v));">The individual&rsquo;s app &middot; seven core screens</div>
+          <div class="cs2-phones">
+            <img data-src="img/dipper/m-01-dashboard.webp" decoding="async" alt="Mobile dashboard with company ranking and review stats">
+            <img data-src="img/dipper/m-02-reviews.webp" decoding="async" alt="My reviews screen">
+            <img data-src="img/dipper/m-03-insights.webp" decoding="async" alt="Insights screen with the diversity breakdown">
+            <img data-src="img/dipper/m-04-jobs.webp" decoding="async" alt="Job openings screen">
+            <img data-src="img/dipper/m-05-news.webp" decoding="async" alt="News feed screen">
+            <img data-src="img/dipper/m-06-profile.webp" decoding="async" alt="Profile screen">
+            <img data-src="img/dipper/m-07-settings.webp" decoding="async" alt="Settings screen">
+          </div>
         </section>
 
         <div class="cs2-line"></div>
@@ -3837,7 +3868,7 @@ abcdefghijklmnopqrstuvwxyz
                Shipped as video rather than the source GIF — same 4.2s, 14MB down
                to 677KB, and it decodes on the GPU instead of pegging a core. -->
           <div class="cs2-closer">
-            <video class="cs2-video" muted loop playsinline preload="none"
+            <video class="cs2-video" autoplay muted loop playsinline preload="none"
                    poster="img/dipper/webapp-poster.webp"
                    aria-label="Walkthrough of the Dipper web app, from the landing card through company insights and reviews">
               <source data-src="img/dipper/webapp.webm" type="video/webm">
