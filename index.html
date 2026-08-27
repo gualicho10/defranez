@@ -1228,6 +1228,88 @@
       width: 100%;
       padding: 40px 0 8px;
     }
+    /* ── Sketchup · "Modeling + Render" case study ────────────────────────
+       Ported 1:1 from Figma frame 1:71 (1574px wide). Same --u scaling as
+       Open Loot: every measure is the raw Figma px × var(--u). Body copy is
+       real text (Jost, already loaded); only the renders stay as images.
+       The section-label/number font in Figma is ITC Avant Garde Gothic Pro
+       (paid) — it falls back to Jost, the closest geometric sans on hand. */
+    .sk-case { container-type: inline-size; width: 100%; }
+    .sk-in {
+      --u: calc(100cqw / 1574);
+      display: flex;
+      flex-direction: column;
+      gap: calc(50 * var(--u));   /* Figma "Frame 2": 50px between major blocks */
+      background: #000;
+      color: #fff;
+      font-family: 'Jost', sans-serif;
+      overflow: hidden;
+    }
+    :where(.sk-in) section { padding: 0; }
+    .sk-in img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    /* Render groups keep a tight 10px internal gap inside the 50px rhythm */
+    .sk-group { display: flex; flex-direction: column; gap: calc(10 * var(--u)); width: 100%; }
+    .sk-pad { padding-left: calc(40 * var(--u)); padding-right: calc(40 * var(--u)); }
+
+    .sk-title {
+      background: #000;
+      padding: calc(120 * var(--u)) calc(40 * var(--u)) 0;
+    }
+    .sk-h1 {
+      font-weight: 400;
+      font-size: calc(80 * var(--u));
+      line-height: 1;
+      color: #fff;
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    /* Numbered section (Figma "Frame 46"): a flex row — content column on the
+       left (header + copy, gap-30), the big order number as a top-aligned
+       sibling on the right. No absolute positioning; every gap is a flex gap. */
+    .sk-sec {
+      display: flex;
+      align-items: flex-start;
+      gap: calc(20 * var(--u));
+      padding: 0 calc(20 * var(--u)) calc(30 * var(--u)) calc(40 * var(--u));
+    }
+    .sk-sec-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(30 * var(--u)); }
+    /* Header row (Figma "Frame 6"): label + flex-1 rule, bottom-aligned, pt-60 */
+    .sk-head { display: flex; align-items: flex-end; gap: calc(20 * var(--u)); padding-top: calc(60 * var(--u)); width: 100%; }
+    .sk-head-label { font-size: calc(40 * var(--u)); line-height: calc(29 * var(--u)); color: #3a3a3a; white-space: nowrap; }
+    .sk-head-line { flex: 1; min-width: 0; height: calc(2 * var(--u)); background: #3a3a3a; }
+    .sk-num { flex: none; font-weight: 200; font-size: calc(180 * var(--u)); line-height: 1.2; color: #3a3a3a; white-space: nowrap; }
+
+    /* Body copy */
+    .sk-body { font-weight: 300; font-size: calc(22 * var(--u)); line-height: 1.32; color: #fff; }
+    .sk-body p { margin: 0 0 calc(20 * var(--u)); }
+    .sk-body p:last-child { margin-bottom: 0; }
+    .sk-body strong { font-weight: 700; }
+
+    /* Intro: copy column + meta column */
+    .sk-intro { display: flex; gap: calc(10 * var(--u)); align-items: flex-start; }
+    .sk-intro-copy { width: calc(742 * var(--u)); flex: none; }
+    .sk-intro-meta { flex: 1; min-width: 0; padding-left: calc(40 * var(--u)); }
+    .sk-meta { display: flex; flex-direction: column; gap: calc(10 * var(--u)); font-size: calc(22 * var(--u)); color: #fff; }
+    .sk-meta > div { display: flex; gap: calc(10 * var(--u)); align-items: baseline; }
+    .sk-meta .k { font-weight: 600; width: calc(160 * var(--u)); flex: none; }
+    .sk-meta .v { font-weight: 200; }
+
+    /* Image layout helpers */
+    .sk-row { display: flex; gap: calc(10 * var(--u)); width: 100%; }
+    .sk-row > div { flex: 1; min-width: 0; }
+    .sk-cell { position: relative; overflow: hidden; }
+    .sk-grid { display: grid; gap: calc(4 * var(--u)); width: 100%; }
+
+    /* Framed picture (image 5) — centred in a fixed 927px band */
+    .sk-frame-wrap { display: flex; justify-content: center; align-items: center; height: calc(927 * var(--u)); padding: 0 calc(40 * var(--u)); }
+    .sk-frame {
+      width: calc(1138 * var(--u));
+      aspect-ratio: 1138 / 640;
+      border: calc(38 * var(--u)) solid rgba(0,0,0,0.7);
+      box-shadow: 0 0 0 1px #545454, 0 0 0 calc(6 * var(--u)) rgba(84,84,84,0.35);
+    }
+
     .cs2-in {
       --v: calc(100cqw / 1200);
       display: flex;
@@ -2159,6 +2241,8 @@
     @media (max-width: 900px) {
       .ol-case { overflow-x: auto; -webkit-overflow-scrolling: touch; }
       .ol-case-in { width: 1000px; --u: calc(1000px / 1575); }
+      .sk-case { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .sk-in { width: 1000px; --u: calc(1000px / 1574); }
     }
 
     @media (max-width: 560px) {
@@ -3947,14 +4031,204 @@ abcdefghijklmnopqrstuvwxyz
   <div class="modal-backdrop" id="modal-sketchup">
     <button class="modal-close" onclick="closeModal('sketchup')">✕</button>
     <div class="modal">
-      <div class="modal-header">
-        <div class="modal-eyebrow">3D · Architecture · 2023</div>
-        <div class="modal-title">Sketchup Renders</div>
-        <div class="modal-sub">3D · Visualization · Personal</div>
+      <!-- Sketchup "Modeling + Render" case study — Figma frame 1:71, ported
+           1:1 with the --u scaling system. Headings and copy are real text;
+           only the renders and build photos stay as images (img/sketchup/). -->
+      <div class="sk-case">
+      <div class="sk-in">
+
+        <!-- TITLE. (The Figma hero fill "image 23" is a stray Behance screenshot
+             left in the source file, so the title sits on the frame's own black.) -->
+        <section class="sk-title">
+          <h2 class="sk-h1">Modeling + Render</h2>
+        </section>
+
+        <!-- 01 Introduction -->
+        <section class="sk-sec">
+          <div class="sk-sec-main">
+            <div class="sk-head">
+              <span class="sk-head-label">Introduction</span>
+              <span class="sk-head-line"></span>
+            </div>
+            <div class="sk-intro">
+              <div class="sk-intro-copy sk-body">
+                <p>This project explores the integration of a single-family home within the rugged landscape of Patagonia. The primary challenge was to <strong>translate the warmth of noble materials</strong>—such as wood and stone—into a contemporary architectural language that respects the scale of the surroundings.</p>
+                <p>We focused on a simple yet efficient volumetric design, <strong>prioritizing natural light intake and panoramic views of the mountain range.</strong> This presentation details the technical journey from initial drafting to final construction.</p>
+              </div>
+              <div class="sk-intro-meta">
+                <div class="sk-meta">
+                  <div><span class="k">_ PROJECT</span><span class="v">House in the mountains</span></div>
+                  <div><span class="k">_ LOCATION</span><span class="v">Chubut, Patagonia, Argentina</span></div>
+                  <div><span class="k">_ REQUEST</span><span class="v">Sketchup + V-Ray/Enscape + Photoshop</span></div>
+                  <div><span class="k">_ YEAR</span><span class="v">2025</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="sk-num">01</span>
+        </section>
+
+        <!-- 02 Project -->
+        <section class="sk-sec">
+          <div class="sk-sec-main">
+            <div class="sk-head">
+              <span class="sk-head-label">Project</span>
+              <span class="sk-head-line"></span>
+            </div>
+            <p class="sk-body" style="width: calc(742 * var(--u));">Development of comprehensive technical documentation, including architectural floor plans and longitudinal sections to define internal spatiality. The design utilizes a <strong>modular grid system to optimize construction resources in remote geographical locations.</strong></p>
+          </div>
+          <span class="sk-num">02</span>
+        </section>
+
+        <!-- image 2 · the technical plan -->
+        <section class="sk-pad" style="padding-top: calc(40 * var(--u)); padding-bottom: calc(130 * var(--u));">
+          <div class="sk-cell" style="aspect-ratio: 3618 / 3433;"><img data-src="img/sketchup/image2.webp" alt="Architectural floor plans and sections" decoding="async"></div>
+        </section>
+
+        <!-- 03 Modeling -->
+        <section class="sk-sec">
+          <div class="sk-sec-main">
+            <div class="sk-head">
+              <span class="sk-head-label">Modeling</span>
+              <span class="sk-head-line"></span>
+            </div>
+            <div class="sk-body" style="width: calc(742 * var(--u));">
+              <p>The 3D modeling phase was executed with technical precision, transforming architectural schemes into a detailed digital structure. <strong>Special emphasis was placed on the structural accuracy of the timber joints and the site&rsquo;s topography to ensure a realistic environment.</strong></p>
+              <p>Through wireframes and volumetric models, we validated proportions and solar incidence on the facades, allowing for dynamic adjustments before moving into the texturing and post-processing stages.</p>
+            </div>
+          </div>
+          <span class="sk-num">03</span>
+        </section>
+
+        <!-- Modeling gallery -->
+        <section class="sk-pad" style="display:flex; flex-direction:column; gap: calc(10 * var(--u));">
+          <div class="sk-row">
+            <div class="sk-cell" style="height: calc(450 * var(--u));"><img data-src="img/sketchup/image12.webp" alt="Wireframe model of the house" decoding="async"></div>
+            <div class="sk-cell" style="height: calc(450 * var(--u));"><img data-src="img/sketchup/image13.webp" alt="Volumetric model of the house" decoding="async"></div>
+          </div>
+          <div class="sk-row">
+            <div class="sk-cell" style="aspect-ratio: 1158 / 637;"><img data-src="img/sketchup/image7.webp" alt="Modeling detail" decoding="async"></div>
+            <div class="sk-cell" style="aspect-ratio: 1158 / 637;"><img data-src="img/sketchup/image8.webp" alt="Modeling detail" decoding="async"></div>
+            <div class="sk-cell" style="aspect-ratio: 1158 / 637;"><img data-src="img/sketchup/image10.webp" alt="Modeling detail" decoding="async"></div>
+            <div class="sk-cell" style="aspect-ratio: 1157 / 637;"><img data-src="img/sketchup/image11.webp" alt="Modeling detail" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- image 5 · framed -->
+        <section class="sk-frame-wrap">
+          <div class="sk-frame sk-cell"><img data-src="img/sketchup/image5.webp" alt="Framed exterior view" decoding="async"></div>
+        </section>
+
+        <!-- 04 Renders -->
+        <section class="sk-sec">
+          <div class="sk-sec-main">
+            <div class="sk-head">
+              <span class="sk-head-label">Renders</span>
+              <span class="sk-head-line"></span>
+            </div>
+            <p class="sk-body" style="width: calc(742 * var(--u));">Photorealistic visualization designed to capture the atmosphere of the retreat under various lighting conditions. <strong>Global illumination was carefully tuned to highlight natural textures</strong> and the contrast between interior warmth and the exterior climate.</p>
+          </div>
+          <span class="sk-num">04</span>
+        </section>
+
+        <!-- Render group A (Figma "Frame 51"): RENDER 2 · v19|v20 · RENDER 3 -->
+        <div class="sk-group">
+          <!-- RENDER 2 · full -->
+          <section class="sk-cell" style="aspect-ratio: 3840 / 2160;"><img data-src="img/sketchup/render-enscape161.webp" alt="Exterior render at dusk" decoding="async"></section>
+
+          <!-- v19 | v20 -->
+          <section class="sk-row">
+            <div class="sk-cell" style="aspect-ratio: 1920 / 1080;"><img data-src="img/sketchup/render-vray-v191.webp" alt="Exterior render" decoding="async"></div>
+            <div class="sk-cell" style="aspect-ratio: 1920 / 1080;"><img data-src="img/sketchup/render-vray-v201.webp" alt="Exterior render" decoding="async"></div>
+          </section>
+
+          <!-- RENDER 3 · full -->
+          <section class="sk-cell" style="aspect-ratio: 1280 / 720;"><img data-src="img/sketchup/render-vray-v211.webp" alt="Interior render" decoding="async"></section>
+        </div>
+
+        <!-- Render group B (Figma "Frame"): Grilla v6-2|v6-3 · Grilla v6-2 full -->
+        <div class="sk-group">
+          <!-- Grilla v6-2 | v6-3 -->
+          <section style="display:flex; gap: calc(10 * var(--u)); height: calc(479 * var(--u));">
+            <div class="sk-cell" style="flex:1; height:100%;"><img data-src="img/sketchup/render-vray-v621.webp" alt="Interior render" decoding="async"></div>
+            <div class="sk-cell" style="flex:1; height:100%;"><img data-src="img/sketchup/render-vray-v631.webp" alt="Interior render" decoding="async"></div>
+          </section>
+
+          <!-- Grilla v6-2 · full -->
+          <section class="sk-cell" style="height: calc(826 * var(--u));"><img data-src="img/sketchup/render-vray-v622.webp" alt="Interior render" decoding="async"></section>
+        </div>
+
+        <!-- Render group C (Figma "Frame"): RENDER 1 · Grilla 2×3 · Grilla 3×3 -->
+        <div class="sk-group">
+          <!-- RENDER 1 · full -->
+          <section class="sk-cell" style="aspect-ratio: 3840 / 2160;"><img data-src="img/sketchup/render-enscape291.webp" alt="Exterior render at night" decoding="async"></section>
+
+          <!-- Grilla 2×3 -->
+          <section class="sk-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="sk-cell" style="height: calc(438.75 * var(--u));"><img data-src="img/sketchup/render-enscape031.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell" style="height: calc(438.75 * var(--u));"><img data-src="img/sketchup/render-enscape051.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell" style="aspect-ratio: 780 / 520;"><img data-src="img/sketchup/render-enscape061.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell" style="aspect-ratio: 780 / 520;"><img data-src="img/sketchup/render-enscape25-retoque1.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell" style="aspect-ratio: 780 / 438.75;"><img data-src="img/sketchup/render-enscape271.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell" style="aspect-ratio: 780 / 438.75;"><img data-src="img/sketchup/render-enscape281.webp" alt="Render" decoding="async"></div>
+        </section>
+
+        <!-- Grilla 3×3 -->
+        <section class="sk-grid" style="grid-template-columns: 1fr calc(524 * var(--u)) 1fr; grid-template-rows: calc(294.75 * var(--u)) calc(294.75 * var(--u)) calc(290.25 * var(--u));">
+          <div class="sk-cell"><img data-src="img/sketchup/render-vray-v623.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img data-src="img/sketchup/render-vray-v632.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img data-src="img/sketchup/render-vray-v641.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img data-src="img/sketchup/render-enscape221.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img data-src="img/sketchup/render-vray-v421.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img data-src="img/sketchup/render-vray-v91.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img data-src="img/sketchup/render-enscape281.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img data-src="img/sketchup/render-enscape271.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img data-src="img/sketchup/render-vray-v5-noche1.webp" alt="Night render" decoding="async"></div>
+          </section>
+        </div>
+
+        <!-- 05 Results -->
+        <section class="sk-sec">
+          <div class="sk-sec-main">
+            <div class="sk-head">
+              <span class="sk-head-label">Results</span>
+              <span class="sk-head-line"></span>
+            </div>
+            <p class="sk-body" style="width: calc(742 * var(--u));">The transition from the digital model to the physical build demonstrates the viability of the proposed design. On-site monitoring allowed us to compare the 3D model&rsquo;s precision with traditional construction techniques applied in the region.</p>
+          </div>
+          <span class="sk-num">05</span>
+        </section>
+
+        <!-- Results · build photos -->
+        <section class="sk-pad" style="display:flex; flex-direction:column; gap: calc(10 * var(--u));">
+          <div class="sk-cell" style="aspect-ratio: 1514 / 520;"><img data-src="img/sketchup/build-01.webp" alt="Construction site in Patagonia" decoding="async"></div>
+          <div class="sk-row" style="align-items: stretch;">
+            <div class="sk-cell" style="height: calc(825 * var(--u));"><img data-src="img/sketchup/build-02.webp" alt="Timber frame under construction" decoding="async"></div>
+            <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap: calc(10 * var(--u));">
+              <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-03.webp" alt="Construction detail" decoding="async"></div>
+              <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-04.webp" alt="Construction detail" decoding="async"></div>
+            </div>
+          </div>
+          <div class="sk-cell" style="aspect-ratio: 1574 / 750;"><img data-src="img/sketchup/build-05.webp" alt="House under construction" decoding="async"></div>
+          <div class="sk-row" style="align-items: stretch; height: calc(826 * var(--u));">
+            <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap: calc(10 * var(--u));">
+              <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-06.webp" alt="Construction detail" decoding="async"></div>
+              <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-07.webp" alt="Construction detail" decoding="async"></div>
+            </div>
+            <div class="sk-cell" style="flex:1; min-width:0;"><img data-src="img/sketchup/build-08.webp" alt="Timber frame under construction" decoding="async"></div>
+          </div>
+          <div class="sk-row" style="align-items: stretch; height: calc(394 * var(--u));">
+            <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-09.webp" alt="Construction detail" decoding="async"></div>
+            <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-10.webp" alt="Construction detail" decoding="async"></div>
+          </div>
+          <div class="sk-row" style="align-items: stretch; height: calc(600 * var(--u));">
+            <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-11.webp" alt="Construction detail" decoding="async"></div>
+            <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-12.webp" alt="Construction detail" decoding="async"></div>
+            <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-13.webp" alt="Construction detail" decoding="async"></div>
+          </div>
+        </section>
+
       </div>
-      <div class="modal-image-wrap">
-        <img data-src="img/cover-6_expanded-1.webp" alt="Sketchup Renders case study, part 1" decoding="async">
-        <img data-src="img/cover-6_expanded-2.webp" alt="Sketchup Renders case study, part 2" decoding="async">
       </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/245216341/Sketchup-ModellingRender" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
