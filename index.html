@@ -74,7 +74,7 @@
   <!-- Jost: body copy in the Open Loot case study.
        Montserrat + Bai Jamjuree: content, not chrome — they are the typeface
        specimens shown in the Open Loot design-system section. -->
-  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&family=Montserrat:wght@400;700&family=Bai+Jamjuree:wght@400&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&family=Montserrat:wght@400;700&family=Bai+Jamjuree:wght@400&family=Mulish:wght@300;400;700&display=swap" rel="stylesheet"/>
 
   <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -1217,6 +1217,297 @@
       color: #6b7280;
       letter-spacing: 0.08em;
     }
+    /* ── Case study, native ───────────────────────────────────────────────
+       Same idea as the Open Loot case study: one unit derived from the
+       container, every length expressed as design px times that unit, so the
+       whole piece scales as one thing. Open Loot's --u came off a 1575px Figma
+       frame; there is no Figma here, so this is authored at a 1200px reference.
+       Namespaced .cs2-* and generic — the remaining projects get the same. */
+    .cs2 {
+      container-type: inline-size;
+      width: 100%;
+      padding: 40px 0 8px;
+    }
+    .cs2-in {
+      --v: calc(100cqw / 1200);
+      display: flex;
+      flex-direction: column;
+      gap: calc(96 * var(--v));
+      color: #fff;
+    }
+    :where(.cs2-in) section { padding: 0; }
+    .cs2-line { height: 1px; background: rgba(255,255,255,0.12); }
+
+    .cs2-pill {
+      align-self: flex-start;
+      display: inline-block;
+      padding: calc(3 * var(--v)) calc(11 * var(--v));
+      background: #00f5a0;
+      color: #000;
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      font-size: calc(13 * var(--v));
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.5;
+      white-space: nowrap;
+    }
+    .cs2-pill--sm { font-size: calc(11 * var(--v)); }
+
+    .cs2-h {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: calc(44 * var(--v));
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+      color: #fff;
+      margin: calc(18 * var(--v)) 0 calc(22 * var(--v));
+    }
+    .cs2-h em { font-style: normal; color: #00f5a0; }
+
+    .cs2-prose {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: calc(19 * var(--v));
+      line-height: 1.6;
+      color: rgba(255,255,255,0.7);
+    }
+    .cs2-prose p { margin: 0 0 calc(18 * var(--v)); }
+    .cs2-prose p:last-child { margin-bottom: 0; }
+    .cs2-prose strong { font-weight: 500; color: #fff; }
+    .cs2-prose--wide { max-width: calc(760 * var(--v)); margin-bottom: calc(34 * var(--v)); }
+
+    /* Hero */
+    .cs2-hero { display: flex; align-items: flex-end; gap: calc(28 * var(--v)); }
+    .cs2-hero-copy { flex: 1; min-width: 0; }
+    .cs2-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: calc(62 * var(--v));
+      letter-spacing: -0.035em;
+      line-height: 1.05;
+      margin: calc(20 * var(--v)) 0 calc(16 * var(--v));
+    }
+    .cs2-lede {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: calc(23 * var(--v));
+      line-height: 1.45;
+      color: rgba(255,255,255,0.72);
+      margin: 0 0 calc(26 * var(--v));
+    }
+    .cs2-chips { display: flex; flex-wrap: wrap; gap: calc(9 * var(--v)); }
+    .cs2-chip {
+      padding: calc(7 * var(--v)) calc(14 * var(--v));
+      border-radius: calc(5 * var(--v));
+      background: rgba(58,58,58,0.35);
+      color: #fff;
+      font-family: 'DM Mono', monospace;
+      font-size: calc(13 * var(--v));
+      white-space: nowrap;
+    }
+    .cs2-chip--accent { background: rgba(0,89,102,0.35); color: #00f5a0; }
+    .cs2-hero-meta { flex: 1; min-width: 0; }
+    .cs2-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: calc(14 * var(--v));
+    }
+    .cs2-meta-card {
+      padding: calc(16 * var(--v)) calc(16 * var(--v)) calc(20 * var(--v));
+      background: rgba(19,23,28,0.8);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: calc(10 * var(--v));
+    }
+    .cs2-meta-label {
+      font-family: 'DM Mono', monospace;
+      font-size: calc(11 * var(--v));
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      margin-bottom: calc(9 * var(--v));
+    }
+    .cs2-meta-value {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: calc(17 * var(--v));
+      color: rgba(255,255,255,0.9);
+    }
+
+    .cs2-band img, .cs2-figure {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: calc(10 * var(--v));
+    }
+    .cs2-figure { margin-top: calc(14 * var(--v)); }
+
+    .cs2-two {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+      gap: calc(40 * var(--v));
+      align-items: start;
+    }
+
+    /* Foundations */
+    .cs2-found { display: flex; flex-direction: column; gap: calc(40 * var(--v)); }
+    .cs2-caption {
+      font-family: 'DM Mono', monospace;
+      font-size: calc(11 * var(--v));
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+      margin-bottom: calc(14 * var(--v));
+    }
+    .cs2-swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(calc(160 * var(--v)), 1fr));
+      gap: calc(12 * var(--v));
+    }
+    .cs2-sw {
+      display: flex; align-items: center; gap: calc(10 * var(--v));
+      flex-wrap: wrap;
+      padding: calc(10 * var(--v));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: calc(7 * var(--v));
+    }
+    .cs2-sw i {
+      width: calc(28 * var(--v)); height: calc(28 * var(--v));
+      border-radius: calc(5 * var(--v)); flex: none;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+    .cs2-sw b {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: calc(13 * var(--v)); color: #fff;
+    }
+    .cs2-sw span {
+      font-family: 'DM Mono', monospace; font-size: calc(11 * var(--v));
+      color: rgba(255,255,255,0.4); width: 100%;
+    }
+    .cs2-cols { display: flex; gap: calc(12 * var(--v)); height: calc(52 * var(--v)); }
+    .cs2-cols i { flex: 1; background: rgba(0,245,160,0.09); border-radius: calc(2 * var(--v)); }
+
+    /* Mulish is the client's typeface — shown as itself, in real text. */
+    .cs2-type {
+      padding: calc(28 * var(--v));
+      background: #0e1114;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: calc(10 * var(--v));
+    }
+    .cs2-type-top { display: flex; align-items: baseline; justify-content: space-between; gap: calc(16 * var(--v)); }
+    .cs2-type-name {
+      font-family: 'Mulish', sans-serif; font-weight: 700;
+      font-size: calc(26 * var(--v)); color: #fff;
+    }
+    .cs2-type-role {
+      font-family: 'DM Mono', monospace; font-size: calc(10 * var(--v));
+      letter-spacing: 0.2em; text-transform: uppercase; color: #00f5a0;
+    }
+    .cs2-type-line { height: 1px; background: rgba(255,255,255,0.1); margin: calc(14 * var(--v)) 0; }
+    .cs2-type-aa { display: flex; gap: calc(24 * var(--v)); align-items: center; }
+    .cs2-type-aa b {
+      font-family: 'Mulish', sans-serif; font-weight: 700;
+      font-size: calc(112 * var(--v)); line-height: 1; color: #fff;
+    }
+    .cs2-type-aa span {
+      font-family: 'Mulish', sans-serif; font-weight: 400;
+      font-size: calc(15 * var(--v)); line-height: 1.7; letter-spacing: 0.07em;
+      color: #8a94a6; white-space: pre-line;
+    }
+    .cs2-scale { display: flex; flex-wrap: wrap; gap: calc(26 * var(--v)); margin-top: calc(20 * var(--v)); }
+    .cs2-scale div { font-family: 'Mulish', sans-serif; font-size: calc(14 * var(--v)); color: rgba(255,255,255,0.5); }
+    .cs2-scale em { font-style: normal; font-weight: 700; color: #fff; margin-right: calc(8 * var(--v)); }
+    .cs2-scale span { color: rgba(255,255,255,0.35); margin-left: calc(6 * var(--v)); }
+
+    /* No mobile design for these yet — same holding pattern as Open Loot. */
+    @media (max-width: 900px) {
+      .cs2 { overflow-x: auto; }
+      .cs2-in { width: 900px; --v: calc(900px / 1200); }
+    }
+
+    /* ── Case study text ──────────────────────────────────────────────────
+       The written case studies were only ever baked into the PNGs, where no
+       crawler, screen reader or text selection could reach them. This block
+       carries the same words as real markup above the visual.
+       Namespaced .cs-* and deliberately generic — the other five projects get
+       the same treatment. */
+    .cs {
+      display: flex;
+      flex-direction: column;
+      gap: 34px;
+      margin-bottom: 40px;
+    }
+    .cs-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 22px 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .cs-meta dt {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #00f5a0;
+      margin-bottom: 7px;
+    }
+    .cs-meta dd {
+      margin: 0;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.35;
+    }
+    .cs-section { display: flex; gap: 22px; align-items: flex-start; }
+    .cs-num {
+      flex: none;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 30px;
+      line-height: 1;
+      color: rgba(0,245,160,0.28);
+      width: 46px;
+      padding-top: 2px;
+    }
+    .cs-section h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: 0.01em;
+      color: #fff;
+      margin: 0 0 10px;
+    }
+    .cs-section p {
+      margin: 0 0 11px;
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 15.5px;
+      line-height: 1.62;
+      color: rgba(255,255,255,0.66);
+      max-width: 68ch;
+    }
+    .cs-section p:last-child { margin-bottom: 0; }
+    .cs-section strong { font-weight: 500; color: rgba(255,255,255,0.92); }
+
+    .cs-swatches { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+    .cs-swatch {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 4px; padding: 5px 10px 5px 6px;
+    }
+    .cs-swatch i {
+      width: 15px; height: 15px; border-radius: 3px; flex: none;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+    @media (max-width: 560px) {
+      .cs-section { gap: 14px; }
+      .cs-num { font-size: 24px; width: 34px; }
+    }
+
     .modal-image-wrap {
       width: 100%;
       border: 1px solid rgba(255,255,255,0.06);
@@ -3385,17 +3676,146 @@ abcdefghijklmnopqrstuvwxyz
     </div>
   </div>
 
-  <div class="modal-backdrop" id="modal-dipper">
+    <div class="modal-backdrop" id="modal-dipper">
     <button class="modal-close" onclick="closeModal('dipper')">✕</button>
     <div class="modal">
-      <div class="modal-header">
-        <div class="modal-eyebrow">UX/UI · Web App · 2021</div>
-        <div class="modal-title">Our Dipper</div>
-        <div class="modal-sub">Service Design · Startup</div>
+      <!-- Our Dipper case study. Rebuilt as native markup: everything that was
+           type inside the source PNG — headings, prose, the colour palette, the
+           Mulish specimen, the grid spec — is real text here. Only genuinely
+           visual pieces stay as images, cropped out of the original artwork. -->
+      <div class="cs2">
+      <div class="cs2-in">
+
+        <section class="cs2-hero">
+          <div class="cs2-hero-copy">
+            <div class="cs2-pill">Case study · 2021</div>
+            <h2 class="cs2-title">Our Dipper.</h2>
+            <p class="cs2-lede">A community and a product for professionals of color<br>to share what work is really like.</p>
+            <div class="cs2-chips">
+              <span class="cs2-chip">UX Strategy</span>
+              <span class="cs2-chip">UI Design</span>
+              <span class="cs2-chip cs2-chip--accent">Web App</span>
+              <span class="cs2-chip">Design System</span>
+              <span class="cs2-chip">Prototyping</span>
+            </div>
+          </div>
+          <div class="cs2-hero-meta">
+            <div class="cs2-meta-grid">
+              <div class="cs2-meta-card"><div class="cs2-meta-label">Client</div><div class="cs2-meta-value">Our Dipper</div></div>
+              <div class="cs2-meta-card"><div class="cs2-meta-label">Launched</div><div class="cs2-meta-value">April 2021</div></div>
+              <div class="cs2-meta-card"><div class="cs2-meta-label">Scope</div><div class="cs2-meta-value">UX · UI · Dev</div></div>
+              <div class="cs2-meta-card"><div class="cs2-meta-label">Built with</div><div class="cs2-meta-value">React · Node</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="cs2-band">
+          <img data-src="img/dipper/devices.webp" decoding="async"
+               alt="The Dipper landing page shown on a laptop, tablet and phone">
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-two">
+          <div>
+            <div class="cs2-pill cs2-pill--sm">The project</div>
+            <h3 class="cs2-h">A safe space to<br><em>say it out loud.</em></h3>
+          </div>
+          <div class="cs2-prose">
+            <p>Dipper is an online, interactive community and safe space for professionals of color to share their workplace experiences, past and present. It makes it <strong>easy and safe to speak openly about their time at work</strong> — whether good, bad, or indifferent.</p>
+            <p>It is also a solutions platform: members build their network, share resources, and reach new heights in their careers.</p>
+            <p>We redesigned the landing page from scratch and built a web app where <strong>members give clear, concise insights into organizations through thoughtful surveys</strong>, alongside a live private chat room for what is happening at work today. Companies can join as premium members and get the data to measure where they stand, where they can improve, and where they already shine.</p>
+          </div>
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">Foundations</div>
+          <h3 class="cs2-h">The system<br><em>underneath it.</em></h3>
+
+          <div class="cs2-found">
+            <div>
+              <div class="cs2-caption">Colour palette</div>
+              <div class="cs2-swatches">
+                <div class="cs2-sw"><i style="background:#F7F7F8"></i><b>Canvas</b><span>#F7F7F8 · 55%</span></div>
+                <div class="cs2-sw"><i style="background:#080544"></i><b>Website copy</b><span>#080544 · 20%</span></div>
+                <div class="cs2-sw"><i style="background:#474F63"></i><b>Logo &amp; copy</b><span>#474F63 · 10%</span></div>
+                <div class="cs2-sw"><i style="background:#7DB00E"></i><b>Verde</b><span>#7DB00E · 10%</span></div>
+                <div class="cs2-sw"><i style="background:#601852"></i><b>Site copy</b><span>#601852 · 5%</span></div>
+                <div class="cs2-sw"><i style="background:#E5E6E9"></i><b>Boxes</b><span>#E5E6E9</span></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="cs2-caption">Grid · 12 columns · 58px column · 36px gutter</div>
+              <div class="cs2-cols"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+
+            <div class="cs2-type">
+              <div class="cs2-type-top">
+                <span class="cs2-type-name">Mulish</span>
+                <span class="cs2-type-role">Display · Body · UI</span>
+              </div>
+              <div class="cs2-type-line"></div>
+              <div class="cs2-type-aa">
+                <b>Aa</b>
+                <span>ABCDEFGHIJKLMNOPQRSTUVWXYZ
+abcdefghijklmnopqrstuvwxyz
+0123456789</span>
+              </div>
+              <div class="cs2-scale">
+                <div><em>H1</em> 20pt <span>Titles</span></div>
+                <div><em>H2</em> 16pt <span>Subtitles</span></div>
+                <div><em>L1</em> 14pt <span>Paragraphs</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">Sitemap &amp; user flow</div>
+          <h3 class="cs2-h">Two people,<br><em>two journeys.</em></h3>
+          <p class="cs2-prose cs2-prose--wide">We designed for two profiles: an individual — a professional of color — and a company. That produced <strong>two parallel flows</strong>, sharing components where it made sense and diverging where the functionality genuinely differs.</p>
+          <img class="cs2-figure" data-src="img/dipper/flow.webp" decoding="async"
+               alt="Sitemap and user flow diagram covering both the individual and company journeys">
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">Responsive</div>
+          <h3 class="cs2-h">One design<br><em>that fits them all.</em></h3>
+          <p class="cs2-prose cs2-prose--wide">The <strong>mobile-first approach</strong> forced the content to simplify rather than shrink. What came out is minimalist and fully functional on every device people actually use — not a desktop layout squeezed down.</p>
+          <img class="cs2-figure" data-src="img/dipper/responsive.webp" decoding="async"
+               alt="The Dipper landing page across desktop, laptop, tablet and phone breakpoints">
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">Wireframes &amp; prototype</div>
+          <h3 class="cs2-h">Judge it by feel,<br><em>not by spec.</em></h3>
+          <p class="cs2-prose cs2-prose--wide">Prototyping is what confirms the ideas carried by the flows and wireframes actually reach their objective. A prototype <strong>simulates a large share of the real functionality</strong> at the earliest stage of the project — because static previews are too technical to read, and people cannot judge what they cannot feel.</p>
+          <img class="cs2-figure" data-src="img/dipper/wireframes.webp" decoding="async"
+               alt="Wireframe collage covering the full set of screens">
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">The product</div>
+          <h3 class="cs2-h">Insights,<br><em>not just reviews.</em></h3>
+          <p class="cs2-prose cs2-prose--wide">The dashboard turns individual reviews into something a company can act on — sentiment on culture, management and equity, aggregated and readable at a glance.</p>
+          <img class="cs2-figure" data-src="img/dipper/dashboard.webp" decoding="async"
+               alt="Dipper insights dashboard for a member and for a company member">
+          <img class="cs2-figure" data-src="img/dipper/screens.webp" decoding="async"
+               alt="The full set of shipped Dipper screens">
+        </section>
+
       </div>
-      <div class="modal-image-wrap">
-        <img data-src="img/cover-2_expanded-1.webp" alt="Our Dipper case study, part 1" decoding="async">
-        <img data-src="img/cover-2_expanded-2.webp" alt="Our Dipper case study, part 2" decoding="async">
       </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/245507671/Our-Dipper-Landing-Web-app" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
@@ -3403,7 +3823,7 @@ abcdefghijklmnopqrstuvwxyz
     </div>
   </div>
 
-  <div class="modal-backdrop" id="modal-roche">
+<div class="modal-backdrop" id="modal-roche">
     <button class="modal-close" onclick="closeModal('roche')">✕</button>
     <div class="modal">
       <div class="modal-header">
