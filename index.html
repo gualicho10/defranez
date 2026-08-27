@@ -1340,6 +1340,25 @@
       height: auto;
       border-radius: calc(10 * var(--v));
     }
+    /* The walkthrough and the screens board are one continuous piece of artwork.
+       font-size/line-height zero out the inline gap between them, and only the
+       outer corners round so the pair reads as a single figure. */
+    .cs2-closer {
+      margin-top: calc(14 * var(--v));
+      font-size: 0;
+      line-height: 0;
+      border-radius: calc(10 * var(--v));
+      overflow: hidden;
+    }
+    .cs2-closer > video,
+    .cs2-closer > img {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 0;
+      border-radius: 0;
+    }
+    .cs2-video { background: #fff; }   /* matches the artwork's own ground while it loads */
     .cs2-figure { margin-top: calc(14 * var(--v)); }
 
     .cs2-two {
@@ -3811,8 +3830,22 @@ abcdefghijklmnopqrstuvwxyz
           <p class="cs2-prose cs2-prose--wide">The dashboard turns individual reviews into something a company can act on — sentiment on culture, management and equity, aggregated and readable at a glance.</p>
           <img class="cs2-figure" data-src="img/dipper/dashboard.webp" decoding="async"
                alt="Dipper insights dashboard for a member and for a company member">
-          <img class="cs2-figure" data-src="img/dipper/screens.webp" decoding="async"
-               alt="The full set of shipped Dipper screens">
+
+          <!-- The walkthrough runs straight into the screens board with no seam:
+               the artwork continues across the two, so any gap between them
+               would read as a mistake.
+               Shipped as video rather than the source GIF — same 4.2s, 14MB down
+               to 677KB, and it decodes on the GPU instead of pegging a core. -->
+          <div class="cs2-closer">
+            <video class="cs2-video" muted loop playsinline preload="none"
+                   poster="img/dipper/webapp-poster.webp"
+                   aria-label="Walkthrough of the Dipper web app, from the landing card through company insights and reviews">
+              <source data-src="img/dipper/webapp.webm" type="video/webm">
+              <source data-src="img/dipper/webapp.mp4" type="video/mp4">
+            </video>
+            <img data-src="img/dipper/screens.webp" decoding="async"
+                 alt="The full set of shipped Dipper screens">
+          </div>
         </section>
 
       </div>
@@ -4337,6 +4370,20 @@ abcdefghijklmnopqrstuvwxyz
       backdrop.querySelectorAll('img[data-src]').forEach(img => {
         img.src = img.dataset.src;
         img.removeAttribute('data-src');
+      });
+      // Videos are deferred the same way — <source> is inert until the src is
+      // set and load() is called. Autoplay is withheld from anyone who asked
+      // for reduced motion; they get the poster and the controls instead.
+      backdrop.querySelectorAll('video').forEach(v => {
+        const pending = v.querySelectorAll('source[data-src]');
+        if (!pending.length) return;
+        pending.forEach(s => { s.src = s.dataset.src; s.removeAttribute('data-src'); });
+        v.load();
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          v.controls = true;
+        } else {
+          v.play().catch(() => { v.controls = true; });   // blocked autoplay → let them press play
+        }
       });
     }
     function openModal(id) {
