@@ -1,0 +1,197 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1783734845.722105,
+    "ast_hash": "81f214254cfa09c7ac3dc89b3ec8b237",
+    "semantic_hash": "81f214254cfa09c7ac3dc89b3ec8b237"
+  },
+  ".remember/remember.md": {
+    "mtime": 1786237029.428,
+    "ast_hash": "9daf56a9b907becd7879fba532f076a1",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1783734845.721795,
+    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": "82efb97a359f5c7290bf2513d14686be"
+  },
+  "DesignSystem.html": {
+    "mtime": 1787694420.66,
+    "ast_hash": "6559a4dde4e8b4f8a8a1002bbcb618e4",
+    "semantic_hash": ""
+  },
+  "career.html": {
+    "mtime": 1787694443.582,
+    "ast_hash": "c2cae3248389f3b1eb1e7b0932d8bef5",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1787868498.9676967,
+    "ast_hash": "2b63826b4f57e25726a727a1477ccf74",
+    "semantic_hash": ""
+  },
+  "memory/project_v2_mobile_game.md": {
+    "mtime": 1786237037.463,
+    "ast_hash": "82aaa92bccdf3362f7c7be98a5de2613",
+    "semantic_hash": "82aaa92bccdf3362f7c7be98a5de2613"
+  },
+  "test.html": {
+    "mtime": 1787694420.663,
+    "ast_hash": "66ecd5dc25c112a01db5a8d67c8d13be",
+    "semantic_hash": ""
+  },
+  "v1.html": {
+    "mtime": 1787694420.615,
+    "ast_hash": "d85724b5fc105dec303690075243c5b8",
+    "semantic_hash": ""
+  },
+  "web_tracker.html": {
+    "mtime": 1787694419.002,
+    "ast_hash": "59b664d4a0693c7d0b5b78cc107ad1b2",
+    "semantic_hash": ""
+  },
+  "img/resume_EdeFco_2026.pdf": {
+    "mtime": 1783638705.2301,
+    "ast_hash": "1747ac66d83626df95b2f751ca758b6f",
+    "semantic_hash": "1747ac66d83626df95b2f751ca758b6f"
+  },
+  "img/icon-ableton.svg": {
+    "mtime": 1783044147.917,
+    "ast_hash": "525fc07265b3ef4c263f1d24554f35ee",
+    "semantic_hash": "525fc07265b3ef4c263f1d24554f35ee"
+  },
+  "img/icon-ae.svg": {
+    "mtime": 1783044147.886,
+    "ast_hash": "84b693594655bb30d27fac2761587c75",
+    "semantic_hash": "84b693594655bb30d27fac2761587c75"
+  },
+  "img/icon-ai.svg": {
+    "mtime": 1783044147.884,
+    "ast_hash": "cb83157f58ad718990d90a0a35586866",
+    "semantic_hash": "cb83157f58ad718990d90a0a35586866"
+  },
+  "img/icon-asana.svg": {
+    "mtime": 1783044147.873,
+    "ast_hash": "fce90c066a56fe8155e23517823742c2",
+    "semantic_hash": "fce90c066a56fe8155e23517823742c2"
+  },
+  "img/icon-claude.svg": {
+    "mtime": 1783044147.972,
+    "ast_hash": "2ede5ae5b15887173b4747492808c4f2",
+    "semantic_hash": "2ede5ae5b15887173b4747492808c4f2"
+  },
+  "img/icon-figma.svg": {
+    "mtime": 1783044147.833,
+    "ast_hash": "e2c5dd5dfefac9d1c90ddc9c22a8bdeb",
+    "semantic_hash": "e2c5dd5dfefac9d1c90ddc9c22a8bdeb"
+  },
+  "img/icon-pr.svg": {
+    "mtime": 1783044147.928,
+    "ast_hash": "65bc6631620351e0ca86c51fd04c913b",
+    "semantic_hash": "65bc6631620351e0ca86c51fd04c913b"
+  },
+  "img/icon-ps.svg": {
+    "mtime": 1783044147.793,
+    "ast_hash": "117cbcb17234cf6441cd56588b27c7b7",
+    "semantic_hash": "117cbcb17234cf6441cd56588b27c7b7"
+  },
+  "img/icon-sketchup.svg": {
+    "mtime": 1783044147.732,
+    "ast_hash": "c7690701318e7db4be083d2317085370",
+    "semantic_hash": "c7690701318e7db4be083d2317085370"
+  },
+  "docs/superpowers/specs/2026-07-13-hero-intro-example-design.md": {
+    "mtime": 1783913683.3135016,
+    "ast_hash": "3085fb9607291081f22c7302764ed32c",
+    "semantic_hash": ""
+  },
+  "examples/hero-intro.html": {
+    "mtime": 1787694420.568,
+    "ast_hash": "fffde5be4043fa99c2d83c9d77b61296",
+    "semantic_hash": ""
+  },
+  "docs/supabase/2026-08-18-project-likes.sql": {
+    "mtime": 1787761420.283,
+    "ast_hash": "8faf640332fb1214a7ea60e63866d799",
+    "semantic_hash": ""
+  },
+  ".github/workflows/keep-supabase-alive.yml": {
+    "mtime": 1786238179.6,
+    "ast_hash": "10a8a3846b9cd9f0d85c671365b09a44",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-08-18-project-like-button-design.md": {
+    "mtime": 1787102361.987,
+    "ast_hash": "c870eea30611313fcf8301aa02fed877",
+    "semantic_hash": ""
+  },
+  "hero3d-test.html": {
+    "mtime": 1787694420.566,
+    "ast_hash": "eef8b9ace4f1a7090bceb7c07683812f",
+    "semantic_hash": ""
+  },
+  "robots.txt": {
+    "mtime": 1787694385.062,
+    "ast_hash": "170f73d0322c5524470395420052d1b1",
+    "semantic_hash": ""
+  },
+  "img/Ezequiel F - Portfolio_2020.pdf": {
+    "mtime": 1787846512.623,
+    "ast_hash": "fdf35d3ab278cd57d0649cf9d6081162",
+    "semantic_hash": ""
+  },
+  "img/hero3d/1.svg": {
+    "mtime": 1786325234.03,
+    "ast_hash": "478eec139c2762e7f2db45bd925bc986",
+    "semantic_hash": ""
+  },
+  "img/hero3d/2.svg": {
+    "mtime": 1786325245.081,
+    "ast_hash": "470ca7d0e282c9803f5bc174ccf66463",
+    "semantic_hash": ""
+  },
+  "img/hero3d/3.svg": {
+    "mtime": 1786325247.919,
+    "ast_hash": "412d561770d58541c629ededafd345d8",
+    "semantic_hash": ""
+  },
+  "img/hero3d/4.svg": {
+    "mtime": 1786325254.917,
+    "ast_hash": "4d133958a394a1b625f59fed82dcd267",
+    "semantic_hash": ""
+  },
+  "img/hero3d/5.svg": {
+    "mtime": 1786325260.063,
+    "ast_hash": "687b393c1fedbf5422ac3da9d447b7c9",
+    "semantic_hash": ""
+  },
+  "img/openloot/ol-wordmark.svg": {
+    "mtime": 1787016934.104,
+    "ast_hash": "088de6cb946d96f984cf58a45835dca1",
+    "semantic_hash": ""
+  },
+  "img/Bco Patagonia/on-boarding-coderio.mov": {
+    "mtime": 1596044362.0,
+    "ast_hash": "94c4a70b18f6a91524147821becf7829",
+    "semantic_hash": ""
+  },
+  "img/dipper/webapp.mp4": {
+    "mtime": 1787844016.926,
+    "ast_hash": "73a825da30d3d282e12d5d87ff62de51",
+    "semantic_hash": ""
+  },
+  "img/dipper/webapp.webm": {
+    "mtime": 1787844071.348,
+    "ast_hash": "38666cf67f2d7360708ab4cf94659af3",
+    "semantic_hash": ""
+  },
+  "img/simply.vision/new loading.mp4": {
+    "mtime": 1460492388.0,
+    "ast_hash": "9493cb58e3d896d7fd3725fcf88b7391",
+    "semantic_hash": ""
+  },
+  "img/simply.vision/unlock animation.mov": {
+    "mtime": 1554398502.0,
+    "ast_hash": "3e068195de77b0b111d393cc3aa169d6",
+    "semantic_hash": ""
+  }
+}

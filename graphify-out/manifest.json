@@ -5,9 +5,9 @@
     "semantic_hash": "81f214254cfa09c7ac3dc89b3ec8b237"
   },
   ".remember/remember.md": {
-    "mtime": 1783735010.6938827,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
-    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+    "mtime": 1786237029.428,
+    "ast_hash": "9daf56a9b907becd7879fba532f076a1",
+    "semantic_hash": ""
   },
   "CLAUDE.md": {
     "mtime": 1783734845.721795,
@@ -15,39 +15,39 @@
     "semantic_hash": "82efb97a359f5c7290bf2513d14686be"
   },
   "DesignSystem.html": {
-    "mtime": 1778262670.972,
-    "ast_hash": "7b14f77ee858835467c27e8318f86e34",
-    "semantic_hash": "7b14f77ee858835467c27e8318f86e34"
+    "mtime": 1787960665.3560154,
+    "ast_hash": "cd3874eb2f58e6cedebdfde4d18889de",
+    "semantic_hash": ""
   },
   "career.html": {
-    "mtime": 1776730982.968,
-    "ast_hash": "0339e171340adb34ef5959c88ec776a7",
-    "semantic_hash": "0339e171340adb34ef5959c88ec776a7"
+    "mtime": 1787694443.582,
+    "ast_hash": "c2cae3248389f3b1eb1e7b0932d8bef5",
+    "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1783955832.3728342,
-    "ast_hash": "0d8edec84ccdb5838a6d8a5ce4148f62",
+    "mtime": 1787949968.7585711,
+    "ast_hash": "ab394b03834a3893b95c0ef3cc149355",
     "semantic_hash": ""
   },
   "memory/project_v2_mobile_game.md": {
-    "mtime": 1776730984.099,
+    "mtime": 1786237037.463,
     "ast_hash": "82aaa92bccdf3362f7c7be98a5de2613",
     "semantic_hash": "82aaa92bccdf3362f7c7be98a5de2613"
   },
   "test.html": {
-    "mtime": 1777671394.884,
-    "ast_hash": "abd7d63a72076a131bddb1ced1a2da6c",
-    "semantic_hash": "abd7d63a72076a131bddb1ced1a2da6c"
+    "mtime": 1787960665.349227,
+    "ast_hash": "0cd435dc5d2ca9aa91b79a8ec7e3908a",
+    "semantic_hash": ""
   },
   "v1.html": {
-    "mtime": 1776730984.111,
-    "ast_hash": "d9756c5a844fdef1337b5733aa7a017f",
-    "semantic_hash": "d9756c5a844fdef1337b5733aa7a017f"
+    "mtime": 1787960359.9251275,
+    "ast_hash": "1a27ae1ef8126edfbcc1287922cb40c7",
+    "semantic_hash": ""
   },
   "web_tracker.html": {
-    "mtime": 1776730988.454,
-    "ast_hash": "16d38c11c308a07134d132e97bc7e0dd",
-    "semantic_hash": "16d38c11c308a07134d132e97bc7e0dd"
+    "mtime": 1787694419.002,
+    "ast_hash": "59b664d4a0693c7d0b5b78cc107ad1b2",
+    "semantic_hash": ""
   },
   "img/resume_EdeFco_2026.pdf": {
     "mtime": 1783638705.2301,
@@ -105,8 +105,98 @@
     "semantic_hash": ""
   },
   "examples/hero-intro.html": {
-    "mtime": 1783955845.8546753,
-    "ast_hash": "3af4ba57d9d6a2c57c38aa004c830f7b",
+    "mtime": 1787694420.568,
+    "ast_hash": "fffde5be4043fa99c2d83c9d77b61296",
+    "semantic_hash": ""
+  },
+  "docs/supabase/2026-08-18-project-likes.sql": {
+    "mtime": 1787761420.283,
+    "ast_hash": "8faf640332fb1214a7ea60e63866d799",
+    "semantic_hash": ""
+  },
+  ".github/workflows/keep-supabase-alive.yml": {
+    "mtime": 1786238179.6,
+    "ast_hash": "10a8a3846b9cd9f0d85c671365b09a44",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-08-18-project-like-button-design.md": {
+    "mtime": 1787102361.987,
+    "ast_hash": "c870eea30611313fcf8301aa02fed877",
+    "semantic_hash": ""
+  },
+  "hero3d-test.html": {
+    "mtime": 1787694420.566,
+    "ast_hash": "eef8b9ace4f1a7090bceb7c07683812f",
+    "semantic_hash": ""
+  },
+  "robots.txt": {
+    "mtime": 1787694385.062,
+    "ast_hash": "170f73d0322c5524470395420052d1b1",
+    "semantic_hash": ""
+  },
+  "img/Ezequiel F - Portfolio_2020.pdf": {
+    "mtime": 1787846512.623,
+    "ast_hash": "fdf35d3ab278cd57d0649cf9d6081162",
+    "semantic_hash": ""
+  },
+  "img/hero3d/1.svg": {
+    "mtime": 1786325234.03,
+    "ast_hash": "478eec139c2762e7f2db45bd925bc986",
+    "semantic_hash": ""
+  },
+  "img/hero3d/2.svg": {
+    "mtime": 1786325245.081,
+    "ast_hash": "470ca7d0e282c9803f5bc174ccf66463",
+    "semantic_hash": ""
+  },
+  "img/hero3d/3.svg": {
+    "mtime": 1786325247.919,
+    "ast_hash": "412d561770d58541c629ededafd345d8",
+    "semantic_hash": ""
+  },
+  "img/hero3d/4.svg": {
+    "mtime": 1786325254.917,
+    "ast_hash": "4d133958a394a1b625f59fed82dcd267",
+    "semantic_hash": ""
+  },
+  "img/hero3d/5.svg": {
+    "mtime": 1786325260.063,
+    "ast_hash": "687b393c1fedbf5422ac3da9d447b7c9",
+    "semantic_hash": ""
+  },
+  "img/openloot/ol-wordmark.svg": {
+    "mtime": 1787016934.104,
+    "ast_hash": "088de6cb946d96f984cf58a45835dca1",
+    "semantic_hash": ""
+  },
+  "img/Bco Patagonia/on-boarding-coderio.mov": {
+    "mtime": 1596044362.0,
+    "ast_hash": "94c4a70b18f6a91524147821becf7829",
+    "semantic_hash": ""
+  },
+  "img/dipper/webapp.mp4": {
+    "mtime": 1787844016.926,
+    "ast_hash": "73a825da30d3d282e12d5d87ff62de51",
+    "semantic_hash": ""
+  },
+  "img/dipper/webapp.webm": {
+    "mtime": 1787844071.348,
+    "ast_hash": "38666cf67f2d7360708ab4cf94659af3",
+    "semantic_hash": ""
+  },
+  "img/simply.vision/new loading.mp4": {
+    "mtime": 1460492388.0,
+    "ast_hash": "9493cb58e3d896d7fd3725fcf88b7391",
+    "semantic_hash": ""
+  },
+  "img/bco-patagonia/wordmark.svg": {
+    "mtime": 1787949668.3522036,
+    "ast_hash": "5c9ce00b5f0731a8e8df5fa018de43b1",
+    "semantic_hash": ""
+  },
+  "img/simply-vision/loading.mp4": {
+    "mtime": 1787876207.3722277,
+    "ast_hash": "9493cb58e3d896d7fd3725fcf88b7391",
     "semantic_hash": ""
   }
 }

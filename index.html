@@ -1228,6 +1228,115 @@
       width: 100%;
       padding: 40px 0 8px;
     }
+    /* Light theme for Simply Vision & Banco Patagonia case studies —
+       a white "reader" card over the dark site. Mirrors the Figma frames
+       (white bg, dark text, emerald accent #008A5E, bordered images). */
+    .cs2--light {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 56px 60px 40px;
+    }
+    .cs2--light .cs2-in { color: #14181d; }
+    .cs2--light .cs2-title { color: #14181d; }
+    .cs2--light .cs2-lede { color: rgba(20,24,29,0.62); }
+    .cs2--light .cs2-h { color: #14181d; }
+    .cs2--light .cs2-h em,
+    .cs2--light .cs2-meta-label,
+    .cs2--light .cs2-pill { color: #008a5e; }
+    .cs2--light .cs2-pill { background: rgba(0,138,94,0.12); }
+    .cs2--light .cs2-prose { color: rgba(20,24,29,0.72); }
+    .cs2--light .cs2-prose strong { color: #14181d; }
+    .cs2--light .cs2-chip { background: rgba(0,0,0,0.05); color: #3a4048; }
+    .cs2--light .cs2-chip--accent { background: rgba(0,138,94,0.12); color: #008a5e; }
+    .cs2--light .cs2-meta-card { background: #f4f6f8; border-color: rgba(0,0,0,0.08); }
+    .cs2--light .cs2-meta-value { color: rgba(20,24,29,0.9); }
+    .cs2--light .cs2-caption { color: rgba(20,24,29,0.42); }
+    .cs2--light .cs2-line { background: rgba(0,0,0,0.10); }
+    .cs2--light .cs2-band img,
+    .cs2--light .cs2-figure { border: 1px solid rgba(0,0,0,0.08); }
+    .cs2--light .cs2-sw { border-color: rgba(0,0,0,0.10); }
+    .cs2--light .cs2-sw i { border-color: rgba(0,0,0,0.12); }
+    .cs2--light .cs2-sw b { color: #14181d; }
+    .cs2--light .cs2-sw span { color: rgba(20,24,29,0.5); }
+    .cs2--light .cs2-phones img { box-shadow: 0 calc(6 * var(--v)) calc(20 * var(--v)) rgba(0,0,0,0.18); }
+
+    /* Banco Patagonia branded closer panel (Figma node 3056:8388) */
+    .pat-closer {
+      position: relative;
+      display: flex;
+      gap: calc(22 * var(--v));
+      background: linear-gradient(90deg, #009BA3 0%, #017495 50%, #004483 100%);
+      border: calc(3 * var(--v)) solid rgba(212,212,212,0.72);
+      border-radius: calc(20 * var(--v));
+      padding: calc(40 * var(--v));
+      min-height: calc(402 * var(--v));
+      overflow: visible;
+    }
+    .pat-closer-copy {
+      width: calc(614 * var(--v)); flex: none;
+      display: flex; flex-direction: column; gap: calc(22 * var(--v));
+      color: #fff;
+    }
+    .pat-closer-eyebrow {
+      font-family: 'DM Mono', monospace; font-size: calc(12 * var(--v));
+      letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.85);
+    }
+    .pat-closer-h {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: calc(52 * var(--v)); line-height: 1.04; letter-spacing: -0.01em;
+      color: #fff; margin: 0;
+    }
+    .pat-closer-p {
+      font-family: 'Inter', sans-serif; font-weight: 400;
+      font-size: calc(19 * var(--v)); line-height: 1.58; color: rgba(255,255,255,0.92); margin: 0;
+    }
+    .pat-closer-media { position: relative; flex: 1; min-width: 0; align-self: stretch; }
+    .pat-wordmark {
+      position: absolute; left: calc(-30 * var(--v)); top: 50%; transform: translateY(-50%);
+      width: calc(720 * var(--v)); height: auto;
+      opacity: 0.12; filter: brightness(0) invert(1); pointer-events: none;
+    }
+    .pat-phone {
+      position: absolute; right: calc(30 * var(--v)); top: calc(-50 * var(--v));
+      width: calc(253 * var(--v)); height: auto;
+      border-radius: calc(20 * var(--v));
+      box-shadow: 0 calc(20 * var(--v)) calc(44 * var(--v)) rgba(0,0,0,0.4);
+    }
+    @media (max-width: 700px) {
+      .pat-closer { flex-direction: column; }
+      .pat-closer-copy { width: 100%; }
+      .pat-closer-media { min-height: calc(560 * var(--v)); }
+      .pat-phone { position: static; margin: calc(24 * var(--v)) auto 0; display: block; }
+      .pat-wordmark { display: none; }
+    }
+
+    /* Simply Vision — variable sheets (proportional row), flow side-by-side, and the full screen "sabana" */
+    .sv-varrow { display: flex; gap: calc(14 * var(--v)); align-items: flex-start; margin-top: calc(14 * var(--v)); }
+    .sv-varrow img { flex-basis: 0; min-width: 0; width: 100%; height: auto; display: block;
+      border-radius: calc(10 * var(--v)); border: 1px solid rgba(0,0,0,0.08); }
+    .sv-flow-row { display: flex; gap: calc(20 * var(--v)); align-items: flex-start; margin-top: calc(14 * var(--v)); }
+    .sv-flow-row img { width: 100%; height: auto; display: block;
+      border-radius: calc(10 * var(--v)); border: 1px solid rgba(0,0,0,0.08); }
+    .sv-flow-row .sv-onb { flex: 587 1 0; min-width: 0; }
+    .sv-flow-row .sv-flow { flex: 709 1 0; min-width: 0; }
+    .sv-sabana { display: grid; grid-template-columns: repeat(5, 1fr); gap: calc(10 * var(--v)); margin-top: calc(20 * var(--v)); }
+    .sv-sabana img { width: 100%; height: auto; display: block; background: #fff;
+      border-radius: calc(10 * var(--v)); box-shadow: 0 calc(4 * var(--v)) calc(14 * var(--v)) rgba(0,0,0,0.12); }
+    /* category | value-scale two-column row (Figma cat-val-cols) */
+    .sv-catval { display: flex; gap: calc(48 * var(--v)); align-items: flex-start; }
+    .sv-catval > div { flex: 1 1 0; min-width: 0; }
+    .sv-scale { display: flex; flex-direction: column; gap: calc(8 * var(--v)); margin-top: calc(14 * var(--v)); }
+    .sv-scale-row { display: flex; align-items: baseline; gap: calc(14 * var(--v));
+      font-family: 'DM Mono', monospace; font-size: calc(15 * var(--v)); }
+    .sv-scale-row b { min-width: calc(14 * var(--v)); font-weight: 500; opacity: 0.4; }
+    .cs2--light .sv-scale-row { color: #14181d; }
+    @media (max-width: 700px) {
+      .sv-sabana { grid-template-columns: repeat(3, 1fr); }
+      .sv-flow-row { flex-direction: column; }
+      .sv-varrow { flex-wrap: wrap; }
+      .sv-varrow img { flex: 1 1 40%; }
+      .sv-catval { flex-direction: column; gap: calc(24 * var(--v)); }
+    }
     /* ── Sketchup · "Modeling + Render" case study ────────────────────────
        Ported 1:1 from Figma frame 1:71 (1574px wide). Same --u scaling as
        Open Loot: every measure is the raw Figma px × var(--u). Body copy is
@@ -2687,11 +2796,97 @@
 }
 
 /* ── ELASTIC GALLERY (portfolio v3) ─────────────────────────────── */
+/* Sub-labels above each portfolio carousel (Figma "WORK — sticky-sync") */
+.work-subhead {
+  font-family: 'Syne', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  color: rgba(255,255,255,0.5);
+  margin: 0 0 14px;
+}
+.work-subhead--less { margin-top: 44px; }
+
 .elastic-gallery {
   display: flex;
   gap: 2px;
   height: 462px;
   width: 100%;
+}
+
+/* Less-representative work: shorter covers, subtle zoom on hover (no accordion),
+   each opens a modal with the full set. Mirrors Figma node 3001:7252. */
+.less-gallery {
+  display: flex;
+  gap: 2px;
+  width: 100%;
+}
+.lr-item {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  aspect-ratio: 264 / 260;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid #080a0c;
+  outline: none;
+  /* container for cqw title sizing (matches Figma 26px / 264px card ratio) */
+  container-type: inline-size;
+}
+.lr-item img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: none;
+  /* Figma: covers are black & white */
+  filter: grayscale(1);
+  /* per-card width/height/left/top set inline to match each Figma crop */
+  transition: transform 0.55s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.lr-item:hover img,
+.lr-item:focus-visible img { transform: scale(1.06); }
+.lr-item:focus-visible { outline: 1px solid var(--accent); outline-offset: -2px; }
+.lr-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 30px;
+  /* Figma title panel: 81% black + 3.5px backdrop blur */
+  background: rgba(0,0,0,0.81);
+  backdrop-filter: blur(3.5px);
+  -webkit-backdrop-filter: blur(3.5px);
+}
+.lr-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  /* Figma: Syne Bold 16px on a 264px card ≈ 6.06% of card width */
+  font-size: 6.06cqw;
+  line-height: normal;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .less-gallery { flex-wrap: wrap; }
+  .lr-item { flex: 0 0 calc(50% - 1px); }
+}
+/* Placeholder for the not-yet-populated "sabana" inside less-rep modals */
+.lr-sabana {
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(255,255,255,0.14);
+  border-radius: 12px;
+  margin: 24px 0 8px;
+}
+.lr-sabana p {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.4);
 }
 
 .g-item {
@@ -3093,10 +3288,12 @@
       </div>
     </div>
 
+    <div class="work-subhead">Most Representative projects</div>
+
     <div class="elastic-gallery" id="elastic-gallery">
 
       <div class="g-item active" tabindex="0" data-modal="openloot" aria-label="OpenLoot">
-        <div class="g-bg"><img src="img/OpenLoot_cover.webp" alt="OpenLoot — NFT Marketplace"></div>
+        <div class="g-bg"><img src="img/covers/01-openloot.webp" alt="OpenLoot — NFT Marketplace" style="object-position: 37% 50%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3110,12 +3307,12 @@
       </div>
 
       <div class="g-item" tabindex="0" data-modal="dipper" aria-label="Our Dipper">
-        <div class="g-bg"><img src="img/OurDipper_cover.webp" alt="Our Dipper — Web App" style="object-position: top center;"></div>
+        <div class="g-bg"><img src="img/covers/02-dipper.webp" alt="Our Dipper — Web App" style="object-position: 50% 50%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
           <div class="g-info">
-            <h3 class="g-title">UX/UI<br>Our Dipper</h3>
+            <h3 class="g-title">UX/UI for<br>Our Dipper</h3>
             <p class="g-desc">UX/UI product design for a B2B startup marketplace from concept to launch.</p>
           </div>
           <div class="g-cat">UX/UI<br>ENTERPRISE</div>
@@ -3124,7 +3321,7 @@
       </div>
 
       <div class="g-item" tabindex="0" data-modal="roche" aria-label="Roche Congress">
-        <div class="g-bg"><img src="img/Roche_cover.webp" alt="Roche Congress — Enterprise Health"></div>
+        <div class="g-bg"><img src="img/covers/03-roche.webp" alt="Roche Congress — Enterprise Health" style="object-position: 21% 50%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3138,7 +3335,7 @@
       </div>
 
       <div class="g-item" tabindex="0" data-modal="games" aria-label="Mobile Games">
-        <div class="g-bg"><img src="img/games_cover.webp" alt="Mobile Games — Disney"></div>
+        <div class="g-bg"><img src="img/covers/04-games.webp" alt="Mobile Games — Disney" style="object-position: 17% 100%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3152,7 +3349,7 @@
       </div>
 
       <div class="g-item" tabindex="0" data-modal="branding" aria-label="Branding + Social">
-        <div class="g-bg"><img src="img/Branding_cover.webp" alt="Branding + Social — Design System"></div>
+        <div class="g-bg"><img src="img/covers/05-branding.webp" alt="Branding + Social — Design System" style="object-position: 50% 50%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3166,7 +3363,7 @@
       </div>
 
       <div class="g-item" tabindex="0" data-modal="sketchup" aria-label="Sketchup Renders">
-        <div class="g-bg"><img src="img/Renders_cover.webp" alt="Sketchup Renders — 3D Architecture"></div>
+        <div class="g-bg"><img src="img/covers/06-sketchup.webp" alt="Sketchup Renders — 3D Architecture" style="object-position: 64% 100%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3179,6 +3376,58 @@
         </div>
       </div>
 
+      <div class="g-item" tabindex="0" data-modal="simplyvision" aria-label="Simply Vision">
+        <div class="g-bg"><img src="img/covers/07-simplyvision.webp" alt="Simply Vision — Wellbeing App" style="object-position: 64% 42%;"></div>
+        <div class="g-dim"></div>
+        <div class="g-overlay"></div>
+        <div class="g-body">
+          <div class="g-info">
+            <h3 class="g-title">Product Design<br>Mobile</h3>
+            <p class="g-desc">A wellbeing app that turns daily check-ins into insight — UX, UI &amp; project lead.</p>
+          </div>
+          <div class="g-cat">UX/UI<br>MOBILE</div>
+          <div class="g-num">07</div>
+        </div>
+      </div>
+
+      <div class="g-item" tabindex="0" data-modal="patagonia" aria-label="Banco Patagonia">
+        <div class="g-bg"><img src="img/covers/08-patagonia.webp" alt="Banco Patagonia — Insurance Portal" style="object-position: 63% 85%;"></div>
+        <div class="g-dim"></div>
+        <div class="g-overlay"></div>
+        <div class="g-body">
+          <div class="g-info">
+            <h3 class="g-title">UX/UI Lead<br>Banco Patagonia</h3>
+            <p class="g-desc">A 100% online insurance portal that makes buying cover simple and human.</p>
+          </div>
+          <div class="g-cat">UX/UI<br>WEB-APP</div>
+          <div class="g-num">08</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="work-subhead work-subhead--less">Less Representative projects</div>
+    <div class="less-gallery">
+      <div class="lr-item" tabindex="0" role="button" aria-label="Cards &amp; Flyers" onclick="openModal('lr-cards')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-cards');}">
+        <img src="img/less-rep/cards-flyers.webp" alt="Cards &amp; Flyers" loading="lazy" decoding="async" style="width:100%;height:116.3%;left:0;top:-0.08%;">
+        <div class="lr-overlay"><div class="lr-title">Cards &amp; Flyers</div></div>
+      </div>
+      <div class="lr-item" tabindex="0" role="button" aria-label="Illustration" onclick="openModal('lr-illustration')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-illustration');}">
+        <img src="img/less-rep/illustration.webp" alt="Illustration" loading="lazy" decoding="async" style="width:207.15%;height:289.17%;left:-53.57%;top:-44.32%;">
+        <div class="lr-overlay"><div class="lr-title">Illustration</div></div>
+      </div>
+      <div class="lr-item" tabindex="0" role="button" aria-label="Soft Branding" onclick="openModal('lr-soft')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-soft');}">
+        <img src="img/less-rep/soft-branding.webp" alt="Soft Branding" loading="lazy" decoding="async" style="width:165.68%;height:107.69%;left:-32.84%;top:-4.54%;">
+        <div class="lr-overlay"><div class="lr-title">Soft Branding</div></div>
+      </div>
+      <div class="lr-item" tabindex="0" role="button" aria-label="Misc" onclick="openModal('lr-misc')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-misc');}">
+        <img src="img/less-rep/misc.webp" alt="Misc" loading="lazy" decoding="async" style="width:100%;height:100%;left:0;top:0;object-fit:cover;">
+        <div class="lr-overlay"><div class="lr-title">Misc</div></div>
+      </div>
+      <div class="lr-item" tabindex="0" role="button" aria-label="Packaging &amp; Press" onclick="openModal('lr-packaging')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-packaging');}">
+        <img src="img/less-rep/packaging-press.webp" alt="Packaging &amp; Press" loading="lazy" decoding="async" style="width:100%;height:212.28%;left:0;top:-6.1%;">
+        <div class="lr-overlay"><div class="lr-title">Packaging &amp; Press</div></div>
+      </div>
     </div>
   </section>
 
@@ -3971,6 +4220,346 @@ abcdefghijklmnopqrstuvwxyz
     </div>
   </div>
 
+  <div class="modal-backdrop" id="modal-simplyvision">
+    <button class="modal-close" onclick="closeModal('simplyvision')">✕</button>
+    <div class="modal">
+      <!-- Simply Vision (analyze.life) case study. Same native cs2 system as
+           Dipper: real headings and prose, a native colour system built from the
+           app's own category palette, and app artwork cropped clean off the 2020
+           portfolio boards. -->
+      <div class="cs2 cs2--light">
+      <div class="cs2-in">
+
+        <section class="cs2-hero">
+          <div class="cs2-hero-copy">
+            <div class="cs2-pill">Case study · 2015</div>
+            <h2 class="cs2-title">Simply Vision.</h2>
+            <p class="cs2-lede">A wellbeing app that turns tiny daily check-ins<br>into a picture of how you actually live.</p>
+            <div class="cs2-chips">
+              <span class="cs2-chip">UX Strategy</span>
+              <span class="cs2-chip">UI Design</span>
+              <span class="cs2-chip cs2-chip--accent">Mobile App</span>
+              <span class="cs2-chip">Graphic Design</span>
+              <span class="cs2-chip">Project Management</span>
+            </div>
+          </div>
+          <div class="cs2-hero-meta">
+            <div class="cs2-meta-grid">
+              <div class="cs2-meta-card"><div class="cs2-meta-label">Client</div><div class="cs2-meta-value">Simply Vision Tech</div></div>
+              <div class="cs2-meta-card"><div class="cs2-meta-label">Role</div><div class="cs2-meta-value">UX · UI · PM</div></div>
+              <div class="cs2-meta-card"><div class="cs2-meta-label">Scope</div><div class="cs2-meta-value">iOS App</div></div>
+              <div class="cs2-meta-card"><div class="cs2-meta-label">Timeline</div><div class="cs2-meta-value">2015–2016</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="cs2-band">
+          <img data-src="img/simply-vision/band.webp" decoding="async"
+               alt="Three Simply Vision screens: Best Ever records, the Happiness Report and the Overview dashboard">
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-two">
+          <div>
+            <div class="cs2-pill cs2-pill--sm">How it works</div>
+            <h3 class="cs2-h">Track a little,<br><em>learn a lot.</em></h3>
+          </div>
+          <div class="cs2-prose">
+            <p>Every day you log quick check-ins across five parts of life — <strong>Sleep, Nutrition, Work, Social and General Mood</strong>. Each takes seconds: how much, and how it felt.</p>
+            <p>The app then reflects it straight back. A <strong>Track</strong> screen captures the moment; an <strong>Analyze</strong> screen turns it into a clear, colour-coded result — trends, streaks, personal records and a running happiness index.</p>
+            <p>So the patterns behind how you feel stop being vague and become something you can actually see, compare and act on.</p>
+          </div>
+        </section>
+
+        <section class="cs2-sec">
+          <img class="cs2-figure" data-src="img/simply-vision/track-results.webp" decoding="async"
+               alt="Track and Analyze screens side by side for Nutrition and Sleep, showing how logging feeds results">
+          <div class="cs2-caption" style="margin-top: calc(10 * var(--v));">Track (left) feeds Analyze (right) — Nutrition &amp; Sleep</div>
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">The system</div>
+          <h3 class="cs2-h">A colour for<br><em>every feeling.</em></h3>
+          <p class="cs2-prose cs2-prose--wide">The whole product speaks one colour language. Each of the six life categories owns a hue; every hue runs down a <strong>value scale</strong> — from &ldquo;Great&rdquo; to &ldquo;Terrible&rdquo; — so a screen&rsquo;s mood is legible before a single word is read, and it stays consistent across tracking, results and charts.</p>
+
+          <div class="cs2-found">
+            <div class="sv-catval">
+              <div>
+                <div class="cs2-caption">Six life categories</div>
+                <div class="cs2-swatches">
+                  <div class="cs2-sw"><i style="background:#8FC2EF"></i><b>Sleep</b><span>#8FC2EF</span></div>
+                  <div class="cs2-sw"><i style="background:#FD9543"></i><b>Work</b><span>#FD9543</span></div>
+                  <div class="cs2-sw"><i style="background:#5CCB71"></i><b>Nutrition</b><span>#5CCB71</span></div>
+                  <div class="cs2-sw"><i style="background:#E3D63C"></i><b>General Mood</b><span>#E3D63C</span></div>
+                  <div class="cs2-sw"><i style="background:#8188E9"></i><b>Fitness</b><span>#8188E9</span></div>
+                  <div class="cs2-sw"><i style="background:#EA5120"></i><b>Social</b><span>#EA5120</span></div>
+                </div>
+              </div>
+              <div>
+                <div class="cs2-caption">Each on a value scale</div>
+                <div class="sv-scale">
+                  <div class="sv-scale-row"><b>6</b><span>Great</span></div>
+                  <div class="sv-scale-row"><b>5</b><span>Good</span></div>
+                  <div class="sv-scale-row"><b>4</b><span>Ok</span></div>
+                  <div class="sv-scale-row"><b>3</b><span>So-so</span></div>
+                  <div class="sv-scale-row"><b>2</b><span>Bad</span></div>
+                  <div class="sv-scale-row"><b>1</b><span>Terrible</span></div>
+                  <div class="sv-scale-row"><b>0</b><span>Not relevant</span></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="cs2-caption">The variables tracked in each category</div>
+              <div class="sv-varrow">
+                <img data-src="img/simply-vision/screens/gral-mood-variables.webp" style="flex-grow:258" decoding="async" alt="General-mood variables">
+                <img data-src="img/simply-vision/screens/nutritioin-variables.webp" style="flex-grow:417" decoding="async" alt="Nutrition variables">
+                <img data-src="img/simply-vision/screens/work-variables.webp" style="flex-grow:319" decoding="async" alt="Work variables">
+                <img data-src="img/simply-vision/screens/sleep-variablesandorder.webp" style="flex-grow:256" decoding="async" alt="Sleep variables and order">
+              </div>
+            </div>
+            <div>
+              <div class="cs2-caption">The same colour language, live in the app</div>
+              <div class="cs2-phones">
+                <img data-src="img/simply-vision/screens/analyze-generalmood.webp" decoding="async" alt="Analyze — general mood">
+                <img data-src="img/simply-vision/screens/analyze-nutrition-comp-feelings.webp" decoding="async" alt="Analyze — nutrition vs feelings">
+                <img data-src="img/simply-vision/screens/analyze-work-comparison-productive.webp" decoding="async" alt="Analyze — work productivity">
+                <img data-src="img/simply-vision/screens/track-sleep-que2.webp" decoding="async" alt="Track — sleep">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">Sitemap &amp; user flow</div>
+          <h3 class="cs2-h">Every screen,<br><em>every path.</em></h3>
+          <p class="cs2-prose cs2-prose--wide">A dense product needed a clear map. The flow charts each mode and stage — track, analyze, friends, records — and studies <strong>how quickly a new user reaches the app&rsquo;s value</strong>, with onboarding tuned so the first real insight never feels far away.</p>
+          <div class="cs2-caption" style="margin-top: calc(10 * var(--v));">Onboarding &amp; first track</div>
+          <div class="sv-flow-row">
+            <img class="sv-onb" data-src="img/simply-vision/onboarding.webp" decoding="async"
+                 alt="Onboarding sequence from login through the first tracked values">
+            <img class="sv-flow" data-src="img/simply-vision/flow.webp" decoding="async"
+                 alt="Full user-flow map of Simply Vision covering every mode and stage of the app">
+          </div>
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">Wireframes &amp; gestures</div>
+          <h3 class="cs2-h">Fewer taps,<br><em>clearer intent.</em></h3>
+          <p class="cs2-prose cs2-prose--wide">Early screens had too many tappable areas competing at once — overlapping taps, scrolls and swipes. Wireframing <strong>mapped the gestures</strong> and organised them, so every element stays clear and as intuitive as possible.</p>
+          <img class="cs2-figure" data-src="img/simply-vision/wireframes.webp" decoding="async"
+               alt="Wireframes of the Sleep tracking screen showing how gestures and states were organised">
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">The app</div>
+          <h3 class="cs2-h">Small screens,<br><em>big personality.</em></h3>
+          <p class="cs2-prose cs2-prose--wide">From the launch splash to World Mode&rsquo;s country-by-country moods, every screen carries the same warmth — playful where it can be, precise where it counts.</p>
+          <!-- Final screen grid — exact Figma order (node 3019:8288), 5 cols × 9 rows, read row by row -->
+          <div class="sv-sabana">
+            <!-- row 1 -->
+            <img data-src="img/simply-vision/screens/overview-new.webp" decoding="async" alt="Overview">
+            <img data-src="img/simply-vision/screens/hi-satisfied.webp" decoding="async" alt="Happiness index — satisfied">
+            <img data-src="img/simply-vision/screens/login.webp" decoding="async" alt="Login">
+            <img data-src="img/simply-vision/screens/analyze-nutrition-comp-coofee.webp" decoding="async" alt="Analyze — nutrition vs coffee">
+            <img data-src="img/simply-vision/screens/best-run-ever-bubble.webp" decoding="async" alt="Best run ever bubble">
+            <!-- row 2 -->
+            <img data-src="img/simply-vision/screens/2-good-days.webp" decoding="async" alt="Two good days">
+            <img data-src="img/simply-vision/screens/new-sign-out.webp" decoding="async" alt="Sign out">
+            <img data-src="img/simply-vision/screens/not-enough-data.webp" decoding="async" alt="Not enough data">
+            <img data-src="img/simply-vision/screens/hi-unhappy.webp" decoding="async" alt="Happiness index — unhappy">
+            <img data-src="img/simply-vision/screens/01analyze-with-friends1.webp" decoding="async" alt="Analyze with friends">
+            <!-- row 3 -->
+            <img data-src="img/simply-vision/screens/track-general-mood-que3-typing.webp" decoding="async" alt="Track — general mood, typing">
+            <img data-src="img/simply-vision/screens/analyze-nutrition-comp-meat.webp" decoding="async" alt="Analyze — nutrition vs meat">
+            <img data-src="img/simply-vision/screens/day4-popup1.webp" decoding="async" alt="Day 4 popup">
+            <img data-src="img/simply-vision/screens/favourites6.webp" decoding="async" alt="Favourites">
+            <img data-src="img/simply-vision/screens/analyze-with-friends-receivehug7.webp" decoding="async" alt="Analyze with friends — receive hug">
+            <!-- row 4 -->
+            <img data-src="img/simply-vision/screens/hi-helpless.webp" decoding="async" alt="Happiness index — helpless">
+            <img data-src="img/simply-vision/screens/analyze-nutrition-comp-water.webp" decoding="async" alt="Analyze — nutrition vs water">
+            <img data-src="img/simply-vision/screens/analyze-nutrition-max-notrend.webp" decoding="async" alt="Analyze — nutrition max, no trend">
+            <img data-src="img/simply-vision/screens/prm-logo-menu.webp" decoding="async" alt="Menu">
+            <img data-src="img/simply-vision/screens/hi-comparison.webp" decoding="async" alt="Happiness index — comparison">
+            <!-- row 5 -->
+            <img data-src="img/simply-vision/screens/reminders.webp" decoding="async" alt="Reminders">
+            <img data-src="img/simply-vision/screens/day4-popup2.webp" decoding="async" alt="Day 4 popup 2">
+            <img data-src="img/simply-vision/screens/analyze-generalmood.webp" decoding="async" alt="Analyze — general mood">
+            <img data-src="img/simply-vision/screens/hi-sad.webp" decoding="async" alt="Happiness index — sad">
+            <img data-src="img/simply-vision/screens/hi-joyful.webp" decoding="async" alt="Happiness index — joyful">
+            <!-- row 6 -->
+            <img data-src="img/simply-vision/screens/03analyze-with-friends3.webp" decoding="async" alt="Analyze with friends 3">
+            <img data-src="img/simply-vision/screens/profile-ndperiods.webp" decoding="async" alt="Profile — no-data periods">
+            <img data-src="img/simply-vision/screens/analyze-with-friends-receiveinvitation4.webp" decoding="async" alt="Analyze with friends — receive invitation">
+            <img data-src="img/simply-vision/screens/shortcut-to-overview4.webp" decoding="async" alt="Shortcut to overview">
+            <img data-src="img/simply-vision/screens/profile-with-dark-bkgd.webp" decoding="async" alt="Profile — dark background">
+            <!-- row 7 -->
+            <img data-src="img/simply-vision/screens/popup1-1.webp" decoding="async" alt="Popup">
+            <img data-src="img/simply-vision/screens/analyze-nutrition-comp-feelings.webp" decoding="async" alt="Analyze — nutrition vs feelings">
+            <img data-src="img/simply-vision/screens/splash-launch.webp" decoding="async" alt="Splash launch">
+            <img data-src="img/simply-vision/screens/best-ever-popup2.webp" decoding="async" alt="Best ever popup">
+            <img data-src="img/simply-vision/screens/analyze-work-comparison-productive.webp" decoding="async" alt="Analyze — work productivity">
+            <!-- row 8 -->
+            <img data-src="img/simply-vision/screens/day3-popup2.webp" decoding="async" alt="Day 3 popup 2">
+            <img data-src="img/simply-vision/screens/analyze-social.webp" decoding="async" alt="Analyze — social">
+            <img data-src="img/simply-vision/screens/analyze-nutrition-average-plustrend.webp" decoding="async" alt="Analyze — nutrition average and trend">
+            <img data-src="img/simply-vision/screens/track-social.webp" decoding="async" alt="Track — social">
+            <img data-src="img/simply-vision/screens/track-sleep-que1.webp" decoding="async" alt="Track — sleep">
+            <!-- row 9 -->
+            <img data-src="img/simply-vision/screens/world-mode.webp" decoding="async" alt="World mode">
+            <img data-src="img/simply-vision/screens/3-bad-days.webp" decoding="async" alt="Three bad days">
+            <img data-src="img/simply-vision/screens/analyze-sleep.webp" decoding="async" alt="Analyze — sleep">
+            <img data-src="img/simply-vision/screens/track-sleep-que2.webp" decoding="async" alt="Track — sleep 2">
+            <img data-src="img/simply-vision/screens/profile.webp" decoding="async" alt="Profile">
+          </div>
+        </section>
+
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-patagonia">
+    <button class="modal-close" onclick="closeModal('patagonia')">✕</button>
+    <div class="modal">
+      <!-- Banco Patagonia insurance portal case study — native cs2 system. -->
+      <div class="cs2 cs2--light">
+      <div class="cs2-in">
+
+        <section class="cs2-hero">
+          <div class="cs2-hero-copy">
+            <div class="cs2-pill">Case study · Insurance</div>
+            <h2 class="cs2-title">Banco Patagonia.</h2>
+            <p class="cs2-lede">Buying insurance online —<br>made simple, made human.</p>
+            <div class="cs2-chips">
+              <span class="cs2-chip">UX Strategy</span>
+              <span class="cs2-chip">UI Design</span>
+              <span class="cs2-chip cs2-chip--accent">Web + Mobile</span>
+              <span class="cs2-chip">Icon Design</span>
+              <span class="cs2-chip">User Flows</span>
+            </div>
+          </div>
+          <div class="cs2-hero-meta">
+            <div class="cs2-meta-grid">
+              <div class="cs2-meta-card"><div class="cs2-meta-label">Agency</div><div class="cs2-meta-value">Coderio</div></div>
+              <div class="cs2-meta-card"><div class="cs2-meta-label">Client</div><div class="cs2-meta-value">SURA · Banco Patagonia</div></div>
+              <div class="cs2-meta-card"><div class="cs2-meta-label">Role</div><div class="cs2-meta-value">UX · UI Lead</div></div>
+              <div class="cs2-meta-card"><div class="cs2-meta-label">Platform</div><div class="cs2-meta-value">Web · Responsive</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="cs2-band">
+          <img data-src="img/bco-patagonia/mockups.webp" decoding="async"
+               alt="The Banco Patagonia insurance portal home shown on a laptop and a phone">
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-two">
+          <div>
+            <div class="cs2-pill cs2-pill--sm">The project</div>
+            <h3 class="cs2-h">Insurance,<br><em>without the dread.</em></h3>
+          </div>
+          <div class="cs2-prose">
+            <p>Banco Patagonia and SURA wanted a portal where anyone could quote and buy insurance — <strong>home, life, pet, personal accident and more — 100% online</strong>.</p>
+            <p>Insurance is famously tedious: dense policies, endless forms, jargon people never stop to read. The brief was to make it feel light.</p>
+            <p>So we built a <strong>guided experience</strong> that leads people step by step, keeps the focus on benefits instead of paperwork, and works as comfortably on a phone as on a desktop.</p>
+          </div>
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">Foundations</div>
+          <h3 class="cs2-h">A friendlier<br><em>face for finance.</em></h3>
+          <p class="cs2-prose cs2-prose--wide">The bank&rsquo;s teal-to-blue identity anchors trust; a bright lime accent keeps it approachable. On top, a set of <strong>simple, rounded product icons</strong> makes each type of cover instantly legible — less structured and formal, closer to everyday people.</p>
+
+          <div class="cs2-found">
+            <div>
+              <div class="cs2-caption">Brand palette</div>
+              <div class="cs2-swatches">
+                <div class="cs2-sw"><i style="background:#009AA2"></i><b>Patagonia Teal</b><span>#009AA2</span></div>
+                <div class="cs2-sw"><i style="background:#014A87"></i><b>Header Blue</b><span>#014A87</span></div>
+                <div class="cs2-sw"><i style="background:#004987"></i><b>Deep Blue</b><span>#004987</span></div>
+                <div class="cs2-sw"><i style="background:#C1D42F"></i><b>Lime Accent</b><span>#C1D42F</span></div>
+              </div>
+            </div>
+            <div>
+              <div class="cs2-caption">Product iconography</div>
+              <img class="cs2-figure" data-src="img/bco-patagonia/icons.webp" decoding="async"
+                   alt="Row of simple product icons: home, belongings, life, personal accident, ATM, business, pet and auto">
+            </div>
+          </div>
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">Sitemap &amp; user flow</div>
+          <h3 class="cs2-h">One clear<br><em>path to covered.</em></h3>
+          <p class="cs2-prose cs2-prose--wide">The whole journey was mapped as a single spine — from picking a product through to a contracted policy. The branches (home, common, employees) fold back into <strong>one shared checkout</strong>: select, address, summary, payment, done.</p>
+          <img class="cs2-figure" data-src="img/bco-patagonia/flow.webp" decoding="async"
+               alt="Sitemap and user-flow diagram of the insurance portal, from home to a contracted policy">
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">The flow</div>
+          <h3 class="cs2-h">Five steps,<br><em>no surprises.</em></h3>
+          <p class="cs2-prose cs2-prose--wide">A persistent stepper — <strong>construction type, plans, address, summary, payment</strong> — tells people exactly where they are and what&rsquo;s left. Plans sit side by side with only what matters: coverage and price, nothing to decode.</p>
+          <img class="cs2-figure" data-src="img/bco-patagonia/plans.webp" decoding="async"
+               alt="Plan selection step with the five-step progress bar and three side-by-side home-insurance plans">
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-pill cs2-pill--sm">The payoff</div>
+          <h3 class="cs2-h">Covered,<br><em>in a few taps.</em></h3>
+          <p class="cs2-prose cs2-prose--wide">The journey ends where insurance usually begins its paperwork: a plain, reassuring confirmation — <strong>you&rsquo;re insured, here&rsquo;s your request number</strong> — instead of a maze of PDFs.</p>
+          <img class="cs2-figure" data-src="img/bco-patagonia/confirm.webp" decoding="async"
+               alt="Plan comparison alongside the mobile confirmation screen: you are insured, with a request number">
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="pat-closer">
+            <div class="pat-closer-copy">
+              <div class="pat-closer-eyebrow">The payoff</div>
+              <h3 class="pat-closer-h">Covered,<br>in a few taps.</h3>
+              <p class="pat-closer-p">The journey ends where insurance usually begins its paperwork: a plain, reassuring confirmation — you&rsquo;re insured, here&rsquo;s your request number — instead of a maze of PDFs.</p>
+            </div>
+            <div class="pat-closer-media">
+              <img class="pat-wordmark" src="img/bco-patagonia/wordmark.svg" alt="" aria-hidden="true">
+              <img class="pat-phone" data-src="img/bco-patagonia/onboarding-phone.webp" decoding="async"
+                   alt="Mobile onboarding: Completá estos datos iniciales form">
+            </div>
+          </div>
+        </section>
+
+        <div class="cs2-line"></div>
+
+        <section class="cs2-sec">
+          <div class="cs2-caption">Credits</div>
+          <p class="cs2-prose cs2-prose--wide" style="margin-top: calc(10 * var(--v));">Project developed at <strong>Coderio</strong>, the agency where I worked, together with a team of developers — the online insurance onboarding for SURA / Banco Patagonia. All rights reserved to Coderio.</p>
+        </section>
+
+      </div>
+      </div>
+    </div>
+  </div>
+
 <div class="modal-backdrop" id="modal-roche">
     <button class="modal-close" onclick="closeModal('roche')">✕</button>
     <div class="modal">
@@ -4233,6 +4822,68 @@ abcdefghijklmnopqrstuvwxyz
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/245216341/Sketchup-ModellingRender" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
       </div>
+    </div>
+  </div>
+
+  <!-- Less-representative work modals. Each holds the full set of that category
+       laid out ("en sabana"). Content pending — placeholders for now. -->
+  <div class="modal-backdrop" id="modal-lr-cards">
+    <button class="modal-close" onclick="closeModal('lr-cards')">✕</button>
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">Less representative · Print</div>
+        <div class="modal-title">Cards &amp; Flyers</div>
+        <div class="modal-sub">Event &amp; gig graphics</div>
+      </div>
+      <div class="lr-sabana"><p>Full collection — laid out here soon.</p></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-lr-illustration">
+    <button class="modal-close" onclick="closeModal('lr-illustration')">✕</button>
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">Less representative · Illustration</div>
+        <div class="modal-title">Illustration</div>
+        <div class="modal-sub">Personal &amp; commissioned</div>
+      </div>
+      <div class="lr-sabana"><p>Full collection — laid out here soon.</p></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-lr-soft">
+    <button class="modal-close" onclick="closeModal('lr-soft')">✕</button>
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">Less representative · Branding</div>
+        <div class="modal-title">Soft Branding</div>
+        <div class="modal-sub">Small identity projects</div>
+      </div>
+      <div class="lr-sabana"><p>Full collection — laid out here soon.</p></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-lr-misc">
+    <button class="modal-close" onclick="closeModal('lr-misc')">✕</button>
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">Less representative · Miscellaneous</div>
+        <div class="modal-title">Misc</div>
+        <div class="modal-sub">Odds &amp; ends</div>
+      </div>
+      <div class="lr-sabana"><p>Full collection — laid out here soon.</p></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-lr-packaging">
+    <button class="modal-close" onclick="closeModal('lr-packaging')">✕</button>
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">Less representative · Packaging</div>
+        <div class="modal-title">Packaging &amp; Press</div>
+        <div class="modal-sub">Packaging &amp; editorial</div>
+      </div>
+      <div class="lr-sabana"><p>Full collection — laid out here soon.</p></div>
     </div>
   </div>
 
