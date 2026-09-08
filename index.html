@@ -92,7 +92,7 @@
       --accent: #00f5a0;
       --accent2: #00c8ff;
       --text: #e8eaed;
-      --muted: #6b7280;
+      --muted: #8b93a1;
       --white: #ffffff;
     }
 
@@ -1252,8 +1252,6 @@
     .cs2--light .cs2-meta-value { color: rgba(20,24,29,0.9); }
     .cs2--light .cs2-caption { color: rgba(20,24,29,0.42); }
     .cs2--light .cs2-line { background: rgba(0,0,0,0.10); }
-    .cs2--light .cs2-band img,
-    .cs2--light .cs2-figure { border: 1px solid rgba(0,0,0,0.08); }
     .cs2--light .cs2-sw { border-color: rgba(0,0,0,0.10); }
     .cs2--light .cs2-sw i { border-color: rgba(0,0,0,0.12); }
     .cs2--light .cs2-sw b { color: #14181d; }
@@ -1329,10 +1327,10 @@
     /* Simply Vision — variable sheets (proportional row), flow side-by-side, and the full screen "sabana" */
     .sv-varrow { display: flex; gap: calc(14 * var(--v)); align-items: flex-start; margin-top: calc(14 * var(--v)); }
     .sv-varrow img { flex-basis: 0; min-width: 0; width: 100%; height: auto; display: block;
-      border-radius: calc(10 * var(--v)); border: 1px solid rgba(0,0,0,0.08); }
+      border-radius: calc(10 * var(--v)); }
     .sv-flow-row { display: flex; gap: calc(20 * var(--v)); align-items: flex-start; margin-top: calc(14 * var(--v)); }
     .sv-flow-row img { width: 100%; height: auto; display: block;
-      border-radius: calc(10 * var(--v)); border: 1px solid rgba(0,0,0,0.08); }
+      border-radius: calc(10 * var(--v)); }
     .sv-flow-row .sv-onb { flex: 587 1 0; min-width: 0; }
     .sv-flow-row .sv-flow { flex: 709 1 0; min-width: 0; }
     .sv-sabana { display: grid; grid-template-columns: repeat(5, 1fr); gap: calc(10 * var(--v)); margin-top: calc(20 * var(--v)); }
@@ -1778,7 +1776,7 @@
       overflow: hidden;
       margin-bottom: 40px;
     }
-    .modal-image-wrap img { width: 100%; display: block; }
+    .modal-image-wrap img { width: 100%; height: auto; display: block; }
     .modal-image-nogap { margin-bottom: 0; border: none; }
     .modal-image-seamless {
       width: 100%;
@@ -1788,6 +1786,7 @@
     }
     .modal-image-seamless img {
       width: 100%;
+      height: auto;
       display: block;
       margin: 0;
       padding: 0;
@@ -2424,6 +2423,7 @@
     }
     .roche-float img {
       width: 100%;
+      height: auto;
       display: block;
     }
 
@@ -3137,9 +3137,457 @@
   .g-item, .g-title, .g-desc, .g-dim { transition: none !important; }
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE PASS — nav, hero y case studies
+   Bloque deliberadamente al final del <style>: todo lo de abajo pisa por
+   orden de cascada, sin tocar las reglas de desktop.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1 · Nav mobile ──────────────────────────────────────────────────────
+   .nav-links se esconde bajo 900px y no habia reemplazo: en telefono el
+   sitio quedaba sin navegacion. Hamburguesa + panel desplegable. */
+.nav-burger {
+  display: none;
+  width: 40px;
+  height: 40px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  cursor: pointer;
+  flex: none;
+}
+.nav-burger span {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: #e8eaed;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+.nav-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.nav-mobile {
+  display: none;
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  z-index: 9998;
+  background: rgba(8,10,12,0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.nav-mobile.open { opacity: 1; transform: none; pointer-events: auto; }
+.nav-mobile a {
+  display: block;
+  padding: 17px 24px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8a94a6;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.nav-mobile a:last-child { border-bottom: none; }
+
+@media (max-width: 900px) {
+  .nav-burger { display: flex; }
+  .nav-mobile { display: block; }
+  nav { gap: 12px; }
+}
+@media (max-width: 560px) {
+  .nav-cta { padding: 10px 14px; font-size: 11px; letter-spacing: 0.6px; }
+  .nav-logo { font-size: 11px; gap: 7px; }
+  .nav-logo-v { font-size: 11px; }
+}
+/* 380px o menos (SE, mini): el CTA no entra junto al burger */
+@media (max-width: 380px) {
+  .nav-cta { display: none; }
+}
+
+/* ── 2 · Hero mobile ─────────────────────────────────────────────────────
+   El retrato 3D (hero3d) es solo desktop+puntero fino; en mobile caia al
+   fallback img/hero-bg.jpg, el puntillista viejo. Fuera: queda el fondo
+   oscuro limpio. Sin imagen el 100dvh dejaba un pozo de aire, asi que la
+   altura pasa a ser la del contenido. */
+@media (max-width: 900px) {
+  .hero-bg img { display: none; }
+  .hero-bg::after {
+    background: radial-gradient(ellipse 120% 70% at 50% 0%,
+                rgba(0,245,160,0.07) 0%, rgba(8,10,12,0) 60%);
+  }
+  .hero { min-height: 0; }
+}
+@media (max-width: 560px) {
+  /* body ya trae margin-top:100px por el nav fijo — el padding-top viejo
+     (100px) sumaba encima y dejaba media pantalla vacia arriba del eyebrow. */
+  .hero { height: auto; min-height: 0; padding: 40px 24px 52px; gap: 18px; }
+  /* "de Francisco" en nowrap medía 388px contra 342px utiles: se cortaba. */
+  .hero-name-1, .hero-name-2 { font-size: min(8.5vw, 56px); }
+}
+
+/* ── 3 · Shell de los modales ────────────────────────────────────────────
+   El modal medía 100vw − 32px y adentro los case studies iban clavados a
+   900/1000px con paneo horizontal. Ahora usa el ancho completo de la
+   pantalla y el contenido se adapta. Las imagenes van a sangre; solo el
+   texto (header, footer, las notas .cs) lleva margen lateral. */
+@media (max-width: 700px) {
+  .modal {
+    width: 100vw;
+    max-width: none;
+    margin: 0 0 32px;
+  }
+  .modal-header { padding: 28px 20px 22px; margin-bottom: 24px; }
+  .modal-footer { margin: 0 20px 32px; }
+  .cs { padding: 0 20px; gap: 26px; }
+  .modal-title { font-size: clamp(26px, 8vw, 38px); }
+}
+
+/* ── 4 · Case studies cs2 (Dipper · Simply Vision · Patagonia) ───────────
+   Reemplaza el holding pattern (.cs2-in a 900px con overflow-x) por un
+   layout real: el bloque ocupa el ancho de pantalla y --v deja de ser
+   estrictamente proporcional. Con la escala pura (100cqw/1200) el cuerpo
+   de texto caia a 5-6px; el piso de 0.78px mantiene las proporciones del
+   Figma en imagenes y cajas, y solo la tipografia chica se pisa abajo. */
+@media (max-width: 900px) {
+  /* El reset `:where(.cs2-in) section { padding: 0 }` tiene especificidad 0,
+     asi que en mobile perdia contra `section { padding: 80px 24px }` del
+     media query global: cada <section> del case study se comia 24px por
+     lado y 80px arriba y abajo. Esto lo devuelve a cero, con especificidad. */
+  .cs2-in section, .ol-case-in section, .sk-in section { padding: 0; }
+  /* En columna, align-items:flex-start hacia que los hijos flex se
+     encogieran a su contenido (las cajas quedaban de 2px de ancho). */
+  .sv-catval, .sv-figrow, .sv-flow-row { align-items: stretch; }
+  /* Apiladas, `flex: 587 1 0` pasa a valer sobre el alto y las cajas
+     colapsaban a 0. Sin flex, manda el aspect-ratio de cada caja. */
+  .sv-figrow > *, .sv-flow-row > * { flex: none; width: 100%; }
+
+  .cs2 { overflow-x: visible; padding: 20px 16px 8px; }
+  .cs2--light { padding: 26px 16px 30px; border-radius: 0; }
+  .cs2-in {
+    width: 100%;
+    --v: max(calc(100cqw / 1200), 0.78px);
+    gap: calc(60 * var(--v));
+  }
+
+  /* Filas a columna */
+  .cs2-hero { flex-direction: column; align-items: stretch; gap: calc(26 * var(--v)); }
+  .cs2-two { grid-template-columns: minmax(0, 1fr); gap: calc(20 * var(--v)); }
+  .cs2-found { gap: calc(30 * var(--v)); }
+  .cs2-type-top { flex-wrap: wrap; gap: calc(6 * var(--v)); }
+  .cs2-meta-grid { gap: calc(10 * var(--v)); }
+
+  /* Tipografia chica: pisos en px para que no baje de lo legible */
+  /* "Banco Patagonia." se salia de pantalla: el titulo tambien se limita
+     por ancho de viewport, no solo por la escala del sistema. */
+  .cs2-title { font-size: min(calc(62 * var(--v)), 10vw); }
+  .cs2-h { font-size: min(calc(44 * var(--v)), 7.6vw); }
+  .cs2-prose { font-size: max(calc(19 * var(--v)), 15px); }
+  .cs2-lede { font-size: max(calc(23 * var(--v)), 16px); }
+  .cs2-pill, .cs2-pill--sm { font-size: 10px; letter-spacing: 0.06em; }
+  .cs2-chip { font-size: 11px; }
+  .cs2-caption { font-size: 10px; }
+  .cs2-meta-label { font-size: 10px; }
+  .cs2-meta-value { font-size: max(calc(17 * var(--v)), 13px); }
+  .cs2-sw b { font-size: max(calc(13 * var(--v)), 12px); }
+  .cs2-sw span { font-size: 10px; }
+  .cs2-type-role { font-size: 9px; }
+  .cs2-scale div { font-size: max(calc(14 * var(--v)), 11px); }
+  .sv-scale-row { font-size: max(calc(15 * var(--v)), 12px); }
+  .pat-sw-name { font-size: max(calc(15 * var(--v)), 13px); }
+  .pat-sw-hex { font-size: 11px; }
+}
+
+/* Los 7 telefonos del filmstrip a 358px daban 40px cada uno: pasa a ser un
+   carrusel con snap, una pantalla por vez. */
+@media (max-width: 700px) {
+  .cs2-phones {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-inline: -16px;
+    padding-inline: 16px;
+    gap: 10px;
+  }
+  .cs2-phones::-webkit-scrollbar { display: none; }
+  .cs2-phones img { flex: 0 0 56%; scroll-snap-align: center; }
+
+  /* El especimen de Mulish: el alfabeto se salia de la tarjeta al lado de
+     la "Aa". Apilado usa el ancho completo y entra. */
+  .cs2-type-aa { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .cs2-type-aa b { font-size: calc(84 * var(--v)); }
+  .cs2-type-aa span { font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+
+  /* Los <br> estan puestos para el ancho de desktop; en 390px cortan los
+     titulos en escalera. Que rompan solos. */
+  .cs2-h br, .cs2-lede br { display: none; }
+}
+
+/* ── 5 · Open Loot ───────────────────────────────────────────────────────
+   Port 1:1 del frame Figma de 1575px. Acá --u sigue siendo proporcional
+   (las escenas, bandas y el cierre son artwork puro y escalan solos), y
+   lo que se pisa es la tipografia — en px — mas las filas que tienen que
+   apilarse y las alturas fijas que ya no aplican cuando el texto crece. */
+/* Va a 900px, el mismo corte que tenia el holding pattern viejo, para que
+   no quede una franja de tablets todavia paneando de costado. */
+@media (max-width: 900px) {
+  .ol-case { padding: 0; }
+  .ol-case-in { width: 100%; --u: calc(100cqw / 1575); gap: 40px; }
+  .ol-h2 br, .ol-hero-title br { display: none; }
+
+  .ol-pill { padding: 3px 9px; font-size: 10px; }
+  .ol-pill--sm, .ol-pill--jost { font-size: 10px; }
+  .ol-h2 { font-size: min(7.2vw, 28px); line-height: 1.15; }
+
+  /* 01 · Hero — el `background-size: 100% 100%, 100% 63.46%` del Figma
+     achataba la foto en vertical al cambiar la proporcion del bloque:
+     en mobile va `cover`, y el degrade pasa a ser un velo parejo al 80%
+     para que el titulo y la bajada apoyen sobre negro y no sobre la escena. */
+  .ol-case-in .ol-hero {
+    background-image:
+      linear-gradient(180deg, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.86) 55%, rgba(0,0,0,0.97) 100%),
+      url('img/openloot/ol-hero-bg-681c66.webp');
+    background-size: 100% 100%, cover;
+    background-position: center top, center center;
+    background-repeat: no-repeat, no-repeat;
+    height: auto;
+    min-height: 78vw;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 22px;
+    padding: 26px 16px 30px;
+  }
+  .ol-hero-copy { width: 100%; gap: 14px; }
+  .ol-hero-title { font-size: min(8.4vw, 34px); line-height: 1.12; }
+  .ol-hero-sub { font-size: 15px; }
+  .ol-chips { flex-wrap: wrap; gap: 8px; }
+  .ol-chip { height: auto; padding: 6px 11px; border-radius: 5px; font-size: 11px; }
+  .ol-hero-meta { align-self: stretch; }
+  .ol-meta-grid { height: auto; gap: 10px; }
+  .ol-meta-card { gap: 6px; padding: 13px 13px 15px; border-radius: 9px; }
+  .ol-meta-label { font-size: 10px; }
+  .ol-meta-value { font-size: 13px; }
+
+  /* Stats: cinco en fila daban 70px por celda */
+  .ol-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; }
+  .ol-stat { padding: 18px 8px; gap: 6px; }
+  .ol-stat:last-child { grid-column: 1 / -1; }
+  .ol-stat-num { font-size: 26px; }
+  .ol-stat-label { font-size: 10px; }
+
+  /* 02 · The Project — la copy estaba absoluta sobre la escena (left:1011u) */
+  .ol-project-head { gap: 14px; padding: 0 16px 16px; }
+  .ol-project-body { position: static; height: auto; margin-top: 0; }
+  /* La escena es un render de 1575x704 con mucho negro muerto a la derecha:
+     a ancho completo los equipos quedaban en 174px de alto. Recuadre mas
+     alto sobre el tercio util, asi el monitor y el telefono se leen. */
+  .ol-project-scene {
+    position: static;
+    height: auto;
+    aspect-ratio: 1575 / 1134;
+    background-size: cover;
+    background-position: 8% center;
+  }
+  .ol-project-copy { position: static; width: 100%; gap: 14px; padding: 20px 16px 0; }
+  .ol-project-copy p { font-size: 15px; }
+
+  /* 03 · My Role */
+  .ol-role { height: auto; }
+  .ol-role-blur { height: auto; gap: 18px; padding: 24px 16px 28px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .ol-role-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .ol-role-card { height: auto; gap: 14px; border-radius: 0 10px 10px 0; }
+  .ol-role-card::before { width: 3px; }
+  .ol-role-card-body { gap: 7px; padding: 16px 14px 16px 0; }
+  .ol-role-num { font-size: 26px; }
+  .ol-card-title { font-size: 15px; }
+  .ol-card-desc { font-size: 12px; }
+
+  /* 04 · Design System */
+  .ol-ds, .ol-ds-pad { gap: 34px; }
+  .ol-ds-pad { padding: 0 16px; }
+  .ol-ds-head { gap: 14px; }
+  .ol-ds-body { gap: 26px; }
+  .ol-ds-caption { height: auto; font-size: 10px; }
+  .ol-swatches { flex-wrap: wrap; gap: 10px; }
+  .ol-swatch { flex: 1 1 26%; gap: 6px; }
+  .ol-swatch i { height: 22px; }
+  .ol-swatch span { font-size: 10px; }
+  .ol-grid-spec { gap: 12px; }
+  .ol-grid-spec > p { font-size: 11px; }
+  .ol-cols { height: 40px; gap: 8px; }
+  .ol-components { flex-wrap: wrap; gap: 6px; }
+  .ol-comp { flex: 0 0 auto; height: 26px; padding: 4px 10px; border-radius: 5px; font-size: 11px; }
+  .ol-fonts { flex-direction: column; gap: 10px; }
+  .ol-typeface { padding: 18px; gap: 10px; }
+  .ol-tf-name { font-size: 20px; }
+  .ol-tf-role { font-size: 9px; }
+  /* El alfabeto iba al lado de la "Aa" y se salia de la tarjeta */
+  .ol-tf-top { gap: 10px; }
+  .ol-tf-aa { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .ol-tf-aa > b { flex: none; font-size: 62px; line-height: 1.05; }
+  .ol-tf-aa > span { flex: none; width: 100%; overflow-wrap: anywhere; }
+  .ol-typeface--mont .ol-tf-aa > span,
+  .ol-typeface--bai .ol-tf-aa > span { font-size: 11px; line-height: 1.5; }
+
+  /* 05 · Challenges — la rampa compartida entre tres cards no aplica apilado */
+  .ol-case-in .ol-challenges { padding: 0 16px; gap: 10px; }
+  .ol-challenge-row { flex-direction: column; gap: 10px; }
+  .ol-challenge { height: auto; gap: 12px; padding: 18px; background-size: 100% 100%; background-position: center center; }
+  .ol-challenge-num { font-size: 28px; }
+
+  /* 06 · Outcomes */
+  .ol-outcomes-wrap { gap: 44px; }
+  .ol-outcomes { padding: 0 16px; }
+  .ol-outcomes-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .ol-outcome { padding: 16px; gap: 8px; }
+}
+
+/* ── 6 · Sketchup ────────────────────────────────────────────────────────
+   Mismo criterio: el case es casi todo render, asi que --u queda
+   proporcional y solo se pisan los textos y el bloque intro. */
+@media (max-width: 900px) {
+  .sk-case { padding: 0; }
+  .sk-in { width: 100%; --u: calc(100cqw / 1574); gap: 26px; }
+  .sk-h1 br { display: none; }
+
+  .sk-in .sk-title { padding: 22px 16px 0; }
+  .sk-h1 { font-size: min(8.4vw, 34px); white-space: normal; line-height: 1.1; }
+  .sk-in .sk-pad { padding-left: 12px; padding-right: 12px; }
+
+  .sk-in .sk-sec { gap: 12px; padding: 0 16px 22px; }
+  .sk-sec-main { gap: 16px; }
+  .sk-head { padding-top: 22px; gap: 10px; }
+  .sk-head-label { font-size: 15px; line-height: 1.2; }
+  .sk-head-line { height: 1px; }
+  .sk-num { font-size: 46px; line-height: 1; }
+  /* Los parrafos traen width:calc(742*var(--u)) inline (172px en mobile):
+     solo se puede pisar con !important. */
+  .sk-body { font-size: 14px; width: auto !important; }
+  .sk-body p { margin-bottom: 12px; }
+
+  .sk-intro { flex-direction: column; gap: 16px; align-items: stretch; }
+  .sk-intro-copy { width: 100%; flex: none; }
+  .sk-intro-meta { padding-left: 0; }
+  .sk-meta { font-size: 13px; gap: 7px; }
+  .sk-meta .k { width: 108px; }
+
+  .sk-in .sk-frame-wrap { height: auto; padding: 0 12px; }
+  .sk-frame { width: 100%; border-width: 8px; }
+}
+
+
+  .skip-link{position:absolute;left:12px;top:-56px;z-index:2000;background:var(--accent,#00f5a0);color:#0a0d0f;padding:10px 18px;border-radius:8px;font-weight:600;text-decoration:none;transition:top .16s ease;}
+  .skip-link:focus{top:12px;outline:2px solid #0a0d0f;outline-offset:2px;}
+/* ── 7 · Pasar de proyecto sin cerrar el modal ───────────────────────────
+   El gesto es el swipe; estos controles son la parte visible de que se
+   puede, y la alternativa para quien no desliza. Toman el mismo chrome que
+   .modal-close y .like-btn para leerse como una sola fila de controles:
+   ‹ prev · like · next ›, con el contador arriba a la izquierda. */
+.pnav-btn {
+  position: fixed;
+  bottom: 14px;
+  z-index: 10001;
+  width: 38px;
+  height: 38px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 3px;
+  background: rgba(14,17,20,0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #8a94a6;
+  font-family: 'DM Mono', monospace;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.pnav-prev { left: 16px; }
+.pnav-next { right: 16px; }
+.pnav-btn:active { color: #00f5a0; border-color: rgba(0,245,160,0.4); }
+.pnav-btn:focus-visible { outline: 2px solid #00f5a0; outline-offset: 3px; }
+
+/* Pegado al boton de cerrar y con su mismo fondo: arriba a la izquierda
+   se le montaba al contenido del case study, que va a sangre. */
+.pnav-count {
+  position: fixed;
+  top: 12px;
+  right: 56px;
+  z-index: 10001;
+  display: none;
+  height: 36px;
+  padding: 0 11px;
+  align-items: center;
+  background: rgba(14,17,20,0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.5);
+  pointer-events: none;
+}
+.pnav-count b { font-weight: 400; color: #00f5a0; }
+
+/* Se muestra una sola vez por dispositivo, la primera vez que se abre un
+   proyecto en telefono. */
+.pnav-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 62px;
+  z-index: 10001;
+  display: none;
+  transform: translateX(-50%);
+  padding: 9px 15px;
+  background: rgba(14,17,20,0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0,245,160,0.3);
+  color: #00f5a0;
+  font-family: 'DM Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.pnav-hint.on { opacity: 1; }
+
+@media (max-width: 900px) {
+  .pnav-btn:not([hidden]) { display: flex; }
+  .pnav-count:not([hidden]) { display: inline-flex; }
+  .pnav-hint:not([hidden]) { display: block; }
+}
+
+/* Durante el arrastre el modal sigue el dedo sin transicion; al soltar,
+   vuelve o sale segun cuanto se movio. */
+.modal.pnav-drag { transition: none; }
+.modal.pnav-anim { transition: transform 0.19s ease-out, opacity 0.19s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .modal.pnav-anim { transition: none; }
+  .pnav-hint { transition: none; }
+}
+
 </style>
 </head>
 <body>
+  <a href="#main" class="skip-link">Skip to content</a>
 
   <!-- NAV -->
   <nav>
@@ -3151,16 +3599,31 @@
       <li><a href="#resume">Career</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a href="DesignSystem.html">Design System</a></li>
-      <li><a href="../v1.html" class="nav-link-accent">Visit v1</a></li>
+      <li><a href="v1.html" class="nav-link-accent">Visit v1</a></li>
     </ul>
     <a href="#contact" class="nav-cta">Hire me →</a>
+    <!-- Mobile only: .nav-links is display:none under 900px and there was no
+         replacement, so the whole site had no navigation on a phone. -->
+    <button class="nav-burger" id="navBurger" type="button"
+            aria-label="Open menu" aria-expanded="false" aria-controls="navMobile">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
-  <div class="disclaimer-bar">Open in mobile to play!!</div>
+  <div class="nav-mobile" id="navMobile">
+    <a href="#about">About me</a>
+    <a href="#tools">Tools</a>
+    <a href="#work">Work</a>
+    <a href="#resume">Career</a>
+    <a href="#contact">Contact</a>
+    <a href="DesignSystem.html">Design System</a>
+    <a href="v1.html" class="nav-link-accent">Visit v1</a>
+  </div>
+  <div class="disclaimer-bar" hidden>Open in mobile to play!!</div>
 
   <!-- HERO -->
-  <section class="hero">
+  <section class="hero" id="main">
     <div class="hero-bg" aria-hidden="true">
-      <img src="img/hero-bg.jpg" alt="">
+      <img width="2560" height="1277" src="img/hero-bg.jpg" alt="">
     </div>
     <!--
       Fuera de .hero-bg a proposito: ese contenedor tiene un ::after con un
@@ -3296,7 +3759,7 @@
           <a href="https://www.youtube.com/watch?v=yau-W_WeHPs" target="_blank" rel="noopener" class="jazz-yt-link">
             <div class="jazz-link-label">watch in youtube →</div>
             <div class="jazz-thumb">
-              <img src="https://img.youtube.com/vi/yau-W_WeHPs/hqdefault.jpg" alt="Jazz guitar video">
+              <img loading="lazy" src="https://img.youtube.com/vi/yau-W_WeHPs/hqdefault.jpg" alt="Jazz guitar video">
               <div class="jazz-thumb-play"></div>
             </div>
           </a>
@@ -3327,7 +3790,7 @@
     <div class="elastic-gallery" id="elastic-gallery">
 
       <div class="g-item active" tabindex="0" data-modal="openloot" aria-label="OpenLoot">
-        <div class="g-bg"><img src="img/covers/01-openloot.webp" alt="OpenLoot — NFT Marketplace" style="object-position: 37% 50%;"></div>
+        <div class="g-bg"><img loading="lazy" src="img/covers/01-openloot.webp" alt="OpenLoot — NFT Marketplace" style="object-position: 37% 50%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3341,7 +3804,7 @@
       </div>
 
       <div class="g-item" tabindex="0" data-modal="dipper" aria-label="Our Dipper">
-        <div class="g-bg"><img src="img/covers/02-dipper.webp" alt="Our Dipper — Web App" style="object-position: 50% 50%;"></div>
+        <div class="g-bg"><img loading="lazy" src="img/covers/02-dipper.webp" alt="Our Dipper — Web App" style="object-position: 50% 50%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3355,7 +3818,7 @@
       </div>
 
       <div class="g-item" tabindex="0" data-modal="roche" aria-label="Roche Congress">
-        <div class="g-bg"><img src="img/covers/03-roche.webp" alt="Roche Congress — Enterprise Health" style="object-position: 21% 50%;"></div>
+        <div class="g-bg"><img loading="lazy" src="img/covers/03-roche.webp" alt="Roche Congress — Enterprise Health" style="object-position: 21% 50%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3369,7 +3832,7 @@
       </div>
 
       <div class="g-item" tabindex="0" data-modal="games" aria-label="Mobile Games">
-        <div class="g-bg"><img src="img/covers/04-games.webp" alt="Mobile Games — Disney" style="object-position: 17% 100%;"></div>
+        <div class="g-bg"><img loading="lazy" src="img/covers/04-games.webp" alt="Mobile Games — Disney" style="object-position: 17% 100%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3383,7 +3846,7 @@
       </div>
 
       <div class="g-item" tabindex="0" data-modal="branding" aria-label="Branding + Social">
-        <div class="g-bg"><img src="img/covers/05-branding.webp" alt="Branding + Social — Design System" style="object-position: 50% 50%;"></div>
+        <div class="g-bg"><img loading="lazy" src="img/covers/05-branding.webp" alt="Branding + Social — Design System" style="object-position: 50% 50%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3397,7 +3860,7 @@
       </div>
 
       <div class="g-item" tabindex="0" data-modal="sketchup" aria-label="Sketchup Renders">
-        <div class="g-bg"><img src="img/covers/06-sketchup.webp" alt="Sketchup Renders — 3D Architecture" style="object-position: 64% 100%;"></div>
+        <div class="g-bg"><img loading="lazy" src="img/covers/06-sketchup.webp" alt="Sketchup Renders — 3D Architecture" style="object-position: 64% 100%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3411,7 +3874,7 @@
       </div>
 
       <div class="g-item" tabindex="0" data-modal="simplyvision" aria-label="Simply Vision">
-        <div class="g-bg"><img src="img/covers/07-simplyvision.webp" alt="Simply Vision — Wellbeing App" style="object-position: 64% 42%;"></div>
+        <div class="g-bg"><img loading="lazy" src="img/covers/07-simplyvision.webp" alt="Simply Vision — Wellbeing App" style="object-position: 64% 42%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3425,7 +3888,7 @@
       </div>
 
       <div class="g-item" tabindex="0" data-modal="patagonia" aria-label="Banco Patagonia">
-        <div class="g-bg"><img src="img/covers/08-patagonia.webp" alt="Banco Patagonia — Insurance Portal" style="object-position: 63% 85%;"></div>
+        <div class="g-bg"><img loading="lazy" src="img/covers/08-patagonia.webp" alt="Banco Patagonia — Insurance Portal" style="object-position: 63% 85%;"></div>
         <div class="g-dim"></div>
         <div class="g-overlay"></div>
         <div class="g-body">
@@ -3440,25 +3903,25 @@
 
     </div>
 
-    <div class="work-subhead work-subhead--less">Less Representative projects</div>
+    <div class="work-subhead work-subhead--less">A little bit of this, a little bit of that (coming soon… =)</div>
     <div class="less-gallery">
-      <div class="lr-item" tabindex="0" role="button" aria-label="Cards &amp; Flyers" onclick="openModal('lr-cards')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-cards');}">
+      <div class="lr-item" data-modal="lr-cards" tabindex="0" role="button" aria-label="Cards &amp; Flyers" onclick="openModal('lr-cards')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-cards');}">
         <img src="img/less-rep/cards-flyers.webp" alt="Cards &amp; Flyers" loading="lazy" decoding="async" style="width:100%;height:116.3%;left:0;top:-0.08%;">
         <div class="lr-overlay"><div class="lr-title">Cards &amp; Flyers</div></div>
       </div>
-      <div class="lr-item" tabindex="0" role="button" aria-label="Illustration" onclick="openModal('lr-illustration')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-illustration');}">
+      <div class="lr-item" data-modal="lr-illustration" tabindex="0" role="button" aria-label="Illustration" onclick="openModal('lr-illustration')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-illustration');}">
         <img src="img/less-rep/illustration.webp" alt="Illustration" loading="lazy" decoding="async" style="width:207.15%;height:289.17%;left:-53.57%;top:-44.32%;">
         <div class="lr-overlay"><div class="lr-title">Illustration</div></div>
       </div>
-      <div class="lr-item" tabindex="0" role="button" aria-label="Soft Branding" onclick="openModal('lr-soft')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-soft');}">
+      <div class="lr-item" data-modal="lr-soft" tabindex="0" role="button" aria-label="Soft Branding" onclick="openModal('lr-soft')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-soft');}">
         <img src="img/less-rep/soft-branding.webp" alt="Soft Branding" loading="lazy" decoding="async" style="width:165.68%;height:107.69%;left:-32.84%;top:-4.54%;">
         <div class="lr-overlay"><div class="lr-title">Soft Branding</div></div>
       </div>
-      <div class="lr-item" tabindex="0" role="button" aria-label="Misc" onclick="openModal('lr-misc')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-misc');}">
+      <div class="lr-item" data-modal="lr-misc" tabindex="0" role="button" aria-label="Misc" onclick="openModal('lr-misc')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-misc');}">
         <img src="img/less-rep/misc.webp" alt="Misc" loading="lazy" decoding="async" style="width:100%;height:100%;left:0;top:0;object-fit:cover;">
         <div class="lr-overlay"><div class="lr-title">Misc</div></div>
       </div>
-      <div class="lr-item" tabindex="0" role="button" aria-label="Packaging &amp; Press" onclick="openModal('lr-packaging')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-packaging');}">
+      <div class="lr-item" data-modal="lr-packaging" tabindex="0" role="button" aria-label="Packaging &amp; Press" onclick="openModal('lr-packaging')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-packaging');}">
         <img src="img/less-rep/packaging-press.webp" alt="Packaging &amp; Press" loading="lazy" decoding="async" style="width:100%;height:212.28%;left:0;top:-6.1%;">
         <div class="lr-overlay"><div class="lr-title">Packaging &amp; Press</div></div>
       </div>
@@ -3808,7 +4271,7 @@
             <div class="ol-hero-copy">
               <div class="ol-pill">CASE STUDY · 2022 – 2026</div>
               <h2 class="ol-hero-title">Open Loot.</h2>
-              <p class="ol-hero-sub">Lead Product Designer responsible for the full<br>end-to-end design of a Web3 gaming marketplace.</p>
+              <p class="ol-hero-sub">Lead Product Designer responsible for the full <br>end-to-end design of a Web3 gaming marketplace.</p>
               <div class="ol-chips">
                 <span class="ol-chip">Product Design</span>
                 <span class="ol-chip">UX / UI</span>
@@ -3861,7 +4324,7 @@
         <section class="ol-project">
           <div class="ol-project-head">
             <div class="ol-pill ol-pill--sm">THE PROJECT</div>
-            <h2 class="ol-h2">A Web3 gaming marketplace<br>built <em>from scratch.</em></h2>
+            <h2 class="ol-h2">A Web3 gaming marketplace <br>built <em>from scratch.</em></h2>
           </div>
           <div class="ol-project-body">
             <div class="ol-project-scene" role="img" aria-label="Open Loot homepage on a desktop display alongside a mobile balance screen"></div>
@@ -3925,7 +4388,7 @@
           <div class="ol-ds-pad">
           <div class="ol-ds-head">
             <div class="ol-pill ol-pill--sm">DESIGN FOUNDATION</div>
-            <h2 class="ol-h2">Design System<br><em>behind the product.</em></h2>
+            <h2 class="ol-h2">Design System <br><em>behind the product.</em></h2>
           </div>
           <div class="ol-ds-body">
             <div>
@@ -4072,8 +4535,8 @@ abcdefghijklmnopqrstuvwxyz
           </div>
           <div class="ol-closing">
             <div class="ol-closing-bg"></div>
-            <img class="ol-closing-token" src="img/openloot/ol-token.svg" alt="">
-            <img class="ol-closing-wordmark" src="img/openloot/ol-wordmark.svg" alt="Open Loot">
+            <img loading="lazy" class="ol-closing-token" src="img/openloot/ol-token.svg" alt="">
+            <img loading="lazy" class="ol-closing-wordmark" src="img/openloot/ol-wordmark.svg" alt="Open Loot">
           </div>
         </section>
 
@@ -4096,7 +4559,7 @@ abcdefghijklmnopqrstuvwxyz
           <div class="cs2-hero-copy">
             <div class="cs2-pill">Case study · 2021</div>
             <h2 class="cs2-title">Our Dipper.</h2>
-            <p class="cs2-lede">A community and a product for professionals of color<br>to share what work is really like.</p>
+            <p class="cs2-lede">A community and a product for professionals of color <br>to share what work is really like.</p>
             <div class="cs2-chips">
               <span class="cs2-chip">UX Strategy</span>
               <span class="cs2-chip">UI Design</span>
@@ -4116,7 +4579,7 @@ abcdefghijklmnopqrstuvwxyz
         </section>
 
         <section class="cs2-band">
-          <img data-src="img/dipper/devices.webp" decoding="async"
+          <img width="2000" height="1132" loading="lazy" data-src="img/dipper/devices.webp" decoding="async"
                alt="The Dipper landing page shown on a laptop, tablet and phone">
         </section>
 
@@ -4125,7 +4588,7 @@ abcdefghijklmnopqrstuvwxyz
         <section class="cs2-two">
           <div>
             <div class="cs2-pill cs2-pill--sm">The project</div>
-            <h3 class="cs2-h">A safe space to<br><em>say it out loud.</em></h3>
+            <h3 class="cs2-h">A safe space to <br><em>say it out loud.</em></h3>
           </div>
           <div class="cs2-prose">
             <p>Dipper is an online, interactive community and safe space for professionals of color to share their workplace experiences, past and present. It makes it <strong>easy and safe to speak openly about their time at work</strong> — whether good, bad, or indifferent.</p>
@@ -4138,7 +4601,7 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">Foundations</div>
-          <h3 class="cs2-h">The system<br><em>underneath it.</em></h3>
+          <h3 class="cs2-h">The system <br><em>underneath it.</em></h3>
 
           <div class="cs2-found">
             <div>
@@ -4183,9 +4646,9 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">Sitemap &amp; user flow</div>
-          <h3 class="cs2-h">Two people,<br><em>two journeys.</em></h3>
+          <h3 class="cs2-h">Two people, <br><em>two journeys.</em></h3>
           <p class="cs2-prose cs2-prose--wide">We designed for two profiles: an individual — a professional of color — and a company. That produced <strong>two parallel flows</strong>, sharing components where it made sense and diverging where the functionality genuinely differs.</p>
-          <img class="cs2-figure" data-src="img/dipper/flow.webp" decoding="async"
+          <img width="2000" height="1343" loading="lazy" class="cs2-figure" data-src="img/dipper/flow.webp" decoding="async"
                alt="Sitemap and user flow diagram covering both the individual and company journeys">
         </section>
 
@@ -4193,20 +4656,20 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">Responsive</div>
-          <h3 class="cs2-h">One design<br><em>that fits them all.</em></h3>
+          <h3 class="cs2-h">One design <br><em>that fits them all.</em></h3>
           <p class="cs2-prose cs2-prose--wide">The <strong>mobile-first approach</strong> forced the content to simplify rather than shrink. What came out is minimalist and fully functional on every device people actually use — not a desktop layout squeezed down.</p>
-          <img class="cs2-figure" data-src="img/dipper/responsive.webp" decoding="async"
+          <img width="2000" height="1736" loading="lazy" class="cs2-figure" data-src="img/dipper/responsive.webp" decoding="async"
                alt="The Dipper landing page across desktop, laptop, tablet and phone breakpoints">
 
           <div class="cs2-caption" style="margin-top: calc(30 * var(--v));">The individual&rsquo;s app &middot; seven core screens</div>
           <div class="cs2-phones">
-            <img data-src="img/dipper/m-01-dashboard.webp" decoding="async" alt="Mobile dashboard with company ranking and review stats">
-            <img data-src="img/dipper/m-02-reviews.webp" decoding="async" alt="My reviews screen">
-            <img data-src="img/dipper/m-03-insights.webp" decoding="async" alt="Insights screen with the diversity breakdown">
-            <img data-src="img/dipper/m-04-jobs.webp" decoding="async" alt="Job openings screen">
-            <img data-src="img/dipper/m-05-news.webp" decoding="async" alt="News feed screen">
-            <img data-src="img/dipper/m-06-profile.webp" decoding="async" alt="Profile screen">
-            <img data-src="img/dipper/m-07-settings.webp" decoding="async" alt="Settings screen">
+            <img width="375" height="812" loading="lazy" data-src="img/dipper/m-01-dashboard.webp" decoding="async" alt="Mobile dashboard with company ranking and review stats">
+            <img width="375" height="812" loading="lazy" data-src="img/dipper/m-02-reviews.webp" decoding="async" alt="My reviews screen">
+            <img width="375" height="812" loading="lazy" data-src="img/dipper/m-03-insights.webp" decoding="async" alt="Insights screen with the diversity breakdown">
+            <img width="375" height="812" loading="lazy" data-src="img/dipper/m-04-jobs.webp" decoding="async" alt="Job openings screen">
+            <img width="375" height="812" loading="lazy" data-src="img/dipper/m-05-news.webp" decoding="async" alt="News feed screen">
+            <img width="375" height="812" loading="lazy" data-src="img/dipper/m-06-profile.webp" decoding="async" alt="Profile screen">
+            <img width="375" height="812" loading="lazy" data-src="img/dipper/m-07-settings.webp" decoding="async" alt="Settings screen">
           </div>
         </section>
 
@@ -4214,9 +4677,9 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">Wireframes &amp; prototype</div>
-          <h3 class="cs2-h">Judge it by feel,<br><em>not by spec.</em></h3>
+          <h3 class="cs2-h">Judge it by feel, <br><em>not by spec.</em></h3>
           <p class="cs2-prose cs2-prose--wide">Prototyping is what confirms the ideas carried by the flows and wireframes actually reach their objective. A prototype <strong>simulates a large share of the real functionality</strong> at the earliest stage of the project — because static previews are too technical to read, and people cannot judge what they cannot feel.</p>
-          <img class="cs2-figure" data-src="img/dipper/wireframes.webp" decoding="async"
+          <img width="2000" height="1057" loading="lazy" class="cs2-figure" data-src="img/dipper/wireframes.webp" decoding="async"
                alt="Wireframe collage covering the full set of screens">
         </section>
 
@@ -4224,9 +4687,9 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">The product</div>
-          <h3 class="cs2-h">Insights,<br><em>not just reviews.</em></h3>
+          <h3 class="cs2-h">Insights, <br><em>not just reviews.</em></h3>
           <p class="cs2-prose cs2-prose--wide">The dashboard turns individual reviews into something a company can act on — sentiment on culture, management and equity, aggregated and readable at a glance.</p>
-          <img class="cs2-figure" data-src="img/dipper/dashboard.webp" decoding="async"
+          <img width="2000" height="604" loading="lazy" class="cs2-figure" data-src="img/dipper/dashboard.webp" decoding="async"
                alt="Dipper insights dashboard for a member and for a company member">
 
           <!-- The walkthrough runs straight into the screens board with no seam:
@@ -4241,7 +4704,7 @@ abcdefghijklmnopqrstuvwxyz
               <source data-src="img/dipper/webapp.webm" type="video/webm">
               <source data-src="img/dipper/webapp.mp4" type="video/mp4">
             </video>
-            <img data-src="img/dipper/screens.webp" decoding="async"
+            <img width="2000" height="1334" loading="lazy" data-src="img/dipper/screens.webp" decoding="async"
                  alt="The full set of shipped Dipper screens">
           </div>
         </section>
@@ -4268,7 +4731,7 @@ abcdefghijklmnopqrstuvwxyz
           <div class="cs2-hero-copy">
             <div class="cs2-pill">Case study · 2015</div>
             <h2 class="cs2-title">Simply Vision.</h2>
-            <p class="cs2-lede">A wellbeing app that turns tiny daily check-ins<br>into a picture of how you actually live.</p>
+            <p class="cs2-lede">A wellbeing app that turns tiny daily check-ins <br>into a picture of how you actually live.</p>
             <div class="cs2-chips">
               <span class="cs2-chip">UX Strategy</span>
               <span class="cs2-chip">UI Design</span>
@@ -4288,7 +4751,7 @@ abcdefghijklmnopqrstuvwxyz
         </section>
 
         <section class="cs2-band">
-          <img data-src="img/simply-vision/band.webp" decoding="async"
+          <img width="2000" height="1145" loading="lazy" data-src="img/simply-vision/band.webp" decoding="async"
                alt="Three Simply Vision screens: Best Ever records, the Happiness Report and the Overview dashboard">
         </section>
 
@@ -4297,7 +4760,7 @@ abcdefghijklmnopqrstuvwxyz
         <section class="cs2-two">
           <div>
             <div class="cs2-pill cs2-pill--sm">How it works</div>
-            <h3 class="cs2-h">Track a little,<br><em>learn a lot.</em></h3>
+            <h3 class="cs2-h">Track a little, <br><em>learn a lot.</em></h3>
           </div>
           <div class="cs2-prose">
             <p>Every day you log quick check-ins across five parts of life — <strong>Sleep, Nutrition, Work, Social and General Mood</strong>. Each takes seconds: how much, and how it felt.</p>
@@ -4307,7 +4770,7 @@ abcdefghijklmnopqrstuvwxyz
         </section>
 
         <section class="cs2-sec">
-          <img class="cs2-figure" data-src="img/simply-vision/track-results.webp" decoding="async"
+          <img width="2000" height="1095" loading="lazy" class="cs2-figure" data-src="img/simply-vision/track-results.webp" decoding="async"
                alt="Track and Analyze screens side by side for Nutrition and Sleep, showing how logging feeds results">
           <div class="cs2-caption" style="margin-top: calc(10 * var(--v));">Track (left) feeds Analyze (right) — Nutrition &amp; Sleep</div>
         </section>
@@ -4316,7 +4779,7 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">The system</div>
-          <h3 class="cs2-h">A colour for<br><em>every feeling.</em></h3>
+          <h3 class="cs2-h">A colour for <br><em>every feeling.</em></h3>
           <p class="cs2-prose cs2-prose--wide">The whole product speaks one colour language. Each of the six life categories owns a hue; every hue runs down a <strong>value scale</strong> — from &ldquo;Great&rdquo; to &ldquo;Terrible&rdquo; — so a screen&rsquo;s mood is legible before a single word is read, and it stays consistent across tracking, results and charts.</p>
 
           <div class="cs2-found">
@@ -4348,19 +4811,19 @@ abcdefghijklmnopqrstuvwxyz
             <div>
               <div class="cs2-caption">The variables tracked in each category</div>
               <div class="sv-varrow">
-                <img data-src="img/simply-vision/screens/gral-mood-variables.webp" style="flex-grow:258" decoding="async" alt="General-mood variables">
-                <img data-src="img/simply-vision/screens/nutritioin-variables.webp" style="flex-grow:417" decoding="async" alt="Nutrition variables">
-                <img data-src="img/simply-vision/screens/work-variables.webp" style="flex-grow:319" decoding="async" alt="Work variables">
-                <img data-src="img/simply-vision/screens/sleep-variablesandorder.webp" style="flex-grow:256" decoding="async" alt="Sleep variables and order">
+                <img loading="lazy" data-src="img/simply-vision/screens/gral-mood-variables.webp" style="flex-grow:258" decoding="async" alt="General-mood variables">
+                <img loading="lazy" data-src="img/simply-vision/screens/nutritioin-variables.webp" style="flex-grow:417" decoding="async" alt="Nutrition variables">
+                <img loading="lazy" data-src="img/simply-vision/screens/work-variables.webp" style="flex-grow:319" decoding="async" alt="Work variables">
+                <img loading="lazy" data-src="img/simply-vision/screens/sleep-variablesandorder.webp" style="flex-grow:256" decoding="async" alt="Sleep variables and order">
               </div>
             </div>
             <div>
               <div class="cs2-caption">The same colour language, live in the app</div>
               <div class="cs2-phones">
-                <img data-src="img/simply-vision/screens/analyze-generalmood.webp" decoding="async" alt="Analyze — general mood">
-                <img data-src="img/simply-vision/screens/analyze-nutrition-comp-feelings.webp" decoding="async" alt="Analyze — nutrition vs feelings">
-                <img data-src="img/simply-vision/screens/analyze-work-comparison-productive.webp" decoding="async" alt="Analyze — work productivity">
-                <img data-src="img/simply-vision/screens/track-sleep-que2.webp" decoding="async" alt="Track — sleep">
+                <img width="752" height="1334" loading="lazy" data-src="img/simply-vision/screens/analyze-generalmood.webp" decoding="async" alt="Analyze — general mood">
+                <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/analyze-nutrition-comp-feelings.webp" decoding="async" alt="Analyze — nutrition vs feelings">
+                <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/analyze-work-comparison-productive.webp" decoding="async" alt="Analyze — work productivity">
+                <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/track-sleep-que2.webp" decoding="async" alt="Track — sleep">
               </div>
             </div>
           </div>
@@ -4370,22 +4833,22 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">Sitemap &amp; user flow</div>
-          <h3 class="cs2-h">Every screen,<br><em>every path.</em></h3>
+          <h3 class="cs2-h">Every screen, <br><em>every path.</em></h3>
           <p class="cs2-prose cs2-prose--wide">A dense product needed a clear map. The flow charts each mode and stage — track, analyze, friends, records — and studies <strong>how quickly a new user reaches the app&rsquo;s value</strong>, with onboarding tuned so the first real insight never feels far away.</p>
           <div class="cs2-caption" style="margin-top: calc(10 * var(--v));">Onboarding &amp; first track</div>
           <div class="sv-figrow sv-figrow--flow">
             <div class="sv-box sv-box--onb">
-              <img data-src="img/simply-vision/onboarding.webp" decoding="async"
+              <img loading="lazy" data-src="img/simply-vision/onboarding.webp" decoding="async"
                    style="width:82.27%;height:100%;left:9.8%;top:0;"
                    alt="Onboarding sequence from login through the first tracked values">
             </div>
             <div class="sv-box sv-box--map">
-              <img data-src="img/simply-vision/flow.webp" decoding="async"
+              <img loading="lazy" data-src="img/simply-vision/flow.webp" decoding="async"
                    style="width:211.97%;height:110.98%;left:0.02%;top:-15.23%;"
                    alt="Full user-flow map covering every mode and stage of the app">
             </div>
             <div class="sv-box sv-box--inset">
-              <img data-src="img/simply-vision/flow.webp" decoding="async"
+              <img loading="lazy" data-src="img/simply-vision/flow.webp" decoding="async"
                    style="width:901.48%;height:671.24%;left:-440.99%;top:-449.25%;" alt="">
             </div>
           </div>
@@ -4395,16 +4858,16 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">Wireframes &amp; gestures</div>
-          <h3 class="cs2-h">Fewer taps,<br><em>clearer intent.</em></h3>
+          <h3 class="cs2-h">Fewer taps, <br><em>clearer intent.</em></h3>
           <p class="cs2-prose cs2-prose--wide">Early screens had too many tappable areas competing at once — overlapping taps, scrolls and swipes. Wireframing <strong>mapped the gestures</strong> and organised them, so every element stays clear and as intuitive as possible.</p>
           <div class="sv-figrow sv-figrow--wire">
             <div class="sv-box sv-box--wfflow">
-              <img data-src="img/simply-vision/flow.webp" decoding="async"
+              <img loading="lazy" data-src="img/simply-vision/flow.webp" decoding="async"
                    style="inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;"
                    alt="Wireframe-level flow with the gesture legend">
             </div>
             <div class="sv-box sv-box--wf">
-              <img data-src="img/simply-vision/wireframes.webp" decoding="async"
+              <img loading="lazy" data-src="img/simply-vision/wireframes.webp" decoding="async"
                    style="width:100%;height:105.44%;left:0;top:2.77%;"
                    alt="Wireframes of the Sleep tracking screen showing how gestures and states were organised">
             </div>
@@ -4415,64 +4878,64 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">The app</div>
-          <h3 class="cs2-h">Small screens,<br><em>big personality.</em></h3>
+          <h3 class="cs2-h">Small screens, <br><em>big personality.</em></h3>
           <p class="cs2-prose cs2-prose--wide">From the launch splash to World Mode&rsquo;s country-by-country moods, every screen carries the same warmth — playful where it can be, precise where it counts.</p>
           <!-- Final screen grid — exact Figma order (node 3019:8288), 5 cols × 9 rows, read row by row -->
           <div class="sv-sabana">
             <!-- row 1 -->
-            <img data-src="img/simply-vision/screens/overview-new.webp" decoding="async" alt="Overview">
-            <img data-src="img/simply-vision/screens/hi-satisfied.webp" decoding="async" alt="Happiness index — satisfied">
-            <img data-src="img/simply-vision/screens/login.webp" decoding="async" alt="Login">
-            <img data-src="img/simply-vision/screens/analyze-nutrition-comp-coofee.webp" decoding="async" alt="Analyze — nutrition vs coffee">
-            <img data-src="img/simply-vision/screens/best-run-ever-bubble.webp" decoding="async" alt="Best run ever bubble">
+            <img width="750" height="1334" loading="lazy" data-src="img/simply-vision/screens/overview-new.webp" decoding="async" alt="Overview">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/hi-satisfied.webp" decoding="async" alt="Happiness index — satisfied">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/login.webp" decoding="async" alt="Login">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/analyze-nutrition-comp-coofee.webp" decoding="async" alt="Analyze — nutrition vs coffee">
+            <img width="750" height="1334" loading="lazy" data-src="img/simply-vision/screens/best-run-ever-bubble.webp" decoding="async" alt="Best run ever bubble">
             <!-- row 2 -->
-            <img data-src="img/simply-vision/screens/2-good-days.webp" decoding="async" alt="Two good days">
-            <img data-src="img/simply-vision/screens/new-sign-out.webp" decoding="async" alt="Sign out">
-            <img data-src="img/simply-vision/screens/not-enough-data.webp" decoding="async" alt="Not enough data">
-            <img data-src="img/simply-vision/screens/hi-unhappy.webp" decoding="async" alt="Happiness index — unhappy">
-            <img data-src="img/simply-vision/screens/01analyze-with-friends1.webp" decoding="async" alt="Analyze with friends">
+            <img width="750" height="1334" loading="lazy" data-src="img/simply-vision/screens/2-good-days.webp" decoding="async" alt="Two good days">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/new-sign-out.webp" decoding="async" alt="Sign out">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/not-enough-data.webp" decoding="async" alt="Not enough data">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/hi-unhappy.webp" decoding="async" alt="Happiness index — unhappy">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/01analyze-with-friends1.webp" decoding="async" alt="Analyze with friends">
             <!-- row 3 -->
-            <img data-src="img/simply-vision/screens/track-general-mood-que3-typing.webp" decoding="async" alt="Track — general mood, typing">
-            <img data-src="img/simply-vision/screens/analyze-nutrition-comp-meat.webp" decoding="async" alt="Analyze — nutrition vs meat">
-            <img data-src="img/simply-vision/screens/day4-popup1.webp" decoding="async" alt="Day 4 popup">
-            <img data-src="img/simply-vision/screens/favourites6.webp" decoding="async" alt="Favourites">
-            <img data-src="img/simply-vision/screens/analyze-with-friends-receivehug7.webp" decoding="async" alt="Analyze with friends — receive hug">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/track-general-mood-que3-typing.webp" decoding="async" alt="Track — general mood, typing">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/analyze-nutrition-comp-meat.webp" decoding="async" alt="Analyze — nutrition vs meat">
+            <img width="750" height="1334" loading="lazy" data-src="img/simply-vision/screens/day4-popup1.webp" decoding="async" alt="Day 4 popup">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/favourites6.webp" decoding="async" alt="Favourites">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/analyze-with-friends-receivehug7.webp" decoding="async" alt="Analyze with friends — receive hug">
             <!-- row 4 -->
-            <img data-src="img/simply-vision/screens/hi-helpless.webp" decoding="async" alt="Happiness index — helpless">
-            <img data-src="img/simply-vision/screens/analyze-nutrition-comp-water.webp" decoding="async" alt="Analyze — nutrition vs water">
-            <img data-src="img/simply-vision/screens/analyze-nutrition-max-notrend.webp" decoding="async" alt="Analyze — nutrition max, no trend">
-            <img data-src="img/simply-vision/screens/prm-logo-menu.webp" decoding="async" alt="Menu">
-            <img data-src="img/simply-vision/screens/hi-comparison.webp" decoding="async" alt="Happiness index — comparison">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/hi-helpless.webp" decoding="async" alt="Happiness index — helpless">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/analyze-nutrition-comp-water.webp" decoding="async" alt="Analyze — nutrition vs water">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/analyze-nutrition-max-notrend.webp" decoding="async" alt="Analyze — nutrition max, no trend">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/prm-logo-menu.webp" decoding="async" alt="Menu">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/hi-comparison.webp" decoding="async" alt="Happiness index — comparison">
             <!-- row 5 -->
-            <img data-src="img/simply-vision/screens/reminders.webp" decoding="async" alt="Reminders">
-            <img data-src="img/simply-vision/screens/day4-popup2.webp" decoding="async" alt="Day 4 popup 2">
-            <img data-src="img/simply-vision/screens/analyze-generalmood.webp" decoding="async" alt="Analyze — general mood">
-            <img data-src="img/simply-vision/screens/hi-sad.webp" decoding="async" alt="Happiness index — sad">
-            <img data-src="img/simply-vision/screens/hi-joyful.webp" decoding="async" alt="Happiness index — joyful">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/reminders.webp" decoding="async" alt="Reminders">
+            <img width="750" height="1334" loading="lazy" data-src="img/simply-vision/screens/day4-popup2.webp" decoding="async" alt="Day 4 popup 2">
+            <img width="752" height="1334" loading="lazy" data-src="img/simply-vision/screens/analyze-generalmood.webp" decoding="async" alt="Analyze — general mood">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/hi-sad.webp" decoding="async" alt="Happiness index — sad">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/hi-joyful.webp" decoding="async" alt="Happiness index — joyful">
             <!-- row 6 -->
-            <img data-src="img/simply-vision/screens/03analyze-with-friends3.webp" decoding="async" alt="Analyze with friends 3">
-            <img data-src="img/simply-vision/screens/profile-ndperiods.webp" decoding="async" alt="Profile — no-data periods">
-            <img data-src="img/simply-vision/screens/analyze-with-friends-receiveinvitation4.webp" decoding="async" alt="Analyze with friends — receive invitation">
-            <img data-src="img/simply-vision/screens/shortcut-to-overview4.webp" decoding="async" alt="Shortcut to overview">
-            <img data-src="img/simply-vision/screens/profile-with-dark-bkgd.webp" decoding="async" alt="Profile — dark background">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/03analyze-with-friends3.webp" decoding="async" alt="Analyze with friends 3">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/profile-ndperiods.webp" decoding="async" alt="Profile — no-data periods">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/analyze-with-friends-receiveinvitation4.webp" decoding="async" alt="Analyze with friends — receive invitation">
+            <img width="750" height="1334" loading="lazy" data-src="img/simply-vision/screens/shortcut-to-overview4.webp" decoding="async" alt="Shortcut to overview">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/profile-with-dark-bkgd.webp" decoding="async" alt="Profile — dark background">
             <!-- row 7 -->
-            <img data-src="img/simply-vision/screens/popup1-1.webp" decoding="async" alt="Popup">
-            <img data-src="img/simply-vision/screens/analyze-nutrition-comp-feelings.webp" decoding="async" alt="Analyze — nutrition vs feelings">
-            <img data-src="img/simply-vision/screens/splash-launch.webp" decoding="async" alt="Splash launch">
-            <img data-src="img/simply-vision/screens/best-ever-popup2.webp" decoding="async" alt="Best ever popup">
-            <img data-src="img/simply-vision/screens/analyze-work-comparison-productive.webp" decoding="async" alt="Analyze — work productivity">
+            <img width="750" height="1334" loading="lazy" data-src="img/simply-vision/screens/popup1-1.webp" decoding="async" alt="Popup">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/analyze-nutrition-comp-feelings.webp" decoding="async" alt="Analyze — nutrition vs feelings">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/splash-launch.webp" decoding="async" alt="Splash launch">
+            <img width="750" height="1334" loading="lazy" data-src="img/simply-vision/screens/best-ever-popup2.webp" decoding="async" alt="Best ever popup">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/analyze-work-comparison-productive.webp" decoding="async" alt="Analyze — work productivity">
             <!-- row 8 -->
-            <img data-src="img/simply-vision/screens/day3-popup2.webp" decoding="async" alt="Day 3 popup 2">
-            <img data-src="img/simply-vision/screens/analyze-social.webp" decoding="async" alt="Analyze — social">
-            <img data-src="img/simply-vision/screens/analyze-nutrition-average-plustrend.webp" decoding="async" alt="Analyze — nutrition average and trend">
-            <img data-src="img/simply-vision/screens/track-social.webp" decoding="async" alt="Track — social">
-            <img data-src="img/simply-vision/screens/track-sleep-que1.webp" decoding="async" alt="Track — sleep">
+            <img width="750" height="1334" loading="lazy" data-src="img/simply-vision/screens/day3-popup2.webp" decoding="async" alt="Day 3 popup 2">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/analyze-social.webp" decoding="async" alt="Analyze — social">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/analyze-nutrition-average-plustrend.webp" decoding="async" alt="Analyze — nutrition average and trend">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/track-social.webp" decoding="async" alt="Track — social">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/track-sleep-que1.webp" decoding="async" alt="Track — sleep">
             <!-- row 9 -->
-            <img data-src="img/simply-vision/screens/world-mode.webp" decoding="async" alt="World mode">
-            <img data-src="img/simply-vision/screens/3-bad-days.webp" decoding="async" alt="Three bad days">
-            <img data-src="img/simply-vision/screens/analyze-sleep.webp" decoding="async" alt="Analyze — sleep">
-            <img data-src="img/simply-vision/screens/track-sleep-que2.webp" decoding="async" alt="Track — sleep 2">
-            <img data-src="img/simply-vision/screens/profile.webp" decoding="async" alt="Profile">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/world-mode.webp" decoding="async" alt="World mode">
+            <img width="750" height="1334" loading="lazy" data-src="img/simply-vision/screens/3-bad-days.webp" decoding="async" alt="Three bad days">
+            <img width="752" height="1334" loading="lazy" data-src="img/simply-vision/screens/analyze-sleep.webp" decoding="async" alt="Analyze — sleep">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/track-sleep-que2.webp" decoding="async" alt="Track — sleep 2">
+            <img width="640" height="1136" loading="lazy" data-src="img/simply-vision/screens/profile.webp" decoding="async" alt="Profile">
           </div>
         </section>
 
@@ -4492,7 +4955,7 @@ abcdefghijklmnopqrstuvwxyz
           <div class="cs2-hero-copy">
             <div class="cs2-pill">Case study · Insurance</div>
             <h2 class="cs2-title">Banco Patagonia.</h2>
-            <p class="cs2-lede">Buying insurance online —<br>made simple, made human.</p>
+            <p class="cs2-lede">Buying insurance online — <br>made simple, made human.</p>
             <div class="cs2-chips">
               <span class="cs2-chip">UX Strategy</span>
               <span class="cs2-chip">UI Design</span>
@@ -4513,7 +4976,7 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="pat-fig">
-            <img data-src="img/bco-patagonia/mockups.webp" decoding="async"
+            <img width="2000" height="1138" loading="lazy" data-src="img/bco-patagonia/mockups.webp" decoding="async"
                  alt="The Banco Patagonia insurance portal home shown on a laptop and a phone">
           </div>
         </section>
@@ -4523,7 +4986,7 @@ abcdefghijklmnopqrstuvwxyz
         <section class="cs2-two">
           <div>
             <div class="cs2-pill cs2-pill--sm">The project</div>
-            <h3 class="cs2-h">Insurance,<br><em>without the dread.</em></h3>
+            <h3 class="cs2-h">Insurance, <br><em>without the dread.</em></h3>
           </div>
           <div class="cs2-prose">
             <p>Banco Patagonia and SURA wanted a portal where anyone could quote and buy insurance — <strong>home, life, pet, personal accident and more — 100% online</strong>.</p>
@@ -4536,7 +4999,7 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">Foundations</div>
-          <h3 class="cs2-h">A friendlier<br><em>face for finance.</em></h3>
+          <h3 class="cs2-h">A friendlier <br><em>face for finance.</em></h3>
           <p class="cs2-prose cs2-prose--wide">The bank&rsquo;s teal-to-blue identity anchors trust; a bright lime accent keeps it approachable. On top, a set of <strong>simple, rounded product icons</strong> makes each type of cover instantly legible — less structured and formal, closer to everyday people.</p>
 
           <div class="cs2-caption" style="margin-top: calc(12 * var(--v));">Brand palette</div>
@@ -4548,7 +5011,7 @@ abcdefghijklmnopqrstuvwxyz
           </div>
           <div class="cs2-caption" style="margin-top: calc(26 * var(--v));">Product iconography</div>
           <div class="pat-fig">
-            <img data-src="img/bco-patagonia/product-icons.webp" decoding="async"
+            <img width="1354" height="280" loading="lazy" data-src="img/bco-patagonia/product-icons.webp" decoding="async"
                  alt="Row of simple product icons: home, belongings, life, personal accident, ATM, business, pet and auto">
           </div>
         </section>
@@ -4557,10 +5020,10 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">Sitemap &amp; user flow</div>
-          <h3 class="cs2-h">One clear<br><em>path to covered.</em></h3>
+          <h3 class="cs2-h">One clear <br><em>path to covered.</em></h3>
           <p class="cs2-prose cs2-prose--wide">The whole journey was mapped as a single spine — from picking a product through to a contracted policy. The branches (home, common, employees) fold back into <strong>one shared checkout</strong>: select, address, summary, payment, done.</p>
           <div class="pat-fig pat-fig--bordered">
-            <img data-src="img/bco-patagonia/flow.webp" decoding="async"
+            <img width="2000" height="698" loading="lazy" data-src="img/bco-patagonia/flow.webp" decoding="async"
                  alt="Sitemap and user-flow diagram of the insurance portal, from home to a contracted policy">
           </div>
         </section>
@@ -4569,10 +5032,10 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">The flow</div>
-          <h3 class="cs2-h">Five steps,<br><em>no surprises.</em></h3>
+          <h3 class="cs2-h">Five steps, <br><em>no surprises.</em></h3>
           <p class="cs2-prose cs2-prose--wide">A persistent stepper — <strong>construction type, plans, address, summary, payment</strong> — tells people exactly where they are and what&rsquo;s left. Plans sit side by side with only what matters: coverage and price, nothing to decode.</p>
           <div class="pat-fig pat-fig--bordered">
-            <img data-src="img/bco-patagonia/plans.webp" decoding="async"
+            <img width="1800" height="1568" loading="lazy" data-src="img/bco-patagonia/plans.webp" decoding="async"
                  alt="Plan selection step with the five-step progress bar and three side-by-side home-insurance plans">
           </div>
         </section>
@@ -4581,10 +5044,10 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="cs2-pill cs2-pill--sm">The payoff</div>
-          <h3 class="cs2-h">Covered,<br><em>in a few taps.</em></h3>
+          <h3 class="cs2-h">Covered, <br><em>in a few taps.</em></h3>
           <p class="cs2-prose cs2-prose--wide">The journey ends where insurance usually begins its paperwork: a plain, reassuring confirmation — <strong>you&rsquo;re insured, here&rsquo;s your request number</strong> — instead of a maze of PDFs.</p>
           <div class="pat-fig">
-            <img data-src="img/bco-patagonia/confirm.webp" decoding="async"
+            <img width="2000" height="1157" loading="lazy" data-src="img/bco-patagonia/confirm.webp" decoding="async"
                  alt="Plan comparison alongside the mobile confirmation screen: you are insured, with a request number">
           </div>
         </section>
@@ -4593,18 +5056,18 @@ abcdefghijklmnopqrstuvwxyz
 
         <section class="cs2-sec">
           <div class="pat-closer">
-            <img class="pat-wordmark" src="img/bco-patagonia/wordmark.svg" alt="" aria-hidden="true">
+            <img loading="lazy" class="pat-wordmark" src="img/bco-patagonia/wordmark.svg" alt="" aria-hidden="true">
             <div class="pat-closer-copy">
               <div class="pat-closer-eyebrow">The payoff</div>
               <h3 class="pat-closer-h">Covered,<br>in a few taps.</h3>
               <p class="pat-closer-p">The journey ends where insurance usually begins its paperwork: a plain, reassuring confirmation — you&rsquo;re insured, here&rsquo;s your request number — instead of a maze of PDFs.</p>
             </div>
             <div class="pat-closer-media">
-              <video class="pat-video" autoplay loop muted playsinline preload="metadata"
+              <video class="pat-video" autoplay loop muted playsinline preload="none"
                      poster="img/bco-patagonia/onboarding-poster.jpg"
                      aria-label="Coderio onboarding walkthrough: completing the initial data form">
-                <source src="img/bco-patagonia/onboarding.webm" type="video/webm">
-                <source src="img/bco-patagonia/onboarding.mp4" type="video/mp4">
+                <source data-src="img/bco-patagonia/onboarding.webm" type="video/webm">
+                <source data-src="img/bco-patagonia/onboarding.mp4" type="video/mp4">
               </video>
             </div>
           </div>
@@ -4631,13 +5094,13 @@ abcdefghijklmnopqrstuvwxyz
         <div class="modal-sub">Enterprise UX · Roche</div>
       </div>
       <div class="modal-image-seamless">
-        <img data-src="img/Roche_01.webp" alt="Roche 01" decoding="async">
-        <img data-src="img/Roche_02.webp" alt="Roche 02" decoding="async">
-        <img data-src="img/Roche_03.webp" alt="Roche 03" decoding="async">
-        <img data-src="img/Roche_04.webp" alt="Roche 04" decoding="async">
-        <img data-src="img/Roche_05.webp" alt="Roche 05" decoding="async">
-        <img data-src="img/Roche_06.webp" alt="Roche 06" decoding="async">
-        <img data-src="img/Roche_07.webp" alt="Roche 07" decoding="async">
+        <img width="2000" height="1172" loading="lazy" data-src="img/Roche_01.webp" alt="Roche 01" decoding="async">
+        <img width="2000" height="1726" loading="lazy" data-src="img/Roche_02.webp" alt="Roche 02" decoding="async">
+        <img width="2000" height="882" loading="lazy" data-src="img/Roche_03.webp" alt="Roche 03" decoding="async">
+        <img width="2000" height="1754" loading="lazy" data-src="img/Roche_04.webp" alt="Roche 04" decoding="async">
+        <img width="2000" height="1128" loading="lazy" data-src="img/Roche_05.webp" alt="Roche 05" decoding="async">
+        <img width="2000" height="1688" loading="lazy" data-src="img/Roche_06.webp" alt="Roche 06" decoding="async">
+        <img width="2000" height="115" loading="lazy" data-src="img/Roche_07.webp" alt="Roche 07" decoding="async">
       </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/93258219/My-Congress-(Roche)" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
@@ -4654,9 +5117,9 @@ abcdefghijklmnopqrstuvwxyz
         <div class="modal-sub">Art Direction · Disney / Globant</div>
       </div>
       <div class="modal-image-seamless">
-        <img data-src="img/Games_01.webp" alt="Mobile Games 01" decoding="async">
-        <img data-src="img/Games_02.webp" alt="Mobile Games 02" decoding="async">
-        <img data-src="img/Games_03.webp" alt="Mobile Games 03" decoding="async">
+        <img width="2000" height="1858" loading="lazy" data-src="img/Games_01.webp" alt="Mobile Games 01" decoding="async">
+        <img width="2000" height="1424" loading="lazy" data-src="img/Games_02.webp" alt="Mobile Games 02" decoding="async">
+        <img width="2000" height="2892" loading="lazy" data-src="img/Games_03.webp" alt="Mobile Games 03" decoding="async">
       </div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/45759763/Mobile-Games" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
@@ -4672,7 +5135,7 @@ abcdefghijklmnopqrstuvwxyz
         <div class="modal-title">Branding + Social</div>
         <div class="modal-sub">Visual Design · Various</div>
       </div>
-      <div class="modal-image-wrap"><img data-src="img/cover-5_expanded.webp" alt="Branding + Social case study" decoding="async"></div>
+      <div class="modal-image-wrap"><img width="2000" height="10526" loading="lazy" data-src="img/cover-5_expanded.webp" alt="Branding + Social case study" decoding="async"></div>
       <div class="modal-footer">
         <a href="https://www.behance.net/gallery/66848937/Brand-Concept-(logo-Styles-Guide)" target="_blank" rel="noopener" class="modal-behance-link">View on Behance ↗&#xFE0E;</a>
       </div>
@@ -4733,7 +5196,7 @@ abcdefghijklmnopqrstuvwxyz
 
         <!-- image 2 · the technical plan -->
         <section class="sk-pad" style="padding-top: calc(40 * var(--u)); padding-bottom: calc(130 * var(--u));">
-          <div class="sk-cell" style="aspect-ratio: 3618 / 3433;"><img data-src="img/sketchup/image2.webp" alt="Architectural floor plans and sections" decoding="async"></div>
+          <div class="sk-cell" style="aspect-ratio: 3618 / 3433;"><img width="1560" height="1480" loading="lazy" data-src="img/sketchup/image2.webp" alt="Architectural floor plans and sections" decoding="async"></div>
         </section>
 
         <!-- 03 Modeling -->
@@ -4754,20 +5217,20 @@ abcdefghijklmnopqrstuvwxyz
         <!-- Modeling gallery -->
         <section class="sk-pad" style="display:flex; flex-direction:column; gap: calc(10 * var(--u));">
           <div class="sk-row">
-            <div class="sk-cell" style="height: calc(450 * var(--u));"><img data-src="img/sketchup/image12.webp" alt="Wireframe model of the house" decoding="async"></div>
-            <div class="sk-cell" style="height: calc(450 * var(--u));"><img data-src="img/sketchup/image13.webp" alt="Volumetric model of the house" decoding="async"></div>
+            <div class="sk-cell" style="height: calc(450 * var(--u));"><img width="1560" height="926" loading="lazy" data-src="img/sketchup/image12.webp" alt="Wireframe model of the house" decoding="async"></div>
+            <div class="sk-cell" style="height: calc(450 * var(--u));"><img width="1560" height="897" loading="lazy" data-src="img/sketchup/image13.webp" alt="Volumetric model of the house" decoding="async"></div>
           </div>
           <div class="sk-row">
-            <div class="sk-cell" style="aspect-ratio: 1158 / 637;"><img data-src="img/sketchup/image7.webp" alt="Modeling detail" decoding="async"></div>
-            <div class="sk-cell" style="aspect-ratio: 1158 / 637;"><img data-src="img/sketchup/image8.webp" alt="Modeling detail" decoding="async"></div>
-            <div class="sk-cell" style="aspect-ratio: 1158 / 637;"><img data-src="img/sketchup/image10.webp" alt="Modeling detail" decoding="async"></div>
-            <div class="sk-cell" style="aspect-ratio: 1157 / 637;"><img data-src="img/sketchup/image11.webp" alt="Modeling detail" decoding="async"></div>
+            <div class="sk-cell" style="aspect-ratio: 1158 / 637;"><img width="1560" height="905" loading="lazy" data-src="img/sketchup/image7.webp" alt="Modeling detail" decoding="async"></div>
+            <div class="sk-cell" style="aspect-ratio: 1158 / 637;"><img width="1560" height="882" loading="lazy" data-src="img/sketchup/image8.webp" alt="Modeling detail" decoding="async"></div>
+            <div class="sk-cell" style="aspect-ratio: 1158 / 637;"><img width="1560" height="897" loading="lazy" data-src="img/sketchup/image10.webp" alt="Modeling detail" decoding="async"></div>
+            <div class="sk-cell" style="aspect-ratio: 1157 / 637;"><img width="1560" height="899" loading="lazy" data-src="img/sketchup/image11.webp" alt="Modeling detail" decoding="async"></div>
           </div>
         </section>
 
         <!-- image 5 · framed -->
         <section class="sk-frame-wrap">
-          <div class="sk-frame sk-cell"><img data-src="img/sketchup/image5.webp" alt="Framed exterior view" decoding="async"></div>
+          <div class="sk-frame sk-cell"><img width="1560" height="917" loading="lazy" data-src="img/sketchup/image5.webp" alt="Framed exterior view" decoding="async"></div>
         </section>
 
         <!-- 04 Renders -->
@@ -4785,56 +5248,56 @@ abcdefghijklmnopqrstuvwxyz
         <!-- Render group A (Figma "Frame 51"): RENDER 2 · v19|v20 · RENDER 3 -->
         <div class="sk-group">
           <!-- RENDER 2 · full -->
-          <section class="sk-cell" style="aspect-ratio: 3840 / 2160;"><img data-src="img/sketchup/render-enscape161.webp" alt="Exterior render at dusk" decoding="async"></section>
+          <section class="sk-cell" style="aspect-ratio: 3840 / 2160;"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-enscape161.webp" alt="Exterior render at dusk" decoding="async"></section>
 
           <!-- v19 | v20 -->
           <section class="sk-row">
-            <div class="sk-cell" style="aspect-ratio: 1920 / 1080;"><img data-src="img/sketchup/render-vray-v191.webp" alt="Exterior render" decoding="async"></div>
-            <div class="sk-cell" style="aspect-ratio: 1920 / 1080;"><img data-src="img/sketchup/render-vray-v201.webp" alt="Exterior render" decoding="async"></div>
+            <div class="sk-cell" style="aspect-ratio: 1920 / 1080;"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-vray-v191.webp" alt="Exterior render" decoding="async"></div>
+            <div class="sk-cell" style="aspect-ratio: 1920 / 1080;"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-vray-v201.webp" alt="Exterior render" decoding="async"></div>
           </section>
 
           <!-- RENDER 3 · full -->
-          <section class="sk-cell" style="aspect-ratio: 1280 / 720;"><img data-src="img/sketchup/render-vray-v211.webp" alt="Interior render" decoding="async"></section>
+          <section class="sk-cell" style="aspect-ratio: 1280 / 720;"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-vray-v211.webp" alt="Interior render" decoding="async"></section>
         </div>
 
         <!-- Render group B (Figma "Frame"): Grilla v6-2|v6-3 · Grilla v6-2 full -->
         <div class="sk-group">
           <!-- Grilla v6-2 | v6-3 -->
           <section style="display:flex; gap: calc(10 * var(--u)); height: calc(479 * var(--u));">
-            <div class="sk-cell" style="flex:1; height:100%;"><img data-src="img/sketchup/render-vray-v621.webp" alt="Interior render" decoding="async"></div>
-            <div class="sk-cell" style="flex:1; height:100%;"><img data-src="img/sketchup/render-vray-v631.webp" alt="Interior render" decoding="async"></div>
+            <div class="sk-cell" style="flex:1; height:100%;"><img width="1188" height="661" loading="lazy" data-src="img/sketchup/render-vray-v621.webp" alt="Interior render" decoding="async"></div>
+            <div class="sk-cell" style="flex:1; height:100%;"><img width="1086" height="724" loading="lazy" data-src="img/sketchup/render-vray-v631.webp" alt="Interior render" decoding="async"></div>
           </section>
 
           <!-- Grilla v6-2 · full -->
-          <section class="sk-cell" style="height: calc(826 * var(--u));"><img data-src="img/sketchup/render-vray-v622.webp" alt="Interior render" decoding="async"></section>
+          <section class="sk-cell" style="height: calc(826 * var(--u));"><img width="1560" height="835" loading="lazy" data-src="img/sketchup/render-vray-v622.webp" alt="Interior render" decoding="async"></section>
         </div>
 
         <!-- Render group C (Figma "Frame"): RENDER 1 · Grilla 2×3 · Grilla 3×3 -->
         <div class="sk-group">
           <!-- RENDER 1 · full -->
-          <section class="sk-cell" style="aspect-ratio: 3840 / 2160;"><img data-src="img/sketchup/render-enscape291.webp" alt="Exterior render at night" decoding="async"></section>
+          <section class="sk-cell" style="aspect-ratio: 3840 / 2160;"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-enscape291.webp" alt="Exterior render at night" decoding="async"></section>
 
           <!-- Grilla 2×3 -->
           <section class="sk-grid" style="grid-template-columns: 1fr 1fr;">
-          <div class="sk-cell" style="height: calc(438.75 * var(--u));"><img data-src="img/sketchup/render-enscape031.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell" style="height: calc(438.75 * var(--u));"><img data-src="img/sketchup/render-enscape051.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell" style="aspect-ratio: 780 / 520;"><img data-src="img/sketchup/render-enscape061.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell" style="aspect-ratio: 780 / 520;"><img data-src="img/sketchup/render-enscape25-retoque1.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell" style="aspect-ratio: 780 / 438.75;"><img data-src="img/sketchup/render-enscape271.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell" style="aspect-ratio: 780 / 438.75;"><img data-src="img/sketchup/render-enscape281.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell" style="height: calc(438.75 * var(--u));"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-enscape031.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell" style="height: calc(438.75 * var(--u));"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-enscape051.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell" style="aspect-ratio: 780 / 520;"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-enscape061.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell" style="aspect-ratio: 780 / 520;"><img width="1536" height="1024" loading="lazy" data-src="img/sketchup/render-enscape25-retoque1.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell" style="aspect-ratio: 780 / 438.75;"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-enscape271.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell" style="aspect-ratio: 780 / 438.75;"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-enscape281.webp" alt="Render" decoding="async"></div>
         </section>
 
         <!-- Grilla 3×3 -->
         <section class="sk-grid" style="grid-template-columns: 1fr calc(524 * var(--u)) 1fr; grid-template-rows: calc(294.75 * var(--u)) calc(294.75 * var(--u)) calc(290.25 * var(--u));">
-          <div class="sk-cell"><img data-src="img/sketchup/render-vray-v623.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell"><img data-src="img/sketchup/render-vray-v632.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell"><img data-src="img/sketchup/render-vray-v641.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell"><img data-src="img/sketchup/render-enscape221.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell"><img data-src="img/sketchup/render-vray-v421.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell"><img data-src="img/sketchup/render-vray-v91.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell"><img data-src="img/sketchup/render-enscape281.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell"><img data-src="img/sketchup/render-enscape271.webp" alt="Render" decoding="async"></div>
-          <div class="sk-cell"><img data-src="img/sketchup/render-vray-v5-noche1.webp" alt="Night render" decoding="async"></div>
+          <div class="sk-cell"><img width="1024" height="576" loading="lazy" data-src="img/sketchup/render-vray-v623.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img width="1200" height="675" loading="lazy" data-src="img/sketchup/render-vray-v632.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img width="1200" height="675" loading="lazy" data-src="img/sketchup/render-vray-v641.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-enscape221.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-vray-v421.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-vray-v91.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-enscape281.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img width="1560" height="878" loading="lazy" data-src="img/sketchup/render-enscape271.webp" alt="Render" decoding="async"></div>
+          <div class="sk-cell"><img width="1024" height="576" loading="lazy" data-src="img/sketchup/render-vray-v5-noche1.webp" alt="Night render" decoding="async"></div>
           </section>
         </div>
 
@@ -4852,30 +5315,30 @@ abcdefghijklmnopqrstuvwxyz
 
         <!-- Results · build photos -->
         <section class="sk-pad" style="display:flex; flex-direction:column; gap: calc(10 * var(--u));">
-          <div class="sk-cell" style="aspect-ratio: 1514 / 520;"><img data-src="img/sketchup/build-01.webp" alt="Construction site in Patagonia" decoding="async"></div>
+          <div class="sk-cell" style="aspect-ratio: 1514 / 520;"><img width="1514" height="520" loading="lazy" data-src="img/sketchup/build-01.webp" alt="Construction site in Patagonia" decoding="async"></div>
           <div class="sk-row" style="align-items: stretch;">
-            <div class="sk-cell" style="height: calc(825 * var(--u));"><img data-src="img/sketchup/build-02.webp" alt="Timber frame under construction" decoding="async"></div>
+            <div class="sk-cell" style="height: calc(825 * var(--u));"><img width="1024" height="768" loading="lazy" data-src="img/sketchup/build-02.webp" alt="Timber frame under construction" decoding="async"></div>
             <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap: calc(10 * var(--u));">
-              <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-03.webp" alt="Construction detail" decoding="async"></div>
-              <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-04.webp" alt="Construction detail" decoding="async"></div>
+              <div class="sk-cell" style="flex:1;"><img width="1280" height="577" loading="lazy" data-src="img/sketchup/build-03.webp" alt="Construction detail" decoding="async"></div>
+              <div class="sk-cell" style="flex:1;"><img width="1320" height="595" loading="lazy" data-src="img/sketchup/build-04.webp" alt="Construction detail" decoding="async"></div>
             </div>
           </div>
-          <div class="sk-cell" style="aspect-ratio: 1574 / 750;"><img data-src="img/sketchup/build-05.webp" alt="House under construction" decoding="async"></div>
+          <div class="sk-cell" style="aspect-ratio: 1574 / 750;"><img width="1024" height="768" loading="lazy" data-src="img/sketchup/build-05.webp" alt="House under construction" decoding="async"></div>
           <div class="sk-row" style="align-items: stretch; height: calc(826 * var(--u));">
             <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap: calc(10 * var(--u));">
-              <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-06.webp" alt="Construction detail" decoding="async"></div>
-              <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-07.webp" alt="Construction detail" decoding="async"></div>
+              <div class="sk-cell" style="flex:1;"><img width="1320" height="595" loading="lazy" data-src="img/sketchup/build-06.webp" alt="Construction detail" decoding="async"></div>
+              <div class="sk-cell" style="flex:1;"><img width="1182" height="665" loading="lazy" data-src="img/sketchup/build-07.webp" alt="Construction detail" decoding="async"></div>
             </div>
-            <div class="sk-cell" style="flex:1; min-width:0;"><img data-src="img/sketchup/build-08.webp" alt="Timber frame under construction" decoding="async"></div>
+            <div class="sk-cell" style="flex:1; min-width:0;"><img width="1182" height="665" loading="lazy" data-src="img/sketchup/build-08.webp" alt="Timber frame under construction" decoding="async"></div>
           </div>
           <div class="sk-row" style="align-items: stretch; height: calc(394 * var(--u));">
-            <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-09.webp" alt="Construction detail" decoding="async"></div>
-            <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-10.webp" alt="Construction detail" decoding="async"></div>
+            <div class="sk-cell" style="flex:1;"><img width="768" height="1024" loading="lazy" data-src="img/sketchup/build-09.webp" alt="Construction detail" decoding="async"></div>
+            <div class="sk-cell" style="flex:1;"><img width="1280" height="577" loading="lazy" data-src="img/sketchup/build-10.webp" alt="Construction detail" decoding="async"></div>
           </div>
           <div class="sk-row" style="align-items: stretch; height: calc(600 * var(--u));">
-            <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-11.webp" alt="Construction detail" decoding="async"></div>
-            <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-12.webp" alt="Construction detail" decoding="async"></div>
-            <div class="sk-cell" style="flex:1;"><img data-src="img/sketchup/build-13.webp" alt="Construction detail" decoding="async"></div>
+            <div class="sk-cell" style="flex:1;"><img width="665" height="1182" loading="lazy" data-src="img/sketchup/build-11.webp" alt="Construction detail" decoding="async"></div>
+            <div class="sk-cell" style="flex:1;"><img width="1024" height="768" loading="lazy" data-src="img/sketchup/build-12.webp" alt="Construction detail" decoding="async"></div>
+            <div class="sk-cell" style="flex:1;"><img width="720" height="1280" loading="lazy" data-src="img/sketchup/build-13.webp" alt="Construction detail" decoding="async"></div>
           </div>
         </section>
 
@@ -4958,6 +5421,13 @@ abcdefghijklmnopqrstuvwxyz
     </svg>
     <span class="like-count" id="like-count" aria-hidden="true"></span>
   </button>
+
+  <!-- Navegacion entre proyectos: el swipe es lo principal, estas son la
+       version tocable y el indicador de donde estas parado. Solo mobile. -->
+  <div class="pnav-count" id="pnav-count" aria-hidden="true" hidden></div>
+  <button class="pnav-btn pnav-prev" id="pnav-prev" type="button" aria-label="Proyecto anterior" hidden>&#8249;</button>
+  <button class="pnav-btn pnav-next" id="pnav-next" type="button" aria-label="Proyecto siguiente" hidden>&#8250;</button>
+  <div class="pnav-hint" id="pnav-hint" hidden>Deslizá para el próximo proyecto</div>
 
   <script>
     // ── Fade-up observer ──────────────────────────────────────────────────
@@ -5404,6 +5874,33 @@ abcdefghijklmnopqrstuvwxyz
         }
       });
     }
+    /* ── Nav mobile: hamburguesa ────────────────────────────────────────
+       El panel se cierra al elegir un link, al tocar fuera y con Escape. */
+    (function () {
+      var burger = document.getElementById('navBurger');
+      var panel = document.getElementById('navMobile');
+      if (!burger || !panel) return;
+      function setOpen(open) {
+        panel.classList.toggle('open', open);
+        burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      }
+      burger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setOpen(!panel.classList.contains('open'));
+      });
+      panel.addEventListener('click', function (e) {
+        if (e.target.tagName === 'A') setOpen(false);
+      });
+      document.addEventListener('click', function (e) {
+        if (!panel.classList.contains('open')) return;
+        if (!panel.contains(e.target) && e.target !== burger) setOpen(false);
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') setOpen(false);
+      });
+    })();
+
     function openModal(id) {
       const backdrop = document.getElementById('modal-' + id);
       if (!backdrop) return;
@@ -5412,6 +5909,7 @@ abcdefghijklmnopqrstuvwxyz
       document.body.style.overflow = 'hidden';
       backdrop.scrollTop = 0;
       if (window.ProjectLikes) window.ProjectLikes.attach(id);
+      if (typeof ProjectSwipe !== 'undefined' && ProjectSwipe) ProjectSwipe.sync(id);
     }
     function closeModal(id) {
       const backdrop = document.getElementById('modal-' + id);
@@ -5419,6 +5917,8 @@ abcdefghijklmnopqrstuvwxyz
       backdrop.classList.remove('open');
       document.body.style.overflow = '';
       if (window.ProjectLikes) window.ProjectLikes.detach();
+      if (!document.querySelector('.modal-backdrop.open') &&
+          typeof ProjectSwipe !== 'undefined' && ProjectSwipe) ProjectSwipe.hide();
     }
     document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
       backdrop.addEventListener('click', e => {
@@ -5435,6 +5935,183 @@ abcdefghijklmnopqrstuvwxyz
         });
       }
     });
+
+    /* ── Pasar de proyecto sin volver a la galeria ──────────────────────
+       Abierto un proyecto, un swipe horizontal lleva al siguiente. Los dos
+       grupos salen del DOM (la galeria principal y la de "less
+       representative"), asi el orden es siempre el que se ve en la pagina
+       y no una lista paralela que se desincroniza. Se navega dentro del
+       grupo del que salio el proyecto, y da la vuelta en las puntas. */
+    const ProjectSwipe = (function () {
+      const ids = sel => Array.prototype.slice
+        .call(document.querySelectorAll(sel + ' [data-modal]'))
+        .map(el => el.dataset.modal);
+      const groups = [ids('#elastic-gallery'), ids('.less-gallery')]
+        .filter(g => g.length > 1);
+
+      const elCount = document.getElementById('pnav-count');
+      const elPrev  = document.getElementById('pnav-prev');
+      const elNext  = document.getElementById('pnav-next');
+      const elHint  = document.getElementById('pnav-hint');
+      if (!groups.length || !elCount || !elPrev || !elNext) return null;
+
+      const SWIPE_MIN = 68;   // px de arrastre para que cuente como swipe
+      const LOCK_MIN  = 14;   // px antes de decidir si el gesto es horizontal
+      let busy = false;
+
+      const groupOf = id => groups.find(g => g.indexOf(id) !== -1) || null;
+      const openBackdrop = () => document.querySelector('.modal-backdrop.open');
+      const idOf = bd => bd.id.replace('modal-', '');
+      const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function clear(el) {
+        if (!el) return;
+        el.classList.remove('pnav-drag', 'pnav-anim');
+        el.style.transform = '';
+        el.style.opacity = '';
+      }
+
+      /* Un carrusel horizontal adentro del case study (el filmstrip de
+         pantallas) se queda con su propio gesto. */
+      function insideScroller(node) {
+        while (node && node !== document.body) {
+          if (node.nodeType === 1 && node.scrollWidth > node.clientWidth + 2) {
+            const ox = getComputedStyle(node).overflowX;
+            if (ox === 'auto' || ox === 'scroll') return true;
+          }
+          node = node.parentNode;
+        }
+        return false;
+      }
+
+      function sync(id) {
+        const g = groupOf(id);
+        if (!g) return hide();
+        const n = g.indexOf(id) + 1;
+        elCount.innerHTML = '<b>' + String(n).padStart(2, '0') + '</b>&nbsp;/&nbsp;' +
+                            String(g.length).padStart(2, '0');
+        [elCount, elPrev, elNext].forEach(el => el.hidden = false);
+        maybeHint();
+      }
+
+      function hide() {
+        [elCount, elPrev, elNext].forEach(el => { el.hidden = true; });
+        if (elHint) { elHint.hidden = true; elHint.classList.remove('on'); }
+      }
+
+      /* La pista aparece una sola vez por dispositivo: sirve para descubrir
+         el gesto, no para acompañarlo siempre. */
+      function maybeHint() {
+        if (!elHint || !window.matchMedia('(hover: none)').matches) return;
+        let seen = false;
+        try { seen = localStorage.getItem('edf-swipe-hint') === '1'; } catch (err) { seen = true; }
+        if (seen) return;
+        try { localStorage.setItem('edf-swipe-hint', '1'); } catch (err) { /* modo privado */ }
+        elHint.hidden = false;
+        requestAnimationFrame(() => elHint.classList.add('on'));
+        setTimeout(() => {
+          elHint.classList.remove('on');
+          setTimeout(() => { elHint.hidden = true; }, 320);
+        }, 2600);
+      }
+
+      function go(dir) {
+        const bd = openBackdrop();
+        if (!bd || busy) return;
+        const id = idOf(bd);
+        const g = groupOf(id);
+        if (!g) return;
+        const next = g[(g.indexOf(id) + dir + g.length) % g.length];
+        if (next === id) return;
+
+        busy = true;
+        const from = bd.querySelector('.modal');
+        const soft = reduced();
+        const shift = Math.min(window.innerWidth, 520) * 0.34;
+
+        const enter = () => {
+          closeModal(id);
+          setTimeout(() => clear(from), 400);   // recien cuando termino de irse
+          openModal(next);
+          const to = document.getElementById('modal-' + next).querySelector('.modal');
+          if (soft) { busy = false; return; }
+          to.classList.add('pnav-drag');
+          to.style.transform = 'translateX(' + (dir > 0 ? shift : -shift) + 'px)';
+          to.style.opacity = '0';
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            to.classList.remove('pnav-drag');
+            to.classList.add('pnav-anim');
+            to.style.transform = 'translateX(0)';
+            to.style.opacity = '1';
+            setTimeout(() => { clear(to); busy = false; }, 240);
+          }));
+        };
+
+        if (soft) return enter();
+        from.classList.add('pnav-anim');
+        from.style.transform = 'translateX(' + (dir > 0 ? -shift : shift) + 'px)';
+        from.style.opacity = '0';
+        setTimeout(enter, 190);
+      }
+
+      elPrev.addEventListener('click', () => go(-1));
+      elNext.addEventListener('click', () => go(1));
+
+      document.addEventListener('keydown', e => {
+        if (!openBackdrop()) return;
+        if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); go(-1); }
+      });
+
+      let sx = 0, sy = 0, dx = 0, lock = null, live = null;
+
+      document.addEventListener('touchstart', e => {
+        live = null;
+        if (busy || e.touches.length !== 1) return;
+        const bd = openBackdrop();
+        if (!bd || !groupOf(idOf(bd)) || insideScroller(e.target)) return;
+        sx = e.touches[0].clientX;
+        sy = e.touches[0].clientY;
+        dx = 0; lock = null;
+        live = bd.querySelector('.modal');
+      }, { passive: true });
+
+      document.addEventListener('touchmove', e => {
+        if (!live) return;
+        dx = e.touches[0].clientX - sx;
+        const dy = e.touches[0].clientY - sy;
+        if (lock === null) {
+          if (Math.abs(dx) > LOCK_MIN && Math.abs(dx) > Math.abs(dy) * 1.3) {
+            lock = 'x';
+            live.classList.add('pnav-drag');
+          } else if (Math.abs(dy) > LOCK_MIN) {
+            live = null;                        // es scroll vertical, no swipe
+          }
+          return;
+        }
+        e.preventDefault();                     // el modal no scrollea mientras arrastra
+        live.style.transform = 'translateX(' + (dx * 0.5) + 'px)';
+        live.style.opacity = String(Math.max(0.5, 1 - Math.abs(dx) / 640));
+      }, { passive: false });
+
+      document.addEventListener('touchend', () => {
+        const el = live, moved = dx;
+        live = null;
+        if (!el || lock !== 'x') return;
+        el.classList.remove('pnav-drag');
+        if (Math.abs(moved) > SWIPE_MIN) {
+          clear(el);
+          go(moved < 0 ? 1 : -1);
+        } else {
+          el.classList.add('pnav-anim');
+          el.style.transform = '';
+          el.style.opacity = '';
+          setTimeout(() => clear(el), 220);
+        }
+      }, { passive: true });
+
+      return { sync: sync, hide: hide, go: go };
+    })();
   </script>
 
   <!-- Hero intro: GSAP word-mask reveal + staggered fade-in on load. -->
