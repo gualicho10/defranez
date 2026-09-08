@@ -40,116 +40,6 @@
   },
   "nodes": [
     {
-      "label": "remember.md",
-      "file_type": "document",
-      "source_file": ".remember/remember.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "remember_remember",
-      "community": 2,
-      "norm_label": "remember.md"
-    },
-    {
-      "label": "Handoff \u2014 Session v5 \"mobile responsive\" \u2014 2026-07-05",
-      "file_type": "document",
-      "source_file": ".remember/remember.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "remember_remember_handoff_session_v5_mobile_responsive_2026_07_05",
-      "community": 2,
-      "norm_label": "handoff \u2014 session v5 \"mobile responsive\" \u2014 2026-07-05"
-    },
-    {
-      "label": "Git state",
-      "file_type": "document",
-      "source_file": ".remember/remember.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "remember_remember_git_state",
-      "community": 2,
-      "norm_label": "git state"
-    },
-    {
-      "label": "Working repo",
-      "file_type": "document",
-      "source_file": ".remember/remember.md",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "remember_remember_working_repo",
-      "community": 2,
-      "norm_label": "working repo"
-    },
-    {
-      "label": "All changes pushed this session",
-      "file_type": "document",
-      "source_file": ".remember/remember.md",
-      "source_location": "L13",
-      "_origin": "ast",
-      "id": "remember_remember_all_changes_pushed_this_session",
-      "community": 3,
-      "norm_label": "all changes pushed this session"
-    },
-    {
-      "label": "Mobile fixes (560px breakpoint)",
-      "file_type": "document",
-      "source_file": ".remember/remember.md",
-      "source_location": "L15",
-      "_origin": "ast",
-      "id": "remember_remember_mobile_fixes_560px_breakpoint",
-      "community": 3,
-      "norm_label": "mobile fixes (560px breakpoint)"
-    },
-    {
-      "label": "Desktop fixes (same session)",
-      "file_type": "document",
-      "source_file": ".remember/remember.md",
-      "source_location": "L29",
-      "_origin": "ast",
-      "id": "remember_remember_desktop_fixes_same_session",
-      "community": 3,
-      "norm_label": "desktop fixes (same session)"
-    },
-    {
-      "label": "Gitignore",
-      "file_type": "document",
-      "source_file": ".remember/remember.md",
-      "source_location": "L34",
-      "_origin": "ast",
-      "id": "remember_remember_gitignore",
-      "community": 3,
-      "norm_label": "gitignore"
-    },
-    {
-      "label": "Pending for next session",
-      "file_type": "document",
-      "source_file": ".remember/remember.md",
-      "source_location": "L39",
-      "_origin": "ast",
-      "id": "remember_remember_pending_for_next_session",
-      "community": 2,
-      "norm_label": "pending for next session"
-    },
-    {
-      "label": "Figma references",
-      "file_type": "document",
-      "source_file": ".remember/remember.md",
-      "source_location": "L44",
-      "_origin": "ast",
-      "id": "remember_remember_figma_references",
-      "community": 2,
-      "norm_label": "figma references"
-    },
-    {
-      "label": "project_v2_mobile_game.md",
-      "file_type": "document",
-      "source_file": "memory/project_v2_mobile_game.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "memory_project_v2_mobile_game",
-      "community": 4,
-      "norm_label": "project_v2_mobile_game.md"
-    },
-    {
       "label": "2026-07-13-hero-intro-example-design.md",
       "file_type": "document",
       "source_file": "docs/superpowers/specs/2026-07-13-hero-intro-example-design.md",
@@ -242,6 +132,167 @@
       "community": 10,
       "norm_label": "graphify knowledge graph workflow",
       "id": "claude_graphify_workflow"
+    },
+    {
+      "label": "Career Timeline Page",
+      "file_type": "code",
+      "source_file": "career.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 1,
+      "norm_label": "career timeline page",
+      "id": "career_work_experience_timeline"
+    },
+    {
+      "label": "Fade-Up IntersectionObserver (career)",
+      "file_type": "code",
+      "source_file": "career.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 1,
+      "norm_label": "fade-up intersectionobserver (career)",
+      "id": "career_fade_up_observer"
+    },
+    {
+      "label": "Big Time Studios / OpenLoot (Employer)",
+      "file_type": "concept",
+      "source_file": "career.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 1,
+      "norm_label": "big time studios / openloot (employer)",
+      "id": "career_big_time_studios_openloot"
+    },
+    {
+      "label": "FADU/UBA Graphic Design Degree",
+      "file_type": "concept",
+      "source_file": "career.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 1,
+      "norm_label": "fadu/uba graphic design degree",
+      "id": "career_fadu_uba"
+    },
+    {
+      "label": "V2 Mobile Game Session Record",
+      "file_type": "document",
+      "source_file": "memory/project_v2_mobile_game.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 2,
+      "norm_label": "v2 mobile game session record",
+      "id": "memory_project_v2_mobile_game_v2_mobile_game_session"
+    },
+    {
+      "label": "Arcade Hub (Nav-as-Minigame) Concept",
+      "file_type": "rationale",
+      "source_file": "memory/project_v2_mobile_game.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "V2 mobile had too many responsive errors; instead of patching, mobile (<=560px only) becomes an arcade hub: retro menu of 5 section tiles, each gated by a themed mini-game, mandatory with no skip escape hatch. Tablet stays desktop-like. Autonomous design/build was explicitly authorized for the session.",
+      "community": 3,
+      "norm_label": "arcade hub (nav-as-minigame) concept",
+      "id": "memory_project_v2_mobile_game_arcade_hub_concept"
+    },
+    {
+      "label": "Mini-Game Difficulty Curve",
+      "file_type": "rationale",
+      "source_file": "memory/project_v2_mobile_game.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Different mini-game per section with increasing difficulty: About (easiest, Knock) -> Tools (Match) -> Career (Timeline Hop) -> Contact (Dial) -> Portfolio (hardest, Snake eating 6 project pellets).",
+      "community": 3,
+      "norm_label": "mini-game difficulty curve",
+      "id": "memory_project_v2_mobile_game_minigame_difficulty_curve"
+    },
+    {
+      "label": "Web Tracker Dashboard",
+      "file_type": "code",
+      "source_file": "web_tracker.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Private analytics page: summary stat cards, recent visits table, repeat-visitor IP frequency map, and portfolio link-click log.",
+      "community": 5,
+      "norm_label": "web tracker dashboard",
+      "id": "web_tracker_dashboard"
+    },
+    {
+      "label": "Password Gate (checkPass/logout)",
+      "file_type": "code",
+      "source_file": "web_tracker.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Client-side-only gate: plaintext password constant compared in JS with a sessionStorage auth flag \u2014 obscurity, not security, since the Supabase anon key is in the same page source.",
+      "community": 5,
+      "norm_label": "password gate (checkpass/logout)",
+      "id": "web_tracker_password_gate"
+    },
+    {
+      "label": "loadData (Supabase fetch)",
+      "file_type": "code",
+      "source_file": "web_tracker.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 5,
+      "norm_label": "loaddata (supabase fetch)",
+      "id": "web_tracker_load_data"
+    },
+    {
+      "label": "renderAll (dashboard render)",
+      "file_type": "code",
+      "source_file": "web_tracker.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 5,
+      "norm_label": "renderall (dashboard render)",
+      "id": "web_tracker_render_all"
+    },
+    {
+      "label": "Supabase Tracking Backend (visits, link_clicks)",
+      "file_type": "concept",
+      "source_file": "web_tracker.html",
+      "source_location": null,
+      "source_url": "https://aqtfbzrdwbdymaoskxpt.supabase.co",
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Shared REST backend: index.html and v1.html POST rows into visits and link_clicks with the anon key; web_tracker.html reads the same tables to render the dashboard.",
+      "community": 5,
+      "norm_label": "supabase tracking backend (visits, link_clicks)",
+      "id": "web_tracker_supabase_backend"
     },
     {
       "label": "Resume PDF 2026 (Downloadable CV)",
@@ -391,96 +442,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": ".remember/remember.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "remember_remember",
-      "target": "remember_remember_handoff_session_v5_mobile_responsive_2026_07_05",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": ".remember/remember.md",
-      "source_location": "L13",
-      "weight": 1.0,
-      "source": "remember_remember_handoff_session_v5_mobile_responsive_2026_07_05",
-      "target": "remember_remember_all_changes_pushed_this_session",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": ".remember/remember.md",
-      "source_location": "L44",
-      "weight": 1.0,
-      "source": "remember_remember_handoff_session_v5_mobile_responsive_2026_07_05",
-      "target": "remember_remember_figma_references",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": ".remember/remember.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "remember_remember_handoff_session_v5_mobile_responsive_2026_07_05",
-      "target": "remember_remember_git_state",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": ".remember/remember.md",
-      "source_location": "L39",
-      "weight": 1.0,
-      "source": "remember_remember_handoff_session_v5_mobile_responsive_2026_07_05",
-      "target": "remember_remember_pending_for_next_session",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": ".remember/remember.md",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "remember_remember_handoff_session_v5_mobile_responsive_2026_07_05",
-      "target": "remember_remember_working_repo",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": ".remember/remember.md",
-      "source_location": "L29",
-      "weight": 1.0,
-      "source": "remember_remember_all_changes_pushed_this_session",
-      "target": "remember_remember_desktop_fixes_same_session",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": ".remember/remember.md",
-      "source_location": "L34",
-      "weight": 1.0,
-      "source": "remember_remember_all_changes_pushed_this_session",
-      "target": "remember_remember_gitignore",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": ".remember/remember.md",
-      "source_location": "L15",
-      "weight": 1.0,
-      "source": "remember_remember_all_changes_pushed_this_session",
-      "target": "remember_remember_mobile_fixes_560px_breakpoint",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "docs/superpowers/specs/2026-07-13-hero-intro-example-design.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -547,6 +508,96 @@
       "confidence_score": 1.0,
       "source": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_hero_intro_animation_example_design",
       "target": "docs_superpowers_specs_2026_07_13_hero_intro_example_design_visuals"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "career.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "career_work_experience_timeline",
+      "target": "career_big_time_studios_openloot"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "career.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "career_work_experience_timeline",
+      "target": "career_fade_up_observer"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "career.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "career_work_experience_timeline",
+      "target": "career_fadu_uba"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "img/resume_EdeFco_2026.pdf",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "img_resume_edefco_2026_resume_pdf",
+      "target": "career_work_experience_timeline"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "memory/project_v2_mobile_game.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "memory_project_v2_mobile_game_minigame_difficulty_curve",
+      "target": "memory_project_v2_mobile_game_arcade_hub_concept"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web_tracker.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "web_tracker_dashboard",
+      "target": "web_tracker_password_gate"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web_tracker.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "web_tracker_password_gate",
+      "target": "web_tracker_load_data"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web_tracker.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "web_tracker_load_data",
+      "target": "web_tracker_render_all"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web_tracker.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "web_tracker_load_data",
+      "target": "web_tracker_supabase_backend"
     },
     {
       "relation": "implements",
@@ -744,5 +795,5 @@
       "source_file": "img/icon-figma.svg"
     }
   ],
-  "built_at_commit": "9c76c0780f2768f7919be26bfd06321c26ff1138"
+  "built_at_commit": "83e26a6b6e18a19f9a436bd136a11edef75f74f4"
 }

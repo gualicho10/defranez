@@ -25,8 +25,8 @@
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1788837357.7252672,
-    "ast_hash": "6ae29c8269133553fb3662fa6b509b61",
+    "mtime": 1787949968.7585711,
+    "ast_hash": "ab394b03834a3893b95c0ef3cc149355",
     "semantic_hash": ""
   },
   "memory/project_v2_mobile_game.md": {
@@ -197,16 +197,6 @@
   "img/simply-vision/loading.mp4": {
     "mtime": 1787876207.3722277,
     "ast_hash": "9493cb58e3d896d7fd3725fcf88b7391",
-    "semantic_hash": ""
-  },
-  "img/bco-patagonia/onboarding.mp4": {
-    "mtime": 1788130750.5458214,
-    "ast_hash": "3ac9bd146cba8debf01bf5a6135c3108",
-    "semantic_hash": ""
-  },
-  "img/bco-patagonia/onboarding.webm": {
-    "mtime": 1788130772.1978676,
-    "ast_hash": "7475514f450b5bacf2a8952946eea515",
     "semantic_hash": ""
   }
 }

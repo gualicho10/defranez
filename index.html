@@ -1335,7 +1335,7 @@
     .sv-flow-row .sv-flow { flex: 709 1 0; min-width: 0; }
     .sv-sabana { display: grid; grid-template-columns: repeat(5, 1fr); gap: calc(10 * var(--v)); margin-top: calc(20 * var(--v)); }
     .sv-sabana img { width: 100%; height: auto; display: block; background: #fff;
-      border-radius: calc(10 * var(--v)); box-shadow: 0 calc(4 * var(--v)) calc(14 * var(--v)) rgba(0,0,0,0.12); }
+      border-radius: calc(10 * var(--v)); }
     /* category | value-scale two-column row (Figma cat-val-cols) */
     .sv-catval { display: flex; gap: calc(48 * var(--v)); align-items: flex-start; }
     .sv-catval > div { flex: 1 1 0; min-width: 0; }
@@ -1349,7 +1349,7 @@
     .sv-figrow--flow { gap: calc(58 * var(--v)); }
     .sv-figrow--wire { gap: calc(22 * var(--v)); }
     .sv-box { position: relative; overflow: hidden; background: #fff;
-      border: 1px solid rgba(0,0,0,0.09); border-radius: calc(14 * var(--v)); }
+      border-radius: calc(14 * var(--v)); }
     .sv-box > img { position: absolute; max-width: none; display: block; }
     .sv-box--onb { flex: 587 1 0; aspect-ratio: 587 / 742; }
     .sv-box--map { flex: 709 1 0; aspect-ratio: 709 / 742; }
@@ -1563,6 +1563,9 @@
       height: auto;
       border-radius: calc(10 * var(--v));
     }
+    /* SV first image (band) is inset & centred per Figma (1216 of 1354 content width) */
+    .cs2-band--inset { display: flex; justify-content: center; }
+    .cs2-band--inset img { width: 89.8%; }
     /* The walkthrough and the screens board are one continuous piece of artwork.
        font-size/line-height zero out the inline gap between them, and only the
        outer corners round so the pair reads as a single figure. */
@@ -4750,8 +4753,8 @@ abcdefghijklmnopqrstuvwxyz
           </div>
         </section>
 
-        <section class="cs2-band">
-          <img width="2000" height="1145" loading="lazy" data-src="img/simply-vision/band.webp" decoding="async"
+        <section class="cs2-band cs2-band--inset">
+          <img width="1824" height="1145" loading="lazy" data-src="img/simply-vision/band.webp" decoding="async"
                alt="Three Simply Vision screens: Best Ever records, the Happiness Report and the Overview dashboard">
         </section>
 
@@ -4770,7 +4773,7 @@ abcdefghijklmnopqrstuvwxyz
         </section>
 
         <section class="cs2-sec">
-          <img width="2000" height="1095" loading="lazy" class="cs2-figure" data-src="img/simply-vision/track-results.webp" decoding="async"
+          <img width="1951" height="1095" loading="lazy" class="cs2-figure" data-src="img/simply-vision/track-results.webp" decoding="async"
                alt="Track and Analyze screens side by side for Nutrition and Sleep, showing how logging feeds results">
           <div class="cs2-caption" style="margin-top: calc(10 * var(--v));">Track (left) feeds Analyze (right) — Nutrition &amp; Sleep</div>
         </section>
@@ -4835,23 +4838,8 @@ abcdefghijklmnopqrstuvwxyz
           <div class="cs2-pill cs2-pill--sm">Sitemap &amp; user flow</div>
           <h3 class="cs2-h">Every screen, <br><em>every path.</em></h3>
           <p class="cs2-prose cs2-prose--wide">A dense product needed a clear map. The flow charts each mode and stage — track, analyze, friends, records — and studies <strong>how quickly a new user reaches the app&rsquo;s value</strong>, with onboarding tuned so the first real insight never feels far away.</p>
-          <div class="cs2-caption" style="margin-top: calc(10 * var(--v));">Onboarding &amp; first track</div>
-          <div class="sv-figrow sv-figrow--flow">
-            <div class="sv-box sv-box--onb">
-              <img loading="lazy" data-src="img/simply-vision/onboarding.webp" decoding="async"
-                   style="width:82.27%;height:100%;left:9.8%;top:0;"
-                   alt="Onboarding sequence from login through the first tracked values">
-            </div>
-            <div class="sv-box sv-box--map">
-              <img loading="lazy" data-src="img/simply-vision/flow.webp" decoding="async"
-                   style="width:211.97%;height:110.98%;left:0.02%;top:-15.23%;"
-                   alt="Full user-flow map covering every mode and stage of the app">
-            </div>
-            <div class="sv-box sv-box--inset">
-              <img loading="lazy" data-src="img/simply-vision/flow.webp" decoding="async"
-                   style="width:901.48%;height:671.24%;left:-440.99%;top:-449.25%;" alt="">
-            </div>
-          </div>
+          <img width="2708" height="1484" loading="lazy" class="cs2-figure" data-src="img/simply-vision/user-flow.webp" decoding="async"
+               alt="Full sitemap and user-flow map of Simply Vision — onboarding, tracking, analysis, friends and records">
         </section>
 
         <div class="cs2-line"></div>
@@ -4860,18 +4848,8 @@ abcdefghijklmnopqrstuvwxyz
           <div class="cs2-pill cs2-pill--sm">Wireframes &amp; gestures</div>
           <h3 class="cs2-h">Fewer taps, <br><em>clearer intent.</em></h3>
           <p class="cs2-prose cs2-prose--wide">Early screens had too many tappable areas competing at once — overlapping taps, scrolls and swipes. Wireframing <strong>mapped the gestures</strong> and organised them, so every element stays clear and as intuitive as possible.</p>
-          <div class="sv-figrow sv-figrow--wire">
-            <div class="sv-box sv-box--wfflow">
-              <img loading="lazy" data-src="img/simply-vision/flow.webp" decoding="async"
-                   style="inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;"
-                   alt="Wireframe-level flow with the gesture legend">
-            </div>
-            <div class="sv-box sv-box--wf">
-              <img loading="lazy" data-src="img/simply-vision/wireframes.webp" decoding="async"
-                   style="width:100%;height:105.44%;left:0;top:2.77%;"
-                   alt="Wireframes of the Sleep tracking screen showing how gestures and states were organised">
-            </div>
-          </div>
+          <img width="3112" height="1179" loading="lazy" class="cs2-figure" data-src="img/simply-vision/wireframes.webp" decoding="async"
+               alt="Wireframes and gesture map of the Simply Vision screens">
         </section>
 
         <div class="cs2-line"></div>
