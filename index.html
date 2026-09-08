@@ -2859,6 +2859,8 @@
 }
 .lr-item {
   position: relative;
+  display: block;          /* son <a> hacia more-work.html, no divs */
+  text-decoration: none;
   flex: 1 1 0;
   min-width: 0;
   aspect-ratio: 264 / 260;
@@ -2871,12 +2873,15 @@
 }
 .lr-item img {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   max-width: none;
+  /* Los covers ya salen recortados a la relacion de la tarjeta desde
+     docs/make-covers.py, asi que alcanza con cubrir. */
+  object-fit: cover;
   /* Figma: covers are black & white */
   filter: grayscale(1);
-  /* per-card width/height/left/top set inline to match each Figma crop */
   transition: transform 0.55s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .lr-item:hover img,
@@ -2900,32 +2905,20 @@
   font-weight: 700;
   /* Figma: Syne Bold 16px on a 264px card ≈ 6.06% of card width */
   font-size: 6.06cqw;
-  line-height: normal;
+  line-height: 1.2;
   color: #fff;
   text-align: center;
-  white-space: nowrap;
+  /* Los nombres del Figma ("Illustration & Art Direction") no entran en una
+     linea a 264px, asi que envuelven; el overlay ya centra en flex. */
+  text-wrap: balance;
 }
 @media (max-width: 700px) {
   .less-gallery { flex-wrap: wrap; }
   .lr-item { flex: 0 0 calc(50% - 1px); }
+  /* La tarjeta baja a media pantalla y el titulo, que escala con su ancho,
+     quedaba chico. Cuatro puntos mas sobre esa misma escala. */
+  .lr-title { font-size: calc(6.06cqw + 4px); }
 }
-/* Placeholder for the not-yet-populated "sabana" inside less-rep modals */
-.lr-sabana {
-  min-height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px dashed rgba(255,255,255,0.14);
-  border-radius: 12px;
-  margin: 24px 0 8px;
-}
-.lr-sabana p {
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  color: rgba(255,255,255,0.4);
-}
-
 .g-item {
   position: relative;
   overflow: hidden;
@@ -3906,28 +3899,30 @@
 
     </div>
 
-    <div class="work-subhead work-subhead--less">A little bit of this, a little bit of that (coming soon… =)</div>
+    <div class="work-subhead work-subhead--less">A little bit of this, a little bit of that</div>
+    <!-- Cada tarjeta entra a su seccion de more-work.html, pero la pagina se
+         puede recorrer entera desde arriba. Nombres segun el Figma. -->
     <div class="less-gallery">
-      <div class="lr-item" data-modal="lr-cards" tabindex="0" role="button" aria-label="Cards &amp; Flyers" onclick="openModal('lr-cards')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-cards');}">
-        <img src="img/less-rep/cards-flyers.webp" alt="Cards &amp; Flyers" loading="lazy" decoding="async" style="width:100%;height:116.3%;left:0;top:-0.08%;">
+      <a class="lr-item" href="more-work.html#cards-flyers" aria-label="Cards &amp; Flyers">
+        <img src="img/less-rep/cards-flyers.webp" alt="" width="600" height="591" loading="lazy" decoding="async">
         <div class="lr-overlay"><div class="lr-title">Cards &amp; Flyers</div></div>
-      </div>
-      <div class="lr-item" data-modal="lr-illustration" tabindex="0" role="button" aria-label="Illustration" onclick="openModal('lr-illustration')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-illustration');}">
-        <img src="img/less-rep/illustration.webp" alt="Illustration" loading="lazy" decoding="async" style="width:207.15%;height:289.17%;left:-53.57%;top:-44.32%;">
-        <div class="lr-overlay"><div class="lr-title">Illustration</div></div>
-      </div>
-      <div class="lr-item" data-modal="lr-soft" tabindex="0" role="button" aria-label="Soft Branding" onclick="openModal('lr-soft')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-soft');}">
-        <img src="img/less-rep/soft-branding.webp" alt="Soft Branding" loading="lazy" decoding="async" style="width:165.68%;height:107.69%;left:-32.84%;top:-4.54%;">
-        <div class="lr-overlay"><div class="lr-title">Soft Branding</div></div>
-      </div>
-      <div class="lr-item" data-modal="lr-misc" tabindex="0" role="button" aria-label="Misc" onclick="openModal('lr-misc')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-misc');}">
-        <img src="img/less-rep/misc.webp" alt="Misc" loading="lazy" decoding="async" style="width:100%;height:100%;left:0;top:0;object-fit:cover;">
-        <div class="lr-overlay"><div class="lr-title">Misc</div></div>
-      </div>
-      <div class="lr-item" data-modal="lr-packaging" tabindex="0" role="button" aria-label="Packaging &amp; Press" onclick="openModal('lr-packaging')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('lr-packaging');}">
-        <img src="img/less-rep/packaging-press.webp" alt="Packaging &amp; Press" loading="lazy" decoding="async" style="width:100%;height:212.28%;left:0;top:-6.1%;">
-        <div class="lr-overlay"><div class="lr-title">Packaging &amp; Press</div></div>
-      </div>
+      </a>
+      <a class="lr-item" href="more-work.html#illustration" aria-label="Illustration &amp; Art Direction">
+        <img src="img/less-rep/illustration.webp" alt="" width="600" height="591" loading="lazy" decoding="async">
+        <div class="lr-overlay"><div class="lr-title">Illustration &amp; Art Direction</div></div>
+      </a>
+      <a class="lr-item" href="more-work.html#branding" aria-label="Branding">
+        <img src="img/less-rep/soft-branding.webp" alt="" width="600" height="592" loading="lazy" decoding="async">
+        <div class="lr-overlay"><div class="lr-title">Branding</div></div>
+      </a>
+      <a class="lr-item" href="more-work.html#photo-ai" aria-label="Photo Editing + AI">
+        <img src="img/less-rep/misc.webp" alt="" width="600" height="591" loading="lazy" decoding="async">
+        <div class="lr-overlay"><div class="lr-title">Photo Editing + AI</div></div>
+      </a>
+      <a class="lr-item" href="more-work.html#press-packaging" aria-label="Press &amp; Packaging">
+        <img src="img/less-rep/packaging-press.webp" alt="" width="600" height="591" loading="lazy" decoding="async">
+        <div class="lr-overlay"><div class="lr-title">Press &amp; Packaging</div></div>
+      </a>
     </div>
   </section>
 
@@ -5328,67 +5323,8 @@ abcdefghijklmnopqrstuvwxyz
     </div>
   </div>
 
-  <!-- Less-representative work modals. Each holds the full set of that category
-       laid out ("en sabana"). Content pending — placeholders for now. -->
-  <div class="modal-backdrop" id="modal-lr-cards">
-    <button class="modal-close" onclick="closeModal('lr-cards')">✕</button>
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-eyebrow">Less representative · Print</div>
-        <div class="modal-title">Cards &amp; Flyers</div>
-        <div class="modal-sub">Event &amp; gig graphics</div>
-      </div>
-      <div class="lr-sabana"><p>Full collection — laid out here soon.</p></div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="modal-lr-illustration">
-    <button class="modal-close" onclick="closeModal('lr-illustration')">✕</button>
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-eyebrow">Less representative · Illustration</div>
-        <div class="modal-title">Illustration</div>
-        <div class="modal-sub">Personal &amp; commissioned</div>
-      </div>
-      <div class="lr-sabana"><p>Full collection — laid out here soon.</p></div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="modal-lr-soft">
-    <button class="modal-close" onclick="closeModal('lr-soft')">✕</button>
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-eyebrow">Less representative · Branding</div>
-        <div class="modal-title">Soft Branding</div>
-        <div class="modal-sub">Small identity projects</div>
-      </div>
-      <div class="lr-sabana"><p>Full collection — laid out here soon.</p></div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="modal-lr-misc">
-    <button class="modal-close" onclick="closeModal('lr-misc')">✕</button>
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-eyebrow">Less representative · Miscellaneous</div>
-        <div class="modal-title">Misc</div>
-        <div class="modal-sub">Odds &amp; ends</div>
-      </div>
-      <div class="lr-sabana"><p>Full collection — laid out here soon.</p></div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="modal-lr-packaging">
-    <button class="modal-close" onclick="closeModal('lr-packaging')">✕</button>
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-eyebrow">Less representative · Packaging</div>
-        <div class="modal-title">Packaging &amp; Press</div>
-        <div class="modal-sub">Packaging &amp; editorial</div>
-      </div>
-      <div class="lr-sabana"><p>Full collection — laid out here soon.</p></div>
-    </div>
-  </div>
+  <!-- Los cinco modales "less representative" se fueron: esas tarjetas ahora
+       linkean a more-work.html, que es donde vive la coleccion completa. -->
 
   <!-- One like button for all six modals — it follows whichever one is open. -->
   <button class="like-btn" id="like-btn" type="button" aria-pressed="false" aria-label="Like this project" hidden>
@@ -5915,17 +5851,16 @@ abcdefghijklmnopqrstuvwxyz
     });
 
     /* ── Pasar de proyecto sin volver a la galeria ──────────────────────
-       Abierto un proyecto, un swipe horizontal lleva al siguiente. Los dos
-       grupos salen del DOM (la galeria principal y la de "less
-       representative"), asi el orden es siempre el que se ve en la pagina
-       y no una lista paralela que se desincroniza. Se navega dentro del
-       grupo del que salio el proyecto, y da la vuelta en las puntas. */
+       Abierto un proyecto, un swipe horizontal lleva al siguiente. El orden
+       sale del DOM, asi es siempre el que se ve en la pagina y no una lista
+       paralela que se desincroniza. Da la vuelta en las puntas.
+       (Antes habia un segundo grupo con las tarjetas "less representative";
+       esas ya no abren modal, linkean a more-work.html.) */
     const ProjectSwipe = (function () {
       const ids = sel => Array.prototype.slice
         .call(document.querySelectorAll(sel + ' [data-modal]'))
         .map(el => el.dataset.modal);
-      const groups = [ids('#elastic-gallery'), ids('.less-gallery')]
-        .filter(g => g.length > 1);
+      const groups = [ids('#elastic-gallery')].filter(g => g.length > 1);
 
       const elCount = document.getElementById('pnav-count');
       const elPrev  = document.getElementById('pnav-prev');

@@ -1,0 +1,348 @@
+    /* ==================================================================
+       more-work.html — hoja propia. Los tokens son los de index.html.
+
+       Una sola estructura para las dos vistas: arriba de 900px cada
+       seccion arma su composicion del Figma (columnas, cinta o bloques);
+       abajo, los envoltorios se disuelven con display:contents y los
+       tiles quedan como slides de un carrusel de a una imagen.
+       ================================================================== */
+    :root {
+      --bg: #080a0c;
+      --surface: #0e1114;
+      --border: rgba(255,255,255,0.06);
+      --accent: #00f5a0;
+      --text: #e8eaed;
+      --muted: #8b93a1;
+      --mw-gap: 10px;
+      --mw-col: 157px;
+      /* Alto util del reel: lo que queda de pantalla despues del titulo de la
+         seccion, que tiene que seguir a la vista mientras se arrastra. */
+      --mw-reel-h: min(68vh, 760px);
+      /* Alto fijo de cada diapositiva en mobile, igual para todas. */
+      --mw-slide-h: 62vh;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; }
+
+    /* ---- volver: pill sticky, del sistema de index.html ---- */
+    .mw-backbar {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      padding: 18px 40px;
+      pointer-events: none;
+    }
+    /* Solido en acento con texto oscuro, como en el Figma (y como el boton de
+       descarga del CV en index.html). Sobre una pagina llena de imagenes el
+       relleno se lee siempre; el borde fino se perdia. */
+    .mw-back {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      color: #080a0c;
+      text-decoration: none;
+      background: var(--accent);
+      padding: 9px 15px;
+      transition: opacity 0.2s;
+    }
+    .mw-back:hover { opacity: 0.82; }
+    .mw-back:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* ---- encabezado ---- */
+    .mw-head { padding: 30px 40px 80px; }
+    .mw-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .mw-eyebrow::before {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: var(--accent);
+    }
+    .mw-h1 {
+      font-size: clamp(34px, 6vw, 82px);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin: 0;
+      text-wrap: balance;
+    }
+
+    /* ---- seccion ---- */
+    .mw-sec {
+      padding: 0 40px 110px;
+      scroll-margin-top: 80px;   /* que el ancla no quede pegada al borde */
+    }
+    .mw-title {
+      font-weight: 500;          /* mas liviano que el 800 del index, como el Figma */
+      font-size: clamp(34px, 5.2vw, 76px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin: 0 0 6px;
+      text-wrap: balance;
+    }
+    .mw-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 36px;
+    }
+
+    .mw-tile { margin: 0; line-height: 0; position: relative; }
+    .mw-tile img { width: 100%; height: auto; display: block; }
+
+    /* <picture> no debe generar caja: si la genera, el height:100% del <img>
+       se mide contra una caja inline de alto automatico, no resuelve, y la
+       pieza pierde la altura del reel. */
+    .mw-tile picture { display: contents; }
+
+    /* Piezas que existen solo en una de las dos vistas: hay composiciones
+       rearmadas para vertical que no son un recorte de la de desktop. */
+    @media (min-width: 901px) { .mw-only-mobile  { display: none !important; } }
+    @media (max-width: 900px) { .mw-only-desktop { display: none !important; } }
+
+    /* ---- zoom al hover ----
+       Solo en las piezas chicas (flyers y logos), donde acercarse sirve para
+       leerlas. En el reel la imagen ya entra completa en pantalla: agrandarla
+       ahi no aporta nada y se sale del cuadro. */
+    @media (hover: hover) {
+      .mw-flow--masonry .mw-tile,
+      .mw-flow--marquee .mw-tile {
+        transition: transform 0.34s cubic-bezier(0.22,1,0.36,1), filter 0.34s;
+      }
+      .mw-flow--masonry:hover .mw-tile:not(:hover),
+      .mw-flow--marquee:hover .mw-tile:not(:hover) { filter: brightness(0.72); }
+      .mw-flow--masonry .mw-tile:hover,
+      .mw-flow--marquee .mw-tile:hover {
+        transform: scale(1.075);
+        z-index: 5;
+        filter: brightness(1.06);
+      }
+    }
+
+    /* ==================== DESKTOP ==================== */
+    @media (min-width: 901px) {
+      .mw-counter { display: none !important; }
+
+      /* masonry con arrastre */
+      .mw-flow--masonry {
+        display: flex;
+        gap: var(--mw-gap);
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 14px 40px 22px;   /* aire para que el zoom no se recorte */
+        margin: 0 -40px;
+        cursor: grab;
+        overscroll-behavior-x: contain;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255,255,255,0.16) transparent;
+      }
+      .mw-flow--masonry.is-dragging { cursor: grabbing; }
+      .mw-flow--masonry.is-dragging img { pointer-events: none; }
+      .mw-flow--masonry::-webkit-scrollbar { height: 6px; }
+      .mw-flow--masonry::-webkit-scrollbar-track { background: transparent; }
+      .mw-flow--masonry::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.16); }
+      .mw-col {
+        display: flex;
+        flex-direction: column;
+        gap: var(--mw-gap);
+        flex: 0 0 var(--mw-col);
+        width: var(--mw-col);
+      }
+      /* Si la tira no llega a desbordar, se centra en vez de quedar
+         pegada a la izquierda con un hueco al costado. */
+      .mw-flow--masonry:not(.is-overflowing) { justify-content: center; }
+
+      /* cinta infinita */
+      .mw-flow--marquee {
+        display: flex;
+        flex-direction: column;
+        gap: var(--mw-gap);
+        overflow: hidden;
+        margin: 0 -40px;
+        -webkit-mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+        mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+      }
+      .mw-row {
+        display: flex;
+        gap: var(--mw-gap);
+        width: max-content;
+        animation: mw-scroll var(--mw-dur, 50s) linear infinite;
+      }
+      .mw-row--rev { animation-direction: reverse; }
+      .mw-flow--marquee:hover .mw-row { animation-play-state: paused; }
+      .mw-row .mw-tile { flex: 0 0 auto; }
+      .mw-row .mw-tile img { width: auto; height: 300px; }
+      @keyframes mw-scroll {
+        from { transform: translate3d(0,0,0); }
+        to   { transform: translate3d(-50%,0,0); }
+      }
+
+      /* ---- reel: una parada por vez, entera en pantalla ----
+         La imagen se achica al alto util (pantalla menos el titulo y el aire)
+         y el ancho sale del aspecto. Piezas muy altas terminan angostas, que
+         es justo lo que permite verlas completas sin scrollear. */
+      .mw-flow--reel {
+        display: flex;
+        gap: 28px;
+        align-items: center;
+        height: var(--mw-reel-h);
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 0 40px;
+        margin: 0 -40px;
+        cursor: grab;
+        overscroll-behavior-x: contain;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255,255,255,0.16) transparent;
+      }
+      .mw-flow--reel.is-dragging { cursor: grabbing; }
+      .mw-flow--reel.is-dragging img { pointer-events: none; }
+      .mw-flow--reel::-webkit-scrollbar { height: 6px; }
+      .mw-flow--reel::-webkit-scrollbar-track { background: transparent; }
+      .mw-flow--reel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.16); }
+
+      .mw-slide {
+        flex: 0 0 auto;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: var(--mw-gap);
+      }
+      .mw-slide .mw-tile { height: 100%; display: flex; align-items: center; }
+      .mw-slide .mw-tile img {
+        height: 100%;
+        width: auto;
+        max-width: none;
+        object-fit: contain;
+      }
+      /* Igual que el masonry: si todo entra, se centra. */
+      .mw-flow--reel:not(.is-overflowing) { justify-content: center; }
+    }
+
+    /* ==================== MOBILE ==================== */
+    /* Una imagen por vez, swipe horizontal. Mismo DOM: los envoltorios
+       desaparecen con display:contents y los tiles pasan a ser slides. */
+    @media (max-width: 900px) {
+      .mw-backbar { padding: 14px 20px; }
+      .mw-head { padding: 22px 20px 54px; }
+      .mw-sec { padding: 0 0 72px; }
+      .mw-title { padding: 0 20px; }
+      /* El conteo de piezas es el de desktop y una seccion puede tener otro
+         en mobile; ademas el contador de abajo ya lo dice. */
+      .mw-meta { display: none; }
+
+      .mw-col, .mw-row, .mw-slide { display: contents; }
+      .mw-tile[data-clone] { display: none; }   /* el clon es solo de la cinta */
+
+      .mw-flow {
+        display: flex;
+        height: auto;
+        /* Con una pieza a ancho completo la tira crece. Todas arrancan arriba,
+           pegadas al titulo: centradas quedaban empujadas hacia abajo. */
+        align-items: flex-start;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+        -webkit-mask: none;
+        mask: none;
+      }
+      .mw-flow::-webkit-scrollbar { display: none; }
+      .mw-row { animation: none; }
+
+      /* Todas las diapositivas miden lo mismo y la imagen se centra adentro.
+         Con alto libre, pasar de un flyer cuadrado a uno bien vertical movia
+         la pagina entera en cada swipe. Ahora solo cambia el ancho de la
+         pieza; el alto de la tira queda quieto. */
+      .mw-tile {
+        flex: 0 0 100%;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 20px;
+        height: var(--mw-slide-h);
+      }
+      .mw-tile img {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+
+      /* Piezas muy verticales: mandan el ancho, no el alto. Entran mas grandes
+         a cambio de un poco de scroll vertical. */
+      .mw-tile--full { height: auto; }
+      .mw-tile--full img { width: 100%; max-height: none; }
+
+      /* contador arriba: abajo obligaba a scrollear para saber donde estabas */
+      .mw-counter {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 20px;
+        font-family: 'DM Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+      }
+      .mw-counter b { color: var(--text); font-weight: 400; }
+      .mw-bar { flex: 1; height: 1px; background: rgba(255,255,255,0.12); position: relative; }
+      .mw-bar > span {
+        position: absolute;
+        inset: 0 auto 0 0;
+        background: var(--accent);
+        transition: width 0.18s linear;
+      }
+    }
+
+    /* ---- pie ---- */
+    .mw-foot {
+      border-top: 1px solid var(--border);
+      padding: 34px 40px 60px;
+    }
+    .mw-foot a {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .mw-foot a:hover { opacity: 0.8; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .mw-tile { transition: none; }
+      .mw-row { animation: none; }
+    }

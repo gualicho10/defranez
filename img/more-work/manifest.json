@@ -1,0 +1,1410 @@
+{
+  "1_cards-flyers": [
+    {
+      "name": "c1-01-1463093-754507931231219-946672623-n-1",
+      "src_w": 1400,
+      "src_h": 1624,
+      "ratio": 0.8621,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-01-1463093-754507931231219-946672623-n-1-400.webp",
+          "bytes": 20802
+        },
+        {
+          "w": 1200,
+          "file": "c1-01-1463093-754507931231219-946672623-n-1-1200.webp",
+          "bytes": 93546
+        }
+      ]
+    },
+    {
+      "name": "c1-02-15-feb-onyx-1",
+      "src_w": 1400,
+      "src_h": 1820,
+      "ratio": 0.7692,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-02-15-feb-onyx-1-400.webp",
+          "bytes": 32270
+        },
+        {
+          "w": 1200,
+          "file": "c1-02-15-feb-onyx-1-1200.webp",
+          "bytes": 160926
+        }
+      ]
+    },
+    {
+      "name": "c1-03-28-nov-2013-1",
+      "src_w": 1400,
+      "src_h": 2758,
+      "ratio": 0.5076,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-03-28-nov-2013-1-400.webp",
+          "bytes": 30050
+        },
+        {
+          "w": 1200,
+          "file": "c1-03-28-nov-2013-1-1200.webp",
+          "bytes": 136176
+        }
+      ]
+    },
+    {
+      "name": "c1-04-30-oct-2013-1",
+      "src_w": 1400,
+      "src_h": 942,
+      "ratio": 1.4862,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-04-30-oct-2013-1-400.webp",
+          "bytes": 12264
+        },
+        {
+          "w": 1200,
+          "file": "c1-04-30-oct-2013-1-1200.webp",
+          "bytes": 70926
+        }
+      ]
+    },
+    {
+      "name": "c1-05-488013-754507951231217-1259368847-n-1",
+      "src_w": 1400,
+      "src_h": 1850,
+      "ratio": 0.7568,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-05-488013-754507951231217-1259368847-n-1-400.webp",
+          "bytes": 21708
+        },
+        {
+          "w": 1200,
+          "file": "c1-05-488013-754507951231217-1259368847-n-1-1200.webp",
+          "bytes": 85114
+        }
+      ]
+    },
+    {
+      "name": "c1-06-background-image",
+      "src_w": 1240,
+      "src_h": 2204,
+      "ratio": 0.5626,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-06-background-image-400.webp",
+          "bytes": 24138
+        },
+        {
+          "w": 1200,
+          "file": "c1-06-background-image-1200.webp",
+          "bytes": 90964
+        }
+      ]
+    },
+    {
+      "name": "c1-07-baltu-2-anos-op2-1",
+      "src_w": 1400,
+      "src_h": 2262,
+      "ratio": 0.6189,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-07-baltu-2-anos-op2-1-400.webp",
+          "bytes": 43782
+        },
+        {
+          "w": 1200,
+          "file": "c1-07-baltu-2-anos-op2-1-1200.webp",
+          "bytes": 181224
+        }
+      ]
+    },
+    {
+      "name": "c1-08-baltu-2anos-op1-1",
+      "src_w": 1400,
+      "src_h": 2276,
+      "ratio": 0.6151,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-08-baltu-2anos-op1-1-400.webp",
+          "bytes": 46894
+        },
+        {
+          "w": 1200,
+          "file": "c1-08-baltu-2anos-op1-1-1200.webp",
+          "bytes": 197658
+        }
+      ]
+    },
+    {
+      "name": "c1-09-event-poster",
+      "src_w": 1240,
+      "src_h": 2210,
+      "ratio": 0.5611,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-09-event-poster-400.webp",
+          "bytes": 28556
+        },
+        {
+          "w": 1200,
+          "file": "c1-09-event-poster-1200.webp",
+          "bytes": 97428
+        }
+      ]
+    },
+    {
+      "name": "c1-10-flora-1-ano-jazzdoit-1",
+      "src_w": 1400,
+      "src_h": 2488,
+      "ratio": 0.5627,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-10-flora-1-ano-jazzdoit-1-400.webp",
+          "bytes": 49446
+        },
+        {
+          "w": 1200,
+          "file": "c1-10-flora-1-ano-jazzdoit-1-1200.webp",
+          "bytes": 217674
+        }
+      ]
+    },
+    {
+      "name": "c1-11-fecha-1-feed-op1-1",
+      "src_w": 1400,
+      "src_h": 1750,
+      "ratio": 0.8,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-11-fecha-1-feed-op1-1-400.webp",
+          "bytes": 28946
+        },
+        {
+          "w": 1200,
+          "file": "c1-11-fecha-1-feed-op1-1-1200.webp",
+          "bytes": 151948
+        }
+      ]
+    },
+    {
+      "name": "c1-12-feed-2-2",
+      "src_w": 1238,
+      "src_h": 1548,
+      "ratio": 0.7997,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-12-feed-2-2-400.webp",
+          "bytes": 33210
+        },
+        {
+          "w": 1200,
+          "file": "c1-12-feed-2-2-1200.webp",
+          "bytes": 162790
+        }
+      ]
+    },
+    {
+      "name": "c1-13-flyer",
+      "src_w": 1238,
+      "src_h": 2202,
+      "ratio": 0.5622,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-13-flyer-400.webp",
+          "bytes": 37868
+        },
+        {
+          "w": 1200,
+          "file": "c1-13-flyer-1200.webp",
+          "bytes": 139544
+        }
+      ]
+    },
+    {
+      "name": "c1-14-flyer-4abril-lucille-feed-2",
+      "src_w": 1236,
+      "src_h": 1546,
+      "ratio": 0.7995,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-14-flyer-4abril-lucille-feed-2-400.webp",
+          "bytes": 25826
+        },
+        {
+          "w": 1200,
+          "file": "c1-14-flyer-4abril-lucille-feed-2-1200.webp",
+          "bytes": 106822
+        }
+      ]
+    },
+    {
+      "name": "c1-15-flyer-casorio-nicoyjuli-10dias-1",
+      "src_w": 1400,
+      "src_h": 3024,
+      "ratio": 0.463,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-15-flyer-casorio-nicoyjuli-10dias-1-400.webp",
+          "bytes": 32020
+        },
+        {
+          "w": 1200,
+          "file": "c1-15-flyer-casorio-nicoyjuli-10dias-1-1200.webp",
+          "bytes": 173130
+        }
+      ]
+    },
+    {
+      "name": "c1-16-photo-2026-05-19-09-27-44-1-1",
+      "src_w": 1400,
+      "src_h": 1750,
+      "ratio": 0.8,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-16-photo-2026-05-19-09-27-44-1-1-400.webp",
+          "bytes": 29996
+        },
+        {
+          "w": 1200,
+          "file": "c1-16-photo-2026-05-19-09-27-44-1-1-1200.webp",
+          "bytes": 129936
+        }
+      ]
+    },
+    {
+      "name": "c1-17-pairol-1",
+      "src_w": 1400,
+      "src_h": 2496,
+      "ratio": 0.5609,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-17-pairol-1-400.webp",
+          "bytes": 25046
+        },
+        {
+          "w": 1200,
+          "file": "c1-17-pairol-1-1200.webp",
+          "bytes": 90470
+        }
+      ]
+    },
+    {
+      "name": "c1-18-poster",
+      "src_w": 1240,
+      "src_h": 2204,
+      "ratio": 0.5626,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-18-poster-400.webp",
+          "bytes": 27272
+        },
+        {
+          "w": 1200,
+          "file": "c1-18-poster-1200.webp",
+          "bytes": 109658
+        }
+      ]
+    },
+    {
+      "name": "c1-19-story-1",
+      "src_w": 1368,
+      "src_h": 2908,
+      "ratio": 0.4704,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-19-story-1-400.webp",
+          "bytes": 17070
+        },
+        {
+          "w": 1200,
+          "file": "c1-19-story-1-1200.webp",
+          "bytes": 61174
+        }
+      ]
+    },
+    {
+      "name": "c1-20-story-con-fotos-1",
+      "src_w": 1368,
+      "src_h": 2908,
+      "ratio": 0.4704,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-20-story-con-fotos-1-400.webp",
+          "bytes": 21878
+        },
+        {
+          "w": 1200,
+          "file": "c1-20-story-con-fotos-1-1200.webp",
+          "bytes": 82826
+        }
+      ]
+    },
+    {
+      "name": "c1-21-flyer-1",
+      "src_w": 1400,
+      "src_h": 2080,
+      "ratio": 0.6731,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-21-flyer-1-400.webp",
+          "bytes": 27326
+        },
+        {
+          "w": 1200,
+          "file": "c1-21-flyer-1-1200.webp",
+          "bytes": 96696
+        }
+      ]
+    },
+    {
+      "name": "c1-22-flyer-2",
+      "src_w": 1400,
+      "src_h": 832,
+      "ratio": 1.6827,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-22-flyer-2-400.webp",
+          "bytes": 27596
+        },
+        {
+          "w": 1200,
+          "file": "c1-22-flyer-2-1200.webp",
+          "bytes": 150822
+        }
+      ]
+    },
+    {
+      "name": "c1-23-flyer-01-07-1",
+      "src_w": 1400,
+      "src_h": 766,
+      "ratio": 1.8277,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-23-flyer-01-07-1-400.webp",
+          "bytes": 22876
+        },
+        {
+          "w": 1200,
+          "file": "c1-23-flyer-01-07-1-1200.webp",
+          "bytes": 100942
+        }
+      ]
+    },
+    {
+      "name": "c1-24-flyer-14-nov-1",
+      "src_w": 1400,
+      "src_h": 1990,
+      "ratio": 0.7035,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-24-flyer-14-nov-1-400.webp",
+          "bytes": 21222
+        },
+        {
+          "w": 1200,
+          "file": "c1-24-flyer-14-nov-1-1200.webp",
+          "bytes": 89058
+        }
+      ]
+    },
+    {
+      "name": "c1-25-flyer-bienbohemio-1",
+      "src_w": 1400,
+      "src_h": 990,
+      "ratio": 1.4141,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-25-flyer-bienbohemio-1-400.webp",
+          "bytes": 17270
+        },
+        {
+          "w": 1200,
+          "file": "c1-25-flyer-bienbohemio-1-1200.webp",
+          "bytes": 60804
+        }
+      ]
+    },
+    {
+      "name": "c1-26-flyer-tobias-1-ano-2-1",
+      "src_w": 1400,
+      "src_h": 2486,
+      "ratio": 0.5632,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-26-flyer-tobias-1-ano-2-1-400.webp",
+          "bytes": 30596
+        },
+        {
+          "w": 1200,
+          "file": "c1-26-flyer-tobias-1-ano-2-1-1200.webp",
+          "bytes": 116194
+        }
+      ]
+    },
+    {
+      "name": "c1-27-flyer2-1",
+      "src_w": 1400,
+      "src_h": 722,
+      "ratio": 1.9391,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-27-flyer2-1-400.webp",
+          "bytes": 17106
+        },
+        {
+          "w": 1200,
+          "file": "c1-27-flyer2-1-1200.webp",
+          "bytes": 74582
+        }
+      ]
+    },
+    {
+      "name": "c1-28-flyer-sol-liebeskind-1",
+      "src_w": 1400,
+      "src_h": 2032,
+      "ratio": 0.689,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-28-flyer-sol-liebeskind-1-400.webp",
+          "bytes": 55608
+        },
+        {
+          "w": 1200,
+          "file": "c1-28-flyer-sol-liebeskind-1-1200.webp",
+          "bytes": 239142
+        }
+      ]
+    },
+    {
+      "name": "c1-29-guitarra-flyer-insta-1",
+      "src_w": 1400,
+      "src_h": 2488,
+      "ratio": 0.5627,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-29-guitarra-flyer-insta-1-400.webp",
+          "bytes": 21286
+        },
+        {
+          "w": 1200,
+          "file": "c1-29-guitarra-flyer-insta-1-1200.webp",
+          "bytes": 74320
+        }
+      ]
+    },
+    {
+      "name": "c1-30-logo-amalia-1",
+      "src_w": 2446,
+      "src_h": 1586,
+      "ratio": 1.5422,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-30-logo-amalia-1-400.webp",
+          "bytes": 19990
+        },
+        {
+          "w": 1200,
+          "file": "c1-30-logo-amalia-1-1200.webp",
+          "bytes": 79616
+        }
+      ]
+    },
+    {
+      "name": "c1-31-marito-1",
+      "src_w": 1400,
+      "src_h": 848,
+      "ratio": 1.6509,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-31-marito-1-400.webp",
+          "bytes": 16374
+        },
+        {
+          "w": 1200,
+          "file": "c1-31-marito-1-1200.webp",
+          "bytes": 81520
+        }
+      ]
+    },
+    {
+      "name": "c1-32-muestra-1",
+      "src_w": 1400,
+      "src_h": 2716,
+      "ratio": 0.5155,
+      "variants": [
+        {
+          "w": 400,
+          "file": "c1-32-muestra-1-400.webp",
+          "bytes": 40822
+        },
+        {
+          "w": 1200,
+          "file": "c1-32-muestra-1-1200.webp",
+          "bytes": 153500
+        }
+      ]
+    },
+    {
+      "name": "c1-37-22jun-burlesque-1",
+      "src_w": 315,
+      "src_h": 692,
+      "ratio": 0.4552,
+      "variants": [
+        {
+          "w": 315,
+          "file": "c1-37-22jun-burlesque-1-315.webp",
+          "bytes": 51686
+        }
+      ]
+    },
+    {
+      "name": "c1-38-flyer-save-the-date-1",
+      "src_w": 315,
+      "src_h": 692,
+      "ratio": 0.4552,
+      "variants": [
+        {
+          "w": 315,
+          "file": "c1-38-flyer-save-the-date-1-315.webp",
+          "bytes": 8580
+        }
+      ]
+    },
+    {
+      "name": "c1-39-flyer-story-oid-mortales-2-1",
+      "src_w": 315,
+      "src_h": 560,
+      "ratio": 0.5625,
+      "variants": [
+        {
+          "w": 315,
+          "file": "c1-39-flyer-story-oid-mortales-2-1-315.webp",
+          "bytes": 29676
+        }
+      ]
+    }
+  ],
+  "2_branding": [
+    {
+      "name": "g1-01-logo-defranez-1",
+      "src_w": 740,
+      "src_h": 780,
+      "ratio": 0.9487,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g1-01-logo-defranez-1-400.webp",
+          "bytes": 10856
+        },
+        {
+          "w": 740,
+          "file": "g1-01-logo-defranez-1-740.webp",
+          "bytes": 23696
+        }
+      ]
+    },
+    {
+      "name": "g1-02-logos-1",
+      "src_w": 727,
+      "src_h": 380,
+      "ratio": 1.9132,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g1-02-logos-1-400.webp",
+          "bytes": 7602
+        },
+        {
+          "w": 727,
+          "file": "g1-02-logos-1-727.webp",
+          "bytes": 16258
+        }
+      ]
+    },
+    {
+      "name": "g1-03-logos-3",
+      "src_w": 727,
+      "src_h": 380,
+      "ratio": 1.9132,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g1-03-logos-3-400.webp",
+          "bytes": 3596
+        },
+        {
+          "w": 727,
+          "file": "g1-03-logos-3-727.webp",
+          "bytes": 6724
+        }
+      ]
+    },
+    {
+      "name": "g1-04-logos-2",
+      "src_w": 934,
+      "src_h": 780,
+      "ratio": 1.1974,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g1-04-logos-2-400.webp",
+          "bytes": 10222
+        },
+        {
+          "w": 934,
+          "file": "g1-04-logos-2-934.webp",
+          "bytes": 25556
+        }
+      ]
+    },
+    {
+      "name": "g1-06-logo-flora-adaptaciones",
+      "src_w": 2586,
+      "src_h": 2126,
+      "ratio": 1.2164,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g1-06-logo-flora-adaptaciones-400.webp",
+          "bytes": 11804
+        },
+        {
+          "w": 1200,
+          "file": "g1-06-logo-flora-adaptaciones-1200.webp",
+          "bytes": 49908
+        }
+      ]
+    },
+    {
+      "name": "g2-01-frame",
+      "src_w": 520,
+      "src_h": 806,
+      "ratio": 0.6452,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g2-01-frame-400.webp",
+          "bytes": 6668
+        },
+        {
+          "w": 520,
+          "file": "g2-01-frame-520.webp",
+          "bytes": 9808
+        }
+      ]
+    },
+    {
+      "name": "g2-03-frame-129",
+      "src_w": 1162,
+      "src_h": 806,
+      "ratio": 1.4417,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g2-03-frame-129-400.webp",
+          "bytes": 8458
+        },
+        {
+          "w": 1162,
+          "file": "g2-03-frame-129-1162.webp",
+          "bytes": 35560
+        }
+      ]
+    },
+    {
+      "name": "g2-04-logo-oid-mortales-1",
+      "src_w": 858,
+      "src_h": 806,
+      "ratio": 1.0645,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g2-04-logo-oid-mortales-1-400.webp",
+          "bytes": 8708
+        },
+        {
+          "w": 858,
+          "file": "g2-04-logo-oid-mortales-1-858.webp",
+          "bytes": 25686
+        }
+      ]
+    },
+    {
+      "name": "m1-01-logos-mali-defranez-ostende",
+      "src_w": 732,
+      "src_h": 1166,
+      "ratio": 0.6278,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-01-logos-mali-defranez-ostende-400.webp",
+          "bytes": 15996
+        },
+        {
+          "w": 732,
+          "file": "m1-01-logos-mali-defranez-ostende-732.webp",
+          "bytes": 34348
+        }
+      ]
+    },
+    {
+      "name": "m1-02-flora-tarjetas-oid-jazz",
+      "src_w": 735,
+      "src_h": 879,
+      "ratio": 0.8362,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-02-flora-tarjetas-oid-jazz-400.webp",
+          "bytes": 16808
+        },
+        {
+          "w": 735,
+          "file": "m1-02-flora-tarjetas-oid-jazz-735.webp",
+          "bytes": 42746
+        }
+      ]
+    }
+  ],
+  "3_illustration": [
+    {
+      "name": "g1-01-game-ipad1-1",
+      "src_w": 3148,
+      "src_h": 1771,
+      "ratio": 1.7775,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g1-01-game-ipad1-1-400.webp",
+          "bytes": 17388
+        },
+        {
+          "w": 1200,
+          "file": "g1-01-game-ipad1-1-1200.webp",
+          "bytes": 99296
+        },
+        {
+          "w": 1600,
+          "file": "g1-01-game-ipad1-1-1600.webp",
+          "bytes": 142782
+        }
+      ]
+    },
+    {
+      "name": "g1-01-game-ipad1-1@m",
+      "src_w": 732,
+      "src_h": 994,
+      "ratio": 0.7364,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g1-01-game-ipad1-1@m-400.webp",
+          "bytes": 37136
+        },
+        {
+          "w": 732,
+          "file": "g1-01-game-ipad1-1@m-732.webp",
+          "bytes": 92286
+        }
+      ]
+    },
+    {
+      "name": "g2-01-game-ipad2-1",
+      "src_w": 3148,
+      "src_h": 1771,
+      "ratio": 1.7775,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g2-01-game-ipad2-1-400.webp",
+          "bytes": 20580
+        },
+        {
+          "w": 1200,
+          "file": "g2-01-game-ipad2-1-1200.webp",
+          "bytes": 118376
+        },
+        {
+          "w": 1600,
+          "file": "g2-01-game-ipad2-1-1600.webp",
+          "bytes": 175170
+        }
+      ]
+    },
+    {
+      "name": "g2-01-game-ipad2-1@m",
+      "src_w": 732,
+      "src_h": 994,
+      "ratio": 0.7364,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g2-01-game-ipad2-1@m-400.webp",
+          "bytes": 38686
+        },
+        {
+          "w": 732,
+          "file": "g2-01-game-ipad2-1@m-732.webp",
+          "bytes": 97280
+        }
+      ]
+    },
+    {
+      "name": "g3-00-group@m",
+      "src_w": 732,
+      "src_h": 700,
+      "ratio": 1.0457,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g3-00-group@m-400.webp",
+          "bytes": 29286
+        },
+        {
+          "w": 732,
+          "file": "g3-00-group@m-732.webp",
+          "bytes": 84756
+        }
+      ]
+    },
+    {
+      "name": "g3-01-building-illustrations",
+      "src_w": 1100,
+      "src_h": 3011,
+      "ratio": 0.3653,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g3-01-building-illustrations-400.webp",
+          "bytes": 65616
+        },
+        {
+          "w": 1100,
+          "file": "g3-01-building-illustrations-1100.webp",
+          "bytes": 229622
+        }
+      ]
+    },
+    {
+      "name": "g3-02-screen",
+      "src_w": 1160,
+      "src_h": 3011,
+      "ratio": 0.3853,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g3-02-screen-400.webp",
+          "bytes": 70662
+        },
+        {
+          "w": 1160,
+          "file": "g3-02-screen-1160.webp",
+          "bytes": 259718
+        }
+      ]
+    },
+    {
+      "name": "g3-03-frame-1",
+      "src_w": 850,
+      "src_h": 3011,
+      "ratio": 0.2823,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g3-03-frame-1-400.webp",
+          "bytes": 32876
+        },
+        {
+          "w": 850,
+          "file": "g3-03-frame-1-850.webp",
+          "bytes": 85110
+        }
+      ]
+    },
+    {
+      "name": "g4-01-frame-144",
+      "src_w": 3148,
+      "src_h": 3175,
+      "ratio": 0.9915,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g4-01-frame-144-400.webp",
+          "bytes": 18294
+        },
+        {
+          "w": 1200,
+          "file": "g4-01-frame-144-1200.webp",
+          "bytes": 78250
+        },
+        {
+          "w": 1600,
+          "file": "g4-01-frame-144-1600.webp",
+          "bytes": 107974
+        }
+      ]
+    },
+    {
+      "name": "g4-01-frame-144@m",
+      "src_w": 732,
+      "src_h": 994,
+      "ratio": 0.7364,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g4-01-frame-144@m-400.webp",
+          "bytes": 22934
+        },
+        {
+          "w": 732,
+          "file": "g4-01-frame-144@m-732.webp",
+          "bytes": 53304
+        }
+      ]
+    }
+  ],
+  "4_photo-ai": [
+    {
+      "name": "g1-01-tapa-1",
+      "src_w": 730,
+      "src_h": 730,
+      "ratio": 1.0,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g1-01-tapa-1-400.webp",
+          "bytes": 20448
+        },
+        {
+          "w": 730,
+          "file": "g1-01-tapa-1-730.webp",
+          "bytes": 65450
+        }
+      ]
+    },
+    {
+      "name": "g1-02-pulsion-tapa-contratapa",
+      "src_w": 4038,
+      "src_h": 2000,
+      "ratio": 2.019,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g1-02-pulsion-tapa-contratapa-400.webp",
+          "bytes": 6088
+        },
+        {
+          "w": 1200,
+          "file": "g1-02-pulsion-tapa-contratapa-1200.webp",
+          "bytes": 35936
+        },
+        {
+          "w": 1600,
+          "file": "g1-02-pulsion-tapa-contratapa-1600.webp",
+          "bytes": 58328
+        }
+      ]
+    },
+    {
+      "name": "g1-03-contratapa-baja-1",
+      "src_w": 730,
+      "src_h": 730,
+      "ratio": 1.0,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g1-03-contratapa-baja-1-400.webp",
+          "bytes": 14136
+        },
+        {
+          "w": 730,
+          "file": "g1-03-contratapa-baja-1-730.webp",
+          "bytes": 34622
+        }
+      ]
+    },
+    {
+      "name": "g2-01-container",
+      "src_w": 1372,
+      "src_h": 997,
+      "ratio": 1.3761,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g2-01-container-400.webp",
+          "bytes": 13180
+        },
+        {
+          "w": 1200,
+          "file": "g2-01-container-1200.webp",
+          "bytes": 70044
+        },
+        {
+          "w": 1372,
+          "file": "g2-01-container-1372.webp",
+          "bytes": 107738
+        }
+      ]
+    },
+    {
+      "name": "g2-02-frame-2",
+      "src_w": 868,
+      "src_h": 997,
+      "ratio": 0.8706,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g2-02-frame-2-400.webp",
+          "bytes": 33046
+        },
+        {
+          "w": 868,
+          "file": "g2-02-frame-2-868.webp",
+          "bytes": 125480
+        }
+      ]
+    },
+    {
+      "name": "g2-03-retoqueimagen-3",
+      "src_w": 868,
+      "src_h": 991,
+      "ratio": 0.8759,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g2-03-retoqueimagen-3-400.webp",
+          "bytes": 33880
+        },
+        {
+          "w": 868,
+          "file": "g2-03-retoqueimagen-3-868.webp",
+          "bytes": 132064
+        }
+      ]
+    },
+    {
+      "name": "g2-04-photo-edit-ai",
+      "src_w": 1400,
+      "src_h": 2860,
+      "ratio": 0.4895,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g2-04-photo-edit-ai-400.webp",
+          "bytes": 35838
+        },
+        {
+          "w": 1200,
+          "file": "g2-04-photo-edit-ai-1200.webp",
+          "bytes": 138974
+        },
+        {
+          "w": 1400,
+          "file": "g2-04-photo-edit-ai-1400.webp",
+          "bytes": 176084
+        }
+      ]
+    },
+    {
+      "name": "m1-01-mundos-story",
+      "src_w": 732,
+      "src_h": 1058,
+      "ratio": 0.6919,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-01-mundos-story-400.webp",
+          "bytes": 25164
+        },
+        {
+          "w": 732,
+          "file": "m1-01-mundos-story-732.webp",
+          "bytes": 95152
+        }
+      ]
+    },
+    {
+      "name": "m1-02-previsualizacion",
+      "src_w": 732,
+      "src_h": 1058,
+      "ratio": 0.6919,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-02-previsualizacion-400.webp",
+          "bytes": 33072
+        },
+        {
+          "w": 732,
+          "file": "m1-02-previsualizacion-732.webp",
+          "bytes": 111226
+        }
+      ]
+    },
+    {
+      "name": "m1-03-pulsion-tapas",
+      "src_w": 733,
+      "src_h": 1470,
+      "ratio": 0.4986,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-03-pulsion-tapas-400.webp",
+          "bytes": 20098
+        },
+        {
+          "w": 733,
+          "file": "m1-03-pulsion-tapas-733.webp",
+          "bytes": 81266
+        }
+      ]
+    },
+    {
+      "name": "m1-04-photo-edit-ai",
+      "src_w": 732,
+      "src_h": 1454,
+      "ratio": 0.5034,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-04-photo-edit-ai-400.webp",
+          "bytes": 33380
+        },
+        {
+          "w": 732,
+          "file": "m1-04-photo-edit-ai-732.webp",
+          "bytes": 78472
+        }
+      ]
+    },
+    {
+      "name": "m1-05-venganza-tapas",
+      "src_w": 732,
+      "src_h": 1433,
+      "ratio": 0.5108,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-05-venganza-tapas-400.webp",
+          "bytes": 34874
+        },
+        {
+          "w": 732,
+          "file": "m1-05-venganza-tapas-732.webp",
+          "bytes": 101340
+        }
+      ]
+    },
+    {
+      "name": "m1-06-image-42",
+      "src_w": 732,
+      "src_h": 532,
+      "ratio": 1.3759,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-06-image-42-400.webp",
+          "bytes": 13468
+        },
+        {
+          "w": 732,
+          "file": "m1-06-image-42-732.webp",
+          "bytes": 39830
+        }
+      ]
+    },
+    {
+      "name": "m1-07-captura-image-43",
+      "src_w": 732,
+      "src_h": 869,
+      "ratio": 0.8423,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-07-captura-image-43-400.webp",
+          "bytes": 34816
+        },
+        {
+          "w": 732,
+          "file": "m1-07-captura-image-43-732.webp",
+          "bytes": 102246
+        }
+      ]
+    }
+  ],
+  "5_press-packaging": [
+    {
+      "name": "g1-01-container-1",
+      "src_w": 1462,
+      "src_h": 1036,
+      "ratio": 1.4112,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g1-01-container-1-400.webp",
+          "bytes": 21078
+        },
+        {
+          "w": 1200,
+          "file": "g1-01-container-1-1200.webp",
+          "bytes": 113958
+        },
+        {
+          "w": 1462,
+          "file": "g1-01-container-1-1462.webp",
+          "bytes": 181016
+        }
+      ]
+    },
+    {
+      "name": "g1-02-frame-3",
+      "src_w": 1668,
+      "src_h": 1046,
+      "ratio": 1.5946,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g1-02-frame-3-400.webp",
+          "bytes": 30256
+        },
+        {
+          "w": 1200,
+          "file": "g1-02-frame-3-1200.webp",
+          "bytes": 161592
+        },
+        {
+          "w": 1600,
+          "file": "g1-02-frame-3-1600.webp",
+          "bytes": 241156
+        }
+      ]
+    },
+    {
+      "name": "g2-01-container-2",
+      "src_w": 3148,
+      "src_h": 2302,
+      "ratio": 1.3675,
+      "variants": [
+        {
+          "w": 400,
+          "file": "g2-01-container-2-400.webp",
+          "bytes": 17990
+        },
+        {
+          "w": 1200,
+          "file": "g2-01-container-2-1200.webp",
+          "bytes": 117146
+        },
+        {
+          "w": 1600,
+          "file": "g2-01-container-2-1600.webp",
+          "bytes": 195542
+        }
+      ]
+    },
+    {
+      "name": "m1-01-marketing",
+      "src_w": 732,
+      "src_h": 1014,
+      "ratio": 0.7219,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-01-marketing-400.webp",
+          "bytes": 32200
+        },
+        {
+          "w": 732,
+          "file": "m1-01-marketing-732.webp",
+          "bytes": 108914
+        }
+      ]
+    },
+    {
+      "name": "m1-02-front2",
+      "src_w": 732,
+      "src_h": 1094,
+      "ratio": 0.6691,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-02-front2-400.webp",
+          "bytes": 30804
+        },
+        {
+          "w": 732,
+          "file": "m1-02-front2-732.webp",
+          "bytes": 70542
+        }
+      ]
+    },
+    {
+      "name": "m1-03-product-container",
+      "src_w": 732,
+      "src_h": 1854,
+      "ratio": 0.3948,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-03-product-container-400.webp",
+          "bytes": 60554
+        },
+        {
+          "w": 732,
+          "file": "m1-03-product-container-732.webp",
+          "bytes": 172952
+        }
+      ]
+    },
+    {
+      "name": "m1-04-menu",
+      "src_w": 732,
+      "src_h": 1241,
+      "ratio": 0.5898,
+      "variants": [
+        {
+          "w": 400,
+          "file": "m1-04-menu-400.webp",
+          "bytes": 26970
+        },
+        {
+          "w": 732,
+          "file": "m1-04-menu-732.webp",
+          "bytes": 104720
+        }
+      ]
+    }
+  ]
+}

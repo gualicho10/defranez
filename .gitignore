@@ -3,3 +3,7 @@
 .vscode/
 .DS_Store
 graphify-out/cost.json
+
+# Export crudo del Figma para more-work.html. Es el insumo del pipeline
+# (docs/optimize-more-work.py); lo que se publica es img/more-work/.
+_export-figma/
