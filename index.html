@@ -83,6 +83,38 @@
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "xz8v92eisk");
   </script>
+
+  <!-- Maze: unmoderated user testing. Tags the visit with a session id that
+       survives reloads, then loads the Maze recorder so a test run can be
+       replayed against the live page. -->
+  <script>
+  (function (m, a, z, e) {
+    var s, t, u, v;
+    try {
+      t = m.sessionStorage.getItem('maze-us');
+    } catch (err) {}
+
+    if (!t) {
+      t = new Date().getTime();
+      try {
+        m.sessionStorage.setItem('maze-us', t);
+      } catch (err) {}
+    }
+
+    u = document.currentScript || (function () {
+      var w = document.getElementsByTagName('script');
+      return w[w.length - 1];
+    })();
+    v = u && u.nonce;
+
+    s = a.createElement('script');
+    s.src = z + '?apiKey=' + e;
+    s.async = true;
+    if (v) s.setAttribute('nonce', v);
+    a.getElementsByTagName('head')[0].appendChild(s);
+    m.mazeUniversalSnippetApiKey = e;
+  })(window, document, 'https://snippet.maze.co/maze-universal-loader.js', '93744301-a3ae-4878-b3be-70fa98ad0098');
+  </script>
  <style>
     :root {
       --bg: #080a0c;
