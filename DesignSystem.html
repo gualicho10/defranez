@@ -32,36 +32,130 @@ body{
 a{color:inherit; text-decoration:none}
 ul{list-style:none}
 
-/* ════ NAV ════ */
+/* ════ SITE NAV ════
+   La misma nav fija de index.html (reglas copiadas de alli, con prefijo
+   .site-nav para no chocar con nada de esta pagina), con el boton Back de
+   more-work.html a la izquierda: es una pagina secundaria. */
+html{ scroll-padding-top:102px }            /* 70 site-nav + 32 ds-nav */
+body{ padding-top:70px }
+.site-nav{
+  position:fixed; top:0; left:0; right:0; z-index:9999;
+  height:70px;
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+  padding:0 var(--gutter);                 /* alineada con el contenido y la ds-nav */
+  background:rgba(8,10,12,0.8);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.site-nav__left{ display:inline-flex; align-items:center; gap:24px }
+.site-back{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--font-mono); font-size:12px; letter-spacing:0.04em;
+  color:#080a0c; background:var(--accent);
+  padding:9px 15px;
+  transition:opacity .2s;
+}
+.site-back:hover{ opacity:0.82 }
+.site-back:focus-visible{ outline:2px solid var(--accent); outline-offset:3px }
+.site-nav__logo{
+  font-family:var(--font-mono); font-size:13px; letter-spacing:1.04px;
+  color:var(--accent); text-transform:uppercase;
+  display:inline-flex; align-items:center; gap:10px;
+}
+.site-nav__logo-sep{ display:inline-block; width:1px; height:12px; background:rgba(255,255,255,0.2) }
+.site-nav__logo-v{
+  font-family:var(--font-display); font-weight:800; font-size:13px;
+  letter-spacing:1.04px; text-transform:uppercase; color:rgba(255,255,255,0.8);
+}
+.site-nav__links{ display:flex; gap:40px }
+.site-nav__links a{
+  font-family:var(--font-mono); font-size:12px; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--secondary);
+  transition:color .2s;
+}
+.site-nav__links a:hover,
+.site-nav__links a[aria-current="page"],
+.site-nav__links .is-accent{ color:var(--accent) }
+.site-nav__cta{
+  font-family:var(--font-mono); font-size:12px; letter-spacing:0.96px;
+  text-transform:uppercase; color:#080a0c; background:var(--accent);
+  padding:10px 22px; transition:opacity .2s;
+}
+.site-nav__cta:hover{ opacity:0.85 }
+.site-nav__burger{
+  display:none; flex:none;
+  width:40px; height:40px;
+  flex-direction:column; align-items:center; justify-content:center; gap:5px;
+  background:none; border:1px solid rgba(255,255,255,0.12); cursor:pointer;
+}
+.site-nav__burger span{
+  display:block; width:18px; height:1.5px; background:var(--text);
+  transition:transform .25s ease, opacity .2s ease;
+}
+.site-nav__burger[aria-expanded="true"] span:nth-child(1){ transform:translateY(6.5px) rotate(45deg) }
+.site-nav__burger[aria-expanded="true"] span:nth-child(2){ opacity:0 }
+.site-nav__burger[aria-expanded="true"] span:nth-child(3){ transform:translateY(-6.5px) rotate(-45deg) }
+.site-nav-mobile{
+  display:none;
+  position:fixed; top:70px; left:0; right:0; z-index:9998;
+  background:rgba(8,10,12,0.97);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  opacity:0; transform:translateY(-10px); pointer-events:none;
+  transition:opacity .22s ease, transform .22s ease;
+}
+.site-nav-mobile.open{ opacity:1; transform:none; pointer-events:auto }
+.site-nav-mobile a{
+  display:block; padding:17px 24px;
+  font-family:var(--font-mono); font-size:13px; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--secondary);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.site-nav-mobile a:last-child{ border-bottom:none }
+.site-nav-mobile a[aria-current="page"], .site-nav-mobile .is-accent{ color:var(--accent) }
+@media (max-width:1200px){
+  .site-nav__links{ gap:24px }
+}
+@media (max-width:1100px){
+  .site-nav__logo{ display:none }
+}
+@media (max-width:900px){
+  .site-nav{ gap:12px }
+  .site-nav__logo{ display:inline-flex }
+  .site-nav__links{ display:none }
+  .site-nav__burger{ display:flex }
+  .site-nav-mobile{ display:block }
+}
+@media (max-width:560px){
+  .site-nav__left{ gap:14px }
+  .site-back{ font-size:11px; padding:8px 12px }
+  .site-nav__logo, .site-nav__logo-v{ font-size:11px }
+  .site-nav__logo{ gap:7px }
+  .site-nav__cta{ display:none }
+}
+
+/* ════ DS NAV ════
+   Fija justo debajo de la site-nav. Sin marca (la site-nav ya dice donde
+   estas): secciones al centro, version a la derecha. */
 .ds-nav{
-  position:sticky; top:0; z-index:50;
-  height:63px;
-  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:70px; z-index:50;
+  height:32px;
+  display:flex; align-items:center; justify-content:center;
   padding:0 var(--gutter);
   background:rgba(8,10,12,0.85);
   backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
 }
-.ds-nav__brand{
-  display:inline-flex; align-items:center; gap:24px;
-  font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em;
-  color:var(--text);
-}
-.ds-nav__mark{
-  width:30px; height:30px;
-  border:1px solid var(--border-strong);
-  display:inline-flex; align-items:center; justify-content:center;
-  color:var(--accent); font-family:var(--font-mono); font-size:14px;
-}
 .ds-nav__items{ display:flex; gap:8px; }
 .ds-nav__items a{
-  display:inline-block; padding:8px 14px;
+  display:inline-block; padding:4px 14px;
   font-family:var(--font-mono); font-size:10px; letter-spacing:0.18em;
   text-transform:uppercase; color:var(--secondary);
   border:1px solid transparent; transition:color .2s, border-color .2s;
 }
 .ds-nav__items a:hover{ color:var(--accent); border-color:var(--border-strong) }
 .ds-nav__status{
+  position:absolute; right:var(--gutter); top:50%; transform:translateY(-50%);
   display:inline-flex; align-items:center; gap:10px;
   font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em;
   color:var(--text);
@@ -671,9 +765,17 @@ ul{list-style:none}
 
 @media (max-width:760px){
   :root{ --gutter:20px }
-  .ds-nav{ padding:0 var(--gutter); height:56px }
-  .ds-nav__items{ display:none }
-  .ds-nav__brand span:not(.ds-nav__mark){ font-size:10px }
+  /* Fija bajo la site-nav solo tiene sentido si lleva las secciones: en vez
+     de esconderlas, pasan a scroll horizontal y marca y version se van. */
+  html{ scroll-padding-top:102px }          /* 70 site-nav + 32 ds-nav */
+  .ds-nav{ padding:0; justify-content:flex-start }
+  .ds-nav__status{ display:none }
+  .ds-nav__items{
+    overflow-x:auto; scrollbar-width:none;
+    padding:0 calc(var(--gutter) - 14px); gap:0;
+  }
+  .ds-nav__items::-webkit-scrollbar{ display:none }
+  .ds-nav__items a{ white-space:nowrap }
 
   .hero{ padding:32px var(--gutter) 48px }
   .hero__orb{ width:min(480px, 80vw); left:35%; top:-40px }
@@ -718,26 +820,57 @@ ul{list-style:none}
   .ds-foot{ flex-direction:column; gap:10px; text-align:center }
 }
 
+/* La version de la ds-nav pisa las secciones por debajo de ~860px. */
+@media (max-width:900px){ .ds-nav__status{ display:none } }
+
 /* El titulo del hero cae a la misma altura que "Ezequiel de Francisco" en
    index.html. Mismos cortes que la landing; cada valor = top del h1 en la
-   landing − nav − eyebrow y su margen. Si cambia el hero de la landing,
-   remedir y ajustar aca. */
-.hero{ padding-top:169px }
-@media (max-width:1440px){ .hero{ padding-top:145px } }
-@media (max-width:1200px){ .hero{ padding-top:131px } }
-@media (max-width:900px){ .hero{ padding-top:141px } }
-@media (max-width:760px){ .hero{ padding-top:148px } }
-@media (max-width:560px){ .hero{ padding-top:52px } }
+   landing − site-nav (70) − ds-nav (32) − eyebrow y su margen. Si cambia el
+   hero de la landing, remedir y ajustar aca. */
+.hero{ padding-top:130px }
+@media (max-width:1440px){ .hero{ padding-top:106px } }
+@media (max-width:1200px){ .hero{ padding-top:92px } }
+@media (max-width:900px){ .hero{ padding-top:102px } }
+@media (max-width:760px){ .hero{ padding-top:102px } }
+/* En telefono el eyebrow ocupa dos lineas: margen mas corto para llegar. */
+@media (max-width:560px){ .hero{ padding-top:18px } .hero__eyebrow{ margin-bottom:24px } }
 </style>
 </head>
 <body>
 
-<!-- ════ NAV ════ -->
+<!-- ════ SITE NAV (la de index.html) ════ -->
+<nav class="site-nav" aria-label="Site">
+  <div class="site-nav__left">
+    <a class="site-back" href="index.html"><span aria-hidden="true">&#8592;</span> Back</a>
+    <a href="index.html" class="site-nav__logo">EDF · Portfolio <span class="site-nav__logo-sep"></span><span class="site-nav__logo-v">v2</span></a>
+  </div>
+  <ul class="site-nav__links">
+    <li><a href="index.html#about">About me</a></li>
+    <li><a href="index.html#tools">Tools</a></li>
+    <li><a href="index.html#work">Work</a></li>
+    <li><a href="index.html#resume">Career</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+    <li><a href="DesignSystem.html" aria-current="page">Design System</a></li>
+    <li><a href="v1.html" class="is-accent">Visit v1</a></li>
+  </ul>
+  <a href="index.html#contact" class="site-nav__cta">Hire me →</a>
+  <button class="site-nav__burger" id="navBurger" type="button"
+          aria-label="Open menu" aria-expanded="false" aria-controls="navMobile">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="site-nav-mobile" id="navMobile">
+  <a href="index.html#about">About me</a>
+  <a href="index.html#tools">Tools</a>
+  <a href="index.html#work">Work</a>
+  <a href="index.html#resume">Career</a>
+  <a href="index.html#contact">Contact</a>
+  <a href="DesignSystem.html" aria-current="page">Design System</a>
+  <a href="v1.html" class="is-accent">Visit v1</a>
+</div>
+
+<!-- ════ DS NAV ════ -->
 <header class="ds-nav">
-  <a href="index.html" class="ds-nav__brand">
-    <span class="ds-nav__mark">/</span>
-    <span>EDF · Design System</span>
-  </a>
   <ul class="ds-nav__items">
     <li><a href="#colors">Colors</a></li>
     <li><a href="#typography">Type</a></li>
@@ -1245,6 +1378,24 @@ ul{list-style:none}
 </footer>
 
 <script>
+// Nav mobile: igual que en index.html — cierra al elegir link, tocar fuera o Escape.
+(function(){
+  var burger = document.getElementById('navBurger');
+  var panel = document.getElementById('navMobile');
+  if (!burger || !panel) return;
+  function setOpen(open){
+    panel.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+  burger.addEventListener('click', function(e){ e.stopPropagation(); setOpen(!panel.classList.contains('open')); });
+  panel.addEventListener('click', function(e){ if (e.target.tagName === 'A') setOpen(false); });
+  document.addEventListener('click', function(e){
+    if (panel.classList.contains('open') && !panel.contains(e.target) && e.target !== burger) setOpen(false);
+  });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') setOpen(false); });
+})();
+
 // Build space-rail rows
 (function(){
   const rail = document.getElementById('space-rail');
