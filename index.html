@@ -3846,9 +3846,34 @@
   align-items: center;
   justify-content: center;
   gap: calc(159 * var(--u));
-  border-top: 1px solid rgba(235,235,235,0.4);
-  border-bottom: 1px solid rgba(235,235,235,0.4);
   overflow: hidden;
+}
+/* Los strokes de arriba y abajo son gradientes, y espejados: el de arriba
+   entra fuerte por la izquierda y se apaga cerca del 40%; el de abajo hace
+   lo inverso. El export de Figma los aplana a un sólido, así que los valores
+   salen de muestrear el render 1:1 fila por fila. border no acepta
+   gradientes, de ahí los pseudo-elementos. */
+.ol-narrative::before,
+.ol-narrative::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  pointer-events: none;
+  z-index: 2;
+}
+.ol-narrative::before {
+  top: 0;
+  background: linear-gradient(90deg,
+    rgba(235,235,235,0.40) 0%, rgba(235,235,235,0.40) 8%,
+    rgba(235,235,235,0.04) 42%, rgba(235,235,235,0.04) 100%);
+}
+.ol-narrative::after {
+  bottom: 0;
+  background: linear-gradient(90deg,
+    rgba(235,235,235,0.04) 0%, rgba(235,235,235,0.04) 42%,
+    rgba(235,235,235,0.46) 92%, rgba(235,235,235,0.46) 100%);
 }
 /* Two sibling layers, like Figma. The source art is a flow diagram on a
    LIGHT grey ground, which is why the veil is this opaque: it crushes the
@@ -3858,15 +3883,15 @@
 .ol-narrative-bg {
   position: absolute; inset: 0;
   background: url('img/openloot-v2/problem-bkgd-v2.webp') center/cover;
-  opacity: 0.7;
+  opacity: 0.1;
 }
+/* El velo es el radial de Figma tal cual: se copia su SVG en un data URI en
+   vez de aproximarlo con radial-gradient(), porque la elipse está rotada
+   (gradientTransform) y CSS no puede expresar esa rotación. */
 .ol-narrative-veil {
   position: absolute; inset: 0;
-  background:
-    linear-gradient(90.025deg,
-      rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.702) 44.77%, rgb(22,22,22) 81.389%),
-    radial-gradient(ellipse 89% 80% at 48.7% 53.7%,
-      rgba(0,0,0,0) 2.7%, rgba(10,10,10,0.36) 37.9%, rgba(10,10,10,0.9) 97.1%);
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 1575 854' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'><rect x='0' y='0' height='100%' width='100%' fill='url(%23grad)' opacity='0.9'/><defs><radialGradient id='grad' gradientUnits='userSpaceOnUse' cx='0' cy='0' r='10' gradientTransform='matrix(-53.8 -42.75 98.464 -100.19 767.5 458.5)'><stop stop-color='rgba(0,0,0,0)' offset='0.02703'/><stop stop-color='rgba(10,10,10,0.4)' offset='0.37924'/><stop stop-color='rgba(10,10,10,1)' offset='0.97144'/></radialGradient></defs></svg>");
+  background-size: 100% 100%;
 }
 .ol-narrative-block {
   position: relative;
@@ -4215,7 +4240,7 @@
   height: calc(234 * var(--u));
   padding: calc(80 * var(--u));
   background: linear-gradient(to top, rgba(97,103,152,0) 0%, rgba(97,103,152,0.31) 100%), #0a0a0a;
-  border: 1px solid #7377c8;
+  border-top: 1px solid #7377c8;   /* Figma: sólo arriba */
   opacity: 0.6;
   display: flex;
   flex-direction: column;
@@ -4341,12 +4366,14 @@
   width: 1px; height: calc(335 * var(--u));
   background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
 }
-/* The chart builds itself with a left-to-right wipe once it scrolls in. */
+/* The chart builds itself with a left-to-right wipe once it scrolls in.
+   Arranca despacio y llega despacio: con un ease-out puro el trazo salía
+   disparado y frenaba de golpe contra la forma final. */
 .ol-chart-fill, .ol-chart-line, .ol-chart-xlines {
   clip-path: inset(0 100% 0 0);
-  transition: clip-path 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: clip-path 2.4s cubic-bezier(0.42, 0, 0.2, 1);
 }
-.ol-chart-line { transition-delay: 0.1s; }
+.ol-chart-line { transition-delay: 0.12s; }
 .ol-result-chart.is-drawn .ol-chart-fill,
 .ol-result-chart.is-drawn .ol-chart-line,
 .ol-result-chart.is-drawn .ol-chart-xlines { clip-path: inset(0 0 0 0); }
@@ -7136,14 +7163,14 @@ abcdefghijklmnopqrstuvwxyz
       // Marketplace Activity + OL Chain figures
       watch(section.querySelector('.ol-result-stats'), function () {
         section.querySelectorAll('.ol-result-stat strong').forEach(function (el, i) {
-          countUp(el, 1800 + i * 200);
+          countUp(el, 1000 + i * 110);
         });
       });
       var chart = section.querySelector('.ol-result-chart');
       watch(chart, function () {
         chart.classList.add('is-drawn');
         chart.querySelectorAll('.ol-result-chart-stat strong').forEach(function (el, i) {
-          countUp(el, 1800 + i * 200);
+          countUp(el, 1000 + i * 110);
         });
       });
     }
