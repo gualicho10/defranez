@@ -4371,9 +4371,9 @@
    disparado y frenaba de golpe contra la forma final. */
 .ol-chart-fill, .ol-chart-line, .ol-chart-xlines {
   clip-path: inset(0 100% 0 0);
-  transition: clip-path 2.4s cubic-bezier(0.42, 0, 0.2, 1);
+  transition: clip-path 1.8s cubic-bezier(0.42, 0, 0.2, 1);
 }
-.ol-chart-line { transition-delay: 0.12s; }
+.ol-chart-line { transition-delay: 0.08s; }
 .ol-result-chart.is-drawn .ol-chart-fill,
 .ol-result-chart.is-drawn .ol-chart-line,
 .ol-result-chart.is-drawn .ol-chart-xlines { clip-path: inset(0 0 0 0); }
@@ -7156,21 +7156,25 @@ abcdefghijklmnopqrstuvwxyz
           fired = true;
           obs.disconnect();
           run();
-        }, { root: backdrop, threshold: 0.3 });
+        /* threshold 0 + margen inferior: el gráfico mide 502u, así que
+           esperar al 30% obligaba a scrollear bien adentro antes de que
+           arrancara. Ahora dispara justo antes de asomar y, cuando lo ves,
+           ya se está dibujando. */
+        }, { root: backdrop, threshold: 0, rootMargin: '0px 0px 12% 0px' });
         obs.observe(target);
       }
 
       // Marketplace Activity + OL Chain figures
       watch(section.querySelector('.ol-result-stats'), function () {
         section.querySelectorAll('.ol-result-stat strong').forEach(function (el, i) {
-          countUp(el, 1000 + i * 110);
+          countUp(el, 600 + i * 70);
         });
       });
       var chart = section.querySelector('.ol-result-chart');
       watch(chart, function () {
         chart.classList.add('is-drawn');
         chart.querySelectorAll('.ol-result-chart-stat strong').forEach(function (el, i) {
-          countUp(el, 1000 + i * 110);
+          countUp(el, 600 + i * 70);
         });
       });
     }
