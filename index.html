@@ -3669,6 +3669,9 @@
 .ol-coverflow.has-stage .ol-cf-shot {
   border: 0;
   border-radius: 0;
+  /* negro detrás: las capturas más anchas que el área de la pantalla no la
+     llenan a lo alto, y lo que sobra tiene que leerse como monitor apagado */
+  background: #000;
 }
 .ol-cf-stage {
   position: absolute;
@@ -3756,14 +3759,14 @@
 }
 /* La captura entra con su alto natural (son páginas completas, de hasta
    6740px), no recortada a la pantalla: lo que sobra se scrollea. */
-.ol-coverflow.is-device .ol-cf-shot img {
+.ol-coverflow.is-screen .ol-cf-shot img {
   height: auto;
   object-fit: fill;
 }
 /* Sólo la del centro scrollea. touch-action pan-y deja que el gesto
    vertical se lo quede el navegador, así que el arrastre horizontal del
-   carrusel y el scroll del teléfono no se pisan. */
-.ol-coverflow.is-device .ol-coverflow-card.is-centre .ol-cf-shot {
+   carrusel y el scroll del dispositivo no se pisan. */
+.ol-coverflow.is-screen .ol-coverflow-card.is-centre .ol-cf-shot {
   overflow-y: auto;
   /* sin overscroll-behavior: al llegar al final el scroll sigue en el modal,
      si no quedás encerrado dentro del teléfono */
@@ -3771,7 +3774,7 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.ol-coverflow.is-device .ol-coverflow-card.is-centre .ol-cf-shot::-webkit-scrollbar {
+.ol-coverflow.is-screen .ol-coverflow-card.is-centre .ol-cf-shot::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
@@ -4414,19 +4417,26 @@
 /* The chart builds itself with a left-to-right wipe once it scrolls in.
    Arranca despacio y llega despacio: con un ease-out puro el trazo salía
    disparado y frenaba de golpe contra la forma final. */
+/* Crece desde abajo. Las tres capas arrancan a distinta altura, así que en
+   vez de escalar cada una desde su propio borde se les da el mismo origen:
+   el eje X, a 485.23u del tope del gráfico. Medido desde el tope de cada
+   capa, eso es 262u para fill y line, y 287.61u para xlines. */
 .ol-chart-fill, .ol-chart-line, .ol-chart-xlines {
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 1.8s cubic-bezier(0.42, 0, 0.2, 1);
+  transform: scaleY(0);
+  transition: transform 1.8s cubic-bezier(0.42, 0, 0.2, 1);
 }
+.ol-chart-fill   { transform-origin: 50% calc(262 * var(--u)); }
+.ol-chart-line   { transform-origin: 50% calc(262 * var(--u)); }
+.ol-chart-xlines { transform-origin: 50% calc(287.61 * var(--u)); }
 .ol-chart-line { transition-delay: 0.08s; }
 .ol-result-chart.is-drawn .ol-chart-fill,
 .ol-result-chart.is-drawn .ol-chart-line,
-.ol-result-chart.is-drawn .ol-chart-xlines { clip-path: inset(0 0 0 0); }
+.ol-result-chart.is-drawn .ol-chart-xlines { transform: scaleY(1); }
 .ol-chart-ylines, .ol-chart-yvalues { opacity: 0; transition: opacity 0.8s ease-out 0.5s; }
 .ol-result-chart.is-drawn .ol-chart-ylines { opacity: 0.3; }
 .ol-result-chart.is-drawn .ol-chart-yvalues { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
-  .ol-chart-fill, .ol-chart-line, .ol-chart-xlines { clip-path: none; transition: none; }
+  .ol-chart-fill, .ol-chart-line, .ol-chart-xlines { transform: none; transition: none; }
   .ol-chart-ylines { opacity: 0.3; transition: none; }
   .ol-chart-yvalues { opacity: 1; transition: none; }
 }
@@ -7000,6 +7010,9 @@ abcdefghijklmnopqrstuvwxyz
          A diferencia de `device`, no se mueve ni se desvanece. */
       var stage = opts.stage || null;
       if (stage) root.classList.add('has-stage');
+      /* Ambos modos meten la captura dentro de una pantalla: alto natural,
+         fondo negro y scroll vertical en la del centro. */
+      if (device || stage) root.classList.add('is-screen');
       root.innerHTML = '';
       var frame = document.createElement('div');
       frame.className = 'ol-coverflow-frame';
@@ -7104,7 +7117,7 @@ abcdefghijklmnopqrstuvwxyz
           if (devices[index]) devices[index].style.opacity = String(1 - away);
           // ...y sólo ésa scrollea por dentro. Al salir del centro vuelve
           // arriba, para que no quede a media página cuando se la revisita.
-          if (device) {
+          if (device || stage) {
             var centred = distance < 0.5;
             if (centred !== card.classList.contains('is-centre')) {
               card.classList.toggle('is-centre', centred);
