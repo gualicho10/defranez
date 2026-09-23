@@ -10,3 +10,12 @@ _export-figma/
 
 # Snapshots locales (ver _backup/README.txt)
 _backup/
+
+# Fuente sin comprimir del video de "My Role": 241 MB, o sea por encima del
+# limite duro de 100 MB de GitHub (el push se rechazaria). No lo referencia
+# ningun codigo: lo que se publica es img/openloot-v2/role-process-preview.mp4.
+video/openloot-v2/role-process.gif
+
+# Quedo corrupto en Google Drive (pesa 41280 bytes pero da error al leerse;
+# el server devolvia 500). Reemplazado por problem-bkgd-v2.webp.
+img/openloot-v2/problem-bkgd.webp
