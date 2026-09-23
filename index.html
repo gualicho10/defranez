@@ -3614,9 +3614,14 @@
 /* ── "Main screens" coverflow ──────────────────────────────────────────
    Vanilla port of a bespoke React coverflow (drag + RAF easing + 3D fold-
    for-loop). Images only, no caption/pagination — see OLInitCarousels. */
+/* Figma 3286:26717 es p-[80px] en los cuatro lados: el carrusel se recorta
+   a 80u de cada borde y el degradado queda visible en esas dos franjas.
+   Sangrándolo de borde a borde, las cartas tapaban la banda clara.
+   Alto: 935u es el frame de Figma, que no lleva reflejo; 1075u es lo que
+   ocupa la misma carta (866x487) con su reflejo debajo. */
 .ol-mainscreens {
-  height: calc(935 * var(--u));
-  padding: calc(80 * var(--u)) 0;
+  height: calc(1075 * var(--u));
+  padding: calc(80 * var(--u));
   background: linear-gradient(180deg, #0A0A0A 2.51%, #0A0A0A 29.66%, #353535 64.78%, #4C4C4C 71.36%, rgba(10, 10, 10, 0.00) 99.9%);
 }
 .ol-mainscreens-title {
@@ -3624,7 +3629,7 @@
   font-weight: 800;
   font-size: calc(48 * var(--u));
   color: #fff;
-  padding: 0 calc(80 * var(--u)) calc(42 * var(--u)); /* Figma gap-[42px] */
+  padding-bottom: calc(42 * var(--u)); /* Figma gap-[42px] */
 }
 .ol-coverflow { width: 100%; }
 .ol-coverflow-frame {
@@ -3634,7 +3639,7 @@
   cursor: grab;
   overflow: hidden;
   /* bottom padding leaves room for the reflection AND the gap under the cards */
-  padding: 40px 0 calc(var(--cf-card) / var(--cf-aspect) * 0.5 + var(--cf-gap, 0px));
+  padding: var(--cf-top, 40px) 0 calc(var(--cf-card) / var(--cf-aspect) * 0.5 + var(--cf-gap, 0px));
   outline: none;
   touch-action: pan-y;
   perspective: calc(var(--cf-card) * 3);
@@ -3661,10 +3666,10 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 6px;
   /* Los exports traen un gutter transparente de 10-18px; se recorta al
      encodear, así que el único borde es éste. */
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   background: #13171c;
   /* Off-centre cards are drained of colour as well as darkened — the veil
      alone still left them competing with the middle one. JS drives it. */
@@ -3706,8 +3711,8 @@
   top: 0;
   height: 222.2%;               /* = the card's own height */
   transform: scaleY(-1);        /* flips about its centre: its bottom lands on top */
-  border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  /* sin borde: el reflejo es piso, no una segunda pantalla */
 }
 
 /* ── "Mobile version" strip (same coverflow, portrait cards) ──────────── */
@@ -6875,7 +6880,7 @@ abcdefghijklmnopqrstuvwxyz
          Full strength one card out, dissolving to nothing as it arrives.
          desat drains their colour on the same ramp — darkening alone left
          them too vivid to recede. */
-      var dim = opts.dim != null ? opts.dim : 0.62;
+      var dim = opts.dim != null ? opts.dim : 0.7;   /* el velo de Figma */
       var desat = opts.desat != null ? opts.desat : 0.6;
       /* Air between a card and its reflection, so the screen floats. */
       var reflectionGap = opts.reflectionGap ||
@@ -6884,6 +6889,7 @@ abcdefghijklmnopqrstuvwxyz
       root.style.setProperty('--cf-card', cardWidth);
       root.style.setProperty('--cf-aspect', String(aspect));
       root.style.setProperty('--cf-gap', reflectionGap);
+      if (opts.topPad) root.style.setProperty('--cf-top', opts.topPad);
       root.innerHTML = '';
       var frame = document.createElement('div');
       frame.className = 'ol-coverflow-frame';
@@ -7106,12 +7112,18 @@ abcdefghijklmnopqrstuvwxyz
       var msRoot = document.getElementById('ol-coverflow-mainscreens');
       if (msRoot) {
         OLCoverflow(msRoot, {
-          cardWidth: 'clamp(260px, 38vw, 560px)',
+          /* La pantalla central de Figma (866x488) en unidades del caso, no en
+             vw: así el degradado del frame cae donde cae en el diseño. */
+          cardWidth: 'calc(866 * var(--u))',
+          topPad: 'calc(47 * var(--u))',
           /* Para sumar pantallas: dejá el .webp en img/openloot-v2/main-screens/
              y agregá una línea acá, en el orden en que querés que aparezcan. */
           slides: [
             { src: 'img/openloot-v2/main-screens/featured-games-stats.webp', alt: 'Featured games — game stats and token activity' },
+            { src: 'img/openloot-v2/main-screens/games-list.webp', alt: 'Games — game list' },
+            { src: 'img/openloot-v2/main-screens/games-list-2.webp', alt: 'Games — game list, expanded' },
             { src: 'img/openloot-v2/main-screens/rental-marketplace.webp', alt: 'Rental Marketplace' },
+            { src: 'img/openloot-v2/main-screens/marketplace-filters-collapsed.webp', alt: 'Marketplace — filters collapsed' },
             { src: 'img/openloot-v2/main-screens/marketplace-product-detail.webp', alt: 'Marketplace — product detail, search by issue number' },
             { src: 'img/openloot-v2/main-screens/marketplace-bundle-details.webp', alt: 'Marketplace — bundle details, renter view' },
             { src: 'img/openloot-v2/main-screens/checkout-payment-method.webp', alt: 'Checkout — payment method' },
@@ -7121,6 +7133,7 @@ abcdefghijklmnopqrstuvwxyz
             { src: 'img/openloot-v2/main-screens/collection-rentals-empty.webp', alt: 'My Collection — Rentals, empty state' },
             { src: 'img/openloot-v2/main-screens/rentals-create-listing.webp', alt: 'Rentals — create listing, select items' },
             { src: 'img/openloot-v2/main-screens/rentals-create-bundle-price.webp', alt: 'Rentals — create bundle, set price and coupon code' },
+            { src: 'img/openloot-v2/main-screens/sales.webp', alt: 'Sales' },
             { src: 'img/openloot-v2/main-screens/wallet-deposits.webp', alt: 'Wallet — deposits' },
             { src: 'img/openloot-v2/main-screens/wallet-deposits-2.webp', alt: 'Wallet — deposit in progress' },
             { src: 'img/openloot-v2/main-screens/wallet-deposits-3.webp', alt: 'Wallet — deposit confirmed' },
@@ -7148,10 +7161,35 @@ abcdefghijklmnopqrstuvwxyz
           gap: 0.26,          /* ≈60px of air beside a 280px phone */
           /* Idem: el .webp va en img/openloot-v2/mobile-version/ */
           slides: [
-            { src: 'img/openloot-v2/mobile-version/screen-1.webp', alt: 'openloot.com — home' },
-            { src: 'img/openloot-v2/mobile-version/screen-2.webp', alt: 'openloot.com — marketplace' },
-            { src: 'img/openloot-v2/mobile-version/screen-3.webp', alt: 'openloot.com — game discovery' },
-            { src: 'img/openloot-v2/mobile-version/screen-4.webp', alt: 'openloot.com — my collection' }
+            { src: 'img/openloot-v2/mobile-version/not-logged-in.webp', alt: 'openloot.com — signed out' },
+            { src: 'img/openloot-v2/mobile-version/games-list.webp', alt: 'Games — game list' },
+            { src: 'img/openloot-v2/mobile-version/games-list-2.webp', alt: 'Games — game list, expanded' },
+            { src: 'img/openloot-v2/mobile-version/games-items.webp', alt: 'Games — game items' },
+            { src: 'img/openloot-v2/mobile-version/marketplace.webp', alt: 'Marketplace' },
+            { src: 'img/openloot-v2/mobile-version/marketplace-filters-open.webp', alt: 'Marketplace — filters open' },
+            { src: 'img/openloot-v2/mobile-version/marketplace-product-detail-bulk.webp', alt: 'Marketplace — product detail, bulk select' },
+            { src: 'img/openloot-v2/mobile-version/rental-marketplace.webp', alt: 'Rental Marketplace' },
+            { src: 'img/openloot-v2/mobile-version/rental-marketplace-2.webp', alt: 'Rental Marketplace — listing' },
+            { src: 'img/openloot-v2/mobile-version/collection.webp', alt: 'My Collection' },
+            { src: 'img/openloot-v2/mobile-version/collection-2.webp', alt: 'My Collection — filtered' },
+            { src: 'img/openloot-v2/mobile-version/collection-3.webp', alt: 'My Collection — empty state' },
+            { src: 'img/openloot-v2/mobile-version/collection-item-details.webp', alt: 'My Collection — item details' },
+            { src: 'img/openloot-v2/mobile-version/checkout-payment-method.webp', alt: 'Checkout — payment method' },
+            { src: 'img/openloot-v2/mobile-version/checkout-payment-method-2.webp', alt: 'Checkout — payment method selected' },
+            { src: 'img/openloot-v2/mobile-version/checkout-payment-method-3.webp', alt: 'Checkout — payment confirmation' },
+            { src: 'img/openloot-v2/mobile-version/checkout-creator-code.webp', alt: 'Checkout — creator code' },
+            { src: 'img/openloot-v2/mobile-version/balance.webp', alt: 'Balance' },
+            { src: 'img/openloot-v2/mobile-version/balance-2.webp', alt: 'Balance — detail' },
+            { src: 'img/openloot-v2/mobile-version/balance-tokens.webp', alt: 'Balance — tokens' },
+            { src: 'img/openloot-v2/mobile-version/balance-premium-currencies.webp', alt: 'Balance — premium currencies' },
+            { src: 'img/openloot-v2/mobile-version/balance-add-funds.webp', alt: 'Balance — add funds' },
+            { src: 'img/openloot-v2/mobile-version/balance-add-funds-crypto.webp', alt: 'Balance — add funds with crypto' },
+            { src: 'img/openloot-v2/mobile-version/premium-currencies.webp', alt: 'Premium currencies' },
+            { src: 'img/openloot-v2/mobile-version/erc-tokens-wallet-connected.webp', alt: 'ERC tokens — wallet connected' },
+            { src: 'img/openloot-v2/mobile-version/wallet-transaction-history.webp', alt: 'Wallet — transaction history, purchases' },
+            { src: 'img/openloot-v2/mobile-version/leaderboard.webp', alt: 'Leaderboard' },
+            { src: 'img/openloot-v2/mobile-version/sales.webp', alt: 'Sales' },
+            { src: 'img/openloot-v2/mobile-version/profile-verification-methods.webp', alt: 'Profile — verification methods' }
           ]
         });
       }
