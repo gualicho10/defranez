@@ -3617,7 +3617,7 @@
 .ol-mainscreens {
   height: calc(935 * var(--u));
   padding: calc(80 * var(--u)) 0;
-  background: linear-gradient(180deg, #0a0a0a 2.5%, #0a0a0a 29.7%, #353535 72.9%, #4c4c4c 77.7%, #222 88.5%, #0a0a0a 99.9%);
+  background: linear-gradient(180deg, #0A0A0A 2.51%, #0A0A0A 29.66%, #353535 64.78%, #4C4C4C 71.36%, rgba(10, 10, 10, 0.00) 99.9%);
 }
 .ol-mainscreens-title {
   font-family: 'Syne', sans-serif;
@@ -3662,6 +3662,9 @@
   inset: 0;
   overflow: hidden;
   border-radius: 12px;
+  /* Los exports traen un gutter transparente de 10-18px; se recorta al
+     encodear, así que el único borde es éste. */
+  border: 2px solid rgba(255, 255, 255, 0.3);
   background: #13171c;
   /* Off-centre cards are drained of colour as well as darkened — the veil
      alone still left them competing with the middle one. JS drives it. */
@@ -3704,6 +3707,7 @@
   height: 222.2%;               /* = the card's own height */
   transform: scaleY(-1);        /* flips about its centre: its bottom lands on top */
   border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 /* ── "Mobile version" strip (same coverflow, portrait cards) ──────────── */
@@ -6875,7 +6879,7 @@ abcdefghijklmnopqrstuvwxyz
       var desat = opts.desat != null ? opts.desat : 0.6;
       /* Air between a card and its reflection, so the screen floats. */
       var reflectionGap = opts.reflectionGap ||
-        'calc(var(--cf-card) / var(--cf-aspect) * 0.04)';   /* 4% of card height */
+        'calc(var(--cf-card) / var(--cf-aspect) * 0.075)';  /* 7.5% of card height */
 
       root.style.setProperty('--cf-card', cardWidth);
       root.style.setProperty('--cf-aspect', String(aspect));
