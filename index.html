@@ -1069,16 +1069,23 @@
     .work-header-actions { display: flex; align-items: center; gap: 32px; }
 
     /* MODAL */
+    /* Cerrado va display:none, no solo opacity:0. Con opacity el modal sigue
+       renderizado, asi que el navegador baja TODOS los background-image de
+       los casos en la carga inicial — 1.7 MB que casi nadie llega a ver.
+       display:none los deja para cuando el caso se abre (los <img> ya iban
+       diferidos por data-src; los fondos CSS se escapaban de eso).
+       allow-discrete + @starting-style mantienen el fundido; donde no haya
+       soporte el modal abre de golpe, que es degradar bien. */
     .modal-backdrop {
       position: fixed;
       inset: 0;
       z-index: 2000;
-      display: flex;
+      display: none;
       align-items: flex-start;
       justify-content: center;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.3s ease, display 0.3s allow-discrete;
       overflow-y: auto;
     }
     .modal-backdrop::before {
@@ -1091,9 +1098,13 @@
       pointer-events: none;
     }
     .modal-backdrop.open {
+      display: flex;
       opacity: 1;
       pointer-events: all;
       z-index: 10000;
+    }
+    @starting-style {
+      .modal-backdrop.open { opacity: 0; }
     }
     .modal {
       position: relative;
@@ -4063,7 +4074,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 2154 / 1458;
-  background: center/contain no-repeat url('img/openloot-v2/decision-device.png');
+  background: center/contain no-repeat url('img/openloot-v2/decision-device.webp');
 }
 /* Slightly over-covers the measured screen rect on every side: the PNG's own
    screen fill is light grey, so any sliver left uncovered reads as a white
