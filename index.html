@@ -7317,27 +7317,21 @@ abcdefghijklmnopqrstuvwxyz
           /* Para sumar pantallas: dejá el .webp en img/openloot-v2/main-screens/
              y agregá una línea acá, en el orden en que querés que aparezcan. */
           slides: [
-            { src: 'img/openloot-v2/main-screens/featured-games-stats.webp', alt: 'Featured games — game stats and token activity' },
-            { src: 'img/openloot-v2/main-screens/games-list.webp', alt: 'Games — game list' },
-            { src: 'img/openloot-v2/main-screens/games-list-2.webp', alt: 'Games — game list, expanded' },
+            /* landing primero: el carrusel abre en el índice 0, así que ésta
+               es la que queda dentro de la laptop al llegar a la sección */
+            { src: 'img/openloot-v2/main-screens/landing.webp', alt: 'openloot.com — landing' },
+            { src: 'img/openloot-v2/main-screens/games-list-2.webp', alt: 'Games — game list' },
             { src: 'img/openloot-v2/main-screens/rental-marketplace.webp', alt: 'Rental Marketplace' },
             { src: 'img/openloot-v2/main-screens/marketplace-filters-collapsed.webp', alt: 'Marketplace — filters collapsed' },
             { src: 'img/openloot-v2/main-screens/marketplace-product-detail.webp', alt: 'Marketplace — product detail, search by issue number' },
             { src: 'img/openloot-v2/main-screens/marketplace-bundle-details.webp', alt: 'Marketplace — bundle details, renter view' },
             { src: 'img/openloot-v2/main-screens/checkout-payment-method.webp', alt: 'Checkout — payment method' },
-            { src: 'img/openloot-v2/main-screens/collection-items-ingame.webp', alt: 'My Collection — in-game items' },
-            { src: 'img/openloot-v2/main-screens/collection-items-ingame-2.webp', alt: 'My Collection — in-game items, item selected' },
+            { src: 'img/openloot-v2/main-screens/collection-items-ingame-2.webp', alt: 'My Collection — in-game items' },
             { src: 'img/openloot-v2/main-screens/collection-search-results.webp', alt: 'My Collection — search results' },
-            { src: 'img/openloot-v2/main-screens/collection-rentals-empty.webp', alt: 'My Collection — Rentals, empty state' },
-            { src: 'img/openloot-v2/main-screens/rentals-create-listing.webp', alt: 'Rentals — create listing, select items' },
             { src: 'img/openloot-v2/main-screens/rentals-create-bundle-price.webp', alt: 'Rentals — create bundle, set price and coupon code' },
             { src: 'img/openloot-v2/main-screens/sales.webp', alt: 'Sales' },
             { src: 'img/openloot-v2/main-screens/wallet-deposits.webp', alt: 'Wallet — deposits' },
-            { src: 'img/openloot-v2/main-screens/wallet-deposits-2.webp', alt: 'Wallet — deposit in progress' },
             { src: 'img/openloot-v2/main-screens/wallet-deposits-3.webp', alt: 'Wallet — deposit confirmed' },
-            { src: 'img/openloot-v2/main-screens/wallet-withdrawals.webp', alt: 'Wallet — withdrawals' },
-            { src: 'img/openloot-v2/main-screens/wallet-buy.webp', alt: 'Wallet — buy' },
-            { src: 'img/openloot-v2/main-screens/wallet-sell.webp', alt: 'Wallet — sell' },
             { src: 'img/openloot-v2/main-screens/wallet-bridge.webp', alt: 'Wallet — bridge' },
             { src: 'img/openloot-v2/main-screens/wallet-convert.webp', alt: 'Wallet — convert' },
             { src: 'img/openloot-v2/main-screens/wallet-transaction-history.webp', alt: 'Wallet — transaction history, every state expanded' },
@@ -7365,9 +7359,10 @@ abcdefghijklmnopqrstuvwxyz
           device: 'img/openloot-v2/iphone-17-pro.webp',
           /* Idem: el .webp va en img/openloot-v2/mobile-version/ */
           slides: [
+            /* idem: landing primero para que sea la que abre en el teléfono */
+            { src: 'img/openloot-v2/mobile-version/landing.webp', alt: 'openloot.com — landing' },
             { src: 'img/openloot-v2/mobile-version/not-logged-in.webp', alt: 'openloot.com — signed out' },
-            { src: 'img/openloot-v2/mobile-version/games-list.webp', alt: 'Games — game list' },
-            { src: 'img/openloot-v2/mobile-version/games-list-2.webp', alt: 'Games — game list, expanded' },
+            { src: 'img/openloot-v2/mobile-version/games-list-2.webp', alt: 'Games — game list' },
             { src: 'img/openloot-v2/mobile-version/games-items.webp', alt: 'Games — game items' },
             { src: 'img/openloot-v2/mobile-version/marketplace.webp', alt: 'Marketplace' },
             { src: 'img/openloot-v2/mobile-version/marketplace-filters-open.webp', alt: 'Marketplace — filters open' },
@@ -7379,12 +7374,10 @@ abcdefghijklmnopqrstuvwxyz
             { src: 'img/openloot-v2/mobile-version/collection-3.webp', alt: 'My Collection — empty state' },
             { src: 'img/openloot-v2/mobile-version/collection-item-details.webp', alt: 'My Collection — item details' },
             { src: 'img/openloot-v2/mobile-version/checkout-payment-method.webp', alt: 'Checkout — payment method' },
-            { src: 'img/openloot-v2/mobile-version/checkout-payment-method-2.webp', alt: 'Checkout — payment method selected' },
             { src: 'img/openloot-v2/mobile-version/checkout-payment-method-3.webp', alt: 'Checkout — payment confirmation' },
             { src: 'img/openloot-v2/mobile-version/checkout-creator-code.webp', alt: 'Checkout — creator code' },
             { src: 'img/openloot-v2/mobile-version/balance.webp', alt: 'Balance' },
             { src: 'img/openloot-v2/mobile-version/balance-2.webp', alt: 'Balance — detail' },
-            { src: 'img/openloot-v2/mobile-version/balance-tokens.webp', alt: 'Balance — tokens' },
             { src: 'img/openloot-v2/mobile-version/balance-premium-currencies.webp', alt: 'Balance — premium currencies' },
             { src: 'img/openloot-v2/mobile-version/balance-add-funds.webp', alt: 'Balance — add funds' },
             { src: 'img/openloot-v2/mobile-version/balance-add-funds-crypto.webp', alt: 'Balance — add funds with crypto' },
