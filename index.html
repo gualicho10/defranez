@@ -3624,14 +3624,38 @@
 .ol-mainscreens {
   height: calc(935 * var(--u));
   padding: calc(80 * var(--u)) 0;
-  background: linear-gradient(180deg, #0A0A0A 2.51%, #0A0A0A 29.66%, #353535 64.78%, #4C4C4C 71.36%, rgba(10, 10, 10, 0.00) 99.9%);
+  /* Dos capas: viñeta horizontal que oscurece los costados, sobre el
+     degradado vertical, cuya banda clara bajó al 81-83%. */
+  background:
+    linear-gradient(270deg, rgb(10,10,10) 0%, rgba(10,10,10,0.059) 31.476%, rgba(10,10,10,0) 66.947%, rgb(10,10,10) 100%),
+    linear-gradient(180deg, rgb(10,10,10) 2.5144%, rgb(10,10,10) 62.059%, rgb(53,53,53) 81.146%, rgb(76,76,76) 83.487%, rgba(10,10,10,0) 99.902%);
+}
+/* Figma 3325:27088 — el título comparte fila con la pista de uso, alineadas
+   por la base. La pista va en las dos secciones de pantallas. */
+.ol-strip-head {
+  display: flex;
+  align-items: flex-end;
+  gap: calc(10 * var(--u));
+  padding: 0 calc(80 * var(--u)) calc(42 * var(--u)); /* Figma gap-[42px] */
 }
 .ol-mainscreens-title {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
   font-family: 'Syne', sans-serif;
   font-weight: 800;
   font-size: calc(48 * var(--u));
   color: #fff;
-  padding: 0 calc(80 * var(--u)) calc(42 * var(--u)); /* Figma gap-[42px] */
+}
+.ol-strip-hint {
+  flex: none;
+  margin: 0;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  font-size: calc(12 * var(--u));
+  line-height: calc(27 * var(--u));
+  color: #00f5a0;
+  white-space: nowrap;
 }
 .ol-coverflow { width: 100%; }
 .ol-coverflow-frame {
@@ -3790,11 +3814,13 @@
 /* ── "Mobile version" strip (same coverflow, portrait cards) ──────────── */
 .ol-mobilestrip { height: calc(1106 * var(--u)); padding: calc(80 * var(--u)) 0; background: #0a0a0a; }
 .ol-mobilestrip-title {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
   font-family: 'Syne', sans-serif;
   font-weight: 800;
   font-size: calc(48 * var(--u));
   color: #fff;
-  padding: 0 calc(80 * var(--u)) calc(42 * var(--u)); /* Figma gap-[42px] */
 }
 
 /* Below 560px the case goes fluid, so --u collapses to ~0.22 and the Figma
@@ -3806,7 +3832,8 @@
     height: auto;
   }
   .ol-transition { height: 46vw; }
-  .ol-mainscreens-title, .ol-mobilestrip-title { padding-left: 16px; padding-right: 16px; }
+  .ol-strip-head { padding-left: 16px; padding-right: 16px; flex-wrap: wrap; row-gap: 8px; }
+  .ol-strip-hint { font-size: 11px; line-height: 1.4; white-space: normal; }
   .ol-transition-wordmark { width: 78vw; }
   .ol-narrative, .ol-decision, .ol-process, .ol-result,
   .ol-ds, .ol-myrole, .ol-visit { padding-left: 16px; padding-right: 16px; }
@@ -5334,7 +5361,10 @@
 
         <!-- Main screens -->
         <section class="ol-mainscreens">
-          <h2 class="ol-mainscreens-title">Main screens</h2>
+          <div class="ol-strip-head">
+            <h2 class="ol-mainscreens-title">Main screens</h2>
+            <p class="ol-strip-hint">Click + drag to change screen / Mouse ⇅ for vertical scroll</p>
+          </div>
           <div class="ol-coverflow" id="ol-coverflow-mainscreens"></div>
         </section>
 
@@ -5430,7 +5460,10 @@
         </section>
 
         <section class="ol-mobilestrip">
-          <h2 class="ol-mobilestrip-title">Mobile version</h2>
+          <div class="ol-strip-head">
+            <h2 class="ol-mobilestrip-title">Mobile version</h2>
+            <p class="ol-strip-hint">Click + drag to change screen / Mouse ⇅ for vertical scroll</p>
+          </div>
           <div class="ol-coverflow" id="ol-coverflow-mobile"></div>
         </section>
 
