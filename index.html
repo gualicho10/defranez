@@ -3614,14 +3614,15 @@
 /* ── "Main screens" coverflow ──────────────────────────────────────────
    Vanilla port of a bespoke React coverflow (drag + RAF easing + 3D fold-
    for-loop). Images only, no caption/pagination — see OLInitCarousels. */
-/* Figma 3286:26717 es p-[80px] en los cuatro lados: el carrusel se recorta
-   a 80u de cada borde y el degradado queda visible en esas dos franjas.
-   Sangrándolo de borde a borde, las cartas tapaban la banda clara.
+/* La tira sangra hasta el borde de .ol-case-in (el ancho útil del modal):
+   sólo el título respeta el margen de 80u del resto del caso. Lo que hace
+   que el degradado caiga como en Figma es que la carta mida en unidades
+   del caso, no en vw — con el padding lateral del frame no alcanzaba.
    Alto: 935u es el frame de Figma, que no lleva reflejo; 1075u es lo que
    ocupa la misma carta (866x487) con su reflejo debajo. */
 .ol-mainscreens {
   height: calc(1075 * var(--u));
-  padding: calc(80 * var(--u));
+  padding: calc(80 * var(--u)) 0;
   background: linear-gradient(180deg, #0A0A0A 2.51%, #0A0A0A 29.66%, #353535 64.78%, #4C4C4C 71.36%, rgba(10, 10, 10, 0.00) 99.9%);
 }
 .ol-mainscreens-title {
@@ -3629,7 +3630,7 @@
   font-weight: 800;
   font-size: calc(48 * var(--u));
   color: #fff;
-  padding-bottom: calc(42 * var(--u)); /* Figma gap-[42px] */
+  padding: 0 calc(80 * var(--u)) calc(42 * var(--u)); /* Figma gap-[42px] */
 }
 .ol-coverflow { width: 100%; }
 .ol-coverflow-frame {
