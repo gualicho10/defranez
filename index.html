@@ -7083,11 +7083,13 @@ abcdefghijklmnopqrstuvwxyz
       if (msRoot) {
         OLCoverflow(msRoot, {
           cardWidth: 'clamp(260px, 38vw, 560px)',
+          /* Para sumar pantallas: dejá el .webp en img/openloot-v2/main-screens/
+             y agregá una línea acá, en el orden en que querés que aparezcan. */
           slides: [
-            { src: 'img/openloot-v2/ms-leaderboard.webp', alt: 'Leaderboard' },
-            { src: 'img/openloot-v2/ms-collection-filters.webp', alt: 'My Collection — filters open' },
-            { src: 'img/openloot-v2/ms-collection-items.webp', alt: 'My Collection — items available to sell' },
-            { src: 'img/openloot-v2/ms-wallet.webp', alt: 'Wallet' }
+            { src: 'img/openloot-v2/main-screens/leaderboard.webp', alt: 'Leaderboard' },
+            { src: 'img/openloot-v2/main-screens/collection-filters.webp', alt: 'My Collection — filters open' },
+            { src: 'img/openloot-v2/main-screens/collection-items.webp', alt: 'My Collection — items available to sell' },
+            { src: 'img/openloot-v2/main-screens/wallet.webp', alt: 'Wallet' }
           ]
         });
       }
@@ -7100,11 +7102,12 @@ abcdefghijklmnopqrstuvwxyz
           cardWidth: 'clamp(150px, 17vw, 280px)',
           aspect: 406 / 846,
           gap: 0.26,          /* ≈60px of air beside a 280px phone */
+          /* Idem: el .webp va en img/openloot-v2/mobile-version/ */
           slides: [
-            { src: 'img/openloot-v2/mv-screen-1.webp', alt: 'openloot.com — home' },
-            { src: 'img/openloot-v2/mv-screen-2.webp', alt: 'openloot.com — marketplace' },
-            { src: 'img/openloot-v2/mv-screen-3.webp', alt: 'openloot.com — game discovery' },
-            { src: 'img/openloot-v2/mv-screen-4.webp', alt: 'openloot.com — my collection' }
+            { src: 'img/openloot-v2/mobile-version/screen-1.webp', alt: 'openloot.com — home' },
+            { src: 'img/openloot-v2/mobile-version/screen-2.webp', alt: 'openloot.com — marketplace' },
+            { src: 'img/openloot-v2/mobile-version/screen-3.webp', alt: 'openloot.com — game discovery' },
+            { src: 'img/openloot-v2/mobile-version/screen-4.webp', alt: 'openloot.com — my collection' }
           ]
         });
       }
