@@ -3730,6 +3730,27 @@
   border-radius: calc(var(--cf-card) * 0.1576);   /* 128 / 812 */
   background: #000;
 }
+/* La captura entra con su alto natural (son páginas completas, de hasta
+   6740px), no recortada a la pantalla: lo que sobra se scrollea. */
+.ol-coverflow.is-device .ol-cf-shot img {
+  height: auto;
+  object-fit: fill;
+}
+/* Sólo la del centro scrollea. touch-action pan-y deja que el gesto
+   vertical se lo quede el navegador, así que el arrastre horizontal del
+   carrusel y el scroll del teléfono no se pisan. */
+.ol-coverflow.is-device .ol-coverflow-card.is-centre .ol-cf-shot {
+  overflow-y: auto;
+  /* sin overscroll-behavior: al llegar al final el scroll sigue en el modal,
+     si no quedás encerrado dentro del teléfono */
+  touch-action: pan-y;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.ol-coverflow.is-device .ol-coverflow-card.is-centre .ol-cf-shot::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
 .ol-cf-device {
   position: absolute;
   inset: 0;
@@ -7041,6 +7062,15 @@ abcdefghijklmnopqrstuvwxyz
           }
           // El teléfono es sólo de la carta del centro: se disuelve al salir.
           if (devices[index]) devices[index].style.opacity = String(1 - away);
+          // ...y sólo ésa scrollea por dentro. Al salir del centro vuelve
+          // arriba, para que no quede a media página cuando se la revisita.
+          if (device) {
+            var centred = distance < 0.5;
+            if (centred !== card.classList.contains('is-centre')) {
+              card.classList.toggle('is-centre', centred);
+              if (!centred && shots[index]) shots[index].scrollTop = 0;
+            }
+          }
         });
       }
 
