@@ -16,6 +16,10 @@ _backup/
 # ningun codigo: lo que se publica es img/openloot-v2/role-process-preview.mp4.
 video/openloot-v2/role-process.gif
 
+# Master del video de "The Decision": 44.6 MB a 3.9 Mbps. Lo que se publica es
+# checkout-flow.mp4, re-encodeado a 6.2 MB (CRF 26) sin diferencia visible.
+video/openloot-v2/checkout-flow.m4v
+
 # Quedo corrupto en Google Drive (pesa 41280 bytes pero da error al leerse;
 # el server devolvia 500). Reemplazado por problem-bkgd-v2.webp.
 img/openloot-v2/problem-bkgd.webp

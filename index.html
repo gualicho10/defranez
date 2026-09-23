@@ -5166,7 +5166,7 @@
   </footer>
 
   <!-- MODALS -->
-  <div class="modal-backdrop" id="modal-openloot">
+  <div class="modal-backdrop" id="modal-openloot" data-deeplink>
     <button class="modal-close" onclick="closeModal('openloot')">✕</button>
     <div class="modal">
       <!-- Open Loot case study — Figma "MODAL" #57:117 -->
@@ -5260,7 +5260,7 @@
               <video class="ol-decision-video" muted loop playsinline data-rate="0.5"
                      poster="img/openloot-v2/checkout-poster.webp"
                      aria-label="Live checkout flow, 1-2 clicks">
-                <source data-src="video/openloot-v2/checkout-flow.m4v" type="video/mp4">
+                <source data-src="video/openloot-v2/checkout-flow.mp4" type="video/mp4">
               </video>
             </div>
           </div>
@@ -5478,7 +5478,7 @@
     </div>
   </div>
 
-    <div class="modal-backdrop" id="modal-dipper">
+    <div class="modal-backdrop" id="modal-dipper" data-deeplink>
     <button class="modal-close" onclick="closeModal('dipper')">✕</button>
     <div class="modal">
       <!-- Our Dipper case study. Rebuilt as native markup: everything that was
@@ -5650,7 +5650,7 @@ abcdefghijklmnopqrstuvwxyz
     </div>
   </div>
 
-  <div class="modal-backdrop" id="modal-simplyvision">
+  <div class="modal-backdrop" id="modal-simplyvision" data-deeplink>
     <button class="modal-close" onclick="closeModal('simplyvision')">✕</button>
     <div class="modal">
       <!-- Simply Vision (analyze.life) case study. Same native cs2 system as
@@ -5852,7 +5852,7 @@ abcdefghijklmnopqrstuvwxyz
     </div>
   </div>
 
-  <div class="modal-backdrop" id="modal-patagonia">
+  <div class="modal-backdrop" id="modal-patagonia" data-deeplink>
     <button class="modal-close" onclick="closeModal('patagonia')">✕</button>
     <div class="modal">
       <!-- Banco Patagonia insurance portal case study — native cs2 system. -->
@@ -5993,7 +5993,7 @@ abcdefghijklmnopqrstuvwxyz
     </div>
   </div>
 
-<div class="modal-backdrop" id="modal-roche">
+<div class="modal-backdrop" id="modal-roche" data-deeplink>
     <button class="modal-close" onclick="closeModal('roche')">✕</button>
     <div class="modal">
       <div class="modal-header">
@@ -6766,12 +6766,14 @@ abcdefghijklmnopqrstuvwxyz
       if (window.ProjectLikes) window.ProjectLikes.attach(id);
       if (typeof ProjectSwipe !== 'undefined' && ProjectSwipe) ProjectSwipe.sync(id);
       if (id === 'openloot' && window.OLInitCarousels) window.OLInitCarousels();
+      writeHash(id);
     }
     function closeModal(id) {
       const backdrop = document.getElementById('modal-' + id);
       if (!backdrop) return;
       backdrop.classList.remove('open');
       document.body.style.overflow = '';
+      clearHash(id);
       if (window.ProjectLikes) window.ProjectLikes.detach();
       if (!document.querySelector('.modal-backdrop.open') &&
           typeof ProjectSwipe !== 'undefined' && ProjectSwipe) ProjectSwipe.hide();
@@ -6792,11 +6794,30 @@ abcdefghijklmnopqrstuvwxyz
       }
     });
 
-    /* ── Deep link a un caso puntual ─────────────────────────────────────
-       /#<id> (ej. defranez.com/#openloot) abre ese modal directo al cargar
-       la pagina, para tener URL propia y compartible al caso mas
-       importante del portfolio sin duplicar el modal en un HTML aparte.
-       Se dispara en window 'load' (no de una), porque OLInitCarousels se
+    /* ── URL propia por caso ─────────────────────────────────────────────
+       Cada caso principal tiene su URL compartible (defranez.com/#openloot)
+       sin duplicar el modal en un HTML aparte. Va en los dos sentidos:
+       entrar por la URL abre el caso, y abrirlo desde la galeria escribe la
+       URL. Solo los casos principales; las colecciones (games, branding,
+       sketchup) no llevan el atributo y no tocan la URL.
+       pushState no dispara 'hashchange', asi que no se realimenta; lo que si
+       hay que atender es 'popstate', para que Atras cierre el caso. */
+    let hashLock = false;
+    function deepLink(id) {
+      const m = document.getElementById('modal-' + id);
+      return m && m.hasAttribute('data-deeplink') ? '#' + id : null;
+    }
+    function writeHash(id) {
+      const h = deepLink(id);
+      if (!h || hashLock || location.hash === h) return;
+      try { history.pushState(null, '', h); } catch (e) {}
+    }
+    function clearHash(id) {
+      if (hashLock || !deepLink(id) || location.hash !== '#' + id) return;
+      try { history.pushState(null, '', location.pathname + location.search); } catch (e) {}
+    }
+
+    /* Se dispara en window 'load' (no de una), porque OLInitCarousels se
        define mas abajo, cerca de </body> — abrir el modal antes de que
        cargue deja "Main screens" / "Mobile version" sin imagenes. */
     (function () {
@@ -6807,6 +6828,21 @@ abcdefghijklmnopqrstuvwxyz
       if (document.readyState === 'complete') openFromHash();
       else window.addEventListener('load', openFromHash);
       window.addEventListener('hashchange', openFromHash);
+
+      window.addEventListener('popstate', function () {
+        const id = location.hash.slice(1);
+        const open = document.querySelector('.modal-backdrop.open');
+        hashLock = true;   // el historial ya es la verdad: no reescribirlo
+        if (id && document.getElementById('modal-' + id)) {
+          if (!open || open.id !== 'modal-' + id) {
+            if (open) closeModal(open.id.replace('modal-', ''));
+            openModal(id);
+          }
+        } else if (open) {
+          closeModal(open.id.replace('modal-', ''));
+        }
+        hashLock = false;
+      });
     })();
 
     /* ── Pasar de proyecto sin volver a la galeria ──────────────────────
