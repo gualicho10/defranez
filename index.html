@@ -3640,7 +3640,7 @@
   cursor: grab;
   overflow: hidden;
   /* bottom padding leaves room for the reflection AND the gap under the cards */
-  padding: var(--cf-top, 40px) 0 calc(var(--cf-card) / var(--cf-aspect) * 0.5 + var(--cf-gap, 0px));
+  padding: var(--cf-top, 40px) 0 var(--cf-bottom, calc(var(--cf-card) / var(--cf-aspect) * 0.5 + var(--cf-gap, 0px)));
   outline: none;
   touch-action: pan-y;
   perspective: calc(var(--cf-card) * 3);
@@ -3716,6 +3716,29 @@
   /* sin borde: el reflejo es piso, no una segunda pantalla */
 }
 
+/* ── Carta con mockup de dispositivo (strip de mobile) ─────────────────────
+   La apertura de pantalla del PNG es transparente, así que la captura va
+   detrás y asoma por ahí. Los números salen del alpha del propio archivo:
+   mockup 812x1661, hueco de 726x1574 en (43,43), esquinas de radio 128. */
+.ol-coverflow.is-device .ol-cf-shot {
+  inset: auto;
+  left: 5.296%;                 /* 43 / 812 */
+  top: 2.589%;                  /* 43 / 1661 */
+  width: 89.409%;               /* 726 / 812 */
+  height: 94.762%;              /* 1574 / 1661 */
+  border: 0;
+  border-radius: calc(var(--cf-card) * 0.1576);   /* 128 / 812 */
+  background: #000;
+}
+.ol-cf-device {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* la opacidad la maneja paint(): sólo la carta del centro lleva teléfono */
+}
+
 /* ── "Mobile version" strip (same coverflow, portrait cards) ──────────── */
 .ol-mobilestrip { height: calc(1106 * var(--u)); padding: calc(80 * var(--u)) 0; background: #0a0a0a; }
 .ol-mobilestrip-title {
@@ -3751,7 +3774,7 @@
   .ol-process-chevron { width: 9px; height: 14px; }
   .ol-process-stack { margin-left: -16px; margin-right: -16px; }
   .ol2-role-grid { height: auto; }
-  .ol-visit-label { font-size: 24px; line-height: 1.3; }
+  .ol-visit-label { font-size: 14px; line-height: 1.4; }
   .ol-visit-url { font-size: 18px; }
 }
 
@@ -4186,10 +4209,14 @@
 }
 
 /* ── Closing "Visit" (Figma node 3297:26921 — 1575×266, p-80) ─────────── */
+/* Figma 3297:26921 — degradado violeta que sube, borde #7377c8 y el
+   conjunto al 60% de opacidad. */
 .ol-visit {
-  height: calc(266 * var(--u));
+  height: calc(234 * var(--u));
   padding: calc(80 * var(--u));
-  background: #0a0a0a;
+  background: linear-gradient(to top, rgba(97,103,152,0) 0%, rgba(97,103,152,0.31) 100%), #0a0a0a;
+  border: 1px solid #7377c8;
+  opacity: 0.6;
   display: flex;
   flex-direction: column;
   gap: calc(4 * var(--u));
@@ -4197,12 +4224,11 @@
 }
 .ol-visit-label {
   margin: 0;
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: calc(40 * var(--u));
-  line-height: calc(55 * var(--u));
-  color: #616798;
-  text-shadow: 0 4px 8.7px rgba(0,0,0,0.43);
+  font-family: 'Bai Jamjuree', sans-serif;
+  font-weight: 700;
+  font-size: calc(16 * var(--u));
+  line-height: calc(22 * var(--u));
+  color: #868bb8;
 }
 .ol-visit-url {
   font-family: 'DM Mono', monospace;
@@ -5328,7 +5354,7 @@
 
         <!-- Closing — Figma node 3297:26921 -->
         <section class="ol-visit">
-          <p class="ol-visit-label">Visit</p>
+          <p class="ol-visit-label">For more please visit:</p>
           <a class="ol-visit-url" href="https://openloot.com/" target="_blank" rel="noopener">www.openloot.com</a>
         </section>
 
@@ -6891,6 +6917,11 @@ abcdefghijklmnopqrstuvwxyz
       root.style.setProperty('--cf-aspect', String(aspect));
       root.style.setProperty('--cf-gap', reflectionGap);
       if (opts.topPad) root.style.setProperty('--cf-top', opts.topPad);
+      /* Sin reflejo no hay nada que reservar debajo de la carta. */
+      if (!reflection) root.style.setProperty('--cf-bottom', '0px');
+      /* Mockup de dispositivo: la carta pasa a ser el teléfono. */
+      var device = opts.device || null;
+      if (device) root.classList.add('is-device');
       root.innerHTML = '';
       var frame = document.createElement('div');
       frame.className = 'ol-coverflow-frame';
@@ -6910,7 +6941,7 @@ abcdefghijklmnopqrstuvwxyz
         return img;
       }
 
-      var dims = [], shots = [];
+      var dims = [], shots = [], devices = [];
 
       var cards = slides.map(function (slide) {
         var card = document.createElement('div');
@@ -6933,6 +6964,17 @@ abcdefghijklmnopqrstuvwxyz
           refl.setAttribute('aria-hidden', 'true');
           refl.appendChild(shotImage(slide, true));
           card.appendChild(refl);
+        }
+
+        if (device) {
+          var frameImg = document.createElement('img');
+          frameImg.className = 'ol-cf-device';
+          frameImg.src = device;
+          frameImg.alt = '';
+          frameImg.setAttribute('aria-hidden', 'true');
+          frameImg.draggable = false;
+          card.appendChild(frameImg);
+          devices.push(frameImg);
         }
 
         track.appendChild(card);
@@ -6970,6 +7012,8 @@ abcdefghijklmnopqrstuvwxyz
             shots[index].dataset.sat = sat;
             shots[index].style.setProperty('--cf-sat', sat);
           }
+          // El teléfono es sólo de la carta del centro: se disuelve al salir.
+          if (devices[index]) devices[index].style.opacity = String(1 - away);
         });
       }
 
@@ -7157,9 +7201,15 @@ abcdefghijklmnopqrstuvwxyz
       var mvRoot = document.getElementById('ol-coverflow-mobile');
       if (mvRoot) {
         OLCoverflow(mvRoot, {
-          cardWidth: 'clamp(150px, 17vw, 280px)',
-          aspect: 406 / 846,
-          gap: 0.26,          /* ≈60px of air beside a 280px phone */
+          /* La carta ES el mockup, así que toma su proporción y su tamaño en
+             unidades del caso: 391u de ancho = 800u de alto, lo que entra en
+             la sección sin reflejo. */
+          cardWidth: 'calc(391 * var(--u))',
+          topPad: 'calc(40 * var(--u))',
+          aspect: 812 / 1661,
+          gap: 0.16,          /* ≈62u de aire al lado del teléfono */
+          reflection: false,
+          device: 'img/openloot-v2/iphone-17-pro.webp',
           /* Idem: el .webp va en img/openloot-v2/mobile-version/ */
           slides: [
             { src: 'img/openloot-v2/mobile-version/not-logged-in.webp', alt: 'openloot.com — signed out' },
