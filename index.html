@@ -76,6 +76,7 @@
        specimens shown in the Open Loot design-system section. -->
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&family=Montserrat:wght@400;700&family=Bai+Jamjuree:wght@400&family=Mulish:wght@300;400;700&display=swap" rel="stylesheet"/>
 
+
   <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -1849,8 +1850,11 @@
       --u: calc(100cqw / 1575);
       display: flex;
       flex-direction: column;
-      gap: calc(120 * var(--u));
-      background: #000;
+      gap: 0; /* v2 sections abut edge-to-edge in Figma — each section's own
+                 padding (converted to --u) provides the breathing room */
+      /* #0a0a0a, not #000: the Main-screens gradient starts and ends on
+         #0a0a0a so it can dissolve into the page ground with no seam. */
+      background: #0a0a0a;
       color: #fff;
       overflow: hidden;
     }
@@ -1897,21 +1901,17 @@
     .ol-h2 em { font-style: normal; color: #00f5a0; }
 
     /* ---------- 01 · Hero ---------- */
+    /* v2: flat dark hero, no photo — the corporate-bg photo moved to its own
+       .ol-transition section right after this one (Figma node 3230:6852,
+       bg-[#0a0a0a] p-[80px], no background image). */
+    /* Figma 3230:6852 — 1575×589, p-80, content row 1415×335 */
     .ol-hero {
       display: flex;
-      align-items: flex-end;
+      align-items: flex-start;
       gap: calc(24 * var(--u));
-      padding: calc(40 * var(--u));
-      height: calc(1201 * var(--u));
-      background:
-        linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 72%),
-        url('img/openloot/ol-hero-bg-681c66.webp');
-      /* Figma's crop rect runs off the bottom edge of the source photo, so the
-         image only covers the top 63.46% of the frame and black shows beneath.
-         Stretching it to 100% height is what squashed it horizontally. */
-      background-size: 100% 100%, 100% 63.46%;
-      background-position: left top;
-      background-repeat: no-repeat;
+      height: calc(589 * var(--u));
+      padding: calc(127 * var(--u)) calc(80 * var(--u));
+      background: #0a0a0a;
     }
     .ol-hero-left {
       flex: 1;
@@ -1941,10 +1941,14 @@
       line-height: 1.4;
       color: rgba(255,255,255,0.72);
     }
+    /* 649 wide + wrap is what puts "Prototyping" on its own second row,
+       exactly as in Figma (chips frame 3231:6859 is 649×84). */
     .ol-chips {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: calc(12 * var(--u));
+      width: calc(649 * var(--u));
     }
     .ol-chip {
       display: flex;
@@ -2417,7 +2421,7 @@
        block with a real breakpoint once the mobile frame exists. */
     @media (max-width: 900px) {
       .ol-case { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-      .ol-case-in { width: 1000px; --u: calc(1000px / 1575); }
+      .ol-case-in { width: 1000px; --u: calc(1000px / 1575); gap: 0; }
       .sk-case { overflow-x: auto; -webkit-overflow-scrolling: touch; }
       .sk-in { width: 1000px; --u: calc(1000px / 1574); }
     }
@@ -3370,26 +3374,15 @@
    no quede una franja de tablets todavia paneando de costado. */
 @media (max-width: 900px) {
   .ol-case { padding: 0; }
-  .ol-case-in { width: 100%; --u: calc(100cqw / 1575); gap: 40px; }
+  .ol-case-in { width: 100%; --u: calc(100cqw / 1575); gap: 0; }
   .ol-h2 br, .ol-hero-title br { display: none; }
 
   .ol-pill { padding: 3px 9px; font-size: 10px; }
   .ol-pill--sm, .ol-pill--jost { font-size: 10px; }
   .ol-h2 { font-size: min(7.2vw, 28px); line-height: 1.15; }
 
-  /* 01 · Hero — el `background-size: 100% 100%, 100% 63.46%` del Figma
-     achataba la foto en vertical al cambiar la proporcion del bloque:
-     en mobile va `cover`, y el degrade pasa a ser un velo parejo al 80%
-     para que el titulo y la bajada apoyen sobre negro y no sobre la escena. */
+  /* 01 · Hero — v2 is flat #0a0a0a (no photo), so mobile just stacks the row. */
   .ol-case-in .ol-hero {
-    background-image:
-      linear-gradient(180deg, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.86) 55%, rgba(0,0,0,0.97) 100%),
-      url('img/openloot/ol-hero-bg-681c66.webp');
-    background-size: 100% 100%, cover;
-    background-position: center top, center center;
-    background-repeat: no-repeat, no-repeat;
-    height: auto;
-    min-height: 78vw;
     flex-direction: column;
     align-items: stretch;
     gap: 22px;
@@ -3610,6 +3603,742 @@
 @media (prefers-reduced-motion: reduce) {
   .modal.pnav-anim { transition: none; }
   .pnav-hint { transition: none; }
+}
+
+/* ── Open Loot v2 — everything below scales the same way as the rest of
+   this case study: every measure is raw Figma px × var(--u), --u defined
+   once on .ol-case-in as 100cqw / 1575 (v2 frame is also 1575px wide).
+   Mixing in fixed px/clamp() here would drift out of proportion with the
+   old sections around it as the modal container resizes. ────────────── */
+
+/* ── "Main screens" coverflow ──────────────────────────────────────────
+   Vanilla port of a bespoke React coverflow (drag + RAF easing + 3D fold-
+   for-loop). Images only, no caption/pagination — see OLInitCarousels. */
+.ol-mainscreens {
+  height: calc(935 * var(--u));
+  padding: calc(80 * var(--u)) 0;
+  background: linear-gradient(180deg, #0a0a0a 2.5%, #0a0a0a 29.7%, #353535 72.9%, #4c4c4c 77.7%, #222 88.5%, #0a0a0a 99.9%);
+}
+.ol-mainscreens-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: calc(48 * var(--u));
+  color: #fff;
+  padding: 0 calc(80 * var(--u)) calc(42 * var(--u)); /* Figma gap-[42px] */
+}
+.ol-coverflow { width: 100%; }
+.ol-coverflow-frame {
+  /* --cf-card is set inline on the root .ol-coverflow by OLCoverflow() and
+     inherited down — must NOT be redeclared here, or this rule's own value
+     would shadow whatever cardWidth the JS was given. */
+  cursor: grab;
+  overflow: hidden;
+  /* bottom padding leaves room for the reflection under the cards */
+  padding: 40px 0 calc(var(--cf-card) / var(--cf-aspect) * 0.5);
+  outline: none;
+  touch-action: pan-y;
+  perspective: calc(var(--cf-card) * 3);
+}
+.ol-coverflow-frame:active { cursor: grabbing; }
+.ol-coverflow-frame:focus-visible { outline: 1px solid #00f5a0; outline-offset: -1px; }
+/* --cf-aspect is a plain number (w/h) set by OLCoverflow, so the same
+   component serves the wide desktop grabs and the portrait phone shots. */
+.ol-coverflow-track {
+  position: relative;
+  height: calc(var(--cf-card) / var(--cf-aspect));
+  transform-style: preserve-3d;
+  user-select: none;
+}
+.ol-coverflow-card {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: var(--cf-card);
+  aspect-ratio: var(--cf-aspect);
+  will-change: transform;
+}
+.ol-cf-shot {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: calc(16 * var(--u));
+  background: #13171c;
+}
+.ol-cf-shot img,
+.ol-cf-reflection img {
+  width: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  pointer-events: none;
+}
+.ol-cf-shot img { height: 100%; }
+.ol-cf-dim {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+}
+/* Mirrored floor reflection instead of a drop shadow — same treatment Figma
+   uses under the centre screen (flipped copy at 20%, faded out). */
+.ol-cf-reflection {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  height: 45%;
+  overflow: hidden;
+  opacity: 0.2;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+}
+.ol-cf-reflection img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 222.2%;               /* = the card's own height */
+  transform: scaleY(-1);        /* flips about its centre: its bottom lands on top */
+  border-radius: calc(16 * var(--u));
+}
+
+/* ── "Mobile version" strip (same coverflow, portrait cards) ──────────── */
+.ol-mobilestrip { height: calc(1106 * var(--u)); padding: calc(80 * var(--u)) 0; background: #0a0a0a; }
+.ol-mobilestrip-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: calc(48 * var(--u));
+  color: #fff;
+  padding: 0 calc(80 * var(--u)) calc(42 * var(--u)); /* Figma gap-[42px] */
+}
+
+/* Below 560px the case goes fluid, so --u collapses to ~0.22 and the Figma
+   heights/type would be unreadable. Release the fixed frame heights and let
+   each section size to its own content instead. */
+@media (max-width: 560px) {
+  .ol-hero, .ol-narrative, .ol-decision, .ol-process, .ol-ds,
+  .ol-mainscreens, .ol-myrole, .ol-result, .ol-mobilestrip, .ol-visit {
+    height: auto;
+  }
+  .ol-transition { height: 46vw; }
+  .ol-mainscreens-title, .ol-mobilestrip-title { padding-left: 16px; padding-right: 16px; }
+  .ol-transition-wordmark { width: 78vw; }
+  .ol-narrative, .ol-decision, .ol-process, .ol-result,
+  .ol-ds, .ol-myrole, .ol-visit { padding-left: 16px; padding-right: 16px; }
+  .ol-sec-head { padding-left: 0; padding-right: 0; }
+  .ol-decision { overflow: visible; }
+  .ol-decision-copy { width: 100%; }
+  .ol-decision-media { position: static; width: 100%; margin-top: 24px; }
+  .ol-process-headrow { flex-direction: column; height: auto; }
+  .ol-process-head { width: 100%; }
+  .ol-process-head .ol-body-lg { width: 100%; }
+  .ol-process-timeline { gap: 8px; height: auto; }
+  .ol-process-step { font-size: 14px; line-height: 1.3; }
+  .ol-process-chevron { width: 9px; height: 14px; }
+  .ol-process-stack { margin-left: -16px; margin-right: -16px; }
+  .ol2-role-grid { height: auto; }
+  .ol-visit-label { font-size: 24px; line-height: 1.3; }
+  .ol-visit-url { font-size: 18px; }
+}
+
+/* ── shared section primitives ─────────────────────────────────────────── */
+.ol-eyebrow {
+  font-family: 'DM Mono', monospace;
+  color: #00f5a0;
+  font-size: calc(14 * var(--u));
+  margin: 0 0 calc(8 * var(--u));
+}
+.ol-body-lg {
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  color: #bfbfbf;
+  font-size: calc(20 * var(--u));
+  line-height: 1.5;
+}
+.ol-section-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: calc(200 * var(--u));
+  line-height: 0.9;
+  color: rgba(255,255,255,0.07);
+  user-select: none;
+  pointer-events: none;
+}
+/* Figma puts 02 / 04 flush right of their block, 01 flush left. */
+.ol-section-num--right { flex: 1 1 auto; text-align: right; align-self: flex-end; }
+
+/* ── Corporate bkgd transition ────────────────────────────────────────── */
+.ol-transition {
+  position: relative;
+  height: calc(693 * var(--u));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+.ol-transition-bg {
+  position: absolute; inset: 0;
+  background: url('img/openloot-v2/corp-bkgd.webp') center/cover;
+}
+.ol-transition-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(10,10,10,0) 80.087%, #0a0a0a 100%);
+}
+/* Figma pins the wordmark at top 403 (not vertically centred), 804.3 wide. */
+.ol-transition-wordmark {
+  position: absolute;
+  left: 50%;
+  top: calc(403 * var(--u));
+  transform: translateX(-50%);
+  width: calc(804 * var(--u));
+  max-width: 90%;
+}
+
+/* ── 01 The Problem / 02 Constraints ───────────────────────────────────
+   Figma "Container 01/02" (3287:26866): 1575×854, px-80 py-40, two blocks
+   of 1413×214 centred with a 159 gap. Problem = [456 numeral][24][933 copy];
+   Constraints mirrors it with the numeral pinned right. */
+.ol-narrative {
+  position: relative;
+  height: calc(854 * var(--u));
+  padding: calc(40 * var(--u)) calc(80 * var(--u));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(159 * var(--u));
+  border-top: 1px solid rgba(235,235,235,0.4);
+  border-bottom: 1px solid rgba(235,235,235,0.4);
+  overflow: hidden;
+}
+/* Two sibling layers, like Figma. The source art is a flow diagram on a
+   LIGHT grey ground, which is why the veil is this opaque: it crushes the
+   image down to near-black and only the structure stays readable.
+   inset:0 keeps both layers inside the border box, so the top/bottom
+   strokes stay visible. */
+.ol-narrative-bg {
+  position: absolute; inset: 0;
+  background: url('img/openloot-v2/problem-bkgd-v2.webp') center/cover;
+  opacity: 0.7;
+}
+.ol-narrative-veil {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(90.025deg,
+      rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.702) 44.77%, rgb(22,22,22) 81.389%),
+    radial-gradient(ellipse 89% 80% at 48.7% 53.7%,
+      rgba(0,0,0,0) 2.7%, rgba(10,10,10,0.36) 37.9%, rgba(10,10,10,0.9) 97.1%);
+}
+.ol-narrative-block {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: calc(24 * var(--u));
+  width: 100%;
+  height: calc(214 * var(--u));
+}
+/* The numeral sits flush LEFT in its 456 box (Figma: the text node is 320
+   wide at x=0 — right-aligning it inside the full 456 pushed it 136 off). */
+.ol-narrative-block .ol-section-num {
+  flex: none;
+  width: calc(456 * var(--u));
+  height: calc(200 * var(--u));
+  text-align: left;
+  line-height: 1;
+}
+/* 02 sits flush to the right edge of the block, 13.5 down (Figma 3239:1061) */
+.ol-narrative-block .ol-section-num--right {
+  position: absolute;
+  right: 0;
+  top: calc(13.5 * var(--u));
+  width: auto;
+  align-self: auto;
+}
+.ol-narrative-copy {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(24 * var(--u));
+}
+/* Constraints: copy spans the block, description capped at Figma's 938. */
+.ol-narrative-block--constraints .ol-narrative-copy { flex: none; width: 100%; }
+.ol-narrative-block--constraints .ol-body-lg { width: calc(938 * var(--u)); max-width: 100%; }
+.ol-narrative-copy .ol-eyebrow { margin: 0; }
+.ol-narrative-copy h2 { margin: 0; font-size: calc(48 * var(--u)); line-height: 1.2; }
+.ol-narrative-copy .ol-body-lg { margin: 0; }
+@media (max-width: 900px) {
+  .ol-narrative { height: auto; gap: 40px; padding: 40px 16px; }
+  .ol-narrative-block { flex-direction: column; gap: 8px; width: 100%; height: auto; }
+  .ol-narrative-block .ol-section-num { width: auto; height: auto; text-align: left; font-size: 64px; }
+  .ol-narrative-block .ol-section-num--right { position: static; }
+  .ol-narrative-copy { width: 100%; gap: 12px; }
+}
+
+/* ── 03 The Decision ───────────────────────────────────────────────────── */
+.ol-decision {
+  position: relative;
+  height: calc(803 * var(--u));
+  padding: calc(91 * var(--u)) calc(80 * var(--u)) calc(64 * var(--u));
+  overflow: hidden;
+  background:
+    linear-gradient(36deg, #0a0a0a 15%, rgba(10,10,10,0) 87%),
+    linear-gradient(180deg, rgba(0,0,0,0) 42%, #1e514c 63%, rgba(130,130,198,0.8) 74%, #5d5f89 85%, #1e1e1e 100%);
+}
+/* Figma: copy column 600 wide at x=80 (3259:32610) */
+.ol-decision-copy {
+  position: relative;
+  z-index: 1;
+  width: calc(600 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(24 * var(--u));
+}
+.ol-decision-copy .ol-eyebrow { margin: 0; }
+.ol-decision-copy h2 { margin: 0; font-size: calc(48 * var(--u)); line-height: 1.2; }
+.ol-decision-copy .ol-section-num { margin-top: calc(24 * var(--u)); }
+/* Three separate paragraphs, blank line between them (Figma 3231:6896) */
+.ol-decision-body { display: flex; flex-direction: column; gap: calc(24 * var(--u)); }
+.ol-decision-body p {
+  margin: 0;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: calc(20 * var(--u));
+  line-height: 1.5;
+  color: #bfbfbf;
+}
+.ol-decision-body strong { font-weight: 500; }
+/* The PNG carries a wide transparent glow, so it is placed absolutely and
+   right-aligned: that lands the bezel at Figma's 749→1477 span. */
+.ol-decision-media {
+  position: absolute;
+  right: 0;
+  top: calc(45 * var(--u));
+  width: calc(1078 * var(--u));
+}
+/* decision-device.png (2154×1458) already carries the bezel, stand and glow,
+   so it is the container. The screen rect measured inside that PNG is
+   24.85% / 10.86% from the top-left, 64.8% × 53.62% — the video goes there.
+   Sized so the bezel itself lands at Figma's ~695px width. */
+.ol-decision-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2154 / 1458;
+  background: center/contain no-repeat url('img/openloot-v2/decision-device.png');
+}
+/* Slightly over-covers the measured screen rect on every side: the PNG's own
+   screen fill is light grey, so any sliver left uncovered reads as a white
+   stroke around the video. The bezel has ~1.4% to spare, so the overshoot
+   stays off it. */
+.ol-decision-video {
+  position: absolute;
+  left: 24.4%;
+  top: 10.3%;
+  width: 65.6%;
+  height: 54.6%;
+  object-fit: cover;
+}
+
+/* ── 04 Process ────────────────────────────────────────────────────────── */
+/* Figma node 3230:6855 — radial glow: dark core, a violet ring at ~24% of
+   the radius, fading out by 73%. (The first pass had this inverted.) */
+.ol-process {
+  height: calc(1718 * var(--u));
+  padding: calc(60 * var(--u)) calc(80 * var(--u)) 0;
+  background-color: #0a0a0a;
+  background-image: radial-gradient(ellipse 81.3% 65% at 46.2% 57%,
+    #1e1e1e 0%,
+    #2e2e39 6.03%,
+    #3e3e54 12.07%,
+    #4d4f6f 18.1%,
+    #5d5f89 24.14%,
+    rgba(70,71,103,0.75) 36.3%,
+    rgba(47,47,69,0.5) 48.47%,
+    rgba(23,24,34,0.25) 60.64%,
+    rgba(0,0,0,0) 72.81%);
+}
+/* Figma vertical rhythm inside the 1718 frame: head row at 60 (274 tall),
+   timeline at 358 (141), stacked stage at 509 (1149, full-bleed). */
+.ol-process-headrow { display: flex; align-items: flex-start; gap: calc(24 * var(--u)); height: calc(274 * var(--u)); }
+.ol-process-head {
+  width: calc(933 * var(--u));
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: calc(24 * var(--u));
+}
+.ol-process-head .ol-eyebrow { margin: 0; }
+.ol-process-head h2 { margin: 0; font-size: calc(48 * var(--u)); line-height: 1.2; }
+.ol-process-head .ol-body-lg { margin: 0; width: calc(877 * var(--u)); }
+.ol-process-timeline {
+  display: flex;
+  align-items: center;
+  gap: calc(24 * var(--u));
+  height: calc(141 * var(--u));
+  margin-top: calc(24 * var(--u));
+}
+.ol-process-step {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: calc(28 * var(--u));
+  line-height: calc(34 * var(--u));
+  color: #fff;
+}
+.ol-process-chevron {
+  flex: none;
+  display: block;
+  width: calc(18 * var(--u));
+  height: calc(28.5 * var(--u));
+}
+/* Exact coordinates from Figma's "Stacked cards stage" (node 3285:26690,
+   1575 × 1149 — the same canvas --u is built on, so calc(N * var(--u))
+   reproduces every left/top/width/rotation 1:1). */
+.ol-process-stack {
+  position: relative;
+  height: calc(1149 * var(--u));
+  margin: calc(10 * var(--u)) calc(-80 * var(--u)) 0; /* full-bleed: cancels the section padding */
+}
+/* Single composed export of the three stages, placed at the bounding box the
+   four separate layers occupied in Figma (x 88→1390, y 19→1149). */
+.ol-process-stage {
+  position: absolute;
+  left: calc(88 * var(--u));
+  top: calc(19 * var(--u));
+  width: calc(1302 * var(--u));
+  aspect-ratio: 2748 / 2407;
+  background: center/contain no-repeat url('img/openloot-v2/process-stage.webp');
+}
+@media (max-width: 900px) {
+  .ol-process-stack { display: none; } /* stacked comparison needs the wide desktop layout */
+}
+
+/* ── 05 Design System / 06 My Role — shared head, reuses old .ol-ds /
+   .ol-role-grid content (same copy in the v2 Figma), restyled here ──── */
+.ol-sec-head { display: flex; align-items: flex-start; gap: calc(24 * var(--u)); padding: calc(40 * var(--u)) calc(80 * var(--u)) 0; }
+.ol-sec-head .ol-sec-head-copy { flex: 1 1 auto; max-width: calc(933 * var(--u)); }
+.ol-sec-head .ol-sec-head-copy h2 { margin: calc(8 * var(--u)) 0 calc(16 * var(--u)); }
+.ol-sec-head .ol-section-num { flex: 1 1 auto; text-align: right; align-self: flex-end; }
+@media (max-width: 900px) {
+  .ol-sec-head { flex-direction: column; gap: 8px; }
+  .ol-sec-head .ol-section-num { display: none; }
+}
+/* ── 05 Design System — v2 card (Figma node 3271:25319) ───────────────── */
+.ol-ds {
+  display: flex;
+  flex-direction: column;
+  gap: calc(24 * var(--u));
+  height: calc(904 * var(--u));
+  padding: calc(40 * var(--u)) calc(80 * var(--u));
+  background: #0a0a0a;
+}
+.ol-ds .ol-sec-head { padding-left: 0; padding-right: 0; }
+.ol2-ds-card {
+  display: flex;
+  flex-direction: column;
+  gap: calc(48 * var(--u));
+  padding: calc(40 * var(--u));
+  background: #13171c;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: calc(16 * var(--u));
+}
+.ol2-ds-block { display: flex; flex-direction: column; gap: calc(16 * var(--u)); }
+.ol2-ds-caption {
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  font-size: calc(12 * var(--u));
+  color: #00f5a0;
+}
+.ol2-swatches { display: flex; flex-wrap: wrap; gap: calc(16 * var(--u)); }
+.ol2-swatch { display: flex; flex-direction: column; gap: calc(8 * var(--u)); width: calc(130 * var(--u)); }
+.ol2-swatch i {
+  display: block;
+  height: calc(50 * var(--u));
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: calc(4 * var(--u));
+}
+.ol2-swatch span { font-family: 'DM Mono', monospace; font-size: calc(12 * var(--u)); color: #fff; }
+.ol2-swatch em { font-family: 'DM Mono', monospace; font-style: normal; font-size: calc(10 * var(--u)); color: #8a94a6; }
+
+.ol2-specimens { display: flex; gap: calc(32 * var(--u)); }
+.ol2-specimen {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--u));
+  padding: calc(24 * var(--u));
+  background: #080a0c;
+  border-radius: calc(8 * var(--u));
+}
+.ol2-specimen-name { font-size: calc(24 * var(--u)); color: #fff; }
+.ol2-specimen--mont .ol2-specimen-name { font-family: 'Montserrat', sans-serif; font-weight: 800; }
+.ol2-specimen--bai .ol2-specimen-name { font-family: 'Bai Jamjuree', sans-serif; font-weight: 600; }
+.ol2-specimen-role { font-size: calc(12 * var(--u)); color: #00f5a0; }
+.ol2-specimen-abc { font-size: calc(14 * var(--u)); color: #8a94a6; }
+.ol2-specimen--mont .ol2-specimen-role,
+.ol2-specimen--mont .ol2-specimen-abc { font-family: 'Montserrat', sans-serif; }
+.ol2-specimen--bai .ol2-specimen-role,
+.ol2-specimen--bai .ol2-specimen-abc { font-family: 'Bai Jamjuree', sans-serif; }
+
+.ol2-ds-spec { margin: 0; font-family: 'DM Mono', monospace; font-size: calc(14 * var(--u)); color: #8a94a6; }
+.ol2-comps { display: flex; flex-wrap: wrap; gap: calc(8 * var(--u)); }
+.ol2-comp {
+  padding: calc(6 * var(--u)) calc(12 * var(--u));
+  background: #080a0c;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: calc(4 * var(--u));
+  font-family: 'DM Mono', monospace;
+  font-size: calc(12 * var(--u));
+  color: #8a94a6;
+  white-space: nowrap;
+}
+
+/* ── 06 My Role ────────────────────────────────────────────────────────
+   Figma 3286:26702 — 1575×1620.2: head at 76 (156 tall), grid at 277
+   (368), impact image at 690 (854.2). */
+.ol-myrole {
+  height: calc(1620 * var(--u));
+  padding: calc(76 * var(--u)) calc(80 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(45 * var(--u));
+}
+.ol-myrole .ol-sec-head { padding: 0; gap: calc(24 * var(--u)); align-items: flex-end; }
+.ol-myrole .ol-sec-head-copy { display: flex; flex-direction: column; gap: calc(12 * var(--u)); width: calc(936 * var(--u)); max-width: none; flex: none; }
+.ol-myrole .ol-sec-head-copy .ol-eyebrow { margin: 0; }
+.ol-myrole .ol-sec-head-copy h2 { margin: 0; font-size: calc(48 * var(--u)); line-height: 1.2; }
+.ol-myrole .ol-sec-head-copy .ol-body-lg { margin: 0; }
+.ol-myrole .ol-section-num { color: #181826; font-size: calc(200 * var(--u)); line-height: 0.72; }
+
+.ol2-role-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: calc(24 * var(--u));
+  filter: drop-shadow(0 calc(16 * var(--u)) calc(20 * var(--u)) rgba(0,0,0,0.5));
+}
+.ol2-role-card {
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 * var(--u));
+  padding: calc(32 * var(--u));
+  background: #181826;
+  border: 1px solid rgba(112,117,216,0.2);
+  border-radius: calc(20 * var(--u));
+}
+.ol2-role-title {
+  margin: 0;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: calc(20 * var(--u));
+  color: #8f96c7;
+}
+.ol2-role-desc {
+  margin: 0;
+  font-family: 'Bai Jamjuree', sans-serif;
+  font-weight: 400;
+  font-size: calc(15 * var(--u));
+  line-height: 1.6;
+  color: #cdcdcd;
+}
+@media (max-width: 900px) {
+  .ol2-role-grid { grid-template-columns: minmax(0, 1fr); padding: 24px 16px; gap: 12px; }
+}
+/* Figma "Impact Image" (3283:26653): aspect 1413/853, 2px violet stroke,
+   40 radius, plus a 244.93° shade towards the bottom-left. */
+.ol-myrole-video { position: relative; }
+.ol-myrole-video video, .ol-myrole-video img {
+  width: 100%;
+  aspect-ratio: 1413 / 853;
+  border-radius: calc(40 * var(--u));
+  border: 2px solid rgba(112,117,216,0.2);
+  display: block;
+  object-fit: cover;
+}
+.ol-myrole-video::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: calc(40 * var(--u));
+  pointer-events: none;
+  background: linear-gradient(244.93deg, rgba(0,0,0,0) 58.651%, rgba(0,0,0,0.6) 91.392%);
+}
+@media (max-width: 900px) {
+  .ol-myrole-video { padding: 0 16px 32px; }
+}
+
+/* ── Closing "Visit" (Figma node 3297:26921 — 1575×266, p-80) ─────────── */
+.ol-visit {
+  height: calc(266 * var(--u));
+  padding: calc(80 * var(--u));
+  background: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  gap: calc(4 * var(--u));
+  text-align: center;
+}
+.ol-visit-label {
+  margin: 0;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: calc(40 * var(--u));
+  line-height: calc(55 * var(--u));
+  color: #616798;
+  text-shadow: 0 4px 8.7px rgba(0,0,0,0.43);
+}
+.ol-visit-url {
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  font-size: calc(36 * var(--u));
+  color: #fff;
+  text-decoration: none;
+}
+.ol-visit-url:hover { color: #00f5a0; }
+@media (max-width: 900px) {
+  .ol-visit { height: auto; padding: 40px 16px; }
+}
+
+/* ── 07 Result & Impact ───────────────────────────────────────────────── */
+/* Figma 3230:6857 — px-80 only (no vertical padding), gap 24, centred. */
+.ol-result {
+  position: relative;
+  height: calc(1848 * var(--u));
+  padding: 0 calc(80 * var(--u));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(24 * var(--u));
+  background: #0a0a0a;
+  overflow: hidden;
+}
+.ol-result > * { width: 100%; }
+.ol-result-bg {
+  position: absolute; inset: 0;
+  background: url('img/openloot-v2/result-bkgd.webp') center/cover;
+  opacity: 0.35;
+}
+.ol-result-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(10,10,10,0.9) 20%, rgba(10,10,10,0.5) 50%, rgba(10,10,10,0.9) 80%);
+}
+/* Figma 3281:26558 — 802 copy column, big 07 flush right in #231918 */
+.ol-result-headrow { position: relative; display: flex; align-items: flex-start; }
+.ol-result-head {
+  flex: none;
+  width: calc(802 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 * var(--u));
+}
+.ol-result-head .ol-eyebrow { margin: 0; }
+.ol-result-head h2 { margin: 0; font-size: calc(48 * var(--u)); line-height: 1.2; }
+.ol-result-head .ol-body-lg { margin: 0; }
+.ol-result-num {
+  flex: 1 1 0;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  color: #231918;
+  line-height: 1.01;
+}
+.ol-result-stats { position: relative; padding: calc(48 * var(--u)) 0; text-align: center; }
+.ol-result-stats h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: calc(24 * var(--u));
+  color: #fff;
+  margin: 0 0 calc(24 * var(--u));
+}
+.ol-result-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: calc(24 * var(--u));
+}
+.ol-result-stat { display: flex; flex-direction: column; gap: calc(6 * var(--u)); padding: calc(24 * var(--u)) calc(12 * var(--u)); }
+.ol-result-stat span { font-family: 'Bai Jamjuree', sans-serif; font-weight: 700; font-size: calc(16 * var(--u)); color: #5b5b5b; }
+.ol-result-stat strong { font-family: 'Syne', sans-serif; font-weight: 800; font-size: calc(30 * var(--u)); color: #00f5a0; }
+.ol-result-wordmark { position: relative; text-align: center; padding: calc(40 * var(--u)) 0; }
+.ol-result-wordmark img { width: calc(1191 * var(--u)); max-width: 90%; }
+.ol-result-chart {
+  position: relative;
+  height: calc(502 * var(--u));
+  padding: calc(30 * var(--u)) calc(24 * var(--u));
+  overflow: hidden;
+}
+.ol-result-chart-stats {
+  position: relative;
+  z-index: 2;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: calc(140 * var(--u));
+}
+/* Chart layers — Figma coordinates, in --u so they track the container. */
+.ol-chart-fill {
+  position: absolute; left: calc(44 * var(--u)); bottom: calc(16.77 * var(--u));
+  width: calc(1370 * var(--u)); height: calc(262 * var(--u));
+}
+.ol-chart-line {
+  position: absolute; left: calc(44 * var(--u)); top: calc(223.23 * var(--u));
+  width: calc(1370 * var(--u)); height: calc(204 * var(--u));
+}
+.ol-chart-xlines {
+  position: absolute; left: calc(11.94 * var(--u)); top: calc(197.62 * var(--u));
+  width: calc(1403 * var(--u)); height: calc(279.36 * var(--u));
+}
+.ol-chart-ylines {
+  position: absolute; left: calc(44 * var(--u)); top: calc(160.73 * var(--u));
+  width: calc(1371 * var(--u)); height: calc(296 * var(--u));
+  display: flex; align-items: center; justify-content: space-between;
+  opacity: 0.3;
+}
+.ol-chart-ylines i {
+  width: 1px; height: calc(335 * var(--u));
+  background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+}
+/* The chart builds itself with a left-to-right wipe once it scrolls in. */
+.ol-chart-fill, .ol-chart-line, .ol-chart-xlines {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ol-chart-line { transition-delay: 0.1s; }
+.ol-result-chart.is-drawn .ol-chart-fill,
+.ol-result-chart.is-drawn .ol-chart-line,
+.ol-result-chart.is-drawn .ol-chart-xlines { clip-path: inset(0 0 0 0); }
+.ol-chart-ylines, .ol-chart-yvalues { opacity: 0; transition: opacity 0.8s ease-out 0.5s; }
+.ol-result-chart.is-drawn .ol-chart-ylines { opacity: 0.3; }
+.ol-result-chart.is-drawn .ol-chart-yvalues { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .ol-chart-fill, .ol-chart-line, .ol-chart-xlines { clip-path: none; transition: none; }
+  .ol-chart-ylines { opacity: 0.3; transition: none; }
+  .ol-chart-yvalues { opacity: 1; transition: none; }
+}
+
+.ol-chart-yvalues span {
+  position: absolute;
+  left: calc(31 * var(--u));
+  transform: translateX(-100%);
+  font-family: 'Bai Jamjuree', sans-serif;
+  font-weight: 700;
+  font-size: calc(12 * var(--u));
+  line-height: calc(22 * var(--u));
+  color: #16465c;
+}
+@media (max-width: 900px) {
+  .ol-result-chart { height: auto; padding: 24px 0; }
+  .ol-chart-fill, .ol-chart-line, .ol-chart-xlines,
+  .ol-chart-ylines, .ol-chart-yvalues { display: none; }
+}
+.ol-result-chart-stat { display: flex; flex-direction: column; align-items: center; gap: calc(12 * var(--u)); }
+.ol-result-chart-stat span { font-family: 'Bai Jamjuree', sans-serif; font-weight: 700; font-size: calc(16 * var(--u)); color: #fff; }
+.ol-result-chart-stat strong {
+  font-family: 'Syne', sans-serif; font-weight: 600; font-size: calc(50 * var(--u)); color: #616798;
+  text-shadow: 0 4px 8.7px rgba(0,0,0,0.43);
 }
 
 </style>
@@ -4295,7 +5024,13 @@
       <div class="ol-case">
       <div class="ol-case-in">
 
-        <!-- 01 · Hero -->
+        <!-- Corporate bkgd — Figma has this at y=0, above the hero -->
+        <section class="ol-transition">
+          <div class="ol-transition-bg" role="img" aria-label="Open Loot corporate imagery"></div>
+          <img loading="lazy" class="ol-transition-wordmark" src="img/openloot-v2/corp-wordmark.svg" alt="Open Loot">
+        </section>
+
+        <!-- Hero -->
         <section class="ol-hero">
           <div class="ol-hero-left">
             <div class="ol-hero-copy">
@@ -4333,241 +5068,254 @@
           </div>
         </section>
 
-        <!-- Stats -->
-        <section class="ol-stats">
-          <div class="ol-stat"><div class="ol-stat-num">6+</div><div class="ol-stat-label">Partner Games</div></div>
-          <div class="ol-stat"><div class="ol-stat-num">1,500+</div><div class="ol-stat-label">NFT Items Live</div></div>
-          <div class="ol-stat"><div class="ol-stat-num">4 yr</div><div class="ol-stat-label">Design<br>Ownership</div></div>
-          <div class="ol-stat"><div class="ol-stat-num">3</div><div class="ol-stat-label">Marketplace<br>versions</div></div>
-          <div class="ol-stat"><div class="ol-stat-num">1</div><div class="ol-stat-label">Self Service<br>Platform.</div></div>
-        </section>
-
-        <!-- Device band -->
-        <section class="ol-band">
-          <div class="ol-band-laptop" role="img" aria-label="Open Loot marketplace on a laptop"></div>
-          <div class="ol-band-iphones" role="img" aria-label="Open Loot mobile screens"></div>
-        </section>
-
-        <div class="ol-line"></div>
-
-        <!-- 02 · The Project -->
-        <section class="ol-project">
-          <div class="ol-project-head">
-            <div class="ol-pill ol-pill--sm">THE PROJECT</div>
-            <h2 class="ol-h2">A Web3 gaming marketplace <br>built <em>from scratch.</em></h2>
+        <!-- 01 · The Problem / 02 · Constraints -->
+        <section class="ol-narrative">
+          <div class="ol-narrative-bg" aria-hidden="true"></div>
+          <div class="ol-narrative-veil" aria-hidden="true"></div>
+          <div class="ol-narrative-block">
+            <div class="ol-section-num">01</div>
+            <div class="ol-narrative-copy">
+              <p class="ol-eyebrow">01</p>
+              <h2 class="ol-h2">The Problem</h2>
+              <p class="ol-body-lg">Open Loot didn't exist. Big Time, the PC RPG it was meant to host, was just starting development. The brief was to design a Web3 NFT marketplace from scratch, with no internal patterns or precedent, conceived from day one as a multi-game platform rather than a single-title catalog.</p>
+            </div>
           </div>
-          <div class="ol-project-body">
-            <div class="ol-project-scene" role="img" aria-label="Open Loot homepage on a desktop display alongside a mobile balance screen"></div>
-            <div class="ol-project-copy">
-              <p>Open Loot is a crypto-gaming marketplace built by Big Time Studios — the infrastructure layer for Web3 gaming, enabling players to buy, sell, and trade in-game NFT assets across multiple partner titles.</p>
-              <p>As sole <strong>Lead Product Designer (2022–2026),</strong> I owned end-to-end design: from UX strategy and wireframes through UI design, design system, prototyping, and ongoing iteration with engineering.</p>
-              <p><strong>Scope included:</strong><br>homepage, marketplace, game discovery, OL Chain explorer, user wallet, token dashboards, onboarding, and responsive mobile layouts.</p>
+          <div class="ol-narrative-block ol-narrative-block--constraints">
+            <div class="ol-narrative-copy">
+              <p class="ol-eyebrow">02</p>
+              <h2 class="ol-h2">Constraints</h2>
+              <p class="ol-body-lg">A small team (one designer), a tight and shifting timeline (6 months stretching to a year), no design system or formal user testing in the early stages. Research leaned on OpenSea, Magic Eden, and NBA Top Shot to understand catalog, checkout, and wallet-connection patterns in high-volume NFT products.</p>
+            </div>
+            <div class="ol-section-num ol-section-num--right">02</div>
+          </div>
+        </section>
+
+        <!-- 03 · The Decision -->
+        <section class="ol-decision">
+          <div class="ol-decision-copy">
+            <p class="ol-eyebrow">03</p>
+            <h2 class="ol-h2">The Decision</h2>
+            <div class="ol-decision-body">
+              <p>With no research data of our own yet, the criterion was usability in service of a business goal: <strong>checkout in 1-2</strong> clicks from any product screen, desktop-first.</p>
+              <p>That rule, not a design system (which came later), is what drove every layout and flow decision.</p>
+              <p>The checkout target that drove every layout decision.</p>
+            </div>
+            <div class="ol-section-num">03</div>
+          </div>
+          <div class="ol-decision-media">
+            <!-- decision-device.png is the exported monitor (bezel + stand +
+                 glow). The video sits in the screen rect inside that PNG. -->
+            <div class="ol-decision-frame">
+              <!-- data-rate 0.5: the export is encoded at 2x, so play it back
+                   at half speed to land on the real pace -->
+              <video class="ol-decision-video" muted loop playsinline data-rate="0.5"
+                     poster="img/openloot-v2/checkout-poster.webp"
+                     aria-label="Live checkout flow, 1-2 clicks">
+                <source data-src="video/openloot-v2/checkout-flow.m4v" type="video/mp4">
+              </video>
             </div>
           </div>
         </section>
 
-        <div class="ol-line"></div>
-
-        <!-- 03 · My Role -->
-        <section class="ol-role">
-          <div class="ol-role-blur">
-            <div class="ol-pill ol-pill--jost">MY ROLE</div>
-            <div class="ol-role-title">
-              <h2 class="ol-h2">End-to-end</h2>
-              <h2 class="ol-h2"><em>design process.</em></h2>
+        <!-- 04 · Process -->
+        <section class="ol-process">
+          <div class="ol-process-headrow">
+            <div class="ol-process-head">
+              <p class="ol-eyebrow">04</p>
+              <h2 class="ol-h2">Process</h2>
+              <p class="ol-body-lg">Each feature had it's own sole project, simple UX to review options and consider resources to estimate. Once move into mockups, internal testing with QA in staging, and Customer Service as a live research channel. Sprint cadence in Jira, weekly per-feature syncs with a lean team: PM, engineering, QA, and me.</p>
             </div>
-            <div class="ol-role-grid">
-              <article class="ol-role-card"><div class="ol-role-card-body">
-                <div class="ol-role-num">01</div>
-                <h3 class="ol-card-title">UX Strategy &amp; Research</h3>
-                <p class="ol-card-desc">User flows, information architecture, persona definition (casual player vs. advanced trader), competitive analysis, heuristic evaluation.</p>
-              </div></article>
-              <article class="ol-role-card"><div class="ol-role-card-body">
-                <div class="ol-role-num">02</div>
-                <h3 class="ol-card-title">Visual Design &amp; UI</h3>
-                <p class="ol-card-desc">Full V2 redesign — new visual language, dark-mode system, component design, brand alignment across all platform surfaces.</p>
-              </div></article>
-              <article class="ol-role-card"><div class="ol-role-card-body">
-                <div class="ol-role-num">03</div>
-                <h3 class="ol-card-title">Design System</h3>
-                <p class="ol-card-desc">Token-based Figma system: color tokens, typography scale, spacing, icon set, component library with all interactive states.</p>
-              </div></article>
-              <article class="ol-role-card"><div class="ol-role-card-body">
-                <div class="ol-role-num">04</div>
-                <h3 class="ol-card-title">Prototyping</h3>
-                <p class="ol-card-desc">High-fidelity interactive Figma prototypes for stakeholder review, usability testing, and engineering handoff.</p>
-              </div></article>
-              <article class="ol-role-card"><div class="ol-role-card-body">
-                <div class="ol-role-num">05</div>
-                <h3 class="ol-card-title">Mobile Design</h3>
-                <p class="ol-card-desc">Responsive layouts and mobile-first screens for marketplace, game discovery, and onboarding flows.</p>
-              </div></article>
-              <article class="ol-role-card"><div class="ol-role-card-body">
-                <div class="ol-role-num">06</div>
-                <h3 class="ol-card-title">Dev Collaboration &amp; QA</h3>
-                <p class="ol-card-desc">Figma specs, annotations, edge-case docs. QA of implemented screens, visual regression tracking.</p>
-              </div></article>
-            </div>
+            <div class="ol-section-num ol-section-num--right">04</div>
+          </div>
+          <!-- Figma 3273:26365 — three equal 427.67 columns, 24 gaps, and the
+               exported chevron vector (18×28.5) between them. -->
+          <div class="ol-process-timeline">
+            <span class="ol-process-step">v1 (2023)</span>
+            <img class="ol-process-chevron" src="img/openloot-v2/process-arrow.svg" alt="" aria-hidden="true">
+            <span class="ol-process-step">Proposal</span>
+            <img class="ol-process-chevron" src="img/openloot-v2/process-arrow.svg" alt="" aria-hidden="true">
+            <span class="ol-process-step">V2 (2026)</span>
+          </div>
+          <div class="ol-process-stack">
+            <div class="ol-process-stage" role="img"
+                 aria-label="The three stages side by side: the v1 (2023) home page, the wireframe proposal, and the V2 (2026) desktop and mobile home pages"></div>
           </div>
         </section>
 
-        <div class="ol-line"></div>
-
-        <!-- 04 · Design System -->
+        <!-- 05 · Design System -->
         <section class="ol-ds">
-          <div class="ol-ds-pad">
-          <div class="ol-ds-head">
-            <div class="ol-pill ol-pill--sm">DESIGN FOUNDATION</div>
-            <h2 class="ol-h2">Design System <br><em>behind the product.</em></h2>
+          <div class="ol-sec-head">
+            <div class="ol-sec-head-copy">
+              <p class="ol-eyebrow">05</p>
+              <h2 class="ol-h2">Design System</h2>
+              <p class="ol-body-lg">End-to-end design of every feature, resource scoping alongside PM and engineering, and identifying a bottleneck that led to designing a self-service portal for partners, so each studio could mint assets and manage its own content without straining engineering.</p>
+            </div>
+            <div class="ol-section-num">05</div>
           </div>
-          <div class="ol-ds-body">
-            <div>
-              <div class="ol-ds-caption">COLOR SYSTEM</div>
-              <div class="ol-swatches">
-                <div class="ol-swatch"><i style="background:#080A0C"></i><span>Surface</span></div>
-                <div class="ol-swatch"><i style="background:#13171C"></i><span>Panel</span></div>
-                <div class="ol-swatch"><i style="background:#242C37"></i><span>Elevated</span></div>
-                <div class="ol-swatch"><i style="background:#00F5A0"></i><span>Accent / Cyan</span></div>
-                <div class="ol-swatch"><i style="background:#7C3AEC"></i><span>Purple</span></div>
-                <div class="ol-swatch"><i style="background:#FFB547"></i><span>Gold</span></div>
-                <div class="ol-swatch"><i style="background:#22C55E"></i><span>Green</span></div>
-                <div class="ol-swatch"><i style="background:#FF4D6D"></i><span>Red</span></div>
+          <!-- Figma v2 node 3271:25319 — one bordered card holding the three
+               blocks (colour, typography, grid & components). -->
+          <div class="ol2-ds-card">
+
+            <div class="ol2-ds-block">
+              <div class="ol2-ds-caption">COLOR SYSTEM</div>
+              <div class="ol2-swatches">
+                <div class="ol2-swatch"><i style="background:#080A0C"></i><span>Surface</span><em>#080A0C</em></div>
+                <div class="ol2-swatch"><i style="background:#13171C"></i><span>Panel</span><em>#13171C</em></div>
+                <div class="ol2-swatch"><i style="background:#242C37"></i><span>Elevated</span><em>#242C37</em></div>
+                <div class="ol2-swatch"><i style="background:#00F5A0"></i><span>Accent/Cyan</span><em>#00f5a0</em></div>
+                <div class="ol2-swatch"><i style="background:#7C3AEC"></i><span>Purple</span><em>#7C3AEC</em></div>
+                <div class="ol2-swatch"><i style="background:#FFB547"></i><span>Gold</span><em>#FFB547</em></div>
+                <div class="ol2-swatch"><i style="background:#22C55E"></i><span>Green</span><em>#22C55E</em></div>
+                <div class="ol2-swatch"><i style="background:#FF4D6D"></i><span>Red</span><em>#FF4D6D</em></div>
               </div>
             </div>
 
-            <div class="ol-grid-spec">
-              <p>12-COLUMN GRID &nbsp;·&nbsp; 8PX BASE UNIT &nbsp;·&nbsp; 1920 / 1440 / 1024 / 390px</p>
-              <div class="ol-cols">
-                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-              </div>
-              <div class="ol-components">
-                <span class="ol-comp">NFT Card</span>
-                <span class="ol-comp">Game Card</span>
-                <span class="ol-comp ol-comp--hug">Rarity Tag</span>
-                <span class="ol-comp ol-comp--hug">Filter Panel</span>
-                <span class="ol-comp">Top Bar</span>
-                <span class="ol-comp">Footer</span>
-                <span class="ol-comp ol-comp--hug">Token Widget</span>
-                <span class="ol-comp ol-comp--hug">Hero Carousel</span>
-                <span class="ol-comp">Modal</span>
-                <span class="ol-comp">Counter</span>
-                <span class="ol-comp">Toggle</span>
-                <span class="ol-comp">Checkbox</span>
-                <span class="ol-comp">Dropdown</span>
-                <span class="ol-comp">Search Bar</span>
-              </div>
-            </div>
-          </div>
-          </div>
-
-            <div class="ol-fonts">
-              <div class="ol-typeface ol-typeface--mont">
-                <div class="ol-tf-top">
-                  <div class="ol-tf-name">Montserrat</div>
-                  <div class="ol-tf-role">Display · TITLES</div>
+            <div class="ol2-ds-block">
+              <div class="ol2-ds-caption">TYPOGRAPHY SPECIMENS</div>
+              <div class="ol2-specimens">
+                <div class="ol2-specimen ol2-specimen--mont">
+                  <div class="ol2-specimen-name">Montserrat</div>
+                  <div class="ol2-specimen-role">DISPLAY · TITLES</div>
+                  <div class="ol2-specimen-abc">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</div>
                 </div>
-                <div class="ol-tf-line"></div>
-                <div class="ol-tf-aa">
-                  <b>Aa</b>
-                  <span>ABCDEFGHIJKLMNOPQRSTUVWXYZ
-abcdefghijklmnopqrstuvwxyz
-0123456789</span>
-                </div>
-              </div>
-              <div class="ol-typeface ol-typeface--bai">
-                <div class="ol-tf-top">
-                  <div class="ol-tf-name ol-tf-name--bai">Bai Jamjuree</div>
-                  <div class="ol-tf-role">Labels · BODY · Nav</div>
-                </div>
-                <div class="ol-tf-line"></div>
-                <div class="ol-tf-aa">
-                  <b>Aa</b>
-                  <span>ABCDEFGHIJKLMNOPQRSTUVWXYZ
-abcdefghijklmnopqrstuvwxyz
-0123456789</span>
+                <div class="ol2-specimen ol2-specimen--bai">
+                  <div class="ol2-specimen-name">Bai Jamjuree</div>
+                  <div class="ol2-specimen-role">LABELS · BODY · NAV</div>
+                  <div class="ol2-specimen-abc">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</div>
                 </div>
               </div>
             </div>
 
-            <div class="ol-scene-collection" role="img" aria-label="My Collection screens on a desktop display and a laptop"></div>
+            <div class="ol2-ds-block">
+              <div class="ol2-ds-caption">GRID &amp; COMPONENT MATRIX</div>
+              <p class="ol2-ds-spec">12-column grid · 8px base unit · 1920 / 1440 / 1024 / 390px</p>
+              <div class="ol2-comps">
+                <span class="ol2-comp">NFT Card</span>
+                <span class="ol2-comp">Game Card</span>
+                <span class="ol2-comp">Rarity Tag</span>
+                <span class="ol2-comp">Filter Panel</span>
+                <span class="ol2-comp">Top Bar</span>
+                <span class="ol2-comp">Footer</span>
+                <span class="ol2-comp">Token Widget</span>
+                <span class="ol2-comp">Hero Carousel</span>
+                <span class="ol2-comp">Modal</span>
+                <span class="ol2-comp">Counter</span>
+                <span class="ol2-comp">Toggle</span>
+                <span class="ol2-comp">Checkbox</span>
+                <span class="ol2-comp">Dropdown</span>
+                <span class="ol2-comp">Search Bar</span>
+              </div>
+            </div>
+
+          </div>
         </section>
 
-        <div class="ol-line"></div>
-
-        <!-- 05 · Key Design Challenges -->
-        <section class="ol-challenges">
-          <div class="ol-pill ol-pill--sm">KEY DESIGN CHALLENGES</div>
-          <div class="ol-challenge-row">
-            <article class="ol-challenge">
-              <div class="ol-challenge-num">01</div>
-              <h3 class="ol-card-title">Web3 UX for Mainstream Gamers</h3>
-              <div class="ol-hairline"></div>
-              <p class="ol-card-desc">Abstracting blockchain complexity — wallet connection, gas-free transactions, NFT ownership — into familiar gaming UI patterns without losing trustworthiness for crypto-native users.</p>
-            </article>
-            <article class="ol-challenge">
-              <div class="ol-challenge-num">02</div>
-              <h3 class="ol-card-title">Multi-Game Data Complexity</h3>
-              <div class="ol-hairline"></div>
-              <p class="ol-card-desc">Presenting NFT items from 6+ games with different art styles, rarity systems, and metadata structures — all within a single cohesive marketplace UI that feels natural to each game's audience.</p>
-            </article>
-            <article class="ol-challenge">
-              <div class="ol-challenge-num">03</div>
-              <h3 class="ol-card-title">Single Designer, Full Platform</h3>
-              <div class="ol-hairline"></div>
-              <p class="ol-card-desc">Operating as the sole designer across the entire product surface required strong prioritization, a robust design system, and tight engineering collaboration to scale output efficiently over 4 years.</p>
-            </article>
-          </div>
-          <div class="ol-challenge-iphones" role="img" aria-label="Open Loot mobile screens"></div>
+        <!-- Main screens -->
+        <section class="ol-mainscreens">
+          <h2 class="ol-mainscreens-title">Main screens</h2>
+          <div class="ol-coverflow" id="ol-coverflow-mainscreens"></div>
         </section>
 
-        <div class="ol-line"></div>
+        <!-- 06 · My Role -->
+        <section class="ol-myrole">
+          <div class="ol-sec-head">
+            <div class="ol-sec-head-copy">
+              <p class="ol-eyebrow">06</p>
+              <h2 class="ol-h2">My Role</h2>
+              <p class="ol-body-lg">End-to-end design of every feature, resource scoping alongside PM and engineering, and identifying a bottleneck that led to designing a self-service portal for partners, so each studio could mint assets and manage its own content without straining engineering.</p>
+            </div>
+            <div class="ol-section-num">06</div>
+          </div>
+          <!-- Figma v2 node 3286:26846 — no numbers, no accent stroke -->
+          <div class="ol2-role-grid">
+            <article class="ol2-role-card">
+              <h3 class="ol2-role-title">UX Strategy &amp; Research</h3>
+              <p class="ol2-role-desc">User flows, information architecture, persona definition (casual player vs. advanced trader), competitive analysis, heuristic evaluation.</p>
+            </article>
+            <article class="ol2-role-card">
+              <h3 class="ol2-role-title">Prototyping</h3>
+              <p class="ol2-role-desc">High-fidelity interactive Figma prototypes for stakeholder review, usability testing, and engineering handoff.</p>
+            </article>
+            <article class="ol2-role-card">
+              <h3 class="ol2-role-title">Design System</h3>
+              <p class="ol2-role-desc">Token-based Figma system: color tokens, typography scale, spacing, icon set, component library with all interactive states.</p>
+            </article>
+            <article class="ol2-role-card">
+              <h3 class="ol2-role-title">Visual Design &amp; UI</h3>
+              <p class="ol2-role-desc">Full V2 redesign — new visual language, dark-mode system, component design, brand alignment across all platform surfaces.</p>
+            </article>
+            <article class="ol2-role-card">
+              <h3 class="ol2-role-title">Mobile Design</h3>
+              <p class="ol2-role-desc">Responsive layouts and mobile-first screens for marketplace, game discovery, and onboarding flows.</p>
+            </article>
+            <article class="ol2-role-card">
+              <h3 class="ol2-role-title">Dev Collaboration &amp; QA</h3>
+              <p class="ol2-role-desc">Figma specs, annotations, edge-case docs. QA of implemented screens, visual regression tracking.</p>
+            </article>
+          </div>
+          <div class="ol-myrole-video">
+            <video class="ol-myrole-video-el" muted loop playsinline aria-label="Design process — role walkthrough">
+              <source data-src="img/openloot-v2/role-process-preview.mp4" type="video/mp4">
+            </video>
+          </div>
+        </section>
 
-        <!-- 06 · Outcomes & closing -->
-        <section class="ol-outcomes-wrap">
-          <div class="ol-outcomes">
-            <div class="ol-pill ol-pill--sm">WHAT GOT SHIPPED</div>
-            <div class="ol-outcomes-title">
-              <h2 class="ol-h2">Outcomes &amp;</h2>
-              <h2 class="ol-h2"><em>impact.</em></h2>
+        <!-- 07 · Result & Impact -->
+        <section class="ol-result" id="ol-result">
+          <div class="ol-result-bg" aria-hidden="true"></div>
+          <div class="ol-result-headrow">
+            <div class="ol-result-head">
+              <p class="ol-eyebrow">07</p>
+              <h2 class="ol-h2">Result &amp; Impact</h2>
+              <p class="ol-body-lg">The product matured through three iterations (MVP, V1, V2), with V2 shipping in January 2026, rebuilding the landing page, My Collection, Wallet, Profile, Rentals, and the checkout funnels. Impact visible in the marketplace's public metrics and in the sustained drop in user-bug support tickets.</p>
             </div>
-            <div class="ol-outcomes-grid">
-              <article class="ol-outcome">
-                <h3 class="ol-card-title">Full V2 Launch</h3>
-                <div class="ol-hairline"></div>
-                <p class="ol-card-desc">Complete redesign and launch of openloot.com V2 — new visual language, improved IA, and a scalable component system deployed to production.</p>
-              </article>
-              <article class="ol-outcome">
-                <h3 class="ol-card-title">OL Chain Integration</h3>
-                <div class="ol-hairline"></div>
-                <p class="ol-card-desc">Designed all user-facing surfaces for Open Loot's native blockchain — transaction explorer, token dashboards, and in-platform blockchain activity feeds.</p>
-              </article>
-              <article class="ol-outcome">
-                <h3 class="ol-card-title">6 Partner Games</h3>
-                <div class="ol-hairline"></div>
-                <p class="ol-card-desc">Onboarded and designed for: Big Time, Boss Fighters, World Shards, Reign of Terror, Shatterpoint, and Desolation — each with custom marketplace integration.</p>
-              </article>
-              <article class="ol-outcome">
-                <h3 class="ol-card-title">Mobile Responsive</h3>
-                <div class="ol-hairline"></div>
-                <p class="ol-card-desc">Delivered responsive designs across all major breakpoints, enabling the full marketplace and game discovery experience on mobile without a native app.</p>
-              </article>
-              <article class="ol-outcome">
-                <h3 class="ol-card-title">Living Design System</h3>
-                <div class="ol-hairline"></div>
-                <p class="ol-card-desc">Built and maintained a Figma design system that scaled from launch through 4 years of product iteration — a single source of truth for the entire UI.</p>
-              </article>
-              <article class="ol-outcome">
-                <h3 class="ol-card-title">Rapid Iteration</h3>
-                <div class="ol-hairline"></div>
-                <p class="ol-card-desc">Established a design-to-dev workflow reducing handoff friction, enabling fast concept-to-implementation cycles in a fast-paced Web3 startup environment.</p>
-              </article>
+            <div class="ol-section-num ol-result-num">07</div>
+          </div>
+          <div class="ol-result-stats">
+            <h3>Marketplace Activity</h3>
+            <div class="ol-result-stats-grid">
+              <div class="ol-result-stat"><span>Total transactions</span><strong>143,632</strong></div>
+              <div class="ol-result-stat"><span>Total Volume</span><strong>$3,371,786.56</strong></div>
+              <div class="ol-result-stat"><span>NFTs Purchased</span><strong>68,153</strong></div>
+              <div class="ol-result-stat"><span>NFTs Rented</span><strong>46,039</strong></div>
             </div>
           </div>
-          <div class="ol-closing">
-            <div class="ol-closing-bg"></div>
-            <img loading="lazy" class="ol-closing-token" src="img/openloot/ol-token.svg" alt="">
-            <img loading="lazy" class="ol-closing-wordmark" src="img/openloot/ol-wordmark.svg" alt="Open Loot">
+          <div class="ol-result-wordmark">
+            <img loading="lazy" src="img/openloot-v2/result-wordmark.svg" alt="Open Loot">
           </div>
+          <!-- "4) OL Token" chart — Figma node 3281:26508. Line, area fill and
+               grids are the exported SVGs, placed at their Figma coordinates. -->
+          <div class="ol-result-chart">
+            <div class="ol-result-chart-stats">
+              <div class="ol-result-chart-stat"><span>Transactions per Day</span><strong>143,632</strong></div>
+              <div class="ol-result-chart-stat"><span>Total Number of Transactions</span><strong>3,371,786.56</strong></div>
+              <div class="ol-result-chart-stat"><span>Total Transacted Value</span><strong>$143,632</strong></div>
+            </div>
+            <div class="ol-chart-ylines" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <img loading="lazy" class="ol-chart-xlines" src="img/openloot-v2/result-chart-xlines.svg" alt="">
+            <img loading="lazy" class="ol-chart-fill" src="img/openloot-v2/result-chart-fill.svg" alt="">
+            <img loading="lazy" class="ol-chart-line" src="img/openloot-v2/result-chart-line.svg" alt="OL Chain transactions over time">
+            <div class="ol-chart-yvalues" aria-hidden="true">
+              <span style="top: calc(158.46 * var(--u))">0.7</span>
+              <span style="top: calc(237.46 * var(--u))">0.5</span>
+              <span style="top: calc(316.47 * var(--u))">0.3</span>
+              <span style="top: calc(395.47 * var(--u))">0.2</span>
+              <span style="top: calc(473.47 * var(--u))">0</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="ol-mobilestrip">
+          <h2 class="ol-mobilestrip-title">Mobile version</h2>
+          <div class="ol-coverflow" id="ol-coverflow-mobile"></div>
+        </section>
+
+        <!-- Closing — Figma node 3297:26921 -->
+        <section class="ol-visit">
+          <p class="ol-visit-label">Visit</p>
+          <a class="ol-visit-url" href="https://openloot.com/" target="_blank" rel="noopener">www.openloot.com</a>
         </section>
 
       </div>
@@ -5813,6 +6561,12 @@ abcdefghijklmnopqrstuvwxyz
         if (!pending.length) return;
         pending.forEach(s => { s.src = s.dataset.src; s.removeAttribute('data-src'); });
         v.load();
+        // data-rate compensates for a clip whose speed is baked into the file.
+        const rate = parseFloat(v.dataset.rate);
+        if (rate > 0) {
+          v.defaultPlaybackRate = rate;
+          v.playbackRate = rate;
+        }
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           v.controls = true;
         } else {
@@ -5856,6 +6610,7 @@ abcdefghijklmnopqrstuvwxyz
       backdrop.scrollTop = 0;
       if (window.ProjectLikes) window.ProjectLikes.attach(id);
       if (typeof ProjectSwipe !== 'undefined' && ProjectSwipe) ProjectSwipe.sync(id);
+      if (id === 'openloot' && window.OLInitCarousels) window.OLInitCarousels();
     }
     function closeModal(id) {
       const backdrop = document.getElementById('modal-' + id);
@@ -5881,6 +6636,23 @@ abcdefghijklmnopqrstuvwxyz
         });
       }
     });
+
+    /* ── Deep link a un caso puntual ─────────────────────────────────────
+       /#<id> (ej. defranez.com/#openloot) abre ese modal directo al cargar
+       la pagina, para tener URL propia y compartible al caso mas
+       importante del portfolio sin duplicar el modal en un HTML aparte.
+       Se dispara en window 'load' (no de una), porque OLInitCarousels se
+       define mas abajo, cerca de </body> — abrir el modal antes de que
+       cargue deja "Main screens" / "Mobile version" sin imagenes. */
+    (function () {
+      function openFromHash() {
+        const id = location.hash.slice(1);
+        if (id && document.getElementById('modal-' + id)) openModal(id);
+      }
+      if (document.readyState === 'complete') openFromHash();
+      else window.addEventListener('load', openFromHash);
+      window.addEventListener('hashchange', openFromHash);
+    })();
 
     /* ── Pasar de proyecto sin volver a la galeria ──────────────────────
        Abierto un proyecto, un swipe horizontal lleva al siguiente. El orden
@@ -6061,6 +6833,284 @@ abcdefghijklmnopqrstuvwxyz
 
   <!-- Hero intro: GSAP word-mask reveal + staggered fade-in on load. -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
+
+
+  <!-- ── Open Loot v2 — carousels ──────────────────────────────────────────
+       One component drives both strips: a bespoke coverflow (drag + RAF
+       easing + 3D fold-for-loop) ported 1:1 from a React version to vanilla
+       JS/CSS, since this project has no React/build step — the math moved,
+       not the stack. Manual only: no autoplay, no pagination, no arrows.
+       "Main screens" runs it at 16:9, "Mobile version" at the phone's
+       406×846. Both build lazily — only when the modal is actually opened,
+       matching loadModalImages' deferred-loading convention next to it. -->
+  <script>
+    /** Vanilla port of a bespoke React coverflow carousel. No captions, no
+     *  pagination dots, no nav arrows — mirrors the source component's
+     *  defaults, since this instance only ever shows images. */
+    function OLCoverflow(root, opts) {
+      opts = opts || {};
+      var slides = opts.slides || [];
+      var count = slides.length;
+      if (!count) return null;
+
+      var rotate = opts.rotate != null ? opts.rotate : 44;
+      var depth = opts.depth != null ? opts.depth : 0.6;
+      var perspective = opts.perspective != null ? opts.perspective : 3;
+      var falloff = opts.falloff != null ? opts.falloff : 0.56;
+      var fade = opts.fade != null ? opts.fade : 0.1;
+      var cardWidth = opts.cardWidth || 'clamp(148px, 22vw, 260px)';
+      var gap = opts.gap != null ? opts.gap : 0.05;
+      var loop = opts.loop !== false;
+      var aspect = opts.aspect != null ? opts.aspect : 16 / 9;
+      var reflection = opts.reflection !== false;
+      /* Black veil over the off-centre cards so the middle one reads first.
+         Full strength one card out, dissolving to nothing as it arrives. */
+      var dim = opts.dim != null ? opts.dim : 0.4;
+
+      root.style.setProperty('--cf-card', cardWidth);
+      root.style.setProperty('--cf-aspect', String(aspect));
+      root.innerHTML = '';
+      var frame = document.createElement('div');
+      frame.className = 'ol-coverflow-frame';
+      frame.tabIndex = 0;
+      frame.style.perspective = 'calc(var(--cf-card) * ' + perspective + ')';
+      var track = document.createElement('div');
+      track.className = 'ol-coverflow-track';
+      frame.appendChild(track);
+      root.appendChild(frame);
+
+      function shotImage(slide, decorative) {
+        var img = document.createElement('img');
+        img.src = slide.src;
+        img.alt = decorative ? '' : (slide.alt || '');
+        img.draggable = false;
+        img.loading = 'lazy';
+        return img;
+      }
+
+      var dims = [];
+
+      var cards = slides.map(function (slide) {
+        var card = document.createElement('div');
+        card.className = 'ol-coverflow-card';
+
+        var shot = document.createElement('div');
+        shot.className = 'ol-cf-shot';
+        shot.appendChild(shotImage(slide, false));
+        var veil = document.createElement('div');
+        veil.className = 'ol-cf-dim';
+        veil.setAttribute('aria-hidden', 'true');
+        shot.appendChild(veil);
+        dims.push(veil);
+        card.appendChild(shot);
+
+        if (reflection) {
+          var refl = document.createElement('div');
+          refl.className = 'ol-cf-reflection';
+          refl.setAttribute('aria-hidden', 'true');
+          refl.appendChild(shotImage(slide, true));
+          card.appendChild(refl);
+        }
+
+        track.appendChild(card);
+        return card;
+      });
+
+      var pos = 0, target = 0, width = 0, raf = null, drag = null;
+
+      function paint() {
+        if (!width) return;
+        var pitch = width * (1 + gap);
+        cards.forEach(function (card, index) {
+          var offset = index - pos;
+          if (loop) {
+            offset = ((offset % count) + count) % count;
+            if (offset > count / 2) offset -= count;
+          }
+          var distance = Math.abs(offset);
+          var ramp = Math.pow(distance, falloff);
+          var tilt = Math.min(rotate * ramp, 82) * (offset > 0 ? 1 : offset < 0 ? -1 : 0);
+          card.style.transform =
+            'translateX(calc(-50% + ' + (offset * pitch) + 'px)) ' +
+            'translateZ(' + (-depth * width * ramp) + 'px) rotateY(' + (-tilt) + 'deg)';
+          var edge = loop ? Math.min(1, Math.max(0, count / 2 - distance)) : 1;
+          card.style.opacity = String(Math.max(0, 1 - fade * distance) * edge);
+          card.style.zIndex = String(100 - Math.round(distance));
+          // Repainted every frame by the RAF loop, so the veil dissolves in
+          // step with the movement — no CSS transition needed.
+          if (dims[index]) dims[index].style.opacity = String(Math.min(1, distance) * dim);
+        });
+      }
+
+      function settle(t) {
+        if (raf !== null) cancelAnimationFrame(raf);
+        target = t;
+        function step() {
+          var remaining = target - pos;
+          if (Math.abs(remaining) < 0.0004) {
+            pos = target; paint(); raf = null; return;
+          }
+          pos += remaining * 0.16;
+          paint();
+          raf = requestAnimationFrame(step);
+        }
+        raf = requestAnimationFrame(step);
+      }
+
+      function clampPos(p) { return loop ? p : Math.max(0, Math.min(count - 1, p)); }
+      function nudge(by) { settle(clampPos(Math.round(target) + by)); }
+
+      frame.addEventListener('pointerdown', function (e) {
+        if (raf !== null) { cancelAnimationFrame(raf); raf = null; }
+        frame.setPointerCapture(e.pointerId);
+        target = pos;
+        drag = { id: e.pointerId, x: e.clientX, pos: pos, v: 0, t: performance.now() };
+      });
+      frame.addEventListener('pointermove', function (e) {
+        if (!drag || drag.id !== e.pointerId) return;
+        var pitch = width * (1 + gap);
+        if (!pitch) return;
+        var now = performance.now();
+        var prev = pos;
+        pos = clampPos(drag.pos - (e.clientX - drag.x) / pitch);
+        drag.v = (pos - prev) / Math.max(now - drag.t, 1) * 1000;
+        drag.t = now;
+        paint();
+      });
+      function endDrag(e) {
+        if (!drag || drag.id !== e.pointerId) return;
+        var carried = Math.max(-2, Math.min(2, drag.v * 0.18));
+        drag = null;
+        settle(clampPos(Math.round(pos + carried)));
+      }
+      frame.addEventListener('pointerup', endDrag);
+      frame.addEventListener('pointercancel', endDrag);
+      frame.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); nudge(-1); }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); nudge(1); }
+      });
+
+      function measure() {
+        var card = cards[0];
+        if (!card) return;
+        width = card.offsetWidth;
+        paint();
+      }
+      var ro = new ResizeObserver(measure);
+      ro.observe(frame);
+      measure();
+
+      return { destroy: function () { ro.disconnect(); if (raf !== null) cancelAnimationFrame(raf); } };
+    }
+
+    /* ── Result & Impact micro-animations ──────────────────────────────
+       Same easing and fire-once IntersectionObserver as the About counters,
+       but rooted on the modal backdrop, which is the scroll container here
+       (the page itself never scrolls while a case study is open). */
+    function OLInitResult() {
+      var section = document.getElementById('ol-result');
+      var backdrop = document.getElementById('modal-openloot');
+      if (!section || !backdrop) return;
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+      /* Reads the rendered figure so the markup stays the source of truth:
+         "$3,371,786.56" → prefix "$", value 3371786.56, 2 decimals. */
+      function spec(text) {
+        var numeric = text.replace(/[^\d.]/g, '');
+        var dot = numeric.indexOf('.');
+        return {
+          prefix: (text.match(/^[^\d]*/) || [''])[0],
+          value: parseFloat(numeric),
+          decimals: dot === -1 ? 0 : numeric.length - dot - 1
+        };
+      }
+
+      function countUp(el, duration) {
+        var s = spec(el.textContent.trim());
+        if (!isFinite(s.value)) return;
+        function fmt(n) {
+          return s.prefix + n.toLocaleString('en-US', {
+            minimumFractionDigits: s.decimals,
+            maximumFractionDigits: s.decimals
+          });
+        }
+        if (reduced) { el.textContent = fmt(s.value); return; }
+        var start = performance.now();
+        (function tick(now) {
+          var p = Math.min(((now || performance.now()) - start) / duration, 1);
+          el.textContent = fmt(s.value * easeOutExpo(p));
+          if (p < 1) requestAnimationFrame(tick);
+          else el.textContent = fmt(s.value);
+        })(start);
+      }
+
+      function watch(target, run) {
+        if (!target) return;
+        var fired = false;
+        var obs = new IntersectionObserver(function (entries) {
+          if (!entries[0].isIntersecting || fired) return;
+          fired = true;
+          obs.disconnect();
+          run();
+        }, { root: backdrop, threshold: 0.3 });
+        obs.observe(target);
+      }
+
+      // Marketplace Activity + OL Chain figures
+      watch(section.querySelector('.ol-result-stats'), function () {
+        section.querySelectorAll('.ol-result-stat strong').forEach(function (el, i) {
+          countUp(el, 1800 + i * 200);
+        });
+      });
+      var chart = section.querySelector('.ol-result-chart');
+      watch(chart, function () {
+        chart.classList.add('is-drawn');
+        chart.querySelectorAll('.ol-result-chart-stat strong').forEach(function (el, i) {
+          countUp(el, 1800 + i * 200);
+        });
+      });
+    }
+
+    var olCarouselsReady = false;
+    window.OLInitCarousels = function () {
+      if (olCarouselsReady) return;
+      olCarouselsReady = true;
+      OLInitResult();
+
+      var msRoot = document.getElementById('ol-coverflow-mainscreens');
+      if (msRoot) {
+        OLCoverflow(msRoot, {
+          cardWidth: 'clamp(260px, 38vw, 560px)',
+          slides: [
+            { src: 'img/openloot-v2/ms-leaderboard.webp', alt: 'Leaderboard' },
+            { src: 'img/openloot-v2/ms-collection-filters.webp', alt: 'My Collection — filters open' },
+            { src: 'img/openloot-v2/ms-collection-items.webp', alt: 'My Collection — items available to sell' },
+            { src: 'img/openloot-v2/ms-wallet.webp', alt: 'Wallet' }
+          ]
+        });
+      }
+
+      /* Same component as Main screens — drag/keyboard only, no autoplay —
+         with the phone aspect (406×846) instead of the wide one. */
+      var mvRoot = document.getElementById('ol-coverflow-mobile');
+      if (mvRoot) {
+        OLCoverflow(mvRoot, {
+          cardWidth: 'clamp(150px, 17vw, 280px)',
+          aspect: 406 / 846,
+          gap: 0.26,          /* ≈60px of air beside a 280px phone */
+          slides: [
+            { src: 'img/openloot-v2/mv-screen-1.webp', alt: 'openloot.com — home' },
+            { src: 'img/openloot-v2/mv-screen-2.webp', alt: 'openloot.com — marketplace' },
+            { src: 'img/openloot-v2/mv-screen-3.webp', alt: 'openloot.com — game discovery' },
+            { src: 'img/openloot-v2/mv-screen-4.webp', alt: 'openloot.com — my collection' }
+          ]
+        });
+      }
+    };
+  </script>
+
   <script>
     (function () {
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

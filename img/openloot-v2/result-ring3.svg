@@ -1,0 +1,25 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="159.543" height="92.5578" viewBox="0 0 159.543 92.5578" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 1597880537">
+<mask id="mask0_0_16" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="160" height="93">
+<path id="Vector" d="M88.9535 92.5578L0 40.953L70.5897 0L159.543 51.6049L88.9535 92.5578Z" fill="white"/>
+</mask>
+<g mask="url(#mask0_0_16)">
+<g id="Ellipse 77">
+</g>
+<g id="Vector_2" filter="url(#filter0_f_0_16)">
+<path d="M88.9535 92.5578L0 40.953L70.5897 0L159.543 51.6049L88.9535 92.5578Z" fill="url(#paint0_linear_0_16)"/>
+</g>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_0_16" x="-64" y="-64" width="287.543" height="220.558" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="32" result="effect1_foregroundBlur_0_16"/>
+</filter>
+<linearGradient id="paint0_linear_0_16" x1="68.3696" y1="4.45874" x2="125.924" y2="246.65" gradientUnits="userSpaceOnUse">
+<stop stop-color="white" stop-opacity="0.1"/>
+<stop offset="1" stop-color="white"/>
+</linearGradient>
+</defs>
+</svg>
