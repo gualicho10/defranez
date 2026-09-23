@@ -3633,8 +3633,8 @@
      would shadow whatever cardWidth the JS was given. */
   cursor: grab;
   overflow: hidden;
-  /* bottom padding leaves room for the reflection under the cards */
-  padding: 40px 0 calc(var(--cf-card) / var(--cf-aspect) * 0.5);
+  /* bottom padding leaves room for the reflection AND the gap under the cards */
+  padding: 40px 0 calc(var(--cf-card) / var(--cf-aspect) * 0.5 + var(--cf-gap, 0px));
   outline: none;
   touch-action: pan-y;
   perspective: calc(var(--cf-card) * 3);
@@ -3661,8 +3661,11 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  border-radius: calc(16 * var(--u));
+  border-radius: 12px;
   background: #13171c;
+  /* Off-centre cards are drained of colour as well as darkened — the veil
+     alone still left them competing with the middle one. JS drives it. */
+  filter: saturate(var(--cf-sat, 1));
 }
 .ol-cf-shot img,
 .ol-cf-reflection img {
@@ -3680,16 +3683,17 @@
   opacity: 0;
   pointer-events: none;
 }
-/* Mirrored floor reflection instead of a drop shadow — same treatment Figma
-   uses under the centre screen (flipped copy at 20%, faded out). */
+/* Mirrored floor reflection instead of a drop shadow. Detached from the card
+   by --cf-gap so the screen reads as floating above the reflection, not
+   standing on it. */
 .ol-cf-reflection {
   position: absolute;
   left: 0;
-  top: 100%;
+  top: calc(100% + var(--cf-gap, 0px));
   width: 100%;
   height: 45%;
   overflow: hidden;
-  opacity: 0.2;
+  opacity: 0.18;
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
 }
@@ -3699,7 +3703,7 @@
   top: 0;
   height: 222.2%;               /* = the card's own height */
   transform: scaleY(-1);        /* flips about its centre: its bottom lands on top */
-  border-radius: calc(16 * var(--u));
+  border-radius: 12px;
 }
 
 /* ── "Mobile version" strip (same coverflow, portrait cards) ──────────── */
@@ -6864,11 +6868,18 @@ abcdefghijklmnopqrstuvwxyz
       var aspect = opts.aspect != null ? opts.aspect : 16 / 9;
       var reflection = opts.reflection !== false;
       /* Black veil over the off-centre cards so the middle one reads first.
-         Full strength one card out, dissolving to nothing as it arrives. */
-      var dim = opts.dim != null ? opts.dim : 0.4;
+         Full strength one card out, dissolving to nothing as it arrives.
+         desat drains their colour on the same ramp — darkening alone left
+         them too vivid to recede. */
+      var dim = opts.dim != null ? opts.dim : 0.62;
+      var desat = opts.desat != null ? opts.desat : 0.6;
+      /* Air between a card and its reflection, so the screen floats. */
+      var reflectionGap = opts.reflectionGap ||
+        'calc(var(--cf-card) / var(--cf-aspect) * 0.04)';   /* 4% of card height */
 
       root.style.setProperty('--cf-card', cardWidth);
       root.style.setProperty('--cf-aspect', String(aspect));
+      root.style.setProperty('--cf-gap', reflectionGap);
       root.innerHTML = '';
       var frame = document.createElement('div');
       frame.className = 'ol-coverflow-frame';
@@ -6888,7 +6899,7 @@ abcdefghijklmnopqrstuvwxyz
         return img;
       }
 
-      var dims = [];
+      var dims = [], shots = [];
 
       var cards = slides.map(function (slide) {
         var card = document.createElement('div');
@@ -6896,6 +6907,7 @@ abcdefghijklmnopqrstuvwxyz
 
         var shot = document.createElement('div');
         shot.className = 'ol-cf-shot';
+        shots.push(shot);
         shot.appendChild(shotImage(slide, false));
         var veil = document.createElement('div');
         veil.className = 'ol-cf-dim';
@@ -6938,7 +6950,15 @@ abcdefghijklmnopqrstuvwxyz
           card.style.zIndex = String(100 - Math.round(distance));
           // Repainted every frame by the RAF loop, so the veil dissolves in
           // step with the movement — no CSS transition needed.
-          if (dims[index]) dims[index].style.opacity = String(Math.min(1, distance) * dim);
+          var away = Math.min(1, distance);
+          if (dims[index]) dims[index].style.opacity = String(away * dim);
+          // saturate() is repainted, not just recomposited, so skip the write
+          // once a card has bottomed out at full desaturation.
+          var sat = (1 - away * desat).toFixed(3);
+          if (shots[index] && shots[index].dataset.sat !== sat) {
+            shots[index].dataset.sat = sat;
+            shots[index].style.setProperty('--cf-sat', sat);
+          }
         });
       }
 
@@ -7086,10 +7106,30 @@ abcdefghijklmnopqrstuvwxyz
           /* Para sumar pantallas: dejá el .webp en img/openloot-v2/main-screens/
              y agregá una línea acá, en el orden en que querés que aparezcan. */
           slides: [
-            { src: 'img/openloot-v2/main-screens/leaderboard.webp', alt: 'Leaderboard' },
-            { src: 'img/openloot-v2/main-screens/collection-filters.webp', alt: 'My Collection — filters open' },
-            { src: 'img/openloot-v2/main-screens/collection-items.webp', alt: 'My Collection — items available to sell' },
-            { src: 'img/openloot-v2/main-screens/wallet.webp', alt: 'Wallet' }
+            { src: 'img/openloot-v2/main-screens/featured-games-stats.webp', alt: 'Featured games — game stats and token activity' },
+            { src: 'img/openloot-v2/main-screens/rental-marketplace.webp', alt: 'Rental Marketplace' },
+            { src: 'img/openloot-v2/main-screens/marketplace-product-detail.webp', alt: 'Marketplace — product detail, search by issue number' },
+            { src: 'img/openloot-v2/main-screens/marketplace-bundle-details.webp', alt: 'Marketplace — bundle details, renter view' },
+            { src: 'img/openloot-v2/main-screens/checkout-payment-method.webp', alt: 'Checkout — payment method' },
+            { src: 'img/openloot-v2/main-screens/collection-items-ingame.webp', alt: 'My Collection — in-game items' },
+            { src: 'img/openloot-v2/main-screens/collection-items-ingame-2.webp', alt: 'My Collection — in-game items, item selected' },
+            { src: 'img/openloot-v2/main-screens/collection-search-results.webp', alt: 'My Collection — search results' },
+            { src: 'img/openloot-v2/main-screens/collection-rentals-empty.webp', alt: 'My Collection — Rentals, empty state' },
+            { src: 'img/openloot-v2/main-screens/rentals-create-listing.webp', alt: 'Rentals — create listing, select items' },
+            { src: 'img/openloot-v2/main-screens/rentals-create-bundle-price.webp', alt: 'Rentals — create bundle, set price and coupon code' },
+            { src: 'img/openloot-v2/main-screens/wallet-deposits.webp', alt: 'Wallet — deposits' },
+            { src: 'img/openloot-v2/main-screens/wallet-deposits-2.webp', alt: 'Wallet — deposit in progress' },
+            { src: 'img/openloot-v2/main-screens/wallet-deposits-3.webp', alt: 'Wallet — deposit confirmed' },
+            { src: 'img/openloot-v2/main-screens/wallet-withdrawals.webp', alt: 'Wallet — withdrawals' },
+            { src: 'img/openloot-v2/main-screens/wallet-buy.webp', alt: 'Wallet — buy' },
+            { src: 'img/openloot-v2/main-screens/wallet-sell.webp', alt: 'Wallet — sell' },
+            { src: 'img/openloot-v2/main-screens/wallet-bridge.webp', alt: 'Wallet — bridge' },
+            { src: 'img/openloot-v2/main-screens/wallet-convert.webp', alt: 'Wallet — convert' },
+            { src: 'img/openloot-v2/main-screens/wallet-transaction-history.webp', alt: 'Wallet — transaction history, every state expanded' },
+            { src: 'img/openloot-v2/main-screens/withdrawals-address-book.webp', alt: 'Withdrawals — address book, crypto accounts' },
+            { src: 'img/openloot-v2/main-screens/withdrawals-address-book-2.webp', alt: 'Withdrawals — address book, account added' },
+            { src: 'img/openloot-v2/main-screens/erc-tokens-wallet-connected.webp', alt: 'ERC tokens — wallet connected' },
+            { src: 'img/openloot-v2/main-screens/profile-resubmit-kyc.webp', alt: 'Profile — resubmit KYC' }
           ]
         });
       }
