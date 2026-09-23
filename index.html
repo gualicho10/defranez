@@ -3618,10 +3618,11 @@
    sólo el título respeta el margen de 80u del resto del caso. Lo que hace
    que el degradado caiga como en Figma es que la carta mida en unidades
    del caso, no en vw — con el padding lateral del frame no alcanzaba.
-   Alto: 935u es el frame de Figma, que no lleva reflejo; 1075u es lo que
-   ocupa la misma carta (866x487) con su reflejo debajo. */
+   Alto: los 935u del frame de Figma. La laptop se coloca en un PNG de
+   1057x1280 pero lo visible mide 937x585 — el resto es margen transparente
+   de la sombra — así que entra sin desbordar. */
 .ol-mainscreens {
-  height: calc(1075 * var(--u));
+  height: calc(935 * var(--u));
   padding: calc(80 * var(--u)) 0;
   background: linear-gradient(180deg, #0A0A0A 2.51%, #0A0A0A 29.66%, #353535 64.78%, #4C4C4C 71.36%, rgba(10, 10, 10, 0.00) 99.9%);
 }
@@ -3651,9 +3652,32 @@
    component serves the wide desktop grabs and the portrait phone shots. */
 .ol-coverflow-track {
   position: relative;
+  z-index: 1;
   height: calc(var(--cf-card) / var(--cf-aspect));
   transform-style: preserve-3d;
   user-select: none;
+}
+/* Mockup anclado al centro del frame: no se mueve ni se desvanece, las
+   pantallas pasan por detrás y la del medio asoma por su apertura. Vive
+   fuera del track para quedar por encima de todo el contexto 3D.
+   Los factores son del propio archivo: 2114/1510 de ancho y 886/1510 de
+   alto hasta el borde superior de la pantalla. */
+/* Con mockup fijo las cartas van a canto vivo y sin stroke: el recorte de la
+   apertura es recto, así que un radio dejaría cuatro muescas transparentes en
+   las esquinas de la pantalla, y el stroke se vería como un pelo blanco dentro
+   del monitor. Figma las muestra igual, rectángulos limpios. */
+.ol-coverflow.has-stage .ol-cf-shot {
+  border: 0;
+  border-radius: 0;
+}
+.ol-cf-stage {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--cf-top, 40px) - var(--cf-card) * 0.586755);
+  width: calc(var(--cf-card) * 1.4);
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 3;
 }
 .ol-coverflow-card {
   position: absolute;
@@ -6965,11 +6989,17 @@ abcdefghijklmnopqrstuvwxyz
       root.style.setProperty('--cf-aspect', String(aspect));
       root.style.setProperty('--cf-gap', reflectionGap);
       if (opts.topPad) root.style.setProperty('--cf-top', opts.topPad);
-      /* Sin reflejo no hay nada que reservar debajo de la carta. */
-      if (!reflection) root.style.setProperty('--cf-bottom', '0px');
+      /* Sin reflejo no hay nada que reservar debajo de la carta, salvo que
+         un mockup fijo pida su propio aire. */
+      if (opts.bottomPad) root.style.setProperty('--cf-bottom', opts.bottomPad);
+      else if (!reflection) root.style.setProperty('--cf-bottom', '0px');
       /* Mockup de dispositivo: la carta pasa a ser el teléfono. */
       var device = opts.device || null;
       if (device) root.classList.add('is-device');
+      /* stage: mockup fijo al centro del frame, por encima de las cartas.
+         A diferencia de `device`, no se mueve ni se desvanece. */
+      var stage = opts.stage || null;
+      if (stage) root.classList.add('has-stage');
       root.innerHTML = '';
       var frame = document.createElement('div');
       frame.className = 'ol-coverflow-frame';
@@ -7028,6 +7058,16 @@ abcdefghijklmnopqrstuvwxyz
         track.appendChild(card);
         return card;
       });
+
+      if (stage) {
+        var stageImg = document.createElement('img');
+        stageImg.className = 'ol-cf-stage';
+        stageImg.src = stage;
+        stageImg.alt = '';
+        stageImg.setAttribute('aria-hidden', 'true');
+        stageImg.draggable = false;
+        frame.appendChild(stageImg);
+      }
 
       var pos = 0, target = 0, width = 0, raf = null, drag = null;
 
@@ -7218,10 +7258,16 @@ abcdefghijklmnopqrstuvwxyz
       var msRoot = document.getElementById('ol-coverflow-mainscreens');
       if (msRoot) {
         OLCoverflow(msRoot, {
-          /* La pantalla central de Figma (866x488) en unidades del caso, no en
-             vw: así el degradado del frame cae donde cae en el diseño. */
-          cardWidth: 'calc(866 * var(--u))',
-          topPad: 'calc(47 * var(--u))',
+          /* Figma 3319:27072 — la laptop se coloca a 1057x1280 y la captura
+             adentro a 755x440 en (151,443). La carta ES esa pantalla; el
+             mockup se ancla al centro y las demás pasan por detrás. */
+          cardWidth: 'calc(755 * var(--u))',
+          aspect: 755 / 440,
+          topPad: 'calc(92 * var(--u))',
+          bottomPad: 'calc(143 * var(--u))',
+          gap: -0.3,          /* se solapan: las laterales asoman al costado */
+          reflection: false,  /* el PNG de la laptop ya trae su sombra */
+          stage: 'img/openloot-v2/laptop-macbook.webp',
           /* Para sumar pantallas: dejá el .webp en img/openloot-v2/main-screens/
              y agregá una línea acá, en el orden en que querés que aparezcan. */
           slides: [
