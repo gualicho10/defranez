@@ -17,3 +17,13 @@
 #main.hero3d + section{background:#080a0c;position:relative;z-index:2;margin-top:-150vh}
 /* movil: el stick mide 100lvh (barra de URL escondida); el rol sube por la diferencia con 100svh para quedar siempre sobre el pliegue */
 @media (max-width:900px){.hero3d-trusted{flex-direction:column;align-items:flex-start;gap:8px;margin-top:14px}.hero3d-trusted{font-size:9px;letter-spacing:0.1em}.hero3d-trusted-names{flex-wrap:nowrap}.hero3d-trusted-names span{padding:2px 8px}.hero3d-trusted-names span:first-child{padding-left:0;border-left:0}.hero3d-copy{left:24px;bottom:48px;bottom:calc(100lvh - 100svh + 32px);max-width:calc(100% - 48px)}.hero3d-scroll{display:none}}
+
+/* Version estatica (la activa hero3d.js si no hay WebGL / three.js / con movimiento reducido) */
+.hero3d-static{display:none}
+#main.hero3d-fallback{height:auto!important}
+#main.hero3d-fallback .hero3d-stick{position:relative;height:100vh;height:100svh;min-height:540px;background:radial-gradient(ellipse 70% 50% at 50% 42%,rgba(0,245,160,0.16),rgba(0,200,255,0.05) 45%,transparent 70%)}
+#main.hero3d-fallback #hero3dCanvas,#main.hero3d-fallback .hero3d-scroll{display:none}
+#main.hero3d-fallback + section{margin-top:0!important}
+#main.hero3d-fallback .hero3d-static{display:flex;position:absolute;inset:0;padding:90px 24px 150px;flex-direction:column;align-items:center;justify-content:center;gap:clamp(16px,3vh,32px)}
+.hero3d-static-logo svg{display:block;width:clamp(110px,26vw,240px);height:auto;filter:drop-shadow(0 0 40px rgba(0,245,160,0.25))}
+.hero3d-static-name{font-family:'Syne',sans-serif;font-weight:800;text-transform:uppercase;text-align:center;line-height:0.92;letter-spacing:-0.03em;font-size:clamp(20px,7vw,130px);white-space:nowrap;color:#e8eaed;opacity:0.9}

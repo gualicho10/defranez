@@ -24,4 +24,6 @@ Hero 3D de vidrio — sesion 2026-10-14. Esta en produccion en `index.html` (`<s
 
 **Borrado:** `hero3d-test.html` (+ su Disallow en robots.txt), `img/hero3d/1-5.svg` (capas del retrato viejo). `img/hero-bg.jpg` queda porque lo usa `examples/hero-intro.html`.
 
+**Fallback y peso (2026-10-14, segunda tanda):** `hero3d.js` pasa a una version estatica (`#main.hero3d-fallback`: nombre + logo planos, hero de una pantalla, About sin cortina) si hay `prefers-reduced-motion`, falla el import de three, no hay WebGL o se pierde el contexto. Probado forzando WebGL=null y un import roto. three.js pasa a `three.module.min.js` (692 KB vs 1,3 MB). El `.hero3d-static` del HTML solo se muestra en ese modo. Sigue sin haber calidad adaptativa por FPS (idea pendiente: bajar dispersion/DPR en celulares o si va lento).
+
 **Pendiente:** mirar en el celular real la version final; el nombre en pantallas de 360px de ancho (las 5 marcas de "Trusted by" van justas).
