@@ -9,7 +9,6 @@ Allow: /
 # for a password, but nothing stops a crawler listing the URL itself.
 Disallow: /web_tracker.html
 Disallow: /test.html
-Disallow: /hero3d-test.html
 Disallow: /DesignSystem.html
 Disallow: /v1.html
 Disallow: /examples/

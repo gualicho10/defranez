@@ -274,233 +274,6 @@
     }
     .nav-cta:hover { opacity: 0.85; }
 
-    /* HERO 3D — exploded-layer portrait, mouse-reactive, sits at the right of the hero title.
-       Replaces the old dotfield photo on qualifying desktops; mobile/touch/no-fine-pointer
-       keeps the static img fallback (see media query near .hero-bg img below). */
-    .hero3d-stage-wrap {
-      position: absolute;
-      top: 50%;
-      right: 0;
-      transform: translateY(-50%);
-      height: 94%;
-      width: auto;
-      aspect-ratio: 455.65 / 469.06;
-      display: none; /* enabled only on desktop + fine pointer, see media query below */
-      align-items: center;
-      justify-content: center;
-      perspective: 2800px;
-      pointer-events: none;
-      z-index: 1; /* below the text (z-index:2) on purpose — it can sit slightly behind the title */
-      opacity: 0.35; /* subtle, "miscelánea" presence — set here (not on .hero3d-rig) so it
-                         doesn't force the preserve-3d child to flatten */
-    }
-    .hero3d-rig {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform-style: preserve-3d;
-      will-change: transform;
-    }
-    .hero3d-layer {
-      position: absolute;
-      inset: 0;
-      transform-style: preserve-3d;
-      will-change: transform;
-    }
-    .hero3d-layer img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      user-select: none;
-      pointer-events: none;
-      -webkit-user-drag: none;
-    }
-
-    /* HERO */
-    .hero {
-      position: relative;
-      min-height: min(50vw, 720px);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      padding: 140px 60px 80px;
-      overflow: hidden;
-      z-index: 1;
-      gap: 28px;
-    }
-    /* desktop breakpoint — medium (1200-1440px) */
-    @media (max-width: 1440px) {
-      .hero { padding: 120px 60px 70px; gap: 24px; }
-    }
-    /* desktop breakpoint — small (900-1200px) */
-    @media (max-width: 1200px) {
-      .hero { padding: 110px 60px 60px; gap: 20px; }
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .hero-bg img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: right center;
-    }
-    .hero-bg::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 80% 90% at 74% 37%, rgba(8,10,12,0) 0%, rgba(8,10,12,0.3) 50%, rgba(8,10,12,0.85) 100%);
-    }
-    /* desktop + fine pointer only — mobile/touch/reduced-motion keep the static photo */
-    @media (hover: hover) and (pointer: fine) and (min-width: 901px) {
-      .hero3d-stage-wrap { display: flex; }
-      .hero-bg img { display: none; }
-    }
-
-    .hero-eyebrow {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #00f5a0;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      position: relative;
-      z-index: 2;
-      opacity: 0;
-      transform: translateY(14px);
-    }
-    .hero-eyebrow::before {
-      content: '';
-      width: 30px; height: 1px;
-      background: #00f5a0;
-      flex-shrink: 0;
-    }
-
-    /* word-mask reveal: each word sits inside an overflow-hidden box so its
-       inner span can slide up on load without reflowing the line above */
-    .hero-name-1 .word, .hero-name-2 .word, .hero-title .word {
-      display: inline-block;
-      overflow: hidden;
-      vertical-align: top;
-      padding-bottom: 0.12em;
-    }
-    .hero-name-1 .word-inner, .hero-name-2 .word-inner, .hero-title .word-inner {
-      display: inline-block;
-      transform: translateY(115%);
-    }
-
-    .hero-name {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      margin: 0;   /* it is an h1 now — drop the UA margin */
-    }
-    .hero-name-1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(56px, 6.67vw, 96px);
-      font-weight: 800;
-      line-height: 0.9;
-      letter-spacing: -0.03125em;
-      color: #ffffff;
-      white-space: nowrap;
-      margin: 0;
-      position: relative;
-      z-index: 2;
-    }
-    .hero-name-2 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(56px, 6.67vw, 96px);
-      font-weight: 800;
-      line-height: 0.9;
-      letter-spacing: -0.03125em;
-      white-space: nowrap;
-      margin: 0;
-      position: relative;
-      z-index: 2;
-    }
-    /* gradient + clip must live on the element that actually contains the
-       text — the word-mask wrapper spans, not the (now text-less) parent */
-    .hero-name-2 .word-inner {
-      background: linear-gradient(123deg, #00f5a0, #00c8ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px;
-      font-weight: 400;
-      color: #8a94a6;
-      opacity: 0.8;
-      max-width: 1070px;
-      line-height: 1.45;
-      letter-spacing: 0.44px;
-      margin: 0;
-      position: relative;
-      z-index: 2;
-    }
-    .hero-title-strong { color: #ffffff; }
-
-    .hero-trusted {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 2;
-      opacity: 0;
-      transform: translateY(14px);
-    }
-    .trusted-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(138,148,166,0.5);
-      white-space: nowrap;
-    }
-    .trusted-sep {
-      width: 1px;
-      height: 16px;
-      background: rgba(255,255,255,0.1);
-      flex-shrink: 0;
-    }
-    .trusted-name {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #8a94a6;
-      padding: 9px 17px;
-      border: 1px solid rgba(255,255,255,0.06);
-      white-space: nowrap;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .trusted-name:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.18); }
-
-    .hero-cta {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      position: relative;
-      z-index: 2;
-      opacity: 0;
-      transform: translateY(14px);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .hero-eyebrow, .hero-trusted, .hero-cta { opacity: 1; transform: none; }
-      .hero-name-1 .word-inner, .hero-name-2 .word-inner, .hero-title .word-inner { transform: none; }
-    }
     .btn-primary {
       font-family: 'DM Mono', monospace;
       font-size: 12px;
@@ -2827,7 +2600,6 @@
       .nav-links { display: none; }
       .nav-version { padding: 8px 14px; font-size: 11px; }
       section { padding: 80px 24px; overflow: hidden; }
-      .hero { padding: 120px 24px 60px; gap: 20px; }
 
       .about-grid { flex-direction: column; }
       .about-stats { flex-direction: column; }
@@ -2846,9 +2618,6 @@
 
     @media (max-width: 560px) {
       section { padding: 40px 24px; overflow: hidden; }
-      .hero { height: auto; min-height: 100dvh; padding: 100px 24px 40px; gap: 16px; }
-      .hero-name-1, .hero-name-2 { font-size: min(10vw, 56px); white-space: nowrap; }
-      .hero-title { font-size: 16px; max-width: 100%; }
       .about-stats { flex-direction: column; }
 
       .jazz-thumb { width: 120px; }
@@ -3255,27 +3024,6 @@
 /* 380px o menos (SE, mini): el CTA no entra junto al burger */
 @media (max-width: 380px) {
   .nav-cta { display: none; }
-}
-
-/* ── 2 · Hero mobile ─────────────────────────────────────────────────────
-   El retrato 3D (hero3d) es solo desktop+puntero fino; en mobile caia al
-   fallback img/hero-bg.jpg, el puntillista viejo. Fuera: queda el fondo
-   oscuro limpio. Sin imagen el 100dvh dejaba un pozo de aire, asi que la
-   altura pasa a ser la del contenido. */
-@media (max-width: 900px) {
-  .hero-bg img { display: none; }
-  .hero-bg::after {
-    background: radial-gradient(ellipse 120% 70% at 50% 0%,
-                rgba(0,245,160,0.07) 0%, rgba(8,10,12,0) 60%);
-  }
-  .hero { min-height: 0; }
-}
-@media (max-width: 560px) {
-  /* body ya trae margin-top:100px por el nav fijo — el padding-top viejo
-     (100px) sumaba encima y dejaba media pantalla vacia arriba del eyebrow. */
-  .hero { height: auto; min-height: 0; padding: 40px 24px 52px; gap: 18px; }
-  /* "de Francisco" en nowrap medía 388px contra 342px utiles: se cortaba. */
-  .hero-name-1, .hero-name-2 { font-size: min(8.5vw, 56px); }
 }
 
 /* ── 3 · Shell de los modales ────────────────────────────────────────────
@@ -4737,6 +4485,7 @@
 }
 
 </style>
+<link rel="stylesheet" href="img/hero3d/hero3d.css?v=1">
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -4773,69 +4522,20 @@
   <div class="disclaimer-bar" hidden>Open in mobile to play!!</div>
 
   <!-- HERO -->
-  <section class="hero" id="main">
-    <div class="hero-bg" aria-hidden="true">
-      <img width="2560" height="1277" src="img/hero-bg.jpg" alt="">
-    </div>
-    <!--
-      Fuera de .hero-bg a proposito: ese contenedor tiene un ::after con un
-      vignette oscuro que taparia el 3D. Orden de profundidad invertido a
-      pedido: depth 1 (la mas clara) queda ADELANTE, y va oscureciendo hacia
-      depth 5 (detalle fino) atras. En el DOM van al reves (depth 5 primero)
-      para que en reposo (capas coincidentes en Z) depth 1 pinte encima.
-    -->
-    <div class="hero3d-stage-wrap" aria-hidden="true">
-      <div class="hero3d-rig" id="hero3dRig">
-        <div class="hero3d-layer" data-depth="5"><img src="img/hero3d/5.svg" alt=""></div>
-        <div class="hero3d-layer" data-depth="4"><img src="img/hero3d/3.svg" alt=""></div>
-        <div class="hero3d-layer" data-depth="3"><img src="img/hero3d/2.svg" alt=""></div>
-        <div class="hero3d-layer" data-depth="2"><img src="img/hero3d/1.svg" alt=""></div>
-        <div class="hero3d-layer" data-depth="1"><img src="img/hero3d/4.svg" alt=""></div>
-      </div>
-    </div>
-    <div class="hero-eyebrow">Product Designer · UX/UI · Web3</div>
-    <!-- The page's only h1. It was a plain div, which left the home page with
-         no h1 at all — the strongest topical signal a page has, unused.
-         Children are spans rather than p because h1 takes phrasing content;
-         .hero-name is flex, so they blockify anyway and nothing moves. -->
-    <h1 class="hero-name">
-      <span class="hero-name-1"><span class="word"><span class="word-inner">Ezequiel</span></span></span>
-      <span class="hero-name-2"><span class="word"><span class="word-inner">de Francisco</span></span></span>
-    </h1>
-    <p class="hero-title">
-      <span class="hero-title-strong">
-        <span class="word"><span class="word-inner">22</span></span>
-        <span class="word"><span class="word-inner">years</span></span>
-        <span class="word"><span class="word-inner">simplifying</span></span>
-        <span class="word"><span class="word-inner">complex</span></span>
-        <span class="word"><span class="word-inner">systems</span></span>
-      </span>
-      <span class="word"><span class="word-inner">—</span></span>
-      <span class="word"><span class="word-inner">from</span></span>
-      <span class="word"><span class="word-inner">Web3</span></span>
-      <span class="word"><span class="word-inner">marketplaces</span></span>
-      <span class="word"><span class="word-inner">to</span></span>
-      <span class="word"><span class="word-inner">mobile</span></span>
-      <span class="word"><span class="word-inner">games.</span></span>
-      <span class="word"><span class="word-inner">Bridging</span></span>
-      <span class="word"><span class="word-inner">blockchain</span></span>
-      <span class="word"><span class="word-inner">complexity</span></span>
-      <span class="word"><span class="word-inner">into</span></span>
-      <span class="word"><span class="word-inner">intuitive</span></span>
-      <span class="word"><span class="word-inner">UX.</span></span>
-    </p>
-    <div class="hero-trusted">
-      <span class="trusted-label">Trusted by</span>
-      <span class="trusted-sep"></span>
-      <span class="trusted-name">OpenLoot</span>
-      <span class="trusted-name">Roche</span>
-      <span class="trusted-name">Globant</span>
-      <span class="trusted-name">Disney</span>
-      <span class="trusted-name">DreamWorks</span>
-    </div>
-    <div class="hero-cta">
-      <a href="#work" class="btn-primary">View my work</a>
-      <a href="img/resume_EdeFco_2026.pdf" target="_blank" rel="noopener" class="btn-secondary">Download CV</a>
+  <!-- Hero 3D (vidrio): canvas three.js en img/hero3d/hero3d.js. El h1 es solo para lectores de
+       pantalla y buscadores: el nombre visible se dibuja dentro del canvas. -->
+  <section class="hero3d" id="main">
+    <div class="hero3d-stick">
+      <canvas id="hero3dCanvas" aria-hidden="true"></canvas>
+      <div class="hero3d-copy"><div class="hero3d-copy-inner">
+        <h1 class="sr-only">Ezequiel de Francisco</h1>
+        <p class="hero3d-role">Web / UX / Product Designer</p>
+        <div class="hero3d-trusted">
+          <span class="hero3d-trusted-label">Trusted by</span>
+          <span class="hero3d-trusted-names"><span>OpenLoot</span><span>Roche</span><span>Globant</span><span>Disney</span><span>DreamWorks</span></span>
+        </div>
+      </div></div>
+      <div class="scroll-hint hero3d-scroll">Scroll<span></span></div>
     </div>
   </section>
 
@@ -7675,158 +7375,9 @@ abcdefghijklmnopqrstuvwxyz
     };
   </script>
 
-  <script>
-    (function () {
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduced) return;   // CSS fallback already shows the end state
-
-      if (typeof gsap === 'undefined') {
-        // CDN failed to load — reveal everything instead of leaving it hidden
-        document.querySelectorAll('.hero-eyebrow, .hero-trusted, .hero-cta').forEach(function (el) {
-          el.style.opacity = 1; el.style.transform = 'none';
-        });
-        document.querySelectorAll('.hero-name-1 .word-inner, .hero-name-2 .word-inner, .hero-title .word-inner').forEach(function (el) {
-          el.style.transform = 'none';
-        });
-        return;
-      }
-
-      gsap.timeline({ defaults: { ease: 'power2.out' } })
-        .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.8 })
-        .to('.hero-name-1 .word-inner, .hero-name-2 .word-inner', {
-          y: '0%', duration: 1.2, stagger: 0.06,
-        }, '-=0.3')
-        .to('.hero-title .word-inner', {
-          y: '0%', duration: 0.9, stagger: 0.025,
-        }, '-=0.7')
-        .to('.hero-trusted', { opacity: 1, y: 0, duration: 0.8 }, '-=0.35')
-        .to('.hero-cta', { opacity: 1, y: 0, duration: 0.8 }, '-=0.5');
-    })();
-  </script>
-
-  <!-- Hero 3D: mouse-reactive exploded-layer portrait next to the title.
-       Scrolling PINS the hero (nav/title/CTA stay visible, just frozen in
-       place): first the layers settle back to position 0, then exit one by
-       one; only once the last layer clears does normal page scroll resume.
-       Desktop + fine pointer only — mobile keeps the static img fallback. -->
+  <!-- ScrollTrigger: lo usa img/hero3d/hero3d.js (hero fijo + cortina de About) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script>
-    (function () {
-      var rig = document.getElementById('hero3dRig');
-      var hero = document.querySelector('.hero');
-      if (!rig || !hero) return;
-      if (!window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 901px)').matches) return;
-      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-
-      gsap.registerPlugin(ScrollTrigger);
-
-      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var layers = Array.prototype.slice.call(rig.querySelectorAll('.hero3d-layer'));
-
-      var params = {
-        maxRot: 39,           // deg, at full mouse-to-edge distance
-        explodeSpacing: 150,  // px, translateZ spread between adjacent depths
-        lerp: 0.2,             // mouse smoothing factor per frame
-        exitDistance: 150,    // % of the rig's own height, how far each layer flies up on exit
-        stagger: 0.18,         // gap between each layer's exit start (raw units, normalized below)
-        exitDuration: 0.55,    // each layer's own exit duration (raw units, normalized below)
-        settlePortion: 0.14,  // fraction of the pin spent converging back to position 0 first
-        pinDistance: 1.4       // scroll "held" for this many viewport heights before releasing
-      };
-
-      // normalize stagger/duration so the LAST layer finishes exactly at
-      // exitProgress === 1 (i.e. right as the pin releases)
-      var rawTotal = 4 * params.stagger + params.exitDuration;
-      var nStagger = params.stagger / rawTotal;
-      var nDuration = params.exitDuration / rawTotal;
-
-      var target = { rx: 0, ry: 0, spacing: 0 };
-      var current = { rx: 0, ry: 0, spacing: 0 };
-      var pinProgress = 0;
-      var rafRunning = false;
-
-      function isConverged() {
-        return Math.abs(target.rx - current.rx) < 0.01 &&
-               Math.abs(target.ry - current.ry) < 0.01 &&
-               Math.abs(target.spacing - current.spacing) < 0.01;
-      }
-      function startLoop() {
-        if (rafRunning) return;
-        rafRunning = true;
-        requestAnimationFrame(frame);
-      }
-
-      function onMouseMove(e) {
-        var nx = (e.clientX / window.innerWidth) * 2 - 1;
-        var ny = (e.clientY / window.innerHeight) * 2 - 1;
-        var m = Math.min(1, Math.hypot(nx, ny));
-        target.rx = -ny * params.maxRot;
-        target.ry = nx * params.maxRot;
-        target.spacing = m * params.explodeSpacing;
-        startLoop();
-      }
-      function onMouseLeave() {
-        target.rx = 0; target.ry = 0; target.spacing = 0;
-        startLoop();
-      }
-      if (!reduced) {
-        window.addEventListener('mousemove', onMouseMove, { passive: true });
-        window.addEventListener('mouseleave', onMouseLeave, { passive: true });
-      }
-
-      // Renders the rig/layers from the current (already-lerped) state — called
-      // every animation frame while settling, and once per scroll update so the
-      // pin/exit sequence stays in sync even while the lerp loop is idle.
-      function render() {
-        // phase 1 (0 -> settlePortion): converge back to position 0, killing
-        // whatever mouse-driven rotation/explosion was active
-        var settle = 1 - Math.min(1, pinProgress / params.settlePortion);
-
-        rig.style.transform = 'rotateX(' + (current.rx * settle).toFixed(2) + 'deg) rotateY(' + (current.ry * settle).toFixed(2) + 'deg)';
-
-        // phase 2 (settlePortion -> 1): staggered layer-by-layer exit
-        var exitProgress = Math.max(0, (pinProgress - params.settlePortion) / (1 - params.settlePortion));
-
-        layers.forEach(function (layer) {
-          var depth = parseInt(layer.dataset.depth, 10); // 1 = front .. 5 = back
-          var z = (3 - depth) * current.spacing * settle;
-
-          var segStart = (depth - 1) * nStagger;
-          var localP = Math.max(0, Math.min(1, (exitProgress - segStart) / nDuration));
-          var eased = localP * localP; // ease-in
-
-          var y = -eased * params.exitDistance;
-          layer.style.transform = 'translateY(' + y.toFixed(2) + '%) translateZ(' + z.toFixed(2) + 'px)';
-          layer.style.opacity = (1 - eased).toFixed(3);
-        });
-      }
-
-      var st = ScrollTrigger.create({
-        trigger: hero,
-        start: 'top top',
-        end: '+=' + Math.round(window.innerHeight * params.pinDistance),
-        pin: true,
-        scrub: 0.4,
-        onUpdate: function (self) { pinProgress = self.progress; render(); }
-      });
-      window.addEventListener('resize', function () { ScrollTrigger.refresh(); }, { passive: true });
-
-      // Lerp loop: only runs while the mouse-driven rotation/explode is still
-      // settling toward its target. Stops itself once converged instead of
-      // running forever for the rest of the page's life.
-      function frame() {
-        current.rx += (target.rx - current.rx) * params.lerp;
-        current.ry += (target.ry - current.ry) * params.lerp;
-        current.spacing += (target.spacing - current.spacing) * params.lerp;
-
-        render();
-
-        if (isConverged()) { rafRunning = false; return; }
-        requestAnimationFrame(frame);
-      }
-      startLoop();
-    })();
-  </script>
-
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+  <script type="module" src="img/hero3d/hero3d.js?v=1"></script>
 </body>
 </html>
