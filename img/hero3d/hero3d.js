@@ -1,9 +1,34 @@
 // defranez.com — Hero 3D (vidrio). three.js + GSAP ScrollTrigger.
 // Valores fijos en DEF / LOOKS. Requiere el import map de three y GSAP+ScrollTrigger cargados antes.
 (async () => {
+const heroEl = document.getElementById('main');
+let dead = false;
+
+// Version estatica (sin WebGL, sin CDN, movimiento reducido o contexto perdido): nombre + logo planos,
+// hero de una pantalla y About sin cortina. Los estilos viven en hero3d.css (#main.hero3d-fallback).
+function fallback(why) {
+  if (dead) return;
+  dead = true;
+  console.info('[hero3d] version estatica:', why);
+  heroEl.classList.add('hero3d-fallback');
+  if (window.ScrollTrigger) ScrollTrigger.getAll().forEach(t => t.kill());
+  if (window.gsap) gsap.set(['.hero3d-copy-inner', '.scroll-hint'], { clearProps: 'all' });
+  const holder = heroEl.querySelector('.hero3d-static-logo');
+  if (!holder) return;
+  fetch('img/hero3d/logo-vector.svg').then(r => r.text()).then(txt => {
+    const d = new DOMParser().parseFromString(txt, 'image/svg+xml').querySelector('path').getAttribute('d');
+    holder.innerHTML = '<svg viewBox="0 0 817.923 890.917" aria-hidden="true"><defs><linearGradient id="h3dFb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00f5a0"/><stop offset="1" stop-color="#0a3b30"/></linearGradient></defs><path fill="url(#h3dFb)" d="' + d + '"/></svg>';
+  }).catch(() => {});
+}
+
+if (matchMedia('(prefers-reduced-motion: reduce)').matches) return fallback('prefers-reduced-motion');
+
 // dynamic imports resolve through the page's import map
-const THREE = await import('three');
-const { SVGLoader } = await import('three/addons/loaders/SVGLoader.js');
+let THREE, SVGLoader;
+try {
+  THREE = await import('three');
+  ({ SVGLoader } = await import('three/addons/loaders/SVGLoader.js'));
+} catch (e) { return fallback('no se pudo cargar three.js'); }
 
 const LOOKS = {
   clear:    { label: 'Cristal',    tint: '#ffffff', clarity: 10,  thick: 0.7, ior: 1.5,  dispersion: 3,  roughness: 0.05, reflections: 0.85, mint: 0.7, sheen: 0.3 },
@@ -17,7 +42,10 @@ delete DEF.label;
 const P = Object.assign({}, DEF);
 
 const canvas = document.getElementById('hero3dCanvas');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true }); }
+catch (e) { return fallback('WebGL no disponible'); }
+canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); fallback('contexto WebGL perdido'); });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -306,6 +334,7 @@ const smooth = x => x * x * (3 - 2 * x);
 
 const clock = new THREE.Clock();
 function tick() {
+  if (dead) return;
   requestAnimationFrame(tick);
   if (scrollY > hero.offsetTop + hero.offsetHeight) return;
   const t = clock.getElapsedTime();
