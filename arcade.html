@@ -1068,15 +1068,17 @@ const STATE = { unlocked: new Set() };
 
 /* Talks to index.html, which embeds this page as a full-screen overlay. */
 const SITE_ID = { about: 'about', tools: 'tools', portfolio: 'work', career: 'resume', contact: 'contact' };
-function toSite(section) {
-  parent.postMessage({ arcade: 'close', section: section ? SITE_ID[section] : null }, location.origin);
+/* keep = the player is still mid-arcade: the parent hides this page instead of removing it,
+   so the hub and its progress are still there when they come back. */
+function toSite(section, keep) {
+  parent.postMessage({ arcade: 'close', section: section ? SITE_ID[section] : null, keep: !!keep, done: STATE.unlocked.size }, location.origin);
 }
 
 document.querySelectorAll('.hub-tile').forEach(tile => {
   tile.addEventListener('click', () => {
     const game = tile.dataset.game;
     const section = tile.dataset.section;
-    if (STATE.unlocked.has(section)) { toSite(section); return; }
+    if (STATE.unlocked.has(section)) { toSite(section, true); return; }
     openGame(game);
   });
 });
@@ -1116,18 +1118,10 @@ function completeGame(game, section) {
   tile.classList.add('unlocked');
   tile.querySelector('.tile-status').textContent = 'DONE';
   document.getElementById('score-num').textContent = STATE.unlocked.size;
-  if (STATE.unlocked.size === 5) {
-    document.getElementById('end-banner').classList.add('active');
-    document.getElementById('end-banner').scrollIntoView({ behavior: 'smooth' });
-  }
+  if (STATE.unlocked.size === 5) document.getElementById('end-banner').classList.add('active');
+  toSite(section, true);
 }
 
-/* KNOCK — tempo-match rhythm game */
-const RHYTHM_PATTERN = [0, 500, 1000, 1800];
-const RHYTHM_PITCHES = [440, 370, 440, 294];
-const RHYTHM_TOLERANCE = 260;
-
-let audioCtx = null;
 function getAudio() {
   if (!audioCtx) {
     const AC = window.AudioContext || window.webkitAudioContext;
