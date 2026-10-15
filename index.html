@@ -4494,29 +4494,46 @@
        URL trae hash (deeplinks a casos) o ?noarcade; ?arcade lo fuerza. -->
   <script>
     (function () {
-      var KEY = 'edf_arcade_seen', frame = null;
+      var KEY = 'edf_arcade_seen', frame = null, pill = null;
       function seen() { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
       function mark() { try { localStorage.setItem(KEY, '1'); } catch (e) {} }
-      function close(section) {
+      function lock(on) { document.documentElement.style.overflow = on ? 'hidden' : ''; }
+      function dropPill() { if (pill) { pill.remove(); pill = null; } }
+      /* keep: el jugador sigue en el arcade (ganó un nivel o abrió una seccion). Se esconde el
+         iframe en vez de borrarlo para que el hub conserve el progreso, y queda un pill para volver. */
+      function close(section, keep, done) {
         if (!frame) return;
-        frame.remove(); frame = null;
-        document.documentElement.style.overflow = '';
+        lock(false);
+        if (keep) {
+          frame.style.display = 'none';
+          if (!pill) {
+            pill = document.createElement('button');
+            pill.type = 'button';
+            pill.setAttribute('style', 'position:fixed;right:16px;bottom:16px;z-index:9990;font:500 13px/1 "DM Mono",monospace;letter-spacing:.05em;text-transform:uppercase;padding:14px 18px;background:#00f5a0;color:#080a0c;border:0;box-shadow:0 6px 24px rgba(0,0,0,.45)');
+            pill.addEventListener('click', function () { dropPill(); frame.style.display = ''; lock(true); });
+            document.body.appendChild(pill);
+          }
+          pill.textContent = '▶ Arcade ' + done + '/5';
+        } else {
+          frame.remove(); frame = null; dropPill();
+        }
         var target = section && document.getElementById(section);
         if (target) target.scrollIntoView({ behavior: 'smooth' });
       }
       function open() {
-        if (frame) return;
+        if (frame) frame.remove();
+        dropPill();
         mark();
         frame = document.createElement('iframe');
         frame.src = 'arcade.html';
         frame.title = 'Arcade';
         frame.setAttribute('style', 'position:fixed;inset:0;width:100%;height:100%;border:0;z-index:2147483000;background:#080a0c');
         document.body.appendChild(frame);
-        document.documentElement.style.overflow = 'hidden';
+        lock(true);
       }
       window.addEventListener('message', function (e) {
         if (e.origin !== location.origin || !frame || e.source !== frame.contentWindow) return;
-        if (e.data && e.data.arcade === 'close') close(e.data.section);
+        if (e.data && e.data.arcade === 'close') close(e.data.section, e.data.keep, e.data.done);
       });
       document.addEventListener('DOMContentLoaded', function () {
         var link = document.getElementById('arcadePlay');
