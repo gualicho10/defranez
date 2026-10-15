@@ -4488,6 +4488,46 @@
 <link rel="stylesheet" href="img/hero3d/hero3d.css?v=4">
 </head>
 <body>
+  <!-- ARCADE (mobile): arcade.html se monta como overlay a pantalla completa, solo en la
+       primera visita desde un telefono. "Play again" del menu lo vuelve a abrir. Va inline y
+       al principio del body para que cubra el sitio desde el primer frame. Se saltea si la
+       URL trae hash (deeplinks a casos) o ?noarcade; ?arcade lo fuerza. -->
+  <script>
+    (function () {
+      var KEY = 'edf_arcade_seen', frame = null;
+      function seen() { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
+      function mark() { try { localStorage.setItem(KEY, '1'); } catch (e) {} }
+      function close(section) {
+        if (!frame) return;
+        frame.remove(); frame = null;
+        document.documentElement.style.overflow = '';
+        var target = section && document.getElementById(section);
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      }
+      function open() {
+        if (frame) return;
+        mark();
+        frame = document.createElement('iframe');
+        frame.src = 'arcade.html';
+        frame.title = 'Arcade';
+        frame.setAttribute('style', 'position:fixed;inset:0;width:100%;height:100%;border:0;z-index:2147483000;background:#080a0c');
+        document.body.appendChild(frame);
+        document.documentElement.style.overflow = 'hidden';
+      }
+      window.addEventListener('message', function (e) {
+        if (e.origin !== location.origin || !frame || e.source !== frame.contentWindow) return;
+        if (e.data && e.data.arcade === 'close') close(e.data.section);
+      });
+      document.addEventListener('DOMContentLoaded', function () {
+        var link = document.getElementById('arcadePlay');
+        if (link) link.addEventListener('click', function (e) { e.preventDefault(); open(); });
+      });
+      var q = location.search;
+      if (/[?&]arcade\b/.test(q)) return open();
+      if (/[?&]noarcade\b/.test(q) || location.hash || seen()) return;
+      if (window.matchMedia('(max-width: 768px)').matches) open();
+    })();
+  </script>
   <a href="#main" class="skip-link">Skip to content</a>
 
   <!-- NAV -->
@@ -4516,10 +4556,11 @@
     <a href="#work">Work</a>
     <a href="#resume">Career</a>
     <a href="#contact">Contact</a>
+    <a href="#" id="arcadePlay">▶ Play again</a>
     <a href="DesignSystem.html">Design System</a>
     <a href="v1.html" class="nav-link-accent">Visit v1</a>
   </div>
-  <div class="disclaimer-bar" hidden>Open in mobile to play!!</div>
+  <div class="disclaimer-bar">Open in mobile to play!!</div>
 
   <!-- HERO -->
   <!-- Hero 3D (vidrio): canvas three.js en img/hero3d/hero3d.js. El h1 es solo para lectores de
