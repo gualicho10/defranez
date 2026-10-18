@@ -364,6 +364,59 @@
       border: 1px solid var(--border);
       letter-spacing: 0.08em;
     }
+
+    /* ── MOBILE ────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; flex-wrap: wrap; gap: 10px; }
+      main { padding: 28px 20px; }
+      .summary-grid { grid-template-columns: repeat(2, 1fr); margin-bottom: 36px; }
+      .stat-card { padding: 22px 18px; }
+      .stat-value { font-size: 32px; }
+      .section { margin-bottom: 40px; }
+    }
+
+    @media (max-width: 640px) {
+      .gate-card { padding: 36px 24px; margin: 0 16px; }
+      .gate-input { font-size: 16px; } /* stops iOS zooming on focus */
+
+      nav { flex-direction: column; align-items: stretch; }
+      .nav-right { flex-wrap: wrap; }
+      .nav-right > * { flex: 1 1 auto; text-align: center; }
+      .nav-right > a { flex-basis: 100%; }
+      .nav-refresh, .nav-logout { padding: 11px 16px; }
+
+      .stat-value { font-size: 28px; }
+      .stat-sub { overflow-wrap: anywhere; }
+
+      /* tables become stacked cards, one labelled row per field */
+      .table-wrap { overflow-x: visible; }
+      table, tbody, tr, td { display: block; width: 100%; }
+      thead { display: none; }
+      tbody tr {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        margin-bottom: 10px;
+        padding: 6px 0;
+      }
+      tbody tr:hover { background: var(--surface); }
+      td {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+        padding: 8px 14px;
+        white-space: normal;
+        text-align: right;
+        overflow-wrap: anywhere;
+      }
+      td::before {
+        content: attr(data-label);
+        flex: none;
+        font-size: 10px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-align: left;
+      }
+      td.wrap { max-width: none; word-break: break-all; }
+    }
   </style>
 </head>
 <body>
@@ -596,12 +649,12 @@
               </tr></thead>
               <tbody>
                 ${visits.map(v => `<tr>
-                  <td class="muted" title="${fmtDate(v.created_at)}">${timeAgo(v.created_at)}</td>
-                  <td class="accent">${esc(v.ip) || '—'}</td>
-                  <td>${v.city ? esc(v.city) + ', ' : ''}${esc(v.country) || '—'}</td>
-                  <td>${deviceBadge(v.device_type)}</td>
-                  <td class="muted">${esc(v.browser) || '—'} · ${esc(v.os) || '—'}</td>
-                  <td class="muted">${esc(parseRef(v.referrer))}</td>
+                  <td data-label="Time" class="muted" title="${fmtDate(v.created_at)}">${timeAgo(v.created_at)}</td>
+                  <td data-label="IP" class="accent">${esc(v.ip) || '—'}</td>
+                  <td data-label="Location">${v.city ? esc(v.city) + ', ' : ''}${esc(v.country) || '—'}</td>
+                  <td data-label="Device">${deviceBadge(v.device_type)}</td>
+                  <td data-label="Browser / OS" class="muted">${esc(v.browser) || '—'} · ${esc(v.os) || '—'}</td>
+                  <td data-label="Referrer" class="muted">${esc(parseRef(v.referrer))}</td>
                 </tr>`).join('')}
               </tbody>
             </table></div>`}
@@ -626,12 +679,12 @@
               </tr></thead>
               <tbody>
                 ${repeatIPs.map(([ip, d]) => `<tr>
-                  <td class="accent">${esc(ip)}</td>
-                  <td><span class="repeat-badge">${d.count}×</span></td>
-                  <td>${d.city ? esc(d.city) + ', ' : ''}${esc(d.country) || '—'}</td>
-                  <td>${deviceBadge(d.device)}</td>
-                  <td class="muted">${fmtDate(d.first)}</td>
-                  <td class="muted">${fmtDate(d.last)}</td>
+                  <td data-label="IP" class="accent">${esc(ip)}</td>
+                  <td data-label="Visits"><span class="repeat-badge">${d.count}×</span></td>
+                  <td data-label="Location">${d.city ? esc(d.city) + ', ' : ''}${esc(d.country) || '—'}</td>
+                  <td data-label="Device">${deviceBadge(d.device)}</td>
+                  <td data-label="First Visit" class="muted">${fmtDate(d.first)}</td>
+                  <td data-label="Last Visit" class="muted">${fmtDate(d.last)}</td>
                 </tr>`).join('')}
               </tbody>
             </table></div>`}
@@ -654,10 +707,10 @@
               </tr></thead>
               <tbody>
                 ${clicks.map(c => `<tr>
-                  <td class="muted" title="${fmtDate(c.created_at)}">${timeAgo(c.created_at)}</td>
-                  <td class="accent">${esc(c.ip) || '—'}</td>
-                  <td>${esc(c.link_label) || '—'}</td>
-                  <td class="muted wrap">${esc(c.link_url) || '—'}</td>
+                  <td data-label="Time" class="muted" title="${fmtDate(c.created_at)}">${timeAgo(c.created_at)}</td>
+                  <td data-label="IP" class="accent">${esc(c.ip) || '—'}</td>
+                  <td data-label="Label">${esc(c.link_label) || '—'}</td>
+                  <td data-label="URL" class="muted wrap">${esc(c.link_url) || '—'}</td>
                 </tr>`).join('')}
               </tbody>
             </table></div>`}
