@@ -6290,8 +6290,8 @@ abcdefghijklmnopqrstuvwxyz
 
       let ip = '', country = '', city = '', region = '';
       try {
-        const geo = await fetch('https://ip-api.com/json/?fields=status,query,country,city,regionName').then(r => r.json());
-        if (geo.status === 'success') { ip = geo.query; country = geo.country; city = geo.city; region = geo.regionName; }
+        const geo = await fetch('https://ipwho.is/?fields=success,ip,country,city,region').then(r => r.json());
+        if (geo.success) { ip = geo.ip; country = geo.country; city = geo.city; region = geo.region; }
       } catch (_) {}
 
       const H = { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Prefer': 'return=minimal' };
