@@ -1,0 +1,870 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&display=swap" rel="stylesheet">
+<title>House in the mountains · 3D</title>
+<style>
+  :root{--bg:#080a0c;--surface:#0e1114;--accent:#00f5a0;--text:#e8eaed;--muted:#8b93a1;--border:rgba(255,255,255,.06)}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,sans-serif}
+  /* same grid as the portfolio's body::after */
+  body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;
+    background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
+    background-size:80px 80px}
+  #stage{position:fixed;inset:0;z-index:0}
+  #stage canvas{display:block;width:100%;height:100%}
+  #scroll{position:relative;height:3000vh}
+  .ui{position:fixed;z-index:2;pointer-events:none}
+  #back{left:24px;top:20px;font-weight:600;letter-spacing:.02em;pointer-events:auto}
+  #back a{color:inherit;text-decoration:none}
+  #back span{color:var(--muted);font-weight:400}
+  #count{right:24px;top:20px;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);letter-spacing:.08em}
+  #cap{left:24px;bottom:32px;max-width:min(560px,calc(100vw - 48px));transition:opacity .35s}
+  #cap .k{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent);letter-spacing:.1em;text-transform:uppercase}
+  #cap .t{font-size:clamp(26px,4vw,44px);font-weight:600;letter-spacing:-.02em;line-height:1.05;margin-top:6px;text-shadow:0 1px 18px rgba(0,0,0,.55)}
+  #cap .s{color:#b9c0cb;margin-top:8px;font-size:14px;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+  /* render keyframes: wiped in over the 3D when the camera reaches the render's own viewpoint */
+  #kfs{position:fixed;inset:0;z-index:1;pointer-events:none}
+  .kf{position:absolute;inset:0;visibility:hidden}
+  .kf img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .kf .shade{position:absolute;inset:0;opacity:0;background:linear-gradient(90deg,rgba(8,10,12,.72),rgba(8,10,12,.35) 36%,rgba(8,10,12,0) 62%),linear-gradient(0deg,rgba(8,10,12,.5),rgba(8,10,12,0) 40%)}
+  .kf.right .shade{background:linear-gradient(270deg,rgba(8,10,12,.72),rgba(8,10,12,.35) 36%,rgba(8,10,12,0) 62%),linear-gradient(0deg,rgba(8,10,12,.5),rgba(8,10,12,0) 40%)}
+  .kf .edge{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--accent);box-shadow:0 0 18px rgba(0,245,160,.55);opacity:0}
+  .kf .copy{position:absolute;bottom:clamp(40px,9vh,110px);left:clamp(20px,5vw,72px);width:min(520px,calc(100vw - 40px));opacity:0;font:300 clamp(16px,1.4vw,21px)/1.55 Jost,system-ui,sans-serif;color:var(--text);text-shadow:0 1px 16px rgba(0,0,0,.65)}
+  .kf.right .copy{left:auto;right:clamp(20px,5vw,72px)}
+  .kf .l{font:600 13px/1 Jost,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  .kf .t{font:300 clamp(36px,5vw,80px)/1 Jost,system-ui,sans-serif;letter-spacing:-.025em;margin:0 0 16px}
+  .kf .b{margin:0}
+  @media(max-width:760px){.kf .copy{left:20px;right:auto;bottom:64px}.kf.left .shade,.kf.right .shade{background:linear-gradient(0deg,rgba(8,10,12,.85),rgba(8,10,12,.5) 40%,rgba(8,10,12,0) 70%)}}
+  #bar{position:fixed;left:0;top:0;height:2px;width:0;background:var(--accent);z-index:3;transition:width .2s}
+  #prog{position:fixed;left:0;bottom:0;height:2px;width:0;background:var(--accent);z-index:3}
+  #hint{left:0;right:0;bottom:24px;text-align:center;font:11px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:opacity .4s}
+  #fail{display:none;position:fixed;inset:0;z-index:4;align-items:center;justify-content:center;text-align:center;padding:24px;background:var(--bg)}
+  /* the laptop screen: dark page colour fades in as the camera fills the frame with the screen */
+  #screen{position:fixed;inset:0;z-index:2;background:var(--bg);opacity:0;pointer-events:none;display:flex;align-items:center}
+  #screen .hero{padding:0 clamp(24px,6.3vw,96px)} #screen .k{font:500 clamp(12px,1.6vw,22px) ui-monospace,Menlo,monospace;color:var(--accent);letter-spacing:.06em}
+  #screen .h{font-weight:700;font-size:clamp(48px,9.8vw,150px);line-height:1.02;letter-spacing:-.03em;margin:.35em 0}
+  #screen .s{color:var(--muted);font-size:clamp(14px,2.6vw,40px)}
+
+  /* ── Case-study content, continuing the scroll after the laptop (mirrors the portfolio's sketchup case study) ── */
+  #content{position:relative;z-index:3;background:var(--bg);border-top:1px solid var(--border)}
+  .sec{max-width:1180px;margin:0 auto;padding:clamp(56px,9vw,120px) clamp(20px,4vw,48px)}
+  .head{display:flex;align-items:center;gap:16px;margin-bottom:28px}
+  .head .n{font:12px ui-monospace,monospace;color:var(--accent);letter-spacing:.1em}
+  .head .l{font:12px ui-monospace,monospace;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+  .head .line{flex:1;height:1px;background:var(--border)}
+  h1.big{font-size:clamp(40px,8vw,96px);letter-spacing:-.03em;line-height:1;margin:0 0 40px;font-weight:600}
+  .two{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(24px,5vw,72px)}
+  .two p, .body p{margin:0 0 18px;color:#c3c9d2;font-size:clamp(15px,1.5vw,18px);line-height:1.65}
+  .body{max-width:760px}
+  .body b, .two b{color:var(--text);font-weight:600}
+  .meta div{display:flex;flex-direction:column;gap:4px;padding:14px 0;border-bottom:1px solid var(--border)}
+  .meta .k{font:12px ui-monospace,monospace;color:var(--accent);letter-spacing:.08em}
+  .meta .v{font-size:16px}
+  .gal{display:grid;gap:12px;margin-top:32px}
+  .gal.c2{grid-template-columns:repeat(2,minmax(0,1fr))} .gal.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .gal img{display:block;width:100%;height:100%;object-fit:cover;border-radius:6px;background:var(--surface)}
+  .gal img.wide{grid-column:1/-1;aspect-ratio:16/9}
+  .endrow{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:48px clamp(20px,4vw,48px);max-width:1180px;margin:0 auto;border-top:1px solid var(--border)}
+  .endrow a{color:var(--accent);text-decoration:none;font-weight:600}
+  @media(max-width:760px){.two{grid-template-columns:1fr}.gal.c3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div id="bar"></div><div id="prog"></div>
+<div id="stage"></div>
+<div id="scroll"></div>
+<div id="screen"><div class="hero"><div class="k">_ PROJECT</div><div class="h">Modeling<br>+ Render</div><div class="s">House in the mountains · Chubut, Patagonia</div></div></div>
+<div class="ui" id="back"><a href="index.html">← defranez</a> <span>&nbsp;/&nbsp; House in the mountains</span></div>
+<div class="ui" id="count">000 %</div>
+<div class="ui" id="cap"><div class="k"></div><div class="t"></div><div class="s"></div></div>
+<div class="ui" id="hint">Loading…</div>
+<div id="fail"><div>This 3D walkthrough needs WebGL.<br><a href="index.html" style="color:var(--accent)">Back to the portfolio</a></div></div>
+
+<main id="content">
+  <section class="sec">
+    <div class="head"><span class="n">00</span><span class="l">Introduction</span><span class="line"></span></div>
+    <h1 class="big">Modeling + Render</h1>
+    <div class="two">
+      <div class="body">
+        <p>This project explores the integration of a single-family home within the rugged landscape of Patagonia. The primary challenge was to <b>translate the warmth of noble materials</b>—such as wood and stone—into a contemporary architectural language that respects the scale of the surroundings.</p>
+        <p>We focused on a simple yet efficient volumetric design, <b>prioritizing natural light intake and panoramic views of the mountain range.</b> This presentation details the technical journey from initial drafting to final construction.</p>
+      </div>
+      <div class="meta">
+        <div><span class="k">_ PROJECT</span><span class="v">House in the mountains</span></div>
+        <div><span class="k">_ LOCATION</span><span class="v">Chubut, Patagonia, Argentina</span></div>
+        <div><span class="k">_ REQUEST</span><span class="v">Sketchup + V-Ray/Enscape + Photoshop</span></div>
+        <div><span class="k">_ YEAR</span><span class="v">2025</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="sec">
+    <div class="head"><span class="n">01</span><span class="l">Project</span><span class="line"></span></div>
+    <div class="body"><p>Development of comprehensive technical documentation, including architectural floor plans and longitudinal sections to define internal spatiality. The design utilizes a modular grid system to optimize construction resources in remote geographical locations.</p></div>
+    <div class="gal"><img class="wide" loading="lazy" src="img/sketchup/image2.webp" alt="Architectural floor plans and sections"></div>
+  </section>
+  <section class="sec">
+    <div class="head"><span class="n">02</span><span class="l">Modeling</span><span class="line"></span></div>
+    <div class="body">
+      <p>The 3D modeling phase was executed with technical precision, transforming architectural schemes into a detailed digital structure. Special emphasis was placed on the structural accuracy of the timber joints and the site’s topography to ensure a realistic environment.</p>
+      <p>Through wireframes and volumetric models, we validated proportions and solar incidence on the facades, allowing for dynamic adjustments before moving into the texturing and post-processing stages.</p>
+    </div>
+    <div class="gal c2"><img loading="lazy" src="img/sketchup/image12.webp" alt="Wireframe model of the house"><img loading="lazy" src="img/sketchup/image13.webp" alt="Volumetric model of the house"></div>
+    <div class="gal c3"><img loading="lazy" src="img/sketchup/image7.webp" alt="Modeling detail"><img loading="lazy" src="img/sketchup/image8.webp" alt="Modeling detail"><img loading="lazy" src="img/sketchup/image10.webp" alt="Modeling detail"></div>
+  </section>
+  <section class="sec">
+    <div class="head"><span class="n">03</span><span class="l">Renders</span><span class="line"></span></div>
+    <div class="body"><p>Photorealistic visualization designed to capture the atmosphere of the retreat under various lighting conditions. Global illumination was carefully tuned to highlight natural textures and the contrast between interior warmth and the exterior climate.</p></div>
+    <div class="gal c2">
+      <img class="wide" loading="lazy" src="img/sketchup/render-enscape161.webp" alt="Exterior render at dusk">
+      <img loading="lazy" src="img/sketchup/render-vray-v191.webp" alt="Exterior render"><img loading="lazy" src="img/sketchup/render-vray-v201.webp" alt="Exterior render">
+      <img loading="lazy" src="img/sketchup/render-vray-v211.webp" alt="Interior render"><img loading="lazy" src="img/sketchup/render-vray-v621.webp" alt="Interior render">
+      <img class="wide" loading="lazy" src="img/sketchup/render-enscape291.webp" alt="Exterior render at night">
+    </div>
+  </section>
+  <section class="sec">
+    <div class="head"><span class="n">04</span><span class="l">Results</span><span class="line"></span></div>
+    <div class="body"><p>The transition from the digital model to the physical build demonstrates the viability of the proposed design. On-site monitoring allowed us to compare the 3D model’s precision with traditional construction techniques applied in the region.</p></div>
+    <div class="gal c3">
+      <img loading="lazy" src="img/sketchup/build-01.webp" alt="Construction site in Patagonia"><img loading="lazy" src="img/sketchup/build-02.webp" alt="Timber frame under construction"><img loading="lazy" src="img/sketchup/build-05.webp" alt="House under construction">
+      <img loading="lazy" src="img/sketchup/build-03.webp" alt="Construction detail"><img loading="lazy" src="img/sketchup/build-08.webp" alt="Timber frame under construction"><img loading="lazy" src="img/sketchup/build-09.webp" alt="Construction detail">
+    </div>
+  </section>
+  <div class="endrow"><a href="index.html">← Back to the portfolio</a><a href="#" onclick="scrollTo({top:0,behavior:'smooth'});return false">Replay the walkthrough ↑</a></div>
+</main>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { Lensflare, LensflareElement } from 'three/addons/objects/Lensflare.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+const $ = id => document.getElementById(id);
+const hint = $('hint'), bar = $('bar'), prog = $('prog'), count = $('count'), cap = $('cap'), screenEl = $('screen');
+const rad = THREE.MathUtils.degToRad;
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const smooth = v => { v = clamp(v); return v * v * (3 - 2 * v); };
+const outCubic = v => 1 - Math.pow(1 - clamp(v), 3);
+const outQuart = v => 1 - Math.pow(1 - clamp(v), 4);
+const inOutCubic = v => { v = clamp(v); return v < .5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2; };
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+
+// Review mode (?review): the scroll no longer drives the walkthrough; casa-review.js takes over
+const R = window.__review = { active: /[?&]review/.test(location.search), kf: /[?&]kf/.test(location.search), free: false, force: {}, orig: null };   // kf: render-keyframe test (casa-kf.js)
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false }); }
+catch (e) { $('fail').style.display = 'flex'; throw e; }
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+renderer.setSize(innerWidth, innerHeight);
+renderer.setClearColor(0x080a0c, 1);
+renderer.toneMapping = THREE.NeutralToneMapping;   // closest to the raw Sketchup colours (ACES darkens and saturates)
+renderer.toneMappingExposure = 0.95;
+renderer.localClippingEnabled = true;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+$('stage').appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x080a0c);
+scene.fog = new THREE.FogExp2(0x080a0c, 0.011);   // far terrain edges fade into the page background (maquette look)
+
+// ── Site panorama: only seen through the windows once we are inside (darkens to night from the living room on) ──
+// Outside, the house stays a maquette on the page background (HDRI backdrops were tried on 22/10 and dropped).
+const PHOTO = { h: 246.6, below: 18, above: 90 };
+const skyFrag = `
+  uniform sampler2D map; uniform float alpha, span, below, total, night; varying vec3 vDir;
+  const float PI = 3.14159265;
+  void main(){
+    vec3 d = normalize(vDir);
+    float rel = atan(d.x, -d.z);
+    float v = clamp((asin(clamp(d.y, -1., 1.)) + below) / total, 0., 1.);
+    float halfSpan = span * .5; vec3 col;
+    if (abs(rel) <= halfSpan) col = texture2D(map, vec2(rel / span + .5, v)).rgb;
+    else {
+      float gap = 2.*PI - span;
+      float kL = rel > 0. ? gap - (rel - halfSpan) : -rel - halfSpan;
+      vec3 colL = texture2D(map, vec2(clamp(kL / span, 0., 1.), v)).rgb;
+      vec3 colR = texture2D(map, vec2(clamp(1. - (gap - kL) / span, 0., 1.), v)).rgb;
+      col = mix(colL, colR, smoothstep(.25, .75, kL / gap));
+    }
+    col = mix(col, min(col, vec3(.35)) * vec3(.05, .07, .14) + vec3(.004, .006, .014), night);   // at night the photo's sun dims with the rest
+    gl_FragColor = vec4(col, alpha);
+    #include <colorspace_fragment>
+  }`;
+const skyUniforms = () => ({ map: { value: null }, alpha: { value: 0 }, night: { value: 0 }, span: { value: rad(PHOTO.h) }, below: { value: rad(PHOTO.below) }, total: { value: rad(PHOTO.below + PHOTO.above) } });
+const skyVert = 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }';
+const skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, toneMapped: false, transparent: true, uniforms: skyUniforms(), vertexShader: skyVert, fragmentShader: skyFrag });
+const bakeMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, toneMapped: false, uniforms: skyUniforms(), vertexShader: skyVert, fragmentShader: skyFrag });
+const skyGeo = new THREE.SphereGeometry(1500, 48, 24);
+const skyDome = new THREE.Mesh(skyGeo, skyMat); skyDome.renderOrder = -1; scene.add(skyDome);
+const bakeScene = new THREE.Scene(); bakeScene.add(new THREE.Mesh(skyGeo, bakeMat));
+new THREE.TextureLoader().load('models/env.jpg', tex => {
+  tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  skyMat.uniforms.map.value = tex; bakeMat.uniforms.map.value = tex; bakeMat.uniforms.alpha.value = 1;
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(bakeScene, 0.02).texture;   // site light as ambient
+  scene.environmentIntensity = 0.7;
+});
+
+// Key light (sun) with soft shadows, plus a sky/ground hemisphere that we dim once inside
+const sun = new THREE.DirectionalLight(0xffd9a6, 2.7); sun.position.set(6.2 - 21, 10.5, -6.8 + 17);   // golden hour: ~21° above the horizon, front-west
+sun.castShadow = true; sun.shadow.mapSize.set(4096, 4096); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.04;
+Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26, near: 1, far: 110 });
+sun.target.position.set(6.2, 0, -6.8);
+const hemi = new THREE.HemisphereLight(0xdfe9ff, 0x7a7a50, 0.85), hemiDay = new THREE.Color(0xdfe9ff), hemiNight = new THREE.Color(0x1a2440);
+scene.add(sun, sun.target, hemi);
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.03, 3000);
+// Sun flare (outdoors only)
+const radial = (size, stops) => { const c = document.createElement('canvas'); c.width = c.height = size; const g = c.getContext('2d'); const gr = g.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2); stops.forEach(([o, col]) => gr.addColorStop(o, col)); g.fillStyle = gr; g.fillRect(0, 0, size, size); return new THREE.CanvasTexture(c); };
+const sunFlare = new THREE.PointLight(0xffffff, 0, 0); sunFlare.position.copy(sun.position).sub(sun.target.position).normalize().multiplyScalar(900);
+{ const lf = new Lensflare(), core = radial(256, [[0, 'rgba(255,255,255,1)'], [.12, 'rgba(255,236,190,.95)'], [.45, 'rgba(255,180,90,.28)'], [1, 'rgba(255,150,60,0)']]), ring = radial(128, [[0, 'rgba(255,200,120,0)'], [.72, 'rgba(255,190,110,.16)'], [1, 'rgba(255,170,90,0)']]);
+  lf.addElement(new LensflareElement(core, 420, 0)); lf.addElement(new LensflareElement(ring, 80, .32)); lf.addElement(new LensflareElement(ring, 150, .58)); lf.addElement(new LensflareElement(ring, 55, .86)); sunFlare.add(lf); scene.add(sunFlare); }
+// Post-processing "look": bloom on lights/sun, warm grade + vignette. Ambient occlusion is opt-in (?ao: it flickered). ?plain turns it all off.
+const POST = !/[?&]plain/.test(location.search);
+let composer = null, bloom = null, gradeU = null;
+if (POST) {
+  composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  if (/[?&]ao/.test(location.search)) { try { const ao = new GTAOPass(scene, camera, innerWidth, innerHeight); ao.blendIntensity = 1.0; composer.addPass(ao); } catch (e) { console.warn('GTAO unavailable', e); } }
+  bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.16, 0.45, 0.96); composer.addPass(bloom);
+  composer.addPass(new OutputPass());
+  const grade = new ShaderPass({ uniforms: { tDiffuse: { value: null }, warm: { value: 0.06 }, vig: { value: 0.32 } },
+    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }',
+    fragmentShader: 'uniform sampler2D tDiffuse; uniform float warm, vig; varying vec2 vUv; void main(){ vec4 c = texture2D(tDiffuse, vUv); vec2 d = vUv - .5; c.rgb *= 1. - dot(d, d) * vig * 2.0; c.rgb = mix(c.rgb, c.rgb * vec3(1.05, 1.0, .93), warm * 4.); gl_FragColor = c; }' });
+  gradeU = grade.uniforms; composer.addPass(grade);
+}
+const fill = new THREE.PointLight(0xfff0dc, 0, 14, 1.6); scene.add(fill);   // soft fill that travels with the camera once inside
+
+// ── Timeline (t = 0…END, driven by scroll) ─────────────────────────────────────
+// Model space, units ≈ metres. House footprint x 0.5…12, z -10.7…-2.8 · ground slab y 0.17 · mezzanine slab y 2.7.
+// The assembly (0…ASM) follows the SketchUp TAGS (models/casa.stages.glb groups); then the drone / walkthrough keys.
+// The interior route follows the floor plan (glazed door x≈6.8, bedroom door x≈9.1/z≈-6.7, bath door x≈10/z≈-7.7,
+// stair along the north wall x 4.6→8.6 at z≈-9) so it never crosses a wall (checked with __checkPath()).
+const ASM = 72;
+const HC = new THREE.Vector3(6.2, 1.5, -6.8);
+// Render keyframes: the walkthrough stops on the exact camera each still render was matched to (assets/casa/cameras.json, review
+// editor → Calibrar), the render is wiped in over the 3D with its copy, then wiped out as the camera moves on.
+// fov is the render's vertical fov at its own aspect; on a wider screen the render is cropped top/bottom ("cover"), so the 3D narrows to match.
+const KF = {
+  '02-exterior':      { p: [-2.4088, 6.7811, 10.016],  q: [-0.9944, 5.7356, 7.5857],  fov: 47.3,  aspect: 2.0595, side: 'left',  label: '_ 03 Renders', title: 'Renders',
+    body: 'Photorealistic visualization designed to capture the atmosphere of the retreat under various lighting conditions. Global illumination was carefully tuned to highlight natural textures and the contrast between interior warmth and the exterior climate.' },
+  '03-cocina-living': { p: [2.0494, 2.0687, -4.689],   q: [4.136, 1.1851, -6.6551],   fov: 101.8, aspect: 1.3333, side: 'left',  label: '_ Ground floor', title: 'Kitchen &amp; living',
+    body: 'A concrete counter, a checkered floor and a wood stove, all under the double-height ceiling.' },
+  '04-ventanal':      { p: [6.8332, 1.3992, -7.9184],  q: [6.0076, 1.0718, -5.0529],  fov: 70,    aspect: 1.6674, side: 'right', label: '_ Ground floor', title: 'The window<br>to the range',
+    body: 'Full-height glazing frames the mountains and pulls the afternoon light deep into the room.' },
+  '05-cuarto':        { p: [9.0025, 1.4063, -6.3114],  q: [10.6399, 0.97, -3.8358],   fov: 72.8,  aspect: 1.8112, side: 'right', label: '_ Bedroom', title: 'Bedroom',
+    body: 'Pine paneling, a single window to the range and warm bedside light for the evenings.' },
+  '06-bano':          { p: [9.6404, 2.4652, -8.2485],  q: [10.7616, -0.0133, -9.5136], fov: 68.2, aspect: 1.4994, side: 'left',  label: '_ Bathroom', title: 'Bathroom',
+    body: 'Terrazzo, green tile and a poured-concrete vanity, seen from above.' },
+  '07-entrepiso1':    { p: [8.4567, 3.5786, -7.3015],  q: [10.1599, 3.1811, -4.8641], fov: 53.7,  aspect: 1.7768, side: 'left',  label: '_ Mezzanine', title: 'Music &amp; work<br>corner',
+    body: 'A quiet room above the living space, with the valley in the window.' },
+  '08-entrepiso2':    { p: [8.8635, 4.9823, -3.8926],  q: [6.7947, 3.1551, -5.068],   fov: 42.8,  aspect: 2.0688, side: 'right', label: '_ Mezzanine', title: 'Over the<br>double height',
+    body: 'From the parapet the whole ground floor reads at once: kitchen, table, stove and deck.' },
+};
+const coverFov = (fov, ar) => { const va = innerWidth / innerHeight; return va > ar ? THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(rad(fov) / 2) * ar / va)) : fov; };
+const KEYS = []; let tt = ASM;
+const K = (id, dt, p, q, fov, shot = false) => { tt += dt; KEYS.push({ id, t: tt, p: new THREE.Vector3(...p), q: new THREE.Vector3(...q), fov, shot }); };
+const HOLD = 5;                                                       // timeline units a render stays on screen
+const KFK = (id, dt) => { const k = KF[id], f = coverFov(k.fov, k.aspect); K(id, dt, k.p, k.q, f, true); K(id + ':out', HOLD, k.p, k.q, f, true); };
+KFK('02-exterior', 0);                                                // the assembly orbit rises and ends on the exterior render's camera
+K('door1', 5,   [6.85, 1.9, 0.8],   [6.7, 1.6, -5],   58);
+K('door2', 3,   [6.85, 1.75, -2.7], [6.3, 1.4, -6.5], 62);
+K('in', 3.5,    [6.85, 1.7, -4.4],  [5.4, 1.4, -6.6], 68, true);
+K('c0', 3.5,    [3.6, 2.05, -4.1],  [2.4, 1.6, -6.6], 74);            // along the front wall, clear of the dining pendant (2.81, 1.71, −4.98)
+KFK('03-cocina-living', 3);
+K('c1', 4,      [3.4, 1.9, -6.4],   [6.0, 1.3, -5.6], 70);            // across the checker rug, turning to the glazing
+KFK('04-ventanal', 3.5);
+K('h1', 4,      [7.4, 1.7, -7.3],   [9.0, 1.4, -6.9], 68);
+K('h2', 3,      [8.6, 1.7, -7.2],   [9.1, 1.4, -6.0], 68);
+KFK('05-cuarto', 3.5);
+K('h4', 3.5,    [9.1, 1.7, -6.4],   [9.4, 1.5, -7.6], 70);
+K('h5', 3,      [10.0, 1.7, -7.2],  [10.0, 1.3, -9.3], 74);         // square to the bathroom door
+K('b1', 2,      [10.0, 1.8, -8.0],  [10.1, 1.0, -9.4], 76);         // through it at door height, then up to the render's high viewpoint
+KFK('06-bano', 2);
+K('b2', 2.5,    [10.0, 1.8, -8.0],  [10.0, 1.6, -6.5], 74);         // back down before the door
+K('r1', 3,      [9.9, 1.7, -7.15],  [7.0, 1.5, -7.6], 70);
+K('r2', 3.5,    [7.2, 1.7, -7.6],   [5.0, 1.6, -8.6], 70);
+K('r3', 3,      [5.9, 1.75, -7.7],  [5.0, 1.7, -8.7], 66);
+K('stair', 3,   [5.1, 1.9, -8.3],   [7.6, 2.6, -9.0], 62, true);  // foot of the flight
+K('s1', 3,      [5.7, 2.2, -8.95],  [8.6, 3.2, -9.0], 62);        // climb: eye ≈ step height + 1.65
+K('s2', 2.5,    [6.7, 3.1, -9.0],   [9.0, 3.9, -8.8], 64);
+K('s3', 2.5,    [7.7, 3.7, -9.0],   [8.7, 4.0, -8.4], 66);
+K('s4', 2.5,    [8.4, 4.3, -8.9],   [8.6, 3.9, -7.2], 68);
+K('m1', 2.5,    [8.5, 4.3, -7.9],   [9.0, 3.9, -6.0], 70);        // landing
+KFK('07-entrepiso1', 3);
+K('m2', 3.5,    [9.0, 4.3, -6.6],   [9.6, 3.9, -4.8], 70);
+KFK('08-entrepiso2', 3.5);
+K('l1', 3.5,    [9.5, 4.2, -4.9],   [9.68, 3.55, -3.56], 58);
+K('l2', 2.5,    [9.68, 3.8, -4.45], [9.68, 3.52, -3.56], 44);
+K('laptop', 2.5,[9.68, 3.53, -3.98],[9.68, 3.52, -3.56], 28, true); // the screen fills the frame
+const END = KEYS[KEYS.length - 1].t + 3;
+const tOf = id => KEYS.find(k => k.id === id).t;
+const T_DOOR = tOf('door1'), T_NIGHT = END + 100;                   // all daylight now, like the renders
+const camCurve = new THREE.CatmullRomCurve3(KEYS.map(k => k.p), false, 'centripetal');
+const tgtCurve = new THREE.CatmullRomCurve3(KEYS.map(k => k.q), false, 'centripetal');
+const KF_SPANS = Object.keys(KF).map(id => ({ id, t0: tOf(id), t1: tOf(id + ':out') }));
+
+const CAPTIONS = [ // [from, to, label, title, sub] — the 3D stretches between render keyframes (a render brings its own copy)
+  [0, 5,    '_ Project', 'Rancho Relaxo', 'Epuyén, Chubut, Patagonia, Argentina · 2026'],
+  [5, 15.5, '_ 01 Foundation', 'Slab, embankment and paths', 'The house starts from the ground'],
+  [15.5, 24.5, '_ 02 Structure', 'Columns, mezzanine, stairs', ''],
+  [24.5, 36, '_ 03 Walls', 'Perimeter and partitions', 'Built up from the slab'],
+  [36, 44,  '_ 04 Cladding', 'Envelope', 'Black sheet and stone close the volume'],
+  [44, 53.5, '_ 05 Roof + openings', 'Roof, windows and doors', ''],
+  [53.5, 64, '_ 06 Deck', 'Deck and pergolas', ''],
+  [64, ASM, '_ 07 Site + interior', 'Landscape and furniture', ''],
+  [tOf('02-exterior:out'), tOf('03-cocina-living'), '_ Ground floor', 'Inside', 'Through the glazed door'],
+  [tOf('04-ventanal:out'), tOf('05-cuarto'), '_ Ground floor', 'Bedroom and bath', ''],
+  [tOf('06-bano:out'), tOf('07-entrepiso1'), '_ Stairs', 'Up to the mezzanine', ''],
+  [tOf('08-entrepiso2:out'), 999, '_ Workspace', 'Back to the drawing board', ''],
+];
+const NAMES = [[0, 'Terreno'], [7.5, 'Talud, camino y platea'], [12, 'Servicios'], [17.5, 'Columnas'], [21.5, 'Entrepiso'], [23.5, 'Escalera'], [26.5, 'Paredes perimetrales'], [29.5, 'Paredes internas'],
+  [32.5, 'Cuarto tanque'], [35.5, 'Baranda entrepiso'], [39, 'Chapas'], [42.5, 'Piedras'], [46, 'Techo'], [48, 'Paneles solares'], [51, 'Aberturas'], [55.5, 'Soportes deck y garage'], [58, 'Deck'], [60, 'Escalones deck'],
+  [62, 'Techo deck'], [63.5, 'Techo garage'], [66.5, 'Paisaje'], [70.5, 'Muebles (aparecen)'],
+  ...Object.keys(KF).map(id => [tOf(id), 'Render ' + id]), [tOf('in'), 'Interior · ingreso'], [tOf('stair'), 'Pie de escalera'], [tOf('s2'), 'Subiendo la escalera'], [tOf('laptop'), 'Laptop']].sort((a, b) => a[0] - b[0]);
+
+// render keyframe layer (images load lazily: the browser fetches them as they become visible)
+{ const layer = document.createElement('div'); layer.id = 'kfs'; document.body.appendChild(layer);
+  const small = Math.min(innerWidth, innerHeight) < 700;
+  for (const sp of KF_SPANS) { const k = KF[sp.id], el = document.createElement('div'); el.className = 'kf ' + k.side;
+    el.innerHTML = `<img src="assets/casa/${sp.id}${small ? '-m' : ''}.webp" alt="" loading="lazy" decoding="async"><div class="shade"></div><i class="edge"></i>`
+      + `<div class="copy"><p class="l">${k.label}</p><h2 class="t">${k.title}</h2><p class="b">${k.body}</p></div>`;
+    layer.appendChild(el); Object.assign(sp, { el, img: el.querySelector('img'), edge: el.querySelector('.edge'), copy: el.querySelector('.copy'), shade: el.querySelector('.shade') }); } }
+function renderKeyframes(t) {   // wipe in (left → right) as the camera settles on the pose, copy, then wipe out; scrolling back undoes it
+  let on = false;
+  for (const sp of KF_SPANS) {
+    const w = Math.min(smooth(seg(t, sp.t0 - 0.3, sp.t0 + 1.3)), 1 - smooth(seg(t, sp.t1 - 1.3, sp.t1 + 0.3)));
+    const c = Math.min(smooth(seg(t, sp.t0 + 1.1, sp.t0 + 1.9)), 1 - smooth(seg(t, sp.t1 - 1.9, sp.t1 - 1.1)));
+    sp.el.style.visibility = w > 0.001 ? 'visible' : 'hidden'; if (w > 0.001) on = true;
+    sp.img.style.clipPath = `inset(0 ${(1 - w) * 100}% 0 0)`;
+    sp.edge.style.left = (w * 100) + '%'; sp.edge.style.opacity = w > 0.001 && w < 0.999 ? 1 : 0;
+    sp.copy.style.opacity = c; sp.copy.style.transform = `translateY(${(1 - c) * 22}px)`; sp.shade.style.opacity = c;
+  }
+  return on;
+}
+
+// ── Load ───────────────────────────────────────────────────────────────────────
+const G = {}, base = {};
+let model, GROUPS = [];
+const INTERIOR_EXTRA = new THREE.Group(); INTERIOR_EXTRA.name = 'interior-extra'; scene.add(INTERIOR_EXTRA);   // replacement models + props, shown with the interior
+// Smooth shading for terrain / slopes / paths: the Sketchup mesh is faceted ("minecraft"). Average the normals of vertices that share a position.
+function smoothNormals(geo) {
+  const p = geo.attributes.position, idx = geo.index, n = new Float32Array(p.count * 3), acc = new Map();
+  const key = i => `${Math.round(p.getX(i) * 4000)},${Math.round(p.getY(i) * 4000)},${Math.round(p.getZ(i) * 4000)}`;
+  const keys = new Array(p.count); for (let i = 0; i < p.count; i++) keys[i] = key(i);
+  const tri = idx ? idx.count / 3 : p.count / 3, v = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()], e1 = new THREE.Vector3(), e2 = new THREE.Vector3();
+  for (let t = 0; t < tri; t++) {
+    const a = idx ? idx.getX(t * 3) : t * 3, b = idx ? idx.getX(t * 3 + 1) : t * 3 + 1, c = idx ? idx.getX(t * 3 + 2) : t * 3 + 2;
+    v[0].fromBufferAttribute(p, a); v[1].fromBufferAttribute(p, b); v[2].fromBufferAttribute(p, c);
+    e1.subVectors(v[1], v[0]); e2.subVectors(v[2], v[0]); const f = e1.cross(e2);
+    for (const i of [a, b, c]) { const s = acc.get(keys[i]) || [0, 0, 0]; s[0] += f.x; s[1] += f.y; s[2] += f.z; acc.set(keys[i], s); }
+  }
+  const tmp = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) { const s = acc.get(keys[i]); tmp.set(s[0], s[1], s[2]).normalize(); if (tmp.y < 0) tmp.negate(); n[i * 3] = tmp.x; n[i * 3 + 1] = tmp.y; n[i * 3 + 2] = tmp.z; }
+  geo.setAttribute('normal', new THREE.BufferAttribute(n, 3));
+}
+const gltfLoader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+const worldCenter = o => { const b = new THREE.Box3().setFromObject(o); return b.getCenter(new THREE.Vector3()); };
+gltfLoader.load('models/casa.stages.glb', gltf => {
+  model = gltf.scene; scene.add(model); window.__model = model;
+  model.updateMatrixWorld(true);
+  GROUPS = model.children.filter(c => /^g-/.test(c.name)).map(c => c.name.slice(2));
+  for (const k of GROUPS) {
+    G[k] = model.getObjectByName('g-' + k); base[k] = G[k].position.clone();
+    G[k].children.forEach(c => { c.userData.p0 = c.position.clone(); c.userData.cw = worldCenter(c); });   // quantization offset lives in the node: animate relative to it
+  }
+  const tl = new THREE.TextureLoader();
+  const tex = (url, rep) => { const t = tl.load(url); t.flipY = false; t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep, rep); t.anisotropy = 8; return t; };
+  const azulejos = tex('models/azulejos-bano.jpg', 0.55);
+  model.traverse(o => {
+    if (!o.isMesh) return;
+    const terrainLike = o.parent === G.terreno || o.parent === G.base;
+    o.receiveShadow = true; o.castShadow = o.parent !== G.terreno;
+    for (const m of (Array.isArray(o.material) ? o.material : [o.material])) {
+      m.emissive?.set(0x000000); m.emissiveMap = null;
+      if ('envMapIntensity' in m) m.envMapIntensity = 0.7;
+      if (/grass|dark green/i.test(m.name) && terrainLike) { m.color.multiplyScalar(1.35); m.roughness = 1; m.metalness = 0; if ('specularIntensity' in m) m.specularIntensity = 0; }
+      if (/rock wall|piedra/i.test(m.name) && m.map) { m.bumpMap = m.map; m.bumpScale = 2.2; }            // relief on the stone
+      if (/glass|vidrio/i.test(m.name)) { m.envMapIntensity = 0.12; m.roughness = 0.9; if ('specularIntensity' in m) m.specularIntensity = 0.1; }   // windows: the fill light that travels with the camera made a hot spot on every pane faced head-on
+      if (/mirror|espejo/i.test(m.name)) { m.color.setRGB(0.62, 0.66, 0.7); m.metalness = 0.35; m.roughness = 0.22; m.envMapIntensity = 0.35; }   // no fake mirror reflection
+      if (m.name === 'damero-cocina') { checkerFloor(o, m); m.roughness = 0.35; }            // kitchen floor (exported with the bathroom's material): the checker rug
+      if (m.name === 'venecita50x50') { m.map = azulejos; m.roughness = 0.3; }                // bathroom tiles: the slate set from /texturas
+      if (/caminos piedra/i.test(m.name) && m.map) { m.bumpMap = m.map; m.bumpScale = 0.8; m.roughness = 1; }  // gravel relief (subtle: strong bump made dark blotches)
+    }
+    if (terrainLike && /grass|caminos|dark green|piedra/i.test((Array.isArray(o.material) ? o.material[0] : o.material).name)) smoothNormals(o.geometry);
+  });
+  // One grass and one gravel, mapped in world space so neighbouring pieces continue without seams or changes of tone
+  // (the terrain, the lawn round the house and the far paths came with different materials and texture scales).
+  // A 1.4 km field of the same grass under the terrain hides its edge; the maquette fog fades it into the page.
+  const worldUV = (o, size) => { o.updateMatrixWorld(); const p = o.geometry.attributes.position, v = new THREE.Vector3(), uv = new Float32Array(p.count * 2);
+    for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld); uv[i * 2] = v.x / size; uv[i * 2 + 1] = v.z / size; }
+    o.geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); };
+  { let grass = null, gravel = null; const grassy = [], paths = [];
+    for (const k of ['terreno', 'base']) G[k]?.traverse(o => { if (!o.isMesh) return; const n = o.material.name;
+      if (/grass/i.test(n)) { grassy.push(o); if (k === 'terreno' && o.material.map) grass = o.material; }
+      if (/caminos piedra|groundcover rock/i.test(n)) { paths.push(o); if (/caminos piedra/i.test(n)) gravel = o.material; } });
+    if (grass) { grass.map.repeat.set(1, 1); for (const o of grassy) { worldUV(o, 2); o.material = grass; }   // 'Grass C 200cm': one tile per 2 m
+      const field = new THREE.Mesh(new THREE.PlaneGeometry(1400, 1400), grass); field.rotation.x = -Math.PI / 2; field.position.y = -1.2; field.receiveShadow = true;
+      G.terreno.add(field); worldUV(field, 2); }
+    if (gravel) { gravel.map.repeat.set(1, 1); for (const o of paths) { worldUV(o, 1.2); o.material = gravel; } } }
+  // walls that grow from the slab get their own clip plane (and their own materials, so the planes don't leak to other groups)
+  for (const k of ['ext', 'int', 'tanque']) G[k]?.traverse(o => { if (o.isMesh) o.material = Array.isArray(o.material) ? o.material.map(m => m.clone()) : o.material.clone(); });
+  for (const k of ['base', 'tanque', 'tanqueeq', 'piedras', 'paisaje', 'svc0', 'svc1', 'svc2', 'svc3', 'svc4', 'svc5']) G[k]?.traverse(o => { if (o.isMesh) o.castShadow = true; });
+  buildProxies(); buildLights(); buildLaptopScreen(); buildDoors(); buildReplacements(); buildTurntable(); closeTankRoom();
+  hint.textContent = 'Scroll'; bar.style.width = '0';
+  readScroll();
+}, e => { if (e.total) bar.style.width = (100 * e.loaded / e.total) + '%'; },
+err => { hint.textContent = 'Load error: ' + err.message; });
+
+// Enscape-library trees and shrubs only render inside Enscape; they are re-drawn as clean faceted stand-ins (models/proxies.json)
+// Kitchen checker rug, as in the renders: 20 cm tiles inside a 10 cm black frame, from the counter front to the living-room edge.
+// Drawn to measure on a canvas laid over the floor piece in world coordinates (its own UVs came from the bathroom tiles).
+// Rug x 1.84…4.69 (counter front → living), z −7.66…−5.87 (sink counter front → dining). Outside it, under the counters, stays dark.
+function checkerFloor(o, m) {
+  o.updateMatrixWorld();
+  const p = o.geometry.attributes.position, v = new THREE.Vector3(), b = new THREE.Box3();
+  for (let i = 0; i < p.count; i++) b.expandByPoint(v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld));
+  const X0 = b.min.x, Z0 = b.min.z, W = b.max.x - X0, D = b.max.z - Z0, PX = 600;      // px per metre
+  const cv = document.createElement('canvas'); cv.width = Math.round(W * PX); cv.height = Math.round(D * PX); const g = cv.getContext('2d');
+  const px = x => (x - X0) * PX, pz = z => (z - Z0) * PX;
+  const RUG = { x0: 1.84, x1: 4.69, z0: -7.66, z1: -5.87 }, FRAME = 0.10;
+  g.fillStyle = '#1c1c1c'; g.fillRect(0, 0, cv.width, cv.height);
+  const ix0 = RUG.x0 + FRAME, ix1 = RUG.x1 - FRAME, iz0 = RUG.z0 + FRAME, iz1 = RUG.z1 - FRAME;
+  const nx = Math.round((ix1 - ix0) / 0.2), nz = Math.round((iz1 - iz0) / 0.2), tx = (ix1 - ix0) / nx, tz = (iz1 - iz0) / nz;
+  for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) {
+    const light = (i + j) % 2 === 0, jit = Math.sin(i * 12.9898 + j * 78.233) * 6;           // a touch of tile-to-tile variation
+    const c = light ? 214 + jit : 46 + jit * 0.5;
+    g.fillStyle = `rgb(${c},${c - 2},${c - 6})`; g.fillRect(px(ix0 + i * tx), pz(iz0 + j * tz), tx * PX + 1, tz * PX + 1);
+  }
+  g.strokeStyle = 'rgba(120,118,112,.55)'; g.lineWidth = 1.2;                                   // grout
+  for (let i = 0; i <= nx; i++) { g.beginPath(); g.moveTo(px(ix0 + i * tx), pz(iz0)); g.lineTo(px(ix0 + i * tx), pz(iz1)); g.stroke(); }
+  for (let j = 0; j <= nz; j++) { g.beginPath(); g.moveTo(px(ix0), pz(iz0 + j * tz)); g.lineTo(px(ix1), pz(iz0 + j * tz)); g.stroke(); }
+  const uv = new Float32Array(p.count * 2);
+  for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld); uv[i * 2] = (v.x - X0) / W; uv[i * 2 + 1] = (v.z - Z0) / D; }
+  o.geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  const t = new THREE.CanvasTexture(cv); t.flipY = false; t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+  m.map = t; m.color?.set(0xffffff); m.needsUpdate = true;
+}
+
+async function buildProxies() {
+  let list = []; try { list = await (await fetch('models/proxies.json')).json(); } catch (e) { return; }
+  const grp = new THREE.Group(); grp.name = 'g-proxies'; grp.visible = false;
+  const mat = (c) => new THREE.MeshStandardMaterial({ color: c, roughness: 1, flatShading: true });
+  const greens = [0x3d6b3c, 0x486f3a, 0x35603a, 0x557a3e].map(mat), trunk = mat(0x4a3a2e);
+  const ico = new THREE.IcosahedronGeometry(1, 1), cyl = new THREE.CylinderGeometry(0.45, 0.7, 1, 6);
+  const hash = (a, b) => { const s = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return s - Math.floor(s); };
+  const add = (geo, m, x, y, z, sx, sy, sz, rot = 0) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.scale.set(sx, sy, sz); o.rotation.y = rot; o.castShadow = o.receiveShadow = true; grp.add(o); };
+  for (const q of list) {
+    const [sx, sy, sz] = q.size, [cx, cy, cz] = q.c;
+    if (Math.max(sx, sy, sz) < 0.5 || sy < 0.1 || cy > 10) continue;
+    const r = hash(cx, cz), m1 = greens[Math.floor(r * 4)], m2 = greens[Math.floor(hash(cz, cx) * 4)];
+    if (sy > 2.0) {
+      const h = sy, rx = sx / 2, rz = sz / 2;
+      add(cyl, trunk, cx, q.base + h * 0.22, cz, Math.max(0.12, sx * 0.04), h * 0.44, Math.max(0.12, sz * 0.04));
+      add(ico, m1, cx, q.base + h * 0.62, cz, rx, h * 0.3, rz, r * 6);
+      add(ico, m2, cx + rx * 0.35, q.base + h * 0.47, cz - rz * 0.25, rx * 0.72, h * 0.22, rz * 0.72, r * 3);
+      add(ico, m1, cx - rx * 0.3, q.base + h * 0.5, cz + rz * 0.3, rx * 0.7, h * 0.2, rz * 0.7, r * 9);
+    } else {
+      add(ico, m1, cx, q.base + sy * 0.4, cz, sx * 0.5, sy * 0.45, sz * 0.5, r * 6);
+      add(ico, m2, cx + sx * 0.22, q.base + sy * 0.3, cz + sz * 0.18, sx * 0.36, sy * 0.34, sz * 0.36, r * 3);
+      add(ico, m2, cx - sx * 0.2, q.base + sy * 0.32, cz - sz * 0.2, sx * 0.34, sy * 0.32, sz * 0.34, r * 9);
+    }
+  }
+  G.proxies = grp; base.proxies = grp.position.clone(); grp.children.forEach(c => { c.userData.p0 = c.position.clone(); });
+  scene.add(grp);
+}
+
+// Lights from the SketchUp lamp tags (models/lights.json): the Enscape fixtures are gone; indoor lamps become invisible warm lights
+// (8 nearest the camera are real lights), outdoor wall/path lights become small glows that switch on at night.
+const lampLights = [], omniLights = []; let lampList = [], spotList = [], fire = null, fireMeshes = [], fireTex = null, fireCtx = null;
+async function buildLights() {
+  let all = []; try { all = await (await fetch('models/lights.json')).json(); } catch (e) { all = []; }
+  const glowGeo = new THREE.SphereGeometry(0.03, 10, 8), glowMat = new THREE.MeshBasicMaterial({ toneMapped: false }); glowMat.color.setRGB(2.2, 1.6, 0.9);   // HDR: the bloom pass picks it up
+  const ge = new THREE.Group(), gp = new THREE.Group(); ge.visible = gp.visible = false; scene.add(ge, gp); G.lampsExt = ge; G.lampsPath = gp;
+  for (const l of all) if (l.k !== 'int') { const m = new THREE.Mesh(glowGeo, glowMat); m.position.set(...l.p); (l.k === 'path' ? gp : ge).add(m); }
+  // indoor lights sit inside the lamp fixtures and are aimed down and slightly into the room (away from the wall they hang on)
+  lampList = all.filter(l => l.k === 'int').map(l => { const out = new THREE.Vector3(HC.x - l.p[0], 0, HC.z - l.p[2]).normalize(); return { ...l, aim: [l.p[0] + out.x * 0.9, l.p[1] - 1.6, l.p[2] + out.z * 0.9] }; });
+  const bulbs = new THREE.Group(); bulbs.visible = false; scene.add(bulbs); G.bulbs = bulbs;
+  for (const l of lampList) if (!l.omni) { const m = new THREE.Mesh(glowGeo, glowMat); m.scale.setScalar(0.7); m.position.set(...l.p); bulbs.add(m); }   // ambient (omni) lamps: no visible bulb
+  // wall lamps are spots aimed down into the room; lamps with a shade or a glass globe (omni in lights.json) light all round, warm and soft
+  spotList = lampList.filter(l => !l.omni);
+  const nLamps = /[?&]lamps=all/.test(location.search) ? spotList.length : 8;   // the 8 nearest the camera are real lights; ?lamps=all (offline guide videos) lights every one
+  for (let i = 0; i < nLamps; i++) { const L = new THREE.SpotLight(0xffc489, 0, 7, rad(62), 0.75, 2); scene.add(L, L.target); lampLights.push(L); }
+  for (const l of lampList.filter(l => l.omni)) { const L = new THREE.PointLight(0xffb06a, 0, 4.5, 2); L.position.set(...l.p); L.userData.i = l.i ?? 0.4; scene.add(L); omniLights.push(L); }
+  // the wood stove: light only out of its glass door (faces −z, into the living room), not up the wall and the flue
+  fire = new THREE.SpotLight(0xff7a2a, 0, 6, rad(70), 0.85, 1.6); fire.position.set(4.34, 0.61, -4.24); fire.target.position.set(4.34, 0.25, -6.3);
+  scene.add(fire, fire.target);
+  // animated flames on the stove glass
+  const c = document.createElement('canvas'); c.width = c.height = 128; fireCtx = c.getContext('2d');
+  fireTex = new THREE.CanvasTexture(c); fireTex.colorSpace = THREE.SRGBColorSpace;
+  model.traverse(o => { if (o.isMesh && /fuego/i.test((Array.isArray(o.material) ? o.material[0] : o.material).name)) { fireMeshes.push(o); const m = o.material; m.emissiveMap = fireTex; m.emissive?.setRGB(1, 1, 1); m.color?.setRGB(0.05, 0.03, 0.02); } });
+}
+function drawFire(time) {
+  if (!fireCtx) return;
+  const g = fireCtx, W = 128;
+  g.globalCompositeOperation = 'source-over'; g.fillStyle = '#000'; g.fillRect(0, 0, W, W);
+  g.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 9; i++) {
+    const x = 18 + i * 12 + Math.sin(time * 3 + i * 1.7) * 4, h = 55 + 30 * Math.abs(Math.sin(time * 2.1 + i * 2.3)), w = 16 + 6 * Math.sin(time * 4 + i);
+    const gr = g.createRadialGradient(x, W - 10, 2, x, W - h * 0.55, h * 0.7);
+    gr.addColorStop(0, 'rgba(255,240,180,.95)'); gr.addColorStop(.35, 'rgba(255,150,40,.7)'); gr.addColorStop(.75, 'rgba(200,50,10,.25)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = gr; g.beginPath(); g.ellipse(x, W - h * 0.45, w, h * 0.6, 0, 0, Math.PI * 2); g.fill();
+  }
+  fireTex.needsUpdate = true;
+}
+// The laptop on the mezzanine desk shows the first screen of the portfolio case study (same as the page that scrolls in next)
+function buildLaptopScreen() {
+  const c = document.createElement('canvas'); c.width = 1536; c.height = 1024; const g = c.getContext('2d');
+  g.fillStyle = '#080a0c'; g.fillRect(0, 0, c.width, c.height);
+  g.strokeStyle = 'rgba(255,255,255,.05)'; g.lineWidth = 2; for (let x = 0; x < c.width; x += 96) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, c.height); g.stroke(); } for (let y = 0; y < c.height; y += 96) { g.beginPath(); g.moveTo(0, y); g.lineTo(c.width, y); g.stroke(); }
+  g.fillStyle = '#00f5a0'; g.font = '500 34px ui-monospace, Menlo, monospace'; g.fillText('_ PROJECT', 96, 250);
+  g.fillStyle = '#ffffff'; g.font = '700 150px system-ui, -apple-system, sans-serif'; g.fillText('Modeling', 90, 440); g.fillText('+ Render', 90, 600);
+  g.fillStyle = '#8b93a1'; g.font = '400 40px system-ui, sans-serif'; g.fillText('House in the mountains · Chubut, Patagonia', 96, 760);
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+  const plane = new THREE.Mesh(new THREE.PlaneGeometry(0.305, 0.203), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }));
+  plane.position.set(9.685, 3.526, -3.563); plane.rotation.y = Math.PI; plane.name = 'laptop-screen';
+  INTERIOR_EXTRA.add(plane);
+}
+
+// Raycast helper against the house (walls, furniture) – used to find which side of an appliance faces the room, and the tank-room doorway
+const houseMeshes = () => { const list = []; for (const k of ['ext', 'int', 'tanque', 'entrepiso', 'interior', 'columnas']) G[k]?.traverse(o => { if (o.isMesh) list.push(o); }); return list; };
+function frontOf(min, max) {   // the horizontal direction away from the nearest wall behind the object
+  const c = new THREE.Vector3((min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2), rc = new THREE.Raycaster(), meshes = houseMeshes();
+  let best = null, bd = Infinity;
+  for (const d of [[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]]) {
+    const dir = new THREE.Vector3(...d), half = Math.abs(d[0]) ? (max[0] - min[0]) / 2 : (max[2] - min[2]) / 2;
+    rc.set(c.clone().addScaledVector(dir, half + 0.02), dir); rc.far = 0.6;
+    const h = rc.intersectObjects(meshes, false)[0]; if (h && h.distance < bd) { bd = h.distance; best = dir.clone().negate(); }
+  }
+  return best || new THREE.Vector3(HC.x - c.x, 0, HC.z - c.z).normalize();
+}
+// Replacement models: free (CC0) Poly Haven oven + potted plants, and a modelled fridge and wall heaters (models/replacements.json)
+async function buildReplacements() {
+  let rep; try { rep = await (await fetch('models/replacements.json')).json(); } catch (e) { return; }
+  const place = (obj, box, front, fitHeight = true) => {
+    const b = new THREE.Box3().setFromObject(obj), size = b.getSize(new THREE.Vector3());
+    const h = box.max[1] - box.min[1], s = fitHeight ? h / size.y : 1;
+    obj.scale.multiplyScalar(s); obj.rotation.y = Math.atan2(front.x, front.z);
+    const b2 = new THREE.Box3().setFromObject(obj), c2 = b2.getCenter(new THREE.Vector3());
+    obj.position.x += (box.min[0] + box.max[0]) / 2 - c2.x; obj.position.z += (box.min[2] + box.max[2]) / 2 - c2.z; obj.position.y += box.min[1] - b2.min.y;
+    obj.traverse(o => { if (o.isMesh) { o.castShadow = o.receiveShadow = true; } });
+  };
+  const load = url => gltfLoader.loadAsync(url).then(g => g.scene);
+  if (rep.oven) {
+    const o = await load('models/ph/electric_stove.glb'), f = frontOf(rep.oven.min, rep.oven.max);
+    place(o, rep.oven, new THREE.Vector3(f.z, 0, -f.x));                                                 // +90° (counter-clockwise from above)
+    o.traverse(m => { if (m.isMesh) { m.material = m.material.clone(); m.material.color.setRGB(0.085, 0.085, 0.09); m.material.roughness = 0.42; m.material.metalness = 0.35; } });   // black finish
+    INTERIOR_EXTRA.add(o);
+  }
+  if (rep.fridge) { const f = makeFridge(rep.fridge); INTERIOR_EXTRA.add(f); }
+  for (const hb of rep.heaters || []) INTERIOR_EXTRA.add(makeHeater(hb));
+  // plants: pick a model by height; only the ones inside the walls (the exterior ones sat on the deck and don't belong to the design)
+  const kinds = { tall: 'potted_plant_02', mid: 'calathea_orbifolia_01', low: 'fern_02', tiny: 'potted_plant_04' }, cache = {};
+  for (const p of rep.plants || []) {
+    if (!(p.min[0] > 1.2 && p.max[0] < 11.3 && p.min[2] > -9.6 && p.max[2] < -3.5)) continue;
+    const h = p.max[1] - p.min[1], kind = h > 0.9 ? kinds.tall : h > 0.5 ? kinds.mid : h > 0.3 ? kinds.low : kinds.tiny;
+    cache[kind] ??= load(`models/ph/${kind}.glb`);
+    const o = (await cache[kind]).clone(true);
+    place(o, p, new THREE.Vector3(Math.sin(p.min[0] * 7), 0, Math.cos(p.min[2] * 5)).normalize());
+    INTERIOR_EXTRA.add(o);
+  }
+}
+function makeFridge(box) {
+  const w = box.max[0] - box.min[0], h = box.max[1] - box.min[1], d = box.max[2] - box.min[2], front = frontOf(box.min, box.max);
+  const along = Math.abs(front.x) > 0.5;              // front faces ±x → width runs along z
+  const W = along ? d : w, D = along ? w : d;
+  const g = new THREE.Group();
+  const white = new THREE.MeshStandardMaterial({ color: 0xf0f0ec, roughness: 0.32, metalness: 0 }), steel = new THREE.MeshStandardMaterial({ color: 0xb9bec4, roughness: 0.25, metalness: 0.9 }), dark = new THREE.MeshStandardMaterial({ color: 0x1d1f22, roughness: 0.6 });
+  const body = new THREE.Mesh(new RoundedBoxGeometry(W - 0.02, h - 0.03, D - 0.04, 4, 0.025), white); body.position.y = h / 2; g.add(body);
+  const gap = new THREE.Mesh(new THREE.BoxGeometry(W - 0.03, 0.008, 0.01), dark); gap.position.set(0, h * 0.66, (D - 0.04) / 2 + 0.002); g.add(gap);   // freezer / fridge split
+  const kick = new THREE.Mesh(new THREE.BoxGeometry(W - 0.06, 0.06, 0.02), dark); kick.position.set(0, 0.03, (D - 0.04) / 2 - 0.005); g.add(kick);
+  for (const [y0, y1] of [[h * 0.7, h * 0.92], [h * 0.36, h * 0.62]]) {   // vertical handles
+    const hd = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, y1 - y0, 10), steel); hd.position.set(W / 2 - 0.07, (y0 + y1) / 2, (D - 0.04) / 2 + 0.035); g.add(hd);
+    for (const yy of [y0 + 0.01, y1 - 0.01]) { const st = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.007, 0.035, 8), steel); st.rotation.x = Math.PI / 2; st.position.set(W / 2 - 0.07, yy, (D - 0.04) / 2 + 0.018); g.add(st); }
+  }
+  g.rotation.y = Math.atan2(front.x, front.z);
+  g.position.set((box.min[0] + box.max[0]) / 2, box.min[1], (box.min[2] + box.max[2]) / 2);
+  g.traverse(o => { if (o.isMesh) o.castShadow = o.receiveShadow = true; });
+  return g;
+}
+function makeHeater(box) {   // balanced-flue wall gas heater: rounded casing, slotted front, small glowing window
+  const w = box.max[0] - box.min[0], h = box.max[1] - box.min[1], d = box.max[2] - box.min[2], front = frontOf(box.min, box.max);
+  const along = Math.abs(front.x) > 0.5, W = Math.max(along ? d : w, 0.35), D = Math.max(along ? w : d, 0.16), H = Math.max(h, 0.45);
+  const c = document.createElement('canvas'); c.width = 128; c.height = 128; const x = c.getContext('2d');
+  x.fillStyle = '#2b2d30'; x.fillRect(0, 0, 128, 128); x.fillStyle = '#121315'; for (let y = 14; y < 70; y += 7) x.fillRect(14, y, 100, 3);
+  x.fillStyle = '#0b0b0c'; x.fillRect(40, 84, 48, 22);
+  const front_ = new THREE.CanvasTexture(c); front_.colorSpace = THREE.SRGBColorSpace;
+  const g = new THREE.Group(), casing = new THREE.MeshStandardMaterial({ color: 0x2b2d30, roughness: 0.45, metalness: 0.3 });
+  const body = new THREE.Mesh(new RoundedBoxGeometry(W, H, D, 3, 0.02), casing); body.position.y = H / 2; g.add(body);
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(W * 0.94, H * 0.94), new THREE.MeshStandardMaterial({ map: front_, roughness: 0.6 })); face.position.set(0, H / 2, D / 2 + 0.002); g.add(face);
+  const glow = new THREE.Mesh(new THREE.PlaneGeometry(W * 0.35, H * 0.16), new THREE.MeshBasicMaterial({ color: 0xff7a2a, toneMapped: false })); glow.position.set(0, H * 0.26, D / 2 + 0.004); glow.name = 'heater-glow'; g.add(glow);
+  g.rotation.y = Math.atan2(front.x, front.z);
+  g.position.set((box.min[0] + box.max[0]) / 2, box.min[1], (box.min[2] + box.max[2]) / 2);
+  g.traverse(o => { if (o.isMesh) o.castShadow = o.receiveShadow = true; });
+  return g;
+}
+// Record player + a few sleeves on the living-room bench
+function buildTurntable() {
+  const g = new THREE.Group(), wood = new THREE.MeshStandardMaterial({ color: 0x3b2a1f, roughness: 0.55 }), alu = new THREE.MeshStandardMaterial({ color: 0xc8ccd0, metalness: 0.9, roughness: 0.25 }),
+    black = new THREE.MeshStandardMaterial({ color: 0x0d0d0f, roughness: 0.35 }), label = new THREE.MeshStandardMaterial({ color: 0xc23b22, roughness: 0.6 });
+  const add = (geo, m, x, y, z) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.castShadow = o.receiveShadow = true; g.add(o); return o; };
+  add(new RoundedBoxGeometry(0.42, 0.09, 0.34, 3, 0.012), wood, 0, 0.045, 0);
+  add(new THREE.CylinderGeometry(0.15, 0.15, 0.012, 48), alu, -0.04, 0.096, 0);
+  add(new THREE.CylinderGeometry(0.148, 0.148, 0.003, 48), black, -0.04, 0.104, 0);
+  add(new THREE.CylinderGeometry(0.045, 0.045, 0.004, 32), label, -0.04, 0.106, 0);
+  const arm = add(new THREE.CylinderGeometry(0.004, 0.004, 0.24, 8), alu, 0.14, 0.12, 0.02); arm.rotation.set(Math.PI / 2, 0, 0.35);
+  add(new THREE.CylinderGeometry(0.018, 0.018, 0.03, 16), alu, 0.16, 0.1, 0.12);
+  g.position.set(6.06, 0.77, -3.78); g.rotation.y = Math.PI; g.name = 'turntable'; INTERIOR_EXTRA.add(g);
+  // sleeves leaning against the bench
+  const covers = ['#d9a441', '#2f5d8a', '#b8442f', '#e8e1d3'];
+  covers.forEach((col, i) => { const m = new THREE.Mesh(new THREE.BoxGeometry(0.31, 0.31, 0.006), new THREE.MeshStandardMaterial({ color: col, roughness: 0.7 }));
+    m.position.set(6.0 + i * 0.03, 0.17 + 0.155, -3.98 - i * 0.012); m.rotation.x = -0.12; m.castShadow = m.receiveShadow = true; INTERIOR_EXTRA.add(m); });
+}
+// The water-tank room on the mezzanine has no door in the model: find the opening in its south face and close it with a timber door
+function closeTankRoom() {
+  if (!G.tanque) return;
+  const meshes = []; G.tanque.traverse(o => { if (o.isMesh) meshes.push(o); });
+  const rc = new THREE.Raycaster(), open = [];
+  for (let x = 8.86; x <= 11.26; x += 0.04) {
+    const miss = [2.95, 3.6].every(y => { rc.set(new THREE.Vector3(x, y, -7.2), new THREE.Vector3(0, 0, -1)); rc.far = 0.7; return !rc.intersectObjects(meshes, false).length; });
+    open.push([x, miss]);
+  }
+  let run = null, best = null;
+  for (const [x, miss] of open) { if (miss) { run ??= [x, x]; run[1] = x; } else { if (run && (!best || run[1] - run[0] > best[1] - best[0])) best = run; run = null; } }
+  if (run && (!best || run[1] - run[0] > best[1] - best[0])) best = run;
+  if (!best || best[1] - best[0] < 0.45) return;
+  const w = best[1] - best[0] + 0.04, door = new THREE.Mesh(new THREE.BoxGeometry(w, 2.0, 0.035), new THREE.MeshStandardMaterial({ color: 0x8a6646, roughness: 0.55 }));
+  door.position.set((best[0] + best[1]) / 2, 2.72 + 1.0, -7.63); door.castShadow = door.receiveShadow = true; door.name = 'tank-room-door';
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.025, 12, 8), new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.8, roughness: 0.3 }));
+  knob.position.set(w / 2 - 0.08, 0, 0.03); door.add(knob);
+  INTERIOR_EXTRA.add(door);
+}
+// Interior doors: put back, and swing open as the camera reaches them (models/replacements.json → doors)
+const doors = [];
+async function buildDoors() {
+  let rep; try { rep = await (await fetch('models/replacements.json')).json(); } catch (e) { return; }
+  const hall = new THREE.Vector3(8.9, 0, -7.25);   // the corridor the camera comes from; doors swing away from it
+  for (const d of rep.doors || []) {
+    const grp = G[d.g]; if (!grp) continue;
+    const alongX = (d.max[0] - d.min[0]) > (d.max[2] - d.min[2]);
+    const hinge = alongX ? new THREE.Vector3(d.min[0], 0, (d.min[2] + d.max[2]) / 2) : new THREE.Vector3((d.min[0] + d.max[0]) / 2, 0, d.min[2]);
+    const free = alongX ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(0, 0, 1), normal = alongX ? new THREE.Vector3(0, 0, 1) : new THREE.Vector3(1, 0, 0);
+    const center = new THREE.Vector3((d.min[0] + d.max[0]) / 2, 0, (d.min[2] + d.max[2]) / 2), sideHall = Math.sign(hall.clone().sub(center).dot(normal)) || 1;
+    const turned = new THREE.Vector3(free.z, 0, -free.x);           // `free` rotated +90° about Y
+    const sign = Math.sign(turned.dot(normal)) === -sideHall ? 1 : -1;
+    const pivot = new THREE.Group(); pivot.position.copy(hinge); grp.add(pivot); pivot.updateMatrixWorld(true);
+    for (const c of [...grp.children]) if (c !== pivot) pivot.attach(c);
+    doors.push({ pivot, center, sign, grp });
+  }
+}
+
+// Clip planes for the walls that grow out of the slab (one per group)
+const clips = {};
+function reveal(k, t0, t1, y0 = -0.3, y1 = 5.9) {
+  const g = G[k]; if (!g) return;
+  clips[k] ??= new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
+  const s = seg(T, t0, t1), on = s < 1;
+  g.visible = R.force[k] ?? (T > t0);
+  clips[k].constant = y0 + (y1 - y0) * inOutCubic(s);
+  if (g.userData.clipOn !== on) { g.userData.clipOn = on; g.traverse(o => { if (o.isMesh) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { m.clippingPlanes = on ? [clips[k]] : null; m.clipShadows = true; m.needsUpdate = true; }); }); }
+}
+function vis(k, on) { if (G[k]) G[k].visible = R.force[k] ?? on; }
+let T = 0;
+const UP = new THREE.Vector3(0, 1, 0), DOWN = new THREE.Vector3(0, -1, 0);
+// Entrance: pieces arrive from `dir` over `dist` metres and DECELERATE into place (no overshoot), each one slightly after the previous (`spread`).
+// `dir` may be a function of the piece (e.g. from its own cardinal side); `order` sorts the units (cascades). A unit is one SketchUp element:
+// the build keeps columns and deck steps as nodes named p<item>; any other child is a unit of its own.
+function unitsOf(g) {
+  if (g.userData.units) return g.userData.units;
+  const m = new Map(); for (const c of g.children) { const id = c.name.match(/^p\d+/)?.[0] ?? c.uuid; if (!m.has(id)) m.set(id, []); m.get(id).push(c); }
+  return g.userData.units = [...m.values()].map(list => ({ list, c: list.reduce((a, o) => a.add(o.userData.cw ?? o.position), new THREE.Vector3()).divideScalar(list.length) }));
+}
+function enter(k, t0, t1, dir, dist, spread = 0.4, ease = outCubic, order = null) {
+  const g = G[k]; if (!g) return;
+  g.visible = R.force[k] ?? (T > t0);
+  let list = unitsOf(g); if (order) { g.userData.sorted ??= [...list].sort(order); list = g.userData.sorted; }
+  const n = list.length;
+  list.forEach((u, i) => {
+    const d = n > 1 ? (i / (n - 1)) * spread : 0, v = clamp((seg(T, t0, t1) - d) / (1 - spread)), o = (1 - ease(v)) * dist;
+    for (const c of u.list) { const p0 = c.userData.p0, dv = typeof dir === 'function' ? dir(c) : dir; if (p0) c.position.set(p0.x + dv.x * o, p0.y + dv.y * o, p0.z + dv.z * o); }
+  });
+}
+const X = (x) => new THREE.Vector3(x, 0, 0), Z = (z) => new THREE.Vector3(0, 0, z);
+const cardinal = c => { const w = c.userData.cw || HC, nx = (w.x - HC.x) / 5.8, nz = (w.z - HC.z) / 4.0; return Math.abs(nx) > Math.abs(nz) ? X(Math.sign(nx)) : Z(Math.sign(nz)); };
+const svcDir = c => (c.userData.cw && c.userData.cw.y > 1.4) ? UP : DOWN;     // cabinet roofs come down, bodies come up
+
+const clockwise = (a, b) => { const ang = u => { const v = Math.atan2(u.c.z - HC.z, u.c.x - HC.x) + Math.PI / 2; return v < 0 ? v + 2 * Math.PI : v; }; return ang(a) - ang(b); };
+// Furniture, fittings, interior doors and openings: they fade in where they stand (no movement) at the end of the assembly.
+// Their meshes get their own materials (shared ones would fade the walls too); the set is rebuilt as the replacement models arrive.
+let fadeMats = null, fadeSeen = -1, fadeA = -1;
+function fadeInterior(a) {
+  const groups = [G.interior, G['ab-in'], ...GROUPS.filter(k => /^door\d+$/.test(k)).map(k => G[k]), INTERIOR_EXTRA];
+  let n = 0; INTERIOR_EXTRA.traverse(() => n++);
+  if (n !== fadeSeen) {
+    fadeSeen = n; fadeA = -1; fadeMats ??= new Map();
+    for (const g of groups) g?.traverse(o => {
+      if (!o.isMesh) return;
+      if (!o.userData.ownMat) { o.material = Array.isArray(o.material) ? o.material.map(m => m.clone()) : o.material.clone(); o.userData.ownMat = true; }
+      for (const m of Array.isArray(o.material) ? o.material : [o.material]) if (!fadeMats.has(m)) fadeMats.set(m, { op: m.opacity, tr: m.transparent });
+    });
+  }
+  for (const g of groups) if (g) g.visible = R.force[g.name.slice(2)] ?? (a > 0);
+  INTERIOR_EXTRA.visible = !R.orig && a > 0;
+  if (a === fadeA) return; fadeA = a;
+  for (const [m, b] of fadeMats) { const tr = b.tr || a < 1; if (m.transparent !== tr) { m.transparent = tr; m.needsUpdate = true; } m.opacity = b.op * a; }
+}
+
+function applyAssembly(t) {
+  T = t;
+  const byX = (a, b) => a.c.x - b.c.x;
+  // 1 · embankment + path + slab together, from below; then the service cabinets, clockwise
+  enter('base', 5, 9.5, DOWN, 8, 0, outQuart);
+  const lowFirst = (a, b) => a.c.y - b.c.y;   // a cabinet's body rises first, its roof comes down last
+  GROUPS.filter(k => /^svc\d+$/.test(k)).sort((a, b) => +a.slice(3) - +b.slice(3)).forEach((k, i) => enter(k, 9.5 + i * 0.7, 12 + i * 0.7, svcDir, 5, 0.35, outQuart, lowFirst));
+  // 2 · columns one by one, from below (clockwise round the house)
+  enter('columnas', 15.5, 20, DOWN, 5.5, 0.75, outQuart, clockwise);
+  // 3 · mezzanine slab as one block from above, then the stairs
+  enter('entrepiso', 20, 22.5, UP, 7, 0, outQuart);
+  enter('escalera', 22.5, 24.5, UP, 5, 0, outQuart);
+  // 4 · perimeter walls grow out of the slab · 5 · interior walls, the tank room (+ tank), the mezzanine rail
+  reveal('ext', 24.5, 28); reveal('int', 28, 31);
+  reveal('tanque', 31, 33.5, 2.6, 5.2); enter('tanqueeq', 33, 34.5, UP, 4, 0, outQuart);
+  enter('baranda', 34.5, 36, UP, 4, 0, outQuart);
+  // 6 · black side sheets, each from the side it faces; then the stone base from below
+  enter('chapa-e', 36, 39, X(1), 14, 0.3, outQuart); enter('chapa-s', 36.8, 39.8, Z(1), 14, 0.3, outQuart);
+  enter('chapa-o', 37.6, 40.6, X(-1), 14, 0.3, outQuart);
+  enter('piedras', 40.5, 44, DOWN, 3, 0.4, outCubic);
+  // 7 · the roof as one block from above, together with its sheet covering ('chapas' = the CHAPAS tag: the roof sheets, not the side ones)
+  //     (+ its solar panels); openings, each straight in from the facade it sits on
+  enter('techo', 44, 47, UP, 14, 0, outQuart); enter('chapas', 44, 47, UP, 14, 0, outQuart);
+  enter('solar', 46.5, 48.5, UP, 4, 0.4, outQuart);
+  enter('ab-z1', 48, 51, Z(1), 4, 0.3, outQuart); enter('ab-x1', 48.5, 51.5, X(1), 4, 0.3, outQuart);
+  enter('ab-z0', 49, 52, Z(-1), 4, 0.3, outQuart); enter('ab-x0', 49.5, 52.5, X(-1), 4, 0.3, outQuart);
+  enter('lucesext', 52, 53.5, UP, 1.2, 0, outCubic);                                                // exterior wall lights, all at once
+  // 8 · deck + garage posts from below · 9 · the deck, then its steps one by one · 10 · deck and garage roofs, each one block
+  enter('deckposts', 53.5, 56.5, DOWN, 3, 0.5, outQuart);
+  enter('deckboards', 56.5, 58.5, UP, 3, 0, outQuart);
+  enter('deckstairs', 58.5, 61, UP, 2, 0.6, outQuart, byX);                                        // from the deck edge down
+  enter('techodeck', 61, 63.5, UP, 7, 0, outQuart);
+  enter('techogarage', 62.5, 65, UP, 7, 0, outQuart);
+  enter('paisaje', 64, 68.5, DOWN, 5, 0.6, outCubic); enter('proxies', 64.5, 68.5, DOWN, 5, 0.6, outCubic);
+  // 11 · the interior fades in, then the drone takes over
+  fadeInterior(R.orig ? 0 : smooth(seg(t, 68.5, ASM)));
+}
+
+// Camera: assembly orbit, then the key path. `cameraIdeal` is where the camera wants to be; the loop eases the real camera toward it.
+const ideal = { p: new THREE.Vector3(), q: new THREE.Vector3(), fov: 45 };
+function ease(u, a, b) { return a.shot && b.shot ? smooth(clamp((u - 0.12) / 0.76)) : a.shot ? u * u * (2 - u) : b.shot ? 1 - (1 - u) * (1 - u) : u; }
+function cameraIdeal(t) {
+  if (t < ASM) {
+    const u = smooth(t / ASM), ang = rad(-66 + 183.11 * u), r = 30 - 11.108 * u, h = 16 - 9.2189 * u;   // ends exactly on the exterior render's camera
+    ideal.p.set(6.2 + r * Math.cos(ang), h, -6.8 + r * Math.sin(ang)); ideal.q.copy(HC).lerp(KEYS[0].q, u * u); ideal.fov = 45 + (KEYS[0].fov - 45) * u * u; return ideal;
+  }
+  let i = KEYS.length - 2;
+  for (let k = 0; k < KEYS.length - 1; k++) if (t < KEYS[k + 1].t) { i = k; break; }
+  const a = KEYS[i], b = KEYS[i + 1], u = ease(clamp((t - a.t) / (b.t - a.t)), a, b), f = (i + u) / (KEYS.length - 1);
+  camCurve.getPoint(f, ideal.p); tgtCurve.getPoint(f, ideal.q); ideal.fov = a.fov + (b.fov - a.fov) * u; return ideal;
+}
+const look = new THREE.Vector3(); let snap = true;
+function cameraAt(t, dt = 0) {   // sets the real camera; dt>0 eases it (soft transitions), dt=0 snaps (checker, review)
+  const id = cameraIdeal(t);
+  if (snap || dt === 0) { camera.position.copy(id.p); look.copy(id.q); camera.fov = id.fov; snap = false; }
+  else { const k = 1 - Math.exp(-dt * 4.5); camera.position.lerp(id.p, k); look.lerp(id.q, k); camera.fov += (id.fov - camera.fov) * k; }
+  camera.lookAt(look); camera.updateProjectionMatrix();
+}
+
+let lastCap = -2;
+function captionAt(t) {
+  const i = CAPTIONS.findIndex(c => t >= c[0] && t < c[1]);
+  if (i === lastCap) return; lastCap = i;
+  if (i < 0) return;
+  const c = CAPTIONS[i];
+  cap.style.opacity = 0;
+  setTimeout(() => { cap.querySelector('.k').textContent = c[2]; cap.querySelector('.t').textContent = c[3]; cap.querySelector('.s').textContent = c[4]; cap.style.opacity = 1; }, 180);
+}
+
+// ── Scroll → time ──────────────────────────────────────────────────────────────
+let target = 0, tCur = 0;
+function readScroll() {
+  if (R.active || R.kf) return;
+  const sc = $('scroll'), max = sc.offsetHeight - innerHeight;
+  target = clamp(scrollY / max) * END;
+}
+addEventListener('scroll', readScroll, { passive: true });
+addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); composer?.setSize(innerWidth, innerHeight); readScroll(); });
+
+const clock = new THREE.Clock(); const nearest = new THREE.Vector3(), camXZ = new THREE.Vector3();
+renderer.setAnimationLoop(() => {
+  const dt = Math.min(clock.getDelta(), 0.1), now = performance.now() / 1000;
+  tCur += (target - tCur) * 0.07;
+  const t = tCur;
+  if (model) {
+    if (!R.orig) applyAssembly(t);
+    if (!R.free) cameraAt(t, dt);
+    const inside = smooth(seg(t, T_DOOR, T_DOOR + 3)), night = smooth(seg(t, T_NIGHT - 1.5, T_NIGHT + 2.5));
+    skyMat.uniforms.alpha.value = smooth(seg(t, T_DOOR - 4, T_DOOR)); skyMat.uniforms.night.value = night;   // panorama through the windows, darkening to night
+    sunFlare.visible = inside < 0.5;
+    sun.intensity = 2.7 * (1 - night);
+    if (gradeU) gradeU.warm.value = 0.04 + 0.07 * inside * (1 - 0.5 * night);   // warmer indoors, like the renders if (bloom) bloom.strength = 0.12 + 0.06 * inside + 0.04 * night;
+    renderer.toneMappingExposure = 0.95 + (0.18 - 0.13 * night) * inside - 0.05 * night;   // daylight interiors brighter (renders), nights as they were
+    scene.environmentIntensity = (0.7 + 0.3 * inside) * (1 - 0.88 * night);
+    hemi.intensity = (1.1 - 0.55 * inside) * (1 - night) + 0.08 * night; hemi.color.copy(hemiDay).lerp(hemiNight, night);
+    fill.intensity = 1.6 * inside * (1 - 0.6 * night); fill.position.copy(camera.position);
+    // indoor lamps: the 8 nearest to the camera are real lights; brighter at night
+    const lampsOn = !R.orig && inside > 0;
+    if (G.lampsExt) G.lampsExt.visible = !R.orig && t >= 53.5 && night > 0.2 && inside < 0.5;   // from inside, their bulbs through the panes read as reflections if (G.lampsPath) G.lampsPath.visible = !R.orig && t >= 66 && night > 0.2;
+    if (spotList.length) { const order = spotList.map((l, i) => [i, camera.position.distanceToSquared(nearest.set(l.p[0], l.p[1], l.p[2]))]).sort((a, b) => a[1] - b[1]);
+      lampLights.forEach((L, j) => { const o = order[j]; if (!o) { L.intensity = 0; return; } const l = spotList[o[0]]; L.position.set(...l.p); L.target.position.set(...l.aim); L.intensity = lampsOn ? (4.5 + 3.5 * night) * inside : 0; }); }
+    for (const L of omniLights) L.intensity = lampsOn ? (4.5 + 3.5 * night) * inside * L.userData.i : 0;
+    if (G.bulbs) G.bulbs.visible = lampsOn;
+    if (fire) { const f = 0.75 + 0.25 * Math.sin(now * 13) * Math.sin(now * 7.1 + 1.3) + 0.1 * Math.random(); fire.intensity = lampsOn ? (2.2 + 1.8 * night) * f * inside : 0;
+      if (lampsOn) drawFire(now); fireMeshes.forEach(o => { const m = o.material; m.emissiveIntensity = lampsOn ? 1.4 * f : 0; }); }
+    // doors swing open as the camera gets close (and close again behind it)
+    camXZ.set(camera.position.x, 0, camera.position.z);
+    for (const d of doors) { const open = smooth(1 - (camXZ.distanceTo(d.center) - 1.1) / 2.2); d.pivot.rotation.y = d.sign * rad(88) * open; }
+    captionAt(t);
+    const inRender = renderKeyframes(t);
+    screenEl.style.opacity = smooth(seg(t, END - 5.5, END - 1.5));         // the laptop screen fills the frame → the page's hero takes over, then the content scrolls in
+    cap.style.opacity = t > END - 5 || inRender ? 0 : (cap.style.opacity === '0' ? 1 : cap.style.opacity || 1);
+    count.textContent = String(Math.round(t / END * 100)).padStart(3, '0') + ' %';
+    prog.style.width = (t / END * 100) + '%';
+    hint.style.opacity = t < 1.5 ? 1 : 0;
+  }
+  R.beforeRender?.(t, dt);
+  composer ? composer.render() : renderer.render(scene, camera);
+});
+window.__setT = v => { target = tCur = v; snap = true; };   // test hook: jump without easing
+window.__END = END;
+window.__app = { THREE, scene, camera, renderer, G, get GROUPS() { return [...GROUPS, 'proxies']; }, KEYS, END, CAPTIONS, NAMES, setT: window.__setT, getT: () => tCur, getModel: () => model, cameraAt, render: () => (composer ? composer.render() : renderer.render(scene, camera)), get composer() { return composer; }, skyDome, tOf,
+  resize: (w, h) => { camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h, false); composer?.setSize(w, h); } };   // review calibration: render into a box that isn't the window
+if (R.active) import('./casa-review.js');
+if (R.kf) import('./casa-kf.js');
+
+// Dev: what is under a point? (first mesh hit looking down)
+window.__pick = (x, z, y0 = 2) => { const meshes = []; model.traverse(o => { if (o.isMesh && o.visible) meshes.push(o); });
+  const rc = new THREE.Raycaster(new THREE.Vector3(x, y0, z), new THREE.Vector3(0, -1, 0)); return rc.intersectObjects(meshes, false).slice(0, 4).map(h => ({ y: +h.point.y.toFixed(2), group: h.object.parent?.name, mat: h.object.material.name })); };
+// Dev check: walk the camera path and report every place where a segment of it crosses geometry (doors excluded: they swing open).
+window.__checkPath = (t0 = T_DOOR - 3, t1 = END, step = 0.25) => {
+  const meshes = []; model.traverse(o => { if (!o.isMesh || !o.visible) return; for (let p = o; p; p = p.parent) if (/^g-door/.test(p.name)) return; meshes.push(o); });
+  INTERIOR_EXTRA.traverse(o => { if (o.isMesh) meshes.push(o); });
+  const rc = new THREE.Raycaster(); const hits = []; let prev = null;
+  for (let t = t0; t <= t1; t += step) {
+    const p = cameraIdeal(t).p.clone();
+    if (prev) { const d = p.clone().sub(prev), L = d.length();
+      if (L > 1e-4) { rc.set(prev, d.normalize()); rc.far = L; const h = rc.intersectObjects(meshes, false)[0];
+        if (h) hits.push({ t: +t.toFixed(2), at: h.point.toArray().map(v => +v.toFixed(2)), obj: h.object.parent?.name || h.object.name }); } }
+    prev = p;
+  }
+  return hits;
+};
+</script>
+</body>
+</html>

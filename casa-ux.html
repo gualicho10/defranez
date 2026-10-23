@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rancho Relaxo · UX prototype</title>
+<!-- Design prototype for the scroll story: render keyframes (still image + text) alternate with the 3D segments.
+     No three.js here: 3D segments are placeholders so the rhythm of the whole scroll can be judged. Not for production. -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#080a0c;--surface:#0e1114;--accent:#00f5a0;--text:#e8eaed;--muted:#8b93a1;--border:rgba(255,255,255,.06);
+        --pad:clamp(20px,5vw,72px)}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font:300 clamp(16px,1.5vw,22px)/1.55 'Jost',system-ui,sans-serif}
+  #track{position:relative}
+  #stage{position:fixed;inset:0;overflow:hidden}
+  .scene{position:absolute;inset:0;opacity:0;visibility:hidden;will-change:opacity}
+
+  /* ── render keyframes ─────────────────────────────── */
+  .scene .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--fx,50%) var(--fy,50%);will-change:transform}
+  .scene .shade{position:absolute;inset:0;pointer-events:none}
+  .scene.left  .shade{background:linear-gradient(90deg,rgba(8,10,12,.78) 0%,rgba(8,10,12,.45) 34%,rgba(8,10,12,0) 62%),linear-gradient(0deg,rgba(8,10,12,.55) 0%,rgba(8,10,12,0) 40%)}
+  .scene.right .shade{background:linear-gradient(270deg,rgba(8,10,12,.78) 0%,rgba(8,10,12,.45) 34%,rgba(8,10,12,0) 62%),linear-gradient(0deg,rgba(8,10,12,.55) 0%,rgba(8,10,12,0) 40%)}
+  .copy{position:absolute;bottom:clamp(40px,9vh,110px);width:min(560px,calc(100vw - 2*var(--pad)));left:var(--pad)}
+  .scene.right .copy{left:auto;right:var(--pad)}
+  .beat{position:absolute;left:0;right:0;bottom:0;opacity:0;pointer-events:none}
+  .label{font:600 clamp(12px,1.1vw,15px)/1 'Jost',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  .title{font:300 clamp(40px,6.2vw,96px)/1 'Jost',sans-serif;letter-spacing:-.025em;margin:0 0 18px;text-shadow:0 2px 28px rgba(0,0,0,.45)}
+  .title.sm{font-size:clamp(34px,4.6vw,68px)}
+  .body{margin:0;color:#d4d9e0;text-shadow:0 1px 14px rgba(0,0,0,.6);max-width:34em}
+  .body+.body{margin-top:1em}
+  .ghost{font:275 clamp(90px,11vw,180px)/.8 'Jost',sans-serif;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.32);letter-spacing:-.04em;margin:0 0 .12em -.04em;pointer-events:none}
+  .chips{display:flex;flex-wrap:wrap;gap:12px 36px;margin-top:26px}
+  .chip{display:flex;flex-direction:column;gap:2px}
+  .chip b{font:600 12px/1 'Jost';letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+  .chip span{font:200 clamp(15px,1.3vw,19px)/1.3 'Jost'}
+
+  /* ── 3D placeholders ──────────────────────────────── */
+  .three{background:radial-gradient(120% 90% at 70% 30%,#14201f 0%,var(--bg) 70%)}
+  .three::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:80px 80px}
+  .three .tag{position:absolute;right:var(--pad);top:50%;transform:translateY(-50%);text-align:right;color:#48515c;font:200 clamp(14px,1.4vw,20px)/1.5 'Jost'}
+  .three .tag b{display:block;font:600 12px/1 'Jost';letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px;color:#5f6b78}
+  .three .cap{position:absolute;left:var(--pad);bottom:clamp(40px,9vh,110px);width:min(560px,calc(100vw - 2*var(--pad)))}
+  .three .cap .beat{position:absolute;left:0;right:0;bottom:0}
+
+  /* ── chrome ───────────────────────────────────────── */
+  .ui{position:fixed;z-index:5;pointer-events:none;font:600 13px/1 'Jost';letter-spacing:.04em}
+  #brand{left:var(--pad);top:22px} #brand span{color:var(--muted);font-weight:300}
+  #count{right:var(--pad);top:22px;color:var(--muted);font-weight:300;letter-spacing:.12em}
+  #rail{position:fixed;z-index:5;left:calc(var(--pad)*.4);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;pointer-events:none}
+  #rail i{display:block;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.28);transition:all .3s}
+  #rail i.on{background:var(--accent);height:22px;border-radius:3px}
+  #bar{position:fixed;left:0;top:0;height:2px;width:0;background:var(--accent);z-index:6}
+  #dev{position:fixed;z-index:7;left:10px;bottom:10px;font:12px ui-monospace,Menlo,monospace;color:#9fb;background:rgba(0,0,0,.6);padding:4px 8px;border-radius:4px;display:none}
+  #hint{position:fixed;z-index:5;left:0;right:0;bottom:22px;text-align:center;font:600 11px/1 'Jost';letter-spacing:.22em;text-transform:uppercase;color:var(--muted);transition:opacity .4s}
+
+  /* ── Results (normal page flow after the pinned story) ─ */
+  #results{position:relative;z-index:8;background:var(--bg);border-top:1px solid var(--border)}
+  #results .wrap{max-width:1574px;margin:0 auto;padding:clamp(56px,9vw,140px) var(--pad)}
+  #results .head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(24px,5vw,96px);align-items:end;margin-bottom:clamp(36px,6vw,90px)}
+  #results .head .title{margin:0}
+  #results .head .body{max-width:none}
+  .bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:clamp(140px,16vw,260px);grid-auto-flow:dense;gap:10px}
+  .bento img{width:100%;height:100%;object-fit:cover;border-radius:4px;background:var(--surface);display:block;grid-column:span 2}
+  .bento img.wide{grid-column:1/-1;grid-row:span 2}
+  .bento img.tall{grid-column:span 1;grid-row:span 2}
+  .endrow{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:40px var(--pad);max-width:1574px;margin:0 auto;border-top:1px solid var(--border)}
+  .endrow a{color:var(--accent);text-decoration:none;font-weight:600}
+
+  @media (max-width:760px){
+    .copy{width:calc(100vw - 2*var(--pad));bottom:clamp(56px,11vh,96px)}
+    .scene.left .shade,.scene.right .shade{background:linear-gradient(0deg,rgba(8,10,12,.88) 0%,rgba(8,10,12,.55) 38%,rgba(8,10,12,0) 68%)}
+    .scene.right .copy{right:auto;left:var(--pad)}
+    .ghost{font-size:76px}
+    .chips{gap:10px 24px;margin-top:18px}
+    #rail{display:none}
+    #results .head{grid-template-columns:1fr}
+    .bento{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 calc(var(--pad)*-1);padding:0 var(--pad);-webkit-overflow-scrolling:touch}
+    .bento img,.bento img.wide,.bento img.tall{flex:0 0 78%;height:62vh;scroll-snap-align:center}
+  }
+  @media (prefers-reduced-motion:reduce){.scene .bg{transform:none!important}}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div class="ui" id="brand">← defranez <span>/ Rancho Relaxo</span></div>
+<div class="ui" id="count">000 %</div>
+<div id="rail"></div>
+<div id="hint">Scroll</div>
+<div id="dev"></div>
+<div id="stage"></div>
+<div id="track"></div>
+
+<section id="results">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="label">_ 04 Results</p><h2 class="title">From model<br>to build</h2></div>
+      <p class="body">The transition from the digital model to the physical build demonstrates the viability of the proposed design. On-site monitoring allowed us to compare the 3D model’s precision with traditional construction techniques applied in the region.</p>
+    </div>
+    <div class="bento" id="bento"></div>
+  </div>
+  <div class="endrow"><a href="index.html">← Back to the portfolio</a><a href="#" onclick="scrollTo({top:0,behavior:'smooth'});return false">Replay the walkthrough ↑</a></div>
+</section>
+
+<script>
+const R = 'assets/casa/';
+// len = scroll length in vh. kind 'render' (still + copy) | 'three' (placeholder for the live 3D, with its own captions)
+// beats: [in, out] windows (0…1 of the scene) in which each block of copy is on screen.
+const META = [['Location','Epuyén, Chubut, Patagonia, Argentina'],['Request','Sketchup + V-Ray / Enscape + Photoshop'],['Year','2026']];
+const SCENES = [
+  { id:'plano', kind:'render', len:420, img:'01-plano', side:'left', fx:'22%', fy:'40%', zoom:{ from:1, to:2.1, origin:'22% 28%', at:[.62,.98] }, beats:[
+      { in:.03, out:.30, label:'_ Modeling + Render', title:'Rancho Relaxo', body:'A house in the mountains', chips:META },
+      { in:.34, out:.60, label:'_ Introduction', title:'Rooted in<br>the landscape', body:['This project explores the integration of a single-family home within the rugged landscape of Patagonia. The primary challenge was to translate the warmth of noble materials—such as wood and stone—into a contemporary architectural language that respects the scale of the surroundings.','We focused on a simple yet efficient volumetric design, prioritizing natural light intake and panoramic views of the mountain range.'] },
+      { in:.64, out:.97, ghost:'01', label:'_ 01 Project', title:'Project', body:'Development of comprehensive technical documentation, including architectural floor plans and longitudinal sections to define internal spatiality. The design utilizes a modular grid system to optimize construction resources in remote geographical locations.' } ] },
+  { id:'t-build', kind:'three', len:300, tag:['3D · Stage 1','The plan lifts off the page: lines rise into columns, then the house builds itself up to the finished exterior'], beats:[
+      { in:.04, out:.34, ghost:'02', label:'_ 02 Modeling', title:'Modeling', body:['The 3D modeling phase was executed with technical precision, transforming architectural schemes into a detailed digital structure. Special emphasis was placed on the structural accuracy of the timber joints and the site’s topography.'] },
+      { in:.38, out:.66, label:'_ 03 Structure', title:'Columns, mezzanine, stairs', body:'Through wireframes and volumetric models, we validated proportions and solar incidence on the facades.' },
+      { in:.70, out:.97, label:'_ 05 Roof + openings', title:'Roof, windows and doors', body:'' } ] },
+  { id:'exterior', kind:'render', len:300, img:'02-exterior', side:'left', fx:'45%', fy:'50%', beats:[
+      { in:.14, out:.92, ghost:'03', label:'_ 03 Renders', title:'Renders', body:'Photorealistic visualization designed to capture the atmosphere of the retreat under various lighting conditions. Global illumination was carefully tuned to highlight natural textures and the contrast between interior warmth and the exterior climate.' } ] },
+  { id:'t-in', kind:'three', len:110, tag:['3D · Stage 2','The camera crosses the deck and enters through the glazed door'], beats:[ { in:.1, out:.9, label:'_ Ground floor', title:'Inside', body:'' } ] },
+  { id:'cocina', kind:'render', len:260, img:'03-cocina-living', side:'left', fx:'50%', fy:'55%', beats:[
+      { in:.14, out:.9, label:'_ Ground floor', title:'Kitchen &amp; living', body:'A concrete counter, a checkered floor and a wood stove, all under the double-height ceiling.' } ] },
+  { id:'ventanal', kind:'render', len:260, img:'04-ventanal', side:'right', fx:'35%', fy:'50%', beats:[
+      { in:.14, out:.9, label:'_ Ground floor', title:'The window<br>to the range', body:'Full-height glazing frames the mountains and pulls the afternoon light deep into the room.' } ] },
+  { id:'t-rooms', kind:'three', len:110, tag:['3D · Stage 2','Down the hall to the bedroom and the bath'], beats:[ { in:.1, out:.9, label:'_ Ground floor', title:'Bedroom and bath', body:'' } ] },
+  { id:'cuarto', kind:'render', len:240, img:'05-cuarto', side:'right', fx:'30%', fy:'50%', beats:[
+      { in:.14, out:.9, label:'_ Bedroom', title:'Bedroom', body:'Pine paneling, a single window to the range and warm bedside light for the evenings.' } ] },
+  { id:'bano', kind:'render', len:240, img:'06-bano', side:'left', fx:'50%', fy:'50%', beats:[
+      { in:.14, out:.9, label:'_ Bathroom', title:'Bathroom', body:'Terrazzo, green tile and a poured-concrete vanity, seen from above.' } ] },
+  { id:'t-stair', kind:'three', len:140, tag:['3D · Stage 2','Up the stair to the mezzanine'], beats:[ { in:.1, out:.9, label:'_ Stairs', title:'Up to the mezzanine', body:'' } ] },
+  { id:'entre1', kind:'render', len:240, img:'07-entrepiso1', side:'left', fx:'45%', fy:'50%', beats:[
+      { in:.14, out:.9, label:'_ Mezzanine', title:'Music &amp; work<br>corner', body:'A quiet room above the living space, with the valley in the window.' } ] },
+  { id:'entre2', kind:'render', len:240, img:'08-entrepiso2', side:'right', fx:'50%', fy:'50%', beats:[
+      { in:.14, out:.9, label:'_ Mezzanine', title:'Over the<br>double height', body:'From the parapet the whole ground floor reads at once: kitchen, table, stove and deck.' } ] },
+  { id:'t-end', kind:'three', len:150, tag:['3D · Closing','The camera settles on the laptop screen, which becomes the page below'], beats:[ { in:.1, out:.9, label:'_ Workspace', title:'Back to the drawing board', body:'' } ] },
+];
+const CHAPTERS = [['plano','Project'],['t-build','Modeling'],['exterior','Renders'],['t-end','Results']];
+
+// ── build DOM ─────────────────────────────────────────────────────────────────
+const stage = document.getElementById('stage'), track = document.getElementById('track');
+let acc = 0;
+const html = (s) => s;
+for (const sc of SCENES) {
+  sc.start = acc; acc += sc.len; sc.end = acc;
+  const el = document.createElement('div'); el.className = 'scene ' + (sc.kind === 'three' ? 'three' : sc.side); el.dataset.id = sc.id;
+  if (sc.kind === 'render') el.style.cssText = `--fx:${sc.fx};--fy:${sc.fy}`;
+  const beats = sc.beats.map(b => {
+    const body = (Array.isArray(b.body) ? b.body : [b.body]).filter(Boolean).map(p => `<p class="body">${p}</p>`).join('');
+    const chips = b.chips ? `<div class="chips">${b.chips.map(c => `<div class="chip"><b>${c[0]}</b><span>${c[1]}</span></div>`).join('')}</div>` : '';
+    return `<div class="beat">${b.ghost ? `<div class="ghost">${b.ghost}</div>` : ''}<p class="label">${b.label}</p><h2 class="title${b.title.length > 22 ? ' sm' : ''}">${b.title}</h2>${body}${chips}</div>`;
+  }).join('');
+  el.innerHTML = sc.kind === 'render'
+    ? `<img class="bg" src="${R}${sc.img}.webp" srcset="${R}${sc.img}-m.webp 1280w, ${R}${sc.img}.webp 2560w" sizes="100vw" alt=""><div class="shade"></div><div class="copy">${beats}</div>`
+    : `<div class="tag"><b>${sc.tag[0]}</b>${sc.tag[1]}</div><div class="cap">${beats}</div>`;
+  stage.appendChild(el); sc.el = el; sc.beatEls = [...el.querySelectorAll('.beat')]; sc.bg = el.querySelector('.bg');
+}
+const TOTAL = acc;                                       // vh of pinned scroll
+track.style.height = (TOTAL + 100) + 'vh';
+document.getElementById('rail').innerHTML = CHAPTERS.map(() => '<i></i>').join('');
+const railDots = [...document.querySelectorAll('#rail i')];
+
+// Results gallery: construction photos from the Figma frame, reflowed into a dense grid (wide = full row, tall = two rows)
+const OBRA = [[1494,514],[742,825],[742,408],[742,408],[1494,712],[742,408],[742,408],[742,825],[768,1024],[716,461],[337,600],[800,600],[337,600]];
+document.getElementById('bento').innerHTML = OBRA.map(([w, h], i) => {
+  const a = w / h, cls = a > 1.9 ? 'wide' : a < 0.95 ? 'tall' : '';
+  return `<img loading="lazy" alt="Construction progress" class="${cls}" src="${R}obra/obra-${String(i + 1).padStart(2, '0')}.webp">`; }).join('');
+
+// ── scroll → scenes ───────────────────────────────────────────────────────────
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const smooth = v => (v = clamp(v), v * v * (3 - 2 * v));
+const FADE = 38;                                          // vh over which two scenes cross-fade (centered on their boundary)
+const dev = document.getElementById('dev'); if (/[?&]dev/.test(location.search)) dev.style.display = 'block';
+const hint = document.getElementById('hint'), count = document.getElementById('count'), bar = document.getElementById('bar');
+function frame() {
+  const vh = innerHeight / 100, s = scrollY / vh;         // scroll position in vh
+  let active = null;
+  for (const sc of SCENES) {
+    const fadeIn = sc.start === 0 ? 1 : smooth((s - (sc.start - FADE / 2)) / FADE);
+    const fadeOut = sc === SCENES[SCENES.length - 1] ? 1 : smooth(((sc.end + FADE / 2) - s) / FADE);
+    const o = Math.min(fadeIn, fadeOut);
+    sc.el.style.opacity = o; sc.el.style.visibility = o > 0.001 ? 'visible' : 'hidden';
+    sc.el.style.zIndex = sc.kind === 'render' ? 2 : 1;
+    const u = clamp((s - sc.start) / sc.len);
+    if (s >= sc.start && s < sc.end) active = sc;
+    if (o <= 0.001) continue;
+    if (sc.bg) {                                           // slow settle + parallax, tied to the scroll
+      const settle = 1.05 - 0.05 * smooth(u / 0.16), drift = 1 + 0.025 * u;
+      let sx = settle * drift, ty = (0.5 - u) * 2.2, origin = '50% 50%';
+      if (sc.zoom) { const z = smooth((u - sc.zoom.at[0]) / (sc.zoom.at[1] - sc.zoom.at[0])); sx = (sc.zoom.from + (sc.zoom.to - sc.zoom.from) * z) * settle; origin = sc.zoom.origin; ty = 0; }
+      sc.bg.style.transformOrigin = origin; sc.bg.style.transform = `translate3d(0,${ty}%,0) scale(${sx})`;
+    }
+    sc.beats.forEach((b, i) => {
+      const be = sc.beatEls[i], e = Math.min(smooth((u - b.in) / 0.06), smooth((b.out - u) / 0.05));
+      be.style.opacity = e; be.style.transform = `translate3d(0,${(1 - e) * 28}px,0)`; be.style.pointerEvents = e > .5 ? 'auto' : 'none';
+      [...be.children].forEach((c, k) => { if (c.classList.contains('ghost')) return; const ee = Math.min(smooth((u - b.in - k * 0.012) / 0.06), 1); c.style.opacity = ee; c.style.transform = `translate3d(0,${(1 - ee) * 14}px,0)`; });
+    });
+  }
+  const pct = clamp(s / TOTAL); bar.style.width = pct * 100 + '%'; count.textContent = String(Math.round(pct * 100)).padStart(3, '0') + ' %';
+  hint.style.opacity = s < 20 ? 1 : 0;
+  const ci = active ? CHAPTERS.reduce((r, c, i) => SCENES.findIndex(x => x.id === c[0]) <= SCENES.indexOf(active) ? i : r, 0) : CHAPTERS.length - 1;
+  railDots.forEach((d, i) => d.classList.toggle('on', i === ci));
+  if (dev.style.display === 'block') dev.textContent = `${active?.id ?? 'results'}  s=${s.toFixed(0)}vh  u=${active ? ((s - active.start) / active.len).toFixed(2) : '-'}`;
+}
+addEventListener('scroll', () => requestAnimationFrame(frame), { passive: true }); addEventListener('resize', frame); frame();
+</script>
+</body>
+</html>
