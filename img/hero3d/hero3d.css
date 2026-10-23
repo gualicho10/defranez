@@ -15,6 +15,10 @@
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* cortina: About sube como bloque y tapa el hero, que queda fijo los ultimos 100vh */
 #main.hero3d + section{background:#080a0c;position:relative;z-index:2;margin-top:-150vh}
+/* movil: About espera a que termine el viaje por el logo (ScrollTrigger termina a los 120vh); asi el primer scroll mueve el logo, no la pagina */
+@media (max-width:900px){#main.hero3d + section{margin-top:-100vh}}
+/* ...y todo lo que viene despues tambien es opaco: el hero sigue pegado detras hasta que termina #main, y no tiene que asomar entre secciones */
+#main.hero3d ~ section,#main.hero3d ~ footer{background-color:#080a0c;position:relative;z-index:2}
 /* movil: el stick mide 100lvh (barra de URL escondida); el rol sube por la diferencia con 100svh para quedar siempre sobre el pliegue */
 @media (max-width:900px){.hero3d-trusted{flex-direction:column;align-items:flex-start;gap:8px;margin-top:14px}.hero3d-trusted{font-size:9px;letter-spacing:0.1em}.hero3d-trusted-names{flex-wrap:nowrap}.hero3d-trusted-names span{padding:2px 8px}.hero3d-trusted-names span:first-child{padding-left:0;border-left:0}.hero3d-copy{left:24px;bottom:48px;bottom:calc(100lvh - 100svh + 32px);max-width:calc(100% - 48px)}.hero3d-scroll{display:none}}
 

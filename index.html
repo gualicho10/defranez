@@ -1206,6 +1206,7 @@
     :where(.sk-in) section { padding: 0; }
     .sk-in img { display: block; width: 100%; height: 100%; object-fit: cover; }
     /* Render groups keep a tight 10px internal gap inside the 50px rhythm */
+    .sk-plans-m { display: none; }
     .sk-group { display: flex; flex-direction: column; gap: calc(10 * var(--u)); width: 100%; }
     .sk-pad { padding-left: calc(40 * var(--u)); padding-right: calc(40 * var(--u)); }
 
@@ -2853,6 +2854,16 @@
 }
 .g-item.active .g-desc { max-height: 200px; opacity: 1; }
 
+/* Two ways into a project (Sketchup): the 3D walkthrough or the case study. Same size, side by side */
+.g-actions { display: none; gap: 10px; margin-top: 10px; }
+.g-item.active .g-actions { display: flex; animation: gActionsIn 0.45s ease both; }
+.g-actions a { width: 156px; box-sizing: border-box; text-align: center; border-radius: 4px; }
+.g-actions .btn-primary { border: 1px solid #00f5a0; }
+.g-actions .btn-primary:hover { border-color: #00e090; }
+.g-actions .btn-secondary { color: #fff; border-color: rgba(255,255,255,0.28); background: rgba(8,10,12,0.35); }
+.g-actions .btn-secondary:hover { border-color: rgba(0,245,160,0.6); color: #00f5a0; }
+@keyframes gActionsIn { from { opacity: 0; transform: translateY(6px); } }
+
 /* Category — horizontal, centered below title on inactive */
 .g-cat {
   font-family: 'DM Mono', monospace;
@@ -2943,6 +2954,13 @@
   /* Category + description: always hidden on mobile */
   .g-cat, .g-item.active .g-cat { display: none; }
   .g-desc, .g-item.active .g-desc { display: none; max-height: 0; opacity: 0; }
+
+  /* A card with two ways in: a first tap expands it to show them under its title */
+  .g-item:has(.g-actions) { transition: flex-basis 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+  .g-item.expanded:has(.g-actions) { flex: 0 0 136px; }
+  .g-actions, .g-item.active .g-actions { display: none; }
+  .g-item.expanded .g-actions { display: flex; justify-content: center; margin-top: 12px; animation: gActionsIn 0.4s ease both; }
+  .g-actions a { flex: none; width: 128px; padding: 10px 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3261,8 +3279,25 @@
   .sk-meta { font-size: 13px; gap: 7px; }
   .sk-meta .k { width: 108px; }
 
-  .sk-in .sk-frame-wrap { height: auto; padding: 0 12px; }
-  .sk-frame { width: 100%; border-width: 8px; }
+  /* Figma mobile (3646:26337): the six drawings stacked replace the composed plan sheet */
+  .sk-plans-d { display: none; }
+  .sk-in .sk-plans-m { display: flex; flex-direction: column; gap: 10px; padding: 10px 12px 22px; }
+  .sk-plans-m img { height: auto; }
+  /* Figma mobile (3646:25875, 3646:26354): the modeling gallery is one column. The volumetric model leads, then the wireframe,
+     then the four details, each cropped as in the frame (Figma's own img boxes, in % of the cell). The framed view is left out. */
+  .sk-row2, .sk-row4 { display: flex; flex-direction: column; gap: 2.5px; }
+  .sk-row2 > .sk-cell, .sk-row4 > .sk-cell { flex: none; width: 100%; aspect-ratio: auto !important; }
+  .sk-row2 > .sk-cell:nth-child(1) { order: 2; height: 182px !important; }
+  .sk-row2 > .sk-cell:nth-child(2) { order: 1; height: 151px !important; }
+  .sk-row4 > .sk-cell { height: auto; aspect-ratio: 183.25 / 72.25 !important; }
+  .sk-row2 img, .sk-row4 img { position: absolute; max-width: none; left: 0; width: 100%; }
+  .sk-row2 > .sk-cell:nth-child(1) img { height: 120.35%; top: -8.58%; }
+  .sk-row2 > .sk-cell:nth-child(2) img { height: 140.51%; top: -13.32%; }
+  .sk-row4 > .sk-cell:nth-child(1) img { width: 115.98%; height: 170.65%; left: -7.99%; top: -26.83%; }
+  .sk-row4 > .sk-cell:nth-child(2) img { width: 106.43%; height: 152.62%; left: -4.83%; top: -20.08%; }
+  .sk-row4 > .sk-cell:nth-child(3) img { width: 113.06%; height: 164.88%; left: -9.23%; top: -22.54%; }
+  .sk-row4 > .sk-cell:nth-child(4) img { height: 146.16%; top: -16.6%; }
+  .sk-in .sk-frame-wrap { display: none; }
 }
 
 
@@ -4457,7 +4492,7 @@
 }
 
 </style>
-<link rel="stylesheet" href="img/hero3d/hero3d.css?v=4">
+<link rel="stylesheet" href="img/hero3d/hero3d.css?v=6">
 </head>
 <body>
   <!-- ARCADE (mobile): arcade.html se monta como overlay a pantalla completa, solo en la
@@ -4750,6 +4785,10 @@
           <div class="g-info">
             <h3 class="g-title">Sketchup<br>3D Modelling + Render</h3>
             <p class="g-desc">3D architectural modeling and photorealistic rendering in SketchUp.</p>
+            <div class="g-actions">
+              <a class="btn-primary" href="ranchorelaxo.html">Interactive</a>
+              <a class="btn-secondary" href="#sketchup" data-case="sketchup">Case Study</a>
+            </div>
           </div>
           <div class="g-cat">3D MODELING<br>RENDERING</div>
           <div class="g-num">06</div>
@@ -6027,7 +6066,7 @@ abcdefghijklmnopqrstuvwxyz
     </div>
   </div>
 
-  <div class="modal-backdrop" id="modal-sketchup">
+  <div class="modal-backdrop" id="modal-sketchup" data-deeplink>
     <button class="modal-close" onclick="closeModal('sketchup')">✕</button>
     <div class="modal">
       <!-- Sketchup "Modeling + Render" case study — Figma frame 1:71, ported
@@ -6079,8 +6118,18 @@ abcdefghijklmnopqrstuvwxyz
           <span class="sk-num">02</span>
         </section>
 
+        <!-- Mobile (Figma 3646:26337): the six drawings one under the other instead of the composed sheet -->
+        <section class="sk-plans-m">
+          <img width="369" height="412" loading="lazy" data-src="img/sketchup/plan-m1.webp" alt="Floor plan" decoding="async">
+          <img width="369" height="412" loading="lazy" data-src="img/sketchup/plan-m2.webp" alt="Mezzanine plan" decoding="async">
+          <img width="369" height="193" loading="lazy" data-src="img/sketchup/plan-m3.webp" alt="Section A-A" decoding="async">
+          <img width="369" height="213" loading="lazy" data-src="img/sketchup/plan-m4.webp" alt="Section C-C" decoding="async">
+          <img width="369" height="277" loading="lazy" data-src="img/sketchup/plan-m5.webp" alt="Section B-B" decoding="async">
+          <img width="369" height="293" loading="lazy" data-src="img/sketchup/plan-m6.webp" alt="Section D-D" decoding="async">
+        </section>
+
         <!-- image 2 · the technical plan -->
-        <section class="sk-pad" style="padding-top: calc(40 * var(--u)); padding-bottom: calc(130 * var(--u));">
+        <section class="sk-pad sk-plans-d" style="padding-top: calc(40 * var(--u)); padding-bottom: calc(130 * var(--u));">
           <div class="sk-cell" style="aspect-ratio: 3618 / 3433;"><img width="1560" height="1480" loading="lazy" data-src="img/sketchup/image2.webp" alt="Architectural floor plans and sections" decoding="async"></div>
         </section>
 
@@ -6101,11 +6150,11 @@ abcdefghijklmnopqrstuvwxyz
 
         <!-- Modeling gallery -->
         <section class="sk-pad" style="display:flex; flex-direction:column; gap: calc(10 * var(--u));">
-          <div class="sk-row">
+          <div class="sk-row sk-row2">
             <div class="sk-cell" style="height: calc(450 * var(--u));"><img width="1560" height="926" loading="lazy" data-src="img/sketchup/image12.webp" alt="Wireframe model of the house" decoding="async"></div>
             <div class="sk-cell" style="height: calc(450 * var(--u));"><img width="1560" height="897" loading="lazy" data-src="img/sketchup/image13.webp" alt="Volumetric model of the house" decoding="async"></div>
           </div>
-          <div class="sk-row">
+          <div class="sk-row sk-row4">
             <div class="sk-cell" style="aspect-ratio: 1158 / 637;"><img width="1560" height="905" loading="lazy" data-src="img/sketchup/image7.webp" alt="Modeling detail" decoding="async"></div>
             <div class="sk-cell" style="aspect-ratio: 1158 / 637;"><img width="1560" height="882" loading="lazy" data-src="img/sketchup/image8.webp" alt="Modeling detail" decoding="async"></div>
             <div class="sk-cell" style="aspect-ratio: 1158 / 637;"><img width="1560" height="897" loading="lazy" data-src="img/sketchup/image10.webp" alt="Modeling detail" decoding="async"></div>
@@ -6645,13 +6694,25 @@ abcdefghijklmnopqrstuvwxyz
         }, 700));
       }
 
+      // the card's own buttons: the walkthrough is a plain link; Case Study opens the modal. Neither falls through to the card.
+      gallery.querySelectorAll('.g-actions a').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (a.dataset.case) { e.preventDefault(); openModal(a.dataset.case); }
+        });
+        a.addEventListener('keydown', function (e) { e.stopPropagation(); });
+      });
       gallery.querySelectorAll('.g-item').forEach(function (el, i) {
         el.addEventListener('mouseenter', function () { activate(i); });
         el.addEventListener('focus',      function () { activate(i); });
         el.addEventListener('click', function () {
           var modalId = el.getAttribute('data-modal');
-          if (window.matchMedia('(hover: none)').matches) {
-            // touch device: tap always opens modal directly, no expand
+          if (window.matchMedia('(hover: none), (max-width: 900px)').matches) {
+            // touch device or the stacked (mobile) gallery: tap opens the modal directly; a card with its own buttons first expands to show them
+            if (el.querySelector('.g-actions') && !el.classList.contains('expanded')) {
+              gallery.querySelectorAll('.g-item.expanded').forEach(function (o) { o.classList.remove('expanded'); });
+              el.classList.add('expanded'); return;
+            }
             if (modalId) openModal(modalId);
           } else if (el.classList.contains('active')) {
             if (modalId) openModal(modalId);
@@ -6774,8 +6835,8 @@ abcdefghijklmnopqrstuvwxyz
        Cada caso principal tiene su URL compartible (defranez.com/#openloot)
        sin duplicar el modal en un HTML aparte. Va en los dos sentidos:
        entrar por la URL abre el caso, y abrirlo desde la galeria escribe la
-       URL. Solo los casos principales; las colecciones (games, branding,
-       sketchup) no llevan el atributo y no tocan la URL.
+       URL. Solo los casos principales (sketchup incluido: defranez.com/#sketchup);
+       las colecciones (games, branding) no llevan el atributo y no tocan la URL.
        pushState no dispara 'hashchange', asi que no se realimenta; lo que si
        hay que atender es 'popstate', para que Atras cierre el caso. */
     let hashLock = false;
