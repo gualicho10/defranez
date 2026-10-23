@@ -1,26 +1,42 @@
 {
   "01-plano": {
-    "source": "Render-Plano-planta.png",
+    "source": "Plano-planta.png",
     "sourceSize": [
-      11811,
-      8350
+      11032,
+      4949
     ],
-    "aspect": 1.4145,
+    "aspect": 2.2291,
     "desktop": {
       "file": "01-plano.webp",
       "size": [
-        3200,
-        2262
+        3600,
+        1615
       ],
-      "kb": 416
+      "kb": 382
     },
     "mobile": {
       "file": "01-plano-m.webp",
       "size": [
-        1600,
-        1131
+        1800,
+        807
       ],
-      "kb": 144
+      "kb": 125
+    }
+  },
+  "01-plano-v": {
+    "source": "Plano-planta_mobile.png",
+    "sourceSize": [
+      1242,
+      2208
+    ],
+    "aspect": 0.5625,
+    "desktop": {
+      "file": "01-plano-v.webp",
+      "size": [
+        1242,
+        2208
+      ],
+      "kb": 111
     }
   },
   "02-exterior": {

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&family=DM+Mono&display=swap" rel="stylesheet">
 <title>Rancho Relaxo · 3D</title>
 <style>
   :root{--bg:#080a0c;--surface:#0e1114;--accent:#00f5a0;--text:#e8eaed;--muted:#8b93a1;--border:rgba(255,255,255,.06)}
@@ -21,6 +21,15 @@
   #back a{color:inherit;text-decoration:none}
   #back span{color:var(--muted);font-weight:400}
   #count{right:24px;top:20px;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);letter-spacing:.08em}
+  /* jump between the render keyframes without scrolling: ‹ 02 / 07 › */
+  #kfnav{right:24px;bottom:28px;display:flex;align-items:center;gap:4px;padding:4px;border-radius:999px;pointer-events:auto;transition:opacity .4s;
+    background:rgba(8,10,12,.6);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  #kfnav button{all:unset;cursor:pointer;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--text);transition:background .2s,color .2s,opacity .2s}
+  #kfnav button:hover{background:rgba(0,245,160,.14);color:var(--accent)} #kfnav button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  #kfnav button:disabled{opacity:.25;cursor:default;background:none;color:var(--text)}
+  #kfnav svg{width:16px;height:16px} #kfnav .n{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--muted);min-width:58px;text-align:center}
+  @media(max-width:760px){#kfnav{right:16px;bottom:auto;top:52px}}
+  body.loading #kfnav{opacity:0;pointer-events:none}
   #cap{left:24px;bottom:32px;max-width:min(560px,calc(100vw - 48px));transition:opacity .35s}
   #cap .k{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent);letter-spacing:.1em;text-transform:uppercase}
   #cap .t{font-size:clamp(26px,4vw,44px);font-weight:600;letter-spacing:-.02em;line-height:1.05;margin-top:6px;text-shadow:0 1px 18px rgba(0,0,0,.55)}
@@ -31,6 +40,10 @@
   .kf img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;will-change:filter,opacity,transform}
   .kf .shade{position:absolute;inset:0;opacity:0;background:linear-gradient(90deg,rgba(8,10,12,.72),rgba(8,10,12,.35) 36%,rgba(8,10,12,0) 62%),linear-gradient(0deg,rgba(8,10,12,.5),rgba(8,10,12,0) 40%)}
   .kf.right .shade{background:linear-gradient(270deg,rgba(8,10,12,.72),rgba(8,10,12,.35) 36%,rgba(8,10,12,0) 62%),linear-gradient(0deg,rgba(8,10,12,.5),rgba(8,10,12,0) 40%)}
+  /* ?look=pan|depth: while a render holds, drag it to look round the parts the screen crops (vertical swipes still scroll) */
+  .kf.live{pointer-events:auto;cursor:grab;touch-action:pan-y}
+  .kf.live.drag{cursor:grabbing}
+  .kf canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
   .kf .copy{position:absolute;bottom:clamp(40px,9vh,110px);left:clamp(20px,5vw,72px);width:min(520px,calc(100vw - 40px));opacity:0;font:300 clamp(16px,1.4vw,21px)/1.55 Jost,system-ui,sans-serif;color:var(--text);text-shadow:0 1px 16px rgba(0,0,0,.65)}
   .kf.right .copy{left:auto;right:clamp(20px,5vw,72px)}
   .kf .l{font:600 13px/1 Jost,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
@@ -39,7 +52,16 @@
   @media(max-width:760px){.kf .copy{left:20px;right:auto;bottom:64px}.kf.left .shade,.kf.right .shade{background:linear-gradient(0deg,rgba(8,10,12,.85),rgba(8,10,12,.5) 40%,rgba(8,10,12,0) 70%)}}
   /* ETAPA 1: the floor-plan render, zoomed into its PLANTA until it sits exactly on the 3D slab, then dissolved into it */
   #plano{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;background:var(--bg)}
-  #plano img{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;will-change:transform}
+  #plano img{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;will-change:transform;opacity:0;transition:opacity .7s}
+  #plano.ready img{opacity:1}   /* shown only once it is placed: never at its natural size while the model loads */
+  /* while the model loads: a ring that fills with the download, over the empty page */
+  #loader{position:fixed;left:50%;top:50%;z-index:5;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:16px;transition:opacity .5s;
+    font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--text)}
+  #loader .ring{--p:0;width:54px;height:54px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p)*1%),rgba(255,255,255,.08) 0);
+    -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));animation:loadSpin 1.4s linear infinite}
+  @keyframes loadSpin{to{transform:rotate(360deg)}}
+  body:not(.loading) #loader{opacity:0;pointer-events:none}
+  body.loading #hint{opacity:0 !important}
   #bar{position:fixed;left:0;top:0;height:2px;width:0;background:var(--accent);z-index:3;transition:width .2s}
   #prog{position:fixed;left:0;bottom:0;height:2px;width:0;background:var(--accent);z-index:3}
   /* the call to scroll, over the plan render: a mouse whose wheel rolls down, in a dark pill that breathes */
@@ -50,6 +72,7 @@
   #hint .mouse i{position:absolute;left:50%;top:6px;width:3px;height:7px;margin-left:-1.5px;border-radius:2px;background:var(--accent);animation:hintWheel 1.6s cubic-bezier(.5,0,.3,1) infinite}
   @keyframes hintWheel{0%{transform:translateY(0);opacity:0}20%{opacity:1}70%{transform:translateY(9px);opacity:0}100%{transform:translateY(9px);opacity:0}}
   @keyframes hintPulse{0%,100%{box-shadow:0 8px 30px rgba(0,0,0,.35),0 0 0 0 rgba(0,245,160,.0)}50%{box-shadow:0 8px 30px rgba(0,0,0,.35),0 0 0 8px rgba(0,245,160,.12)}}
+  @media(orientation:portrait){#hint{bottom:max(18px,env(safe-area-inset-bottom))}}   /* under the upright sheet, clear of its title block */
   @media(prefers-reduced-motion:reduce){#hint,#hint .mouse i{animation:none}}
   #fail{display:none;position:fixed;inset:0;z-index:4;align-items:center;justify-content:center;text-align:center;padding:24px;background:var(--bg)}
   /* the laptop screen: dark page colour fades in as the camera fills the frame with the screen */
@@ -58,31 +81,24 @@
   #screen .h{font-weight:700;font-size:clamp(48px,9.8vw,150px);line-height:1.02;letter-spacing:-.03em;margin:.35em 0}
   #screen .s{color:var(--muted);font-size:clamp(14px,2.6vw,40px)}
 
-  /* ── Case-study content, continuing the scroll after the laptop (mirrors the portfolio's sketchup case study) ── */
+  /* ── After the laptop: the way into the case study. The case itself lives in the portfolio (defranez.com/#sketchup, the Figma
+     desktop and mobile designs), so it only loads when asked for and there is one copy of it ── */
   #content{position:relative;z-index:3;background:var(--bg);border-top:1px solid var(--border)}
-  .sec{max-width:1180px;margin:0 auto;padding:clamp(56px,9vw,120px) clamp(20px,4vw,48px)}
-  .head{display:flex;align-items:center;gap:16px;margin-bottom:28px}
-  .head .n{font:12px ui-monospace,monospace;color:var(--accent);letter-spacing:.1em}
-  .head .l{font:12px ui-monospace,monospace;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
-  .head .line{flex:1;height:1px;background:var(--border)}
-  h1.big{font-size:clamp(40px,8vw,96px);letter-spacing:-.03em;line-height:1;margin:0 0 40px;font-weight:600}
-  .two{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(24px,5vw,72px)}
-  .two p, .body p{margin:0 0 18px;color:#c3c9d2;font-size:clamp(15px,1.5vw,18px);line-height:1.65}
-  .body{max-width:760px}
-  .body b, .two b{color:var(--text);font-weight:600}
-  .meta div{display:flex;flex-direction:column;gap:4px;padding:14px 0;border-bottom:1px solid var(--border)}
-  .meta .k{font:12px ui-monospace,monospace;color:var(--accent);letter-spacing:.08em}
-  .meta .v{font-size:16px}
-  .gal{display:grid;gap:12px;margin-top:32px}
-  .gal.c2{grid-template-columns:repeat(2,minmax(0,1fr))} .gal.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .gal img{display:block;width:100%;height:100%;object-fit:cover;border-radius:6px;background:var(--surface)}
-  .gal img.wide{grid-column:1/-1;aspect-ratio:16/9}
-  .endrow{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:48px clamp(20px,4vw,48px);max-width:1180px;margin:0 auto;border-top:1px solid var(--border)}
-  .endrow a{color:var(--accent);text-decoration:none;font-weight:600}
-  @media(max-width:760px){.two{grid-template-columns:1fr}.gal.c3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .end{max-width:1180px;margin:0 auto;min-height:72vh;display:flex;flex-direction:column;justify-content:center;gap:28px;padding:clamp(56px,9vw,120px) clamp(20px,4vw,48px)}
+  .end .k{font:500 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+  .end h2{font-size:clamp(40px,8vw,96px);letter-spacing:-.03em;line-height:1;margin:0;font-weight:600}
+  .end p{margin:0;max-width:620px;color:#c3c9d2;font-size:clamp(15px,1.5vw,18px);line-height:1.65}
+  .end .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+  .end .cta a{font:12px/1 'DM Mono',ui-monospace,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:13px 22px;border-radius:4px;min-width:200px;text-align:center;box-sizing:border-box;transition:background .2s,border-color .2s,color .2s}
+  .end .cta .pri{background:var(--accent);color:#080a0c;border:1px solid var(--accent)} .end .cta .pri:hover{background:#00e090}
+  .end .cta .sec{color:var(--text);border:1px solid rgba(255,255,255,.28)} .end .cta .sec:hover{border-color:rgba(0,245,160,.6);color:var(--accent)}
+  .endrow{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:32px clamp(20px,4vw,48px);max-width:1180px;margin:0 auto;border-top:1px solid var(--border)}
+  .endrow a{color:var(--muted);text-decoration:none;font-weight:600} .endrow a:hover{color:var(--accent)}
+  @media(max-width:760px){.end .cta a{flex:1;min-width:0}}
 </style>
 </head>
-<body>
+<body class="loading">
+<div id="loader"><div class="ring"></div><span class="txt">Loading</span></div>
 <div id="bar"></div><div id="prog"></div>
 <div id="stage"></div>
 <div id="scroll"></div>
@@ -90,59 +106,18 @@
 <div class="ui" id="back"><a href="index.html">← defranez</a> <span>&nbsp;/&nbsp; Rancho Relaxo</span></div>
 <div class="ui" id="count">000 %</div>
 <div class="ui" id="cap"><div class="k"></div><div class="t"></div><div class="s"></div></div>
+<nav class="ui" id="kfnav" aria-label="Renders"><button type="button" class="prev" aria-label="Previous render"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3 5 8l5 5"/></svg></button><span class="n">00 / 00</span><button type="button" class="next" aria-label="Next render"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m6 3 5 5-5 5"/></svg></button></nav>
 <div class="ui" id="hint"><span class="mouse"><i></i></span><span class="txt">Loading…</span></div>
 <div id="fail"><div>This 3D walkthrough needs WebGL.<br><a href="index.html" style="color:var(--accent)">Back to the portfolio</a></div></div>
 
 <main id="content">
-  <section class="sec">
-    <div class="head"><span class="n">00</span><span class="l">Introduction</span><span class="line"></span></div>
-    <h1 class="big">Modeling + Render</h1>
-    <div class="two">
-      <div class="body">
-        <p>This project explores the integration of a single-family home within the rugged landscape of Patagonia. The primary challenge was to <b>translate the warmth of noble materials</b>—such as wood and stone—into a contemporary architectural language that respects the scale of the surroundings.</p>
-        <p>We focused on a simple yet efficient volumetric design, <b>prioritizing natural light intake and panoramic views of the mountain range.</b> This presentation details the technical journey from initial drafting to final construction.</p>
-      </div>
-      <div class="meta">
-        <div><span class="k">_ PROJECT</span><span class="v">House in the mountains</span></div>
-        <div><span class="k">_ LOCATION</span><span class="v">Chubut, Patagonia, Argentina</span></div>
-        <div><span class="k">_ REQUEST</span><span class="v">Sketchup + V-Ray/Enscape + Photoshop</span></div>
-        <div><span class="k">_ YEAR</span><span class="v">2025</span></div>
-      </div>
-    </div>
+  <section class="end">
+    <span class="k">_ Case study</span>
+    <h2>The whole process</h2>
+    <p>From the floor plans to the model, the renders and the build in Patagonia, step by step.</p>
+    <div class="cta"><a class="pri" href="index.html#sketchup">View the case study</a><a class="sec" href="#" id="replay">Replay the walkthrough ↑</a></div>
   </section>
-  <section class="sec">
-    <div class="head"><span class="n">01</span><span class="l">Project</span><span class="line"></span></div>
-    <div class="body"><p>Development of comprehensive technical documentation, including architectural floor plans and longitudinal sections to define internal spatiality. The design utilizes a modular grid system to optimize construction resources in remote geographical locations.</p></div>
-    <div class="gal"><img class="wide" loading="lazy" src="img/sketchup/image2.webp" alt="Architectural floor plans and sections"></div>
-  </section>
-  <section class="sec">
-    <div class="head"><span class="n">02</span><span class="l">Modeling</span><span class="line"></span></div>
-    <div class="body">
-      <p>The 3D modeling phase was executed with technical precision, transforming architectural schemes into a detailed digital structure. Special emphasis was placed on the structural accuracy of the timber joints and the site’s topography to ensure a realistic environment.</p>
-      <p>Through wireframes and volumetric models, we validated proportions and solar incidence on the facades, allowing for dynamic adjustments before moving into the texturing and post-processing stages.</p>
-    </div>
-    <div class="gal c2"><img loading="lazy" src="img/sketchup/image12.webp" alt="Wireframe model of the house"><img loading="lazy" src="img/sketchup/image13.webp" alt="Volumetric model of the house"></div>
-    <div class="gal c3"><img loading="lazy" src="img/sketchup/image7.webp" alt="Modeling detail"><img loading="lazy" src="img/sketchup/image8.webp" alt="Modeling detail"><img loading="lazy" src="img/sketchup/image10.webp" alt="Modeling detail"></div>
-  </section>
-  <section class="sec">
-    <div class="head"><span class="n">03</span><span class="l">Renders</span><span class="line"></span></div>
-    <div class="body"><p>Photorealistic visualization designed to capture the atmosphere of the retreat under various lighting conditions. Global illumination was carefully tuned to highlight natural textures and the contrast between interior warmth and the exterior climate.</p></div>
-    <div class="gal c2">
-      <img class="wide" loading="lazy" src="img/sketchup/render-enscape161.webp" alt="Exterior render at dusk">
-      <img loading="lazy" src="img/sketchup/render-vray-v191.webp" alt="Exterior render"><img loading="lazy" src="img/sketchup/render-vray-v201.webp" alt="Exterior render">
-      <img loading="lazy" src="img/sketchup/render-vray-v211.webp" alt="Interior render"><img loading="lazy" src="img/sketchup/render-vray-v621.webp" alt="Interior render">
-      <img class="wide" loading="lazy" src="img/sketchup/render-enscape291.webp" alt="Exterior render at night">
-    </div>
-  </section>
-  <section class="sec">
-    <div class="head"><span class="n">04</span><span class="l">Results</span><span class="line"></span></div>
-    <div class="body"><p>The transition from the digital model to the physical build demonstrates the viability of the proposed design. On-site monitoring allowed us to compare the 3D model’s precision with traditional construction techniques applied in the region.</p></div>
-    <div class="gal c3">
-      <img loading="lazy" src="img/sketchup/build-01.webp" alt="Construction site in Patagonia"><img loading="lazy" src="img/sketchup/build-02.webp" alt="Timber frame under construction"><img loading="lazy" src="img/sketchup/build-05.webp" alt="House under construction">
-      <img loading="lazy" src="img/sketchup/build-03.webp" alt="Construction detail"><img loading="lazy" src="img/sketchup/build-08.webp" alt="Timber frame under construction"><img loading="lazy" src="img/sketchup/build-09.webp" alt="Construction detail">
-    </div>
-  </section>
-  <div class="endrow"><a href="index.html">← Back to the portfolio</a><a href="#" onclick="scrollTo({top:0,behavior:'smooth'});return false">Replay the walkthrough ↑</a></div>
+  <div class="endrow"><a href="index.html">← Back to the portfolio</a></div>
 </main>
 
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
@@ -172,11 +147,22 @@ const inOutCubic = v => { v = clamp(v); return v < .5 ? 4 * v * v * v : 1 - Math
 const seg = (t, a, b) => clamp((t - a) / (b - a));
 
 // Review mode (?review): the scroll no longer drives the walkthrough; casa-review.js takes over
+const COARSE = matchMedia('(pointer: coarse)').matches;
+const LOOK = ((m) => m === 'off' ? null : m)(location.search.match(/[?&]look=(pan|depth|off)/)?.[1] ?? 'depth');   // look round the render keyframes (see lookDrag); ?look=pan|off to try the others
 const R = window.__review = { active: /[?&]review/.test(location.search), kf: /[?&]kf/.test(location.search), free: false, force: {}, orig: null };   // kf: render-keyframe test (casa-kf.js)
+// LITE: phones and small screens. The full page needs ~1 GB of GPU memory (model textures ~430 MB, panorama, plan sheets, shadow map,
+// bloom buffers) and mobile Safari kills it. LITE caps textures at 512 px, the panorama at 2048, the plan sheets at 1536, the shadow
+// map at 1024, and drops the post-processing. ?lite forces it on a desktop, ?full forces the full page on a phone.
+const LITE = /[?&]lite/.test(location.search) || (!/[?&]full/.test(location.search) && (matchMedia('(pointer: coarse)').matches || Math.min(innerWidth, innerHeight) < 700));
+const shrink = (img, max) => {   // a canvas copy of an image no larger than max px on its long side (or the image itself)
+  const w = img?.width, h = img?.height; if (!w || Math.max(w, h) <= max) return img;
+  const k = max / Math.max(w, h), c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); img.close?.(); return c;
+};
 let renderer;
 try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false }); }
 catch (e) { $('fail').style.display = 'flex'; throw e; }
-renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+renderer.setPixelRatio(Math.min(devicePixelRatio, LITE ? 1.25 : 1.5));
 renderer.setSize(innerWidth, innerHeight);
 renderer.setClearColor(0x080a0c, 1);
 renderer.toneMapping = THREE.NeutralToneMapping;   // closest to the raw Sketchup colours (ACES darkens and saturates)
@@ -220,6 +206,7 @@ const skyGeo = new THREE.SphereGeometry(1500, 48, 24);
 const skyDome = new THREE.Mesh(skyGeo, skyMat); skyDome.renderOrder = -1; scene.add(skyDome);
 const bakeScene = new THREE.Scene(); bakeScene.add(new THREE.Mesh(skyGeo, bakeMat));
 new THREE.TextureLoader().load('models/env.jpg', tex => {
+  if (LITE) tex.image = shrink(tex.image, 2048);
   tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
   skyMat.uniforms.map.value = tex; bakeMat.uniforms.map.value = tex; bakeMat.uniforms.alpha.value = 1;
   scene.environment = new THREE.PMREMGenerator(renderer).fromScene(bakeScene, 0.02).texture;   // site light as ambient
@@ -228,7 +215,7 @@ new THREE.TextureLoader().load('models/env.jpg', tex => {
 
 // Key light (sun) with soft shadows, plus a sky/ground hemisphere that we dim once inside
 const sun = new THREE.DirectionalLight(0xffd9a6, 2.7); sun.position.set(6.2 - 21, 10.5, -6.8 + 17);   // golden hour: ~21° above the horizon, front-west
-sun.castShadow = true; sun.shadow.mapSize.set(4096, 4096); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.04;
+sun.castShadow = true; sun.shadow.mapSize.set(LITE ? 1024 : 4096, LITE ? 1024 : 4096); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.04;
 Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26, near: 1, far: 110 });
 sun.target.position.set(6.2, 0, -6.8);
 const hemi = new THREE.HemisphereLight(0xdfe9ff, 0x7a7a50, 0.85), hemiDay = new THREE.Color(0xdfe9ff), hemiNight = new THREE.Color(0x1a2440);
@@ -240,7 +227,7 @@ const sunFlare = new THREE.PointLight(0xffffff, 0, 0); sunFlare.position.copy(su
 { const lf = new Lensflare(), core = radial(256, [[0, 'rgba(255,255,255,1)'], [.12, 'rgba(255,236,190,.95)'], [.45, 'rgba(255,180,90,.28)'], [1, 'rgba(255,150,60,0)']]), ring = radial(128, [[0, 'rgba(255,200,120,0)'], [.72, 'rgba(255,190,110,.16)'], [1, 'rgba(255,170,90,0)']]);
   lf.addElement(new LensflareElement(core, 420, 0)); lf.addElement(new LensflareElement(ring, 80, .32)); lf.addElement(new LensflareElement(ring, 150, .58)); lf.addElement(new LensflareElement(ring, 55, .86)); sunFlare.add(lf); scene.add(sunFlare); }
 // Post-processing "look": bloom on lights/sun, warm grade + vignette. Ambient occlusion is opt-in (?ao: it flickered). ?plain turns it all off.
-const POST = !/[?&]plain/.test(location.search);
+const POST = !LITE && !/[?&]plain/.test(location.search);
 let composer = null, bloom = null, gradeU = null;
 if (POST) {
   composer = new EffectComposer(renderer);
@@ -326,10 +313,10 @@ const tgtCurve = new THREE.CatmullRomCurve3(KEYS.map(k => k.q), false, 'centripe
 const KF_SPANS = Object.keys(KF).map(id => ({ id, t0: tOf(id), t1: tOf(id + ':out') }));
 
 const CAPTIONS = [ // [from, to, label, title, sub] — the 3D stretches between render keyframes (a render brings its own copy)
-  [-PRE - 1, -4.8, '', '', ''],                                         // the plan render carries its own title
-  [-4.8, 5, '_ 00 Plan', 'From the drawing', 'Columns and walls rise out of the plan’s own lines'],
-  [5, 15.5, '_ 01 Foundation', 'Slab, embankment and paths', 'The house starts from the ground'],
-  [15.5, 24.5, '_ 02 Structure', 'Columns, mezzanine, stairs', ''],
+  [-PRE - 1, -5.6, '', '', ''],                                         // the plan render carries its own title
+  [-5.6, 1.5, '_ 00 Plan', 'From the drawing', 'Columns and walls rise out of the plan’s own lines'],
+  [1.5, 9, '_ 01 Foundation', 'Slab, embankment and paths', 'The house starts from the ground'],
+  [9, 24.5, '_ 02 Structure', 'Columns, mezzanine, stairs', ''],
   [24.5, 36, '_ 03 Walls', 'Perimeter and partitions', 'Built up from the slab'],
   [36, 44,  '_ 04 Cladding', 'Envelope', 'Black sheet and stone close the volume'],
   [44, 53.5, '_ 05 Roof + openings', 'Roof, windows and doors', ''],
@@ -340,7 +327,7 @@ const CAPTIONS = [ // [from, to, label, title, sub] — the 3D stretches between
   [tOf('06-bano:out'), tOf('07-entrepiso1'), '_ Stairs', 'Up to the mezzanine', ''],
   [tOf('08-entrepiso2:out'), 999, '_ Workspace', 'Back to the drawing board', ''],
 ];
-const NAMES = [[-PRE, 'Render plano'], [-7.5, 'Zoom a PLANTA'], [-4.8, 'Plano → platea'], [-3.6, 'Inclinación'], [0, 'Terreno'], [7.5, 'Talud, camino y platea'], [12, 'Servicios'], [17.5, 'Columnas'], [21.5, 'Entrepiso'], [23.5, 'Escalera'], [26.5, 'Paredes perimetrales'], [29.5, 'Paredes internas'],
+const NAMES = [[-PRE, 'Render plano'], [-8, 'Zoom a PLANTA'], [-5.6, 'Plano → platea'], [-3.6, 'Inclinación'], [0, 'Terreno, talud, camino y platea'], [3, 'Servicios'], [11, 'Columnas'], [16.5, 'Entrepiso'], [19.5, 'Escalera'], [26.5, 'Paredes perimetrales'], [29.5, 'Paredes internas'],
   [32.5, 'Cuarto tanque'], [35.5, 'Baranda entrepiso'], [39, 'Chapas'], [42.5, 'Piedras'], [46, 'Techo'], [48, 'Paneles solares'], [51, 'Aberturas'], [55.5, 'Soportes deck y garage'], [58, 'Deck'], [60, 'Escalones deck'],
   [62, 'Techo deck'], [63.5, 'Techo garage'], [66.5, 'Paisaje'], [70.5, 'Muebles (aparecen)'],
   ...Object.keys(KF).map(id => [tOf(id), 'Render ' + id]), [tOf('in'), 'Interior · ingreso'], [tOf('stair'), 'Pie de escalera'], [tOf('s2'), 'Subiendo la escalera'], [tOf('laptop'), 'Laptop']].sort((a, b) => a[0] - b[0]);
@@ -348,29 +335,31 @@ const NAMES = [[-PRE, 'Render plano'], [-7.5, 'Zoom a PLANTA'], [-4.8, 'Plano �
 // ETAPA 1 · the floor-plan render (assets/casa/01-plano) fills the screen, then zooms into its PLANTA until that drawing lands exactly on the
 // slab of the 3D, seen from straight above; the render dissolves and the plan's lines stay drawn on the slab (assets/casa/planta.svg, registered
 // to the model by the columns: planta.json). Columns and walls then come up out of those lines; the lines fade once the walls are up.
-// Render → model: in the 3200 px render, PLANTA's columns sit at ix = 398 + 55.05·(x − 1.13), iy = 474 + 55.05·(z + 9.69) (x right, −z up).
+// Render → model: in the 3600 px wide sheet, PLANTA's columns sit at ix = 941.1 + 39.416·(x − 1.13), iy = 338.1 + 39.416·(z + 9.69) (x right, −z up).
 const PLANO = { el: null, img: null, lines: [], C: new THREE.Vector3(6.25, 0, -6.7) };
-const PLANO_PX = { ppm: 55.05, x0: 398, x1: 1.13, y0: 474, z1: -9.69, w: 3200 };
+// Phones held upright get the portrait sheet (01-plano-v, 1242 px), where the same columns sit at ix = 318.2 + 59.18·(x − 1.13), iy = 474.2 + 59.18·(z + 9.69).
+const UPRIGHT = innerHeight > innerWidth;
+const PLANO_PX = UPRIGHT ? { ppm: 59.18, x0: 318.2, x1: 1.13, y0: 474.2, z1: -9.69, w: 1242 } : { ppm: 39.416, x0: 941.1, x1: 1.13, y0: 338.1, z1: -9.69, w: 3600 };
 { const el = document.createElement('div'); el.id = 'plano'; const img = new Image(); img.alt = ''; img.decoding = 'async';
-  img.src = `assets/casa/01-plano${Math.min(innerWidth, innerHeight) < 700 ? '-m' : ''}.webp`; el.appendChild(img); document.body.appendChild(el); PLANO.el = el; PLANO.img = img; }
+  img.src = `assets/casa/01-plano${UPRIGHT ? '-v' : Math.min(innerWidth, innerHeight) < 700 ? '-m' : ''}.webp`; el.appendChild(img); document.body.appendChild(el); PLANO.el = el; PLANO.img = img; }
 const planoMatch = () => {   // the top-down camera that frames the house, and the scale k (screen px per metre) on the slab
   const W = innerWidth, H = innerHeight, k = Math.min(W * 0.82 / 11.5, H * 0.82 / 7.8), fov = 45, d = (H / 2) / (k * Math.tan(rad(fov / 2)));
   return { k, fov, d };
 };
 function planoAt(t) {
-  const el = PLANO.el, img = PLANO.img, a = R.orig ? 0 : 1 - smooth(seg(t, -4.8, -3.6));
+  const el = PLANO.el, img = PLANO.img, a = R.orig ? 0 : 1 - inOutCubic(seg(t, -5.6, -3.6));   // a long, soft dissolve
   el.style.display = a > 0.001 ? 'block' : 'none'; if (a <= 0.001 || !img.naturalWidth) return;
-  el.style.opacity = a; el.style.background = t < -4.8 ? 'var(--bg)' : 'transparent';
+  el.style.opacity = a; el.style.background = t < -5.6 ? 'var(--bg)' : 'transparent';
   const W = innerWidth, H = innerHeight, nw = img.naturalWidth, nh = img.naturalHeight, f = nw / PLANO_PX.w, { k } = planoMatch(), C = PLANO.C;
-  const s0 = Math.max(W / nw, H / nh) * (1 + 0.03 * smooth(seg(t, -PRE, -7.5))), c0 = [nw / 2, nh / 2];        // cover, with a slow push
+  const s0 = (UPRIGHT ? Math.min(W / nw, H / nh) * 0.94 : Math.max(W / nw, H / nh)) * (1 + 0.03 * smooth(seg(t, -PRE, -8))), c0 = [nw / 2, nh / 2];   // upright: the whole sheet; landscape: the wide sheet covers the screen. A slow push
   const s1 = k / (PLANO_PX.ppm * f), c1 = [(PLANO_PX.x0 + PLANO_PX.ppm * (C.x - PLANO_PX.x1)) * f, (PLANO_PX.y0 + PLANO_PX.ppm * (C.z - PLANO_PX.z1)) * f];   // PLANTA on the slab
-  const u = inOutCubic(seg(t, -7.5, -4.8)), sc = s0 * Math.pow(s1 / s0, u), cx = c0[0] + (c1[0] - c0[0]) * u, cy = c0[1] + (c1[1] - c0[1]) * u;
-  img.style.width = nw + 'px'; img.style.transform = `translate(${W / 2 - cx * sc}px,${H / 2 - cy * sc}px) scale(${sc})`;
+  const u = inOutCubic(seg(t, -8, -5.6)), sc = s0 * Math.pow(s1 / s0, u), cx = c0[0] + (c1[0] - c0[0]) * u, cy = c0[1] + (c1[1] - c0[1]) * u;
+  img.style.width = nw + 'px'; img.style.transform = `translate(${W / 2 - cx * sc}px,${H / 2 - cy * sc}px) scale(${sc})`; el.classList.add('ready');
 }
 // the plan's lines on the slab: one sheet per layer, so they can be timed (columns, then walls, then cladding and posts)
 (async () => {
   let fit, svg; try { fit = await (await fetch('assets/casa/planta.json')).json(); svg = await (await fetch('assets/casa/planta.svg')).text(); } catch (e) { return; }
-  const [, , W, H] = fit.viewBox, S = 4096 / W, X = py => fit.toModel.x.offset + fit.toModel.x.perPt * py, Z = px => fit.toModel.z.offset + fit.toModel.z.perPt * px, y = 0.006;
+  const [, , W, H] = fit.viewBox, S = (LITE ? 1536 : 4096) / W, X = py => fit.toModel.x.offset + fit.toModel.x.perPt * py, Z = px => fit.toModel.z.offset + fit.toModel.z.perPt * px, y = 0.006;
   const geo = new THREE.BufferGeometry(), c = [[0, 0], [W, 0], [0, H], [W, H]];
   geo.setAttribute('position', new THREE.Float32BufferAttribute(c.flatMap(([px, py]) => [X(py), y, Z(px)]), 3));
   geo.setAttribute('uv', new THREE.Float32BufferAttribute(c.flatMap(([px, py]) => [px / W, 1 - py / H]), 2));
@@ -389,7 +378,7 @@ function planoAt(t) {
   }
 })();
 function planLinesAt(t) {   // drawn as the render dissolves; each layer goes once what grows out of it is up
-  for (const { m, t0, t1 } of PLANO.lines) { const a = R.orig ? 0 : Math.min(smooth(seg(t, -4.8, -3.8)), 1 - smooth(seg(t, t1, t1 + 4))); m.visible = a > 0.001; m.material.opacity = a; }
+  for (const { m, t0, t1 } of PLANO.lines) { const a = R.orig ? 0 : Math.min(smooth(seg(t, -5.6, -4)), 1 - smooth(seg(t, t1, t1 + 4))); m.visible = a > 0.001; m.material.opacity = a; }
 }
 
 // render keyframe layer (images load lazily: the browser fetches them as they become visible)
@@ -398,7 +387,59 @@ function planLinesAt(t) {   // drawn as the render dissolves; each layer goes on
   for (const sp of KF_SPANS) { const k = KF[sp.id], el = document.createElement('div'); el.className = 'kf ' + k.side;
     el.innerHTML = `<img src="assets/casa/${sp.id}${small ? '-m' : ''}.webp" alt="" loading="lazy" decoding="async"><div class="shade"></div>`
       + `<div class="copy"><p class="l">${k.label}</p><h2 class="t">${k.title}</h2><p class="b">${k.body}</p></div>`;
-    layer.appendChild(el); Object.assign(sp, { el, img: el.querySelector('img'), copy: el.querySelector('.copy'), shade: el.querySelector('.shade') }); } }
+    layer.appendChild(el); Object.assign(sp, { el, img: el.querySelector('img'), copy: el.querySelector('.copy'), shade: el.querySelector('.shade'),
+      src: `assets/casa/${sp.id}${small ? '-m' : ''}.webp`, pan: { x: 0, y: 0, vx: 0, vy: 0, drag: null } });
+    if (LOOK) lookDrag(sp); } }
+
+// ── Look round a render (?look=pan | ?look=depth) ───────────────────────────────
+// pan: the render is shifted inside the screen (object-position) by dragging, with inertia; it eases back to the centre as it leaves.
+// depth: the same drag drives a 2.5D view: a depth map of the render's own camera (assets/casa/depth, tools/3d/casa-depth.js) makes near
+// things slide further than far ones; it also breathes slowly on its own, so the depth reads without touching it.
+// With a mouse there is no drag: the view leans a little toward the pointer (MOUSE), a small, quiet move.
+const MOUSE = { x: 0, y: 0 };
+if (!COARSE) addEventListener('pointermove', e => { MOUSE.x = e.clientX / innerWidth * 2 - 1; MOUSE.y = e.clientY / innerHeight * 2 - 1; }, { passive: true });
+function lookDrag(sp) {
+  const P = sp.pan, el = sp.el; if (!COARSE) return;
+  const range = () => { const ar = KF[sp.id].aspect, va = innerWidth / innerHeight, dw = Math.max(innerWidth, innerHeight * ar), dh = Math.max(innerHeight, innerWidth / ar);
+    return [Math.max((dw - innerWidth) / 2, LOOK === 'depth' ? innerWidth * 0.35 : 1), Math.max((dh - innerHeight) / 2, LOOK === 'depth' ? innerHeight * 0.35 : 1)]; };
+  el.addEventListener('pointerdown', e => { if (!el.classList.contains('live')) return; P.drag = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now() }; P.vx = P.vy = 0; el.classList.add('drag'); });
+  el.addEventListener('pointermove', e => { const d = P.drag; if (!d || d.id !== e.pointerId) return;
+    const [rx, ry] = range(), dx = e.clientX - d.x, dy = e.pointerType === 'touch' ? 0 : e.clientY - d.y, now = performance.now(), k = 16 / Math.max(now - d.t, 1);
+    P.x = clamp(P.x - dx / rx, -1, 1); P.y = clamp(P.y - dy / ry, -1, 1); P.vx = -dx / rx * k; P.vy = -dy / ry * k; Object.assign(d, { x: e.clientX, y: e.clientY, t: now }); });
+  const up = e => { if (P.drag?.id === e.pointerId) { P.drag = null; el.classList.remove('drag'); } };
+  el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up); el.addEventListener('lostpointercapture', up);
+}
+const LOOK_GL = { r: null, mesh: null, cam: null, scene: null, tex: {}, cur: null };
+function lookGL() {   // one shared WebGL canvas, moved into whichever render is on screen
+  if (LOOK_GL.r) return LOOK_GL;
+  const r = new THREE.WebGLRenderer({ alpha: true, antialias: false }); r.setPixelRatio(Math.min(devicePixelRatio, 1.5)); r.setSize(innerWidth, innerHeight, false);
+  const mat = new THREE.ShaderMaterial({ toneMapped: false, uniforms: { tImg: { value: null }, tDepth: { value: null }, uCover: { value: new THREE.Vector2(1, 1) }, uPan: { value: new THREE.Vector2() }, uAmt: { value: 0.045 } },
+    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }',
+    fragmentShader: `uniform sampler2D tImg, tDepth; uniform vec2 uCover, uPan; uniform float uAmt; varying vec2 vUv;
+      void main(){
+        vec2 base = .5 + (vUv - .5) * uCover + uPan * (1. - uCover) * .5, uv = base;
+        for (int i = 0; i < 4; i++) { float d = texture2D(tDepth, clamp(uv, 0., 1.)).r; uv = base + uPan * uAmt * (d - .45); }   // near (white) slides further
+        gl_FragColor = vec4(texture2D(tImg, clamp(uv, .001, .999)).rgb, 1.);
+      }` });
+  LOOK_GL.mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat); LOOK_GL.scene = new THREE.Scene(); LOOK_GL.scene.add(LOOK_GL.mesh); LOOK_GL.cam = new THREE.Camera();
+  LOOK_GL.r = r; addEventListener('resize', () => r.setSize(innerWidth, innerHeight, false));
+  return LOOK_GL;
+}
+function lookTex(sp) {   // image + depth for one render, loaded once (raw colour: the shader passes the pixels through untouched)
+  const L = LOOK_GL; if (L.tex[sp.id]) return L.tex[sp.id].ready ? L.tex[sp.id] : null;
+  const e = L.tex[sp.id] = { ready: false }, tl = new THREE.TextureLoader(); let n = 0; const done = () => { if (++n === 2) e.ready = true; };
+  e.img = tl.load(sp.src, done); e.depth = tl.load(`assets/casa/depth/${sp.id}.webp`, done);
+  for (const t of [e.img, e.depth]) { t.colorSpace = THREE.NoColorSpace; t.generateMipmaps = false; t.minFilter = THREE.LinearFilter; }
+  return null;
+}
+function lookStep(sp, hold, t) {   // inertia, the pull back to the centre, and (depth) a slow breath
+  const P = sp.pan;
+  if (!COARSE) { const k = hold ? 0.04 : 0.08; P.x += ((hold ? MOUSE.x * 0.3 : 0) - P.x) * k; P.y += ((hold ? MOUSE.y * 0.3 : 0) - P.y) * k;
+    const b = LOOK === 'depth' ? 0.1 * Math.sin(performance.now() / 2400) : 0; return [clamp(P.x + b, -1, 1), clamp(P.y + b * 0.3, -1, 1)]; }
+  if (!P.drag) { P.x = clamp(P.x + P.vx, -1, 1); P.y = clamp(P.y + P.vy, -1, 1); P.vx *= 0.9; P.vy *= 0.9; if (!hold) { P.x *= 0.93; P.y *= 0.93; } }
+  const b = LOOK === 'depth' && !P.drag ? 0.18 * Math.sin(performance.now() / 2400) : 0;
+  return [clamp(P.x + b, -1, 1), clamp(P.y + b * 0.3, -1, 1)];
+}
 function renderKeyframes(t) {   // in: a soft sweep (wide feathered edge, left → right) that comes into focus as the camera settles on the pose;
   let on = false;                // out: a quick crossfade back to the 3D as the camera moves on. Scrolling back undoes it.
   for (const sp of KF_SPANS) {
@@ -410,6 +451,18 @@ function renderKeyframes(t) {   // in: a soft sweep (wide feathered edge, left �
     sp.img.style.filter = w >= 0.999 ? 'none' : `blur(${((1 - w) * 22).toFixed(1)}px) brightness(${(1 + (1 - w) * 0.25).toFixed(3)})`;
     sp.img.style.transform = `scale(${((1 + (1 - w) * 0.07) * (1 + 0.03 * seg(t, sp.t0, sp.t1)) * (1 + (1 - o) * 0.08)).toFixed(4)})`;   // settles in from a little closer, drifts, pushes on out
     sp.img.style.opacity = o;
+    if (LOOK) {
+      const hold = w > 0.98 && o > 0.98; sp.el.classList.toggle('live', hold && COARSE);
+      if (a > 0.001) { const [px, py] = lookStep(sp, hold, t);
+        if (LOOK === 'pan') sp.img.style.objectPosition = `${50 + px * 50}% ${50 + py * 50}%`;
+        else { const L = lookGL(), tx = lookTex(sp);
+          if (tx) { const cv = L.r.domElement; if (cv.parentNode !== sp.el) sp.el.insertBefore(cv, sp.shade);
+            for (const k of ['maskImage', 'webkitMaskImage', 'filter', 'transform', 'opacity']) cv.style[k] = sp.img.style[k];
+            sp.img.style.opacity = 0;
+            const u = L.mesh.material.uniforms, ar = KF[sp.id].aspect, va = innerWidth / innerHeight;
+            u.tImg.value = tx.img; u.tDepth.value = tx.depth; u.uCover.value.set(va < ar ? va / ar : 1, va > ar ? ar / va : 1); u.uPan.value.set(px, -py);
+            L.r.render(L.scene, L.cam); } } }
+    }
     sp.copy.style.opacity = c; sp.copy.style.transform = `translateY(${(1 - c) * 22}px)`; sp.shade.style.opacity = c;
   }
   return on;
@@ -439,6 +492,8 @@ const gltfLoader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 const worldCenter = o => { const b = new THREE.Box3().setFromObject(o); return b.getCenter(new THREE.Vector3()); };
 gltfLoader.load('models/casa.stages.glb', gltf => {
   model = gltf.scene; scene.add(model); window.__model = model;
+  if (LITE) { const seen = new Set(); model.traverse(o => { if (!o.isMesh) return; for (const m of Array.isArray(o.material) ? o.material : [o.material]) for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap', 'bumpMap', 'alphaMap']) {
+    const t = m[k]; if (!t || seen.has(t)) continue; seen.add(t); const img = shrink(t.image, 512); if (img !== t.image) { t.image = img; t.needsUpdate = true; } } }); }
   model.updateMatrixWorld(true);
   GROUPS = model.children.filter(c => /^g-/.test(c.name)).map(c => c.name.slice(2));
   for (const k of GROUPS) {
@@ -492,10 +547,10 @@ gltfLoader.load('models/casa.stages.glb', gltf => {
   for (const k of ['ext', 'int', 'tanque']) G[k]?.traverse(o => { if (o.isMesh) o.material = Array.isArray(o.material) ? o.material.map(m => m.clone()) : o.material.clone(); });
   for (const k of ['base', 'tanque', 'tanqueeq', 'piedras', 'paisaje', 'svc0', 'svc1', 'svc2', 'svc3', 'svc4', 'svc5']) G[k]?.traverse(o => { if (o.isMesh) o.castShadow = true; });
   buildProxies(); buildLights(); buildLaptopScreen(); buildDoors(); buildReplacements(); buildTurntable(); closeTankRoom();
-  hint.querySelector('.txt').textContent = 'Scroll to view the project'; bar.style.width = '0';
+  hint.querySelector('.txt').textContent = 'Scroll to view the project'; bar.style.width = '0'; document.body.classList.remove('loading');
   readScroll();
-}, e => { if (e.total) bar.style.width = (100 * e.loaded / e.total) + '%'; },
-err => { hint.querySelector('.txt').textContent = 'Load error: ' + err.message; });
+}, e => { if (!e.total) return; const p = 100 * e.loaded / e.total; bar.style.width = p + '%'; $('loader').querySelector('.ring').style.setProperty('--p', p.toFixed(1)); $('loader').querySelector('.txt').textContent = `Loading ${Math.round(p)}%`; },
+err => { hint.querySelector('.txt').textContent = 'Load error: ' + err.message; $('loader').querySelector('.txt').textContent = 'Load error'; });
 
 // Enscape-library trees and shrubs only render inside Enscape; they are re-drawn as clean faceted stand-ins (models/proxies.json)
 // Kitchen checker rug, as in the renders: 20 cm tiles inside a 10 cm black frame, from the counter front to the living-room edge.
@@ -835,15 +890,14 @@ function applyAssembly(t) {
   T = t;
   const byX = (a, b) => a.c.x - b.c.x;
   // 0 · under the plan render (still opaque) the slab and the terrain fade in, so the dissolve shows the plan's lines on the slab
-  enter('platea', -6, -5, DOWN, 0, 0); enter('terreno', -6, -5, DOWN, 0, 0);
-  // 1 · the paths from below (slab and embankment are already there); then the service cabinets, clockwise
-  enter('base', 5, 9.5, DOWN, 8, 0);
-  GROUPS.filter(k => /^svc\d+$/.test(k)).sort((a, b) => +a.slice(3) - +b.slice(3)).forEach((k, i) => cabin(k, 9.5 + i * 0.9, 12.7 + i * 0.9));   // slab → walls → roof
+  enter('platea', -6.8, -6, DOWN, 0, 0); enter('terreno', -6.8, -6, DOWN, 0, 0); enter('base', -6.8, -6, DOWN, 0, 0);   // the paths too: the site is ready
+  // 1 · the service cabinets, clockwise
+  GROUPS.filter(k => /^svc\d+$/.test(k)).sort((a, b) => +a.slice(3) - +b.slice(3)).forEach((k, i) => cabin(k, 1.5 + i * 0.8, 4.5 + i * 0.8));   // slab → walls → roof
   // 2 · columns one by one, from below (clockwise round the house)
-  enter('columnas', 15.5, 20, DOWN, 5.5, 0.75, land, clockwise);
+  enter('columnas', 9, 15, DOWN, 5.5, 0.75, land, clockwise);
   // 3 · mezzanine slab as one block from above, then the stairs
-  enter('entrepiso', 20, 22.5, UP, 7, 0);
-  enter('escalera', 22.5, 24.5, UP, 5, 0);
+  enter('entrepiso', 15.5, 18.5, UP, 7, 0);
+  enter('escalera', 18.5, 21, UP, 5, 0);
   // 4 · perimeter walls grow out of the slab · 5 · interior walls, the tank room (+ tank), the mezzanine rail
   reveal('ext', 24.5, 28); reveal('int', 28, 31);
   reveal('tanque', 31, 33.5, 2.6, 5.2); enter('tanqueeq', 33, 34.5, UP, 4, 0);
@@ -875,8 +929,9 @@ const ideal = { p: new THREE.Vector3(), q: new THREE.Vector3(), fov: 45, up: new
 const PLAN_UP = new THREE.Vector3(0, 0, -1), Y_UP = new THREE.Vector3(0, 1, 0), _o = new THREE.Vector3();   // −z is "up" in the plan render
 function ease(u, a, b) { return a.shot && b.shot ? smooth(clamp((u - 0.12) / 0.76)) : a.shot ? u * u * u : b.shot ? 1 - Math.pow(1 - u, 3) : u; }   // slow away from a render's pose, a long brake into one
 function orbitAt(t) {   // the assembly orbit (t = 0…ASM)
-  const u = smooth(t / ASM), ang = rad(-66 + 183.11 * u), r = 30 - 11.108 * u, h = 16 - 9.2189 * u;   // ends exactly on the exterior render's camera
-  ideal.p.set(6.2 + r * Math.cos(ang), h, -6.8 + r * Math.sin(ang)); ideal.q.copy(HC).lerp(KEYS[0].q, u * u); ideal.fov = 45 + (KEYS[0].fov - 45) * u * u; ideal.up.copy(Y_UP); return ideal;
+  const u = smooth(t / ASM), ang = rad(90 + 27.11 * u), r = 30 - 11.108 * u, h = 16 - 9.2189 * u;   // starts on the plan's own side (its top is −z), so the tilt needs no turn; ends exactly on the exterior render's camera
+  ideal.p.set(6.2 + r * Math.cos(ang), h, -6.8 + r * Math.sin(ang));
+  ideal.q.copy(HC).lerp(KEYS[0].q, camera.aspect < 16 / 9 ? smooth(seg(t, ASM - 8, ASM)) : u * u); ideal.fov = 45 + (KEYS[0].fov - 45) * u * u; ideal.up.copy(Y_UP); return ideal;   // narrow screens: aim at the house until the last stretch
 }
 function cameraIdeal(t) {
   if (t < 0) {          // ETAPA 1: straight above the plan, framed to the screen; then a tilt into the orbit's first pose
@@ -893,8 +948,15 @@ function cameraIdeal(t) {
   camCurve.getPoint(f, ideal.p); tgtCurve.getPoint(f, ideal.q); ideal.fov = a.fov + (b.fov - a.fov) * u; ideal.up.copy(Y_UP); return ideal;
 }
 const look = new THREE.Vector3(); let snap = true;
+// On a screen narrower than 16:9 the vertical fov is widened through the assembly so its horizontal field stays that of a 16:9 frame
+// (the house stays whole); it narrows back before the exterior render, whose pose must match the render.
+function wideFov(fov, t) {
+  const va = camera.aspect, ref = 16 / 9; if (va >= ref || t < -3.6) return fov;
+  const w = smooth(seg(t, -3.6, 0)) * (1 - smooth(seg(t, ASM - 8, ASM))), z = va < 1 ? 1.44 : 1, f = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(rad(fov) / 2) * ref / va / z));   // z: upright phones get the model 44% closer
+  return fov + (Math.min(f, 105) - fov) * w;
+}
 function cameraAt(t, dt = 0) {   // sets the real camera; dt>0 eases it (soft transitions), dt=0 snaps (checker, review)
-  const id = cameraIdeal(t);
+  const id = cameraIdeal(t); id.fov = wideFov(id.fov, t);
   if (snap || dt === 0) { camera.position.copy(id.p); look.copy(id.q); camera.fov = id.fov; camera.up.copy(id.up); snap = false; }
   else { const k = 1 - Math.exp(-dt * 4.5); camera.position.lerp(id.p, k); look.lerp(id.q, k); camera.fov += (id.fov - camera.fov) * k; camera.up.lerp(id.up, k).normalize(); }
   camera.lookAt(look); camera.updateProjectionMatrix();
@@ -911,14 +973,69 @@ function captionAt(t) {
 }
 
 // ── Scroll → time ──────────────────────────────────────────────────────────────
+// Each render keyframe is "sticky" (touch 1.9, mouse 1.6): around it (and most of all on the way out) the finger or wheel has to travel
+// STICKY times further per unit of timeline, so a flick doesn't throw you past the render. The scroll → time map is the
+// inverse of the accumulated weight; the page gets taller by the same amount so the rest keeps its pace. ?sticky=N to try it.
+const STICKY = +(location.search.match(/[?&]sticky=([\d.]+)/)?.[1] ?? (COARSE ? 1.9 : 1.6));
+const TMAP = (() => {
+  const step = 0.05, ts = [], cs = []; let c = 0;
+  for (let t = -PRE; t <= END + 1e-9; t += step) {
+    ts.push(t); cs.push(c); let w = 1 - 0.45 * Math.min(smooth(seg(t, -1, 0.5)), 1 - smooth(seg(t, 21, 24)));   // the first stretch of the assembly goes by quicker
+    if (STICKY > 1) for (const sp of KF_SPANS) w = Math.max(w, 1 + (STICKY - 1) * Math.min(smooth(seg(t, sp.t0 - 0.8, sp.t0 + 0.4)), 1 - smooth(seg(t, sp.t1 - 0.2, sp.t1 + 1.6))));
+    c += w * step;
+  }
+  return { ts, cs, total: c };
+})();
+function scrollToT(f) {
+  const c = clamp(f) * TMAP.total, { ts, cs } = TMAP; let lo = 0, hi = cs.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (cs[m] <= c) lo = m; else hi = m; }
+  const d = cs[hi] - cs[lo]; return ts[lo] + (d > 0 ? (c - cs[lo]) / d : 0) * (ts[hi] - ts[lo]);
+}
+$('scroll').style.height = (3300 * TMAP.total / (END + PRE)).toFixed(0) + 'vh';
 let target = -PRE, tCur = -PRE;
 function readScroll() {
   if (R.active || R.kf) return;
   const sc = $('scroll'), max = sc.offsetHeight - innerHeight;
-  target = -PRE + clamp(scrollY / max) * (END + PRE);
+  target = scrollToT(scrollY / max);
 }
 addEventListener('scroll', readScroll, { passive: true });
+// On touch screens a render "pulls you in": when the finger lets go on the way into a keyframe, the page glides the rest of the way
+// to where the render has fully landed (SNAP_AT after its start). From there the scroll is the normal (sticky) one again.
+const SNAP_AT = 2.6;
+function tToScroll(t) {
+  const { ts, cs, total } = TMAP; let i = 0; while (i < ts.length - 1 && ts[i + 1] <= t) i++;
+  const j = Math.min(i + 1, ts.length - 1), f = ts[j] > ts[i] ? (t - ts[i]) / (ts[j] - ts[i]) : 0;
+  return (cs[i] + (cs[j] - cs[i]) * f) / total * ($('scroll').offsetHeight - innerHeight);
+}
+if (STICKY > 1 && COARSE) {
+  let touching = false, lastY = scrollY, down = true, idle = 0, snapTo = null;
+  addEventListener('touchstart', () => { touching = true; snapTo = null; }, { passive: true });
+  addEventListener('touchend', () => { touching = false; arm(); }, { passive: true });
+  addEventListener('scroll', () => { if (scrollY !== lastY) down = scrollY > lastY; lastY = scrollY; arm(); }, { passive: true });
+  function arm() { clearTimeout(idle); idle = setTimeout(settle, 140); }
+  function settle() {
+    if (touching || R.active || R.kf) return;
+    if (snapTo !== null && Math.abs(scrollY - snapTo) < 4) { snapTo = null; return; }   // arrived
+    if (!down) return;   // only on the way in
+    for (const [k, sp] of KF_SPANS.entries()) {
+      const from = Math.max(sp.t0 - 3, k ? KF_SPANS[k - 1].t1 + 1 : -Infinity), at = sp.t0 + SNAP_AT;
+      if (target > from && target < at - 0.05) { snapTo = tToScroll(at); scrollTo({ top: snapTo, behavior: 'smooth' }); return; }
+    }
+  }
+}
 addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); composer?.setSize(innerWidth, innerHeight); readScroll(); });
+
+// ‹ › : straight to the previous / next render, landed (SNAP_AT); after the last one, the laptop at the end. The camera flies the way between.
+const KFNAV = { el: $('kfnav'), stops: [...KF_SPANS.map(sp => sp.t0 + SNAP_AT), END] };
+{ const go = d => { const S = KFNAV.stops, i = d > 0 ? S.findIndex(x => x > target + 0.3) : S.findLastIndex(x => x < target - 0.3);
+    if (i >= 0) scrollTo({ top: tToScroll(S[i]), behavior: 'smooth' }); };
+  KFNAV.el.querySelector('.prev').addEventListener('click', () => go(-1)); KFNAV.el.querySelector('.next').addEventListener('click', () => go(1));
+  addEventListener('keydown', e => { if (e.target.closest?.('input,textarea')) return; if (e.key === 'ArrowRight') go(1); else if (e.key === 'ArrowLeft') go(-1); }); }
+function kfNavAt() {
+  const S = KFNAV.stops, n = KF_SPANS.length, cur = S.slice(0, n).findLastIndex(x => x <= target + 0.3);
+  KFNAV.el.querySelector('.n').textContent = `${String(cur + 1).padStart(2, '0')} / ${String(n).padStart(2, '0')}`;
+  KFNAV.el.querySelector('.prev').disabled = !S.some(x => x < target - 0.3); KFNAV.el.querySelector('.next').disabled = !S.some(x => x > target + 0.3);
+}
 
 const clock = new THREE.Clock(); const nearest = new THREE.Vector3(), camXZ = new THREE.Vector3();
 renderer.setAnimationLoop(() => {
@@ -958,11 +1075,14 @@ renderer.setAnimationLoop(() => {
     count.textContent = String(Math.round(pr * 100)).padStart(3, '0') + ' %';
     prog.style.width = (pr * 100) + '%';
     hint.style.opacity = t < -PRE + 0.8 ? 1 : 0;   // goes as soon as the scroll starts
+    kfNavAt();
   }
   R.beforeRender?.(t, dt);
   composer ? composer.render() : renderer.render(scene, camera);
 });
-window.__setT = v => { target = tCur = v; snap = true; };   // test hook: jump without easing
+window.__setT = v => { target = tCur = v; snap = true; };
+// replay: straight back to the plan, in one cut (rewinding the whole walkthrough at scroll speed would be a blur)
+$('replay').addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'instant' }); target = tCur = -PRE; snap = true; });   // test hook: jump without easing
 window.__END = END;
 window.__app = { THREE, scene, camera, renderer, G, get GROUPS() { return [...GROUPS, 'proxies']; }, KEYS, END, CAPTIONS, NAMES, setT: window.__setT, getT: () => tCur, getModel: () => model, cameraAt, render: () => (composer ? composer.render() : renderer.render(scene, camera)), get composer() { return composer; }, skyDome, tOf,
   resize: (w, h) => { camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h, false); composer?.setSize(w, h); } };   // review calibration: render into a box that isn't the window

@@ -8,7 +8,8 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "asse
 
 # name -> (source file, desktop width, mobile width)
 KEYFRAMES = {
-    "01-plano":        ("Render-Plano-planta.png",        3200, 1600),
+    "01-plano":        ("Plano-planta.png",               3600, 1800),   # wide sheet: covers any landscape screen
+    "01-plano-v":      ("Plano-planta_mobile.png",        1242, None),   # portrait sheet for phones held upright
     "02-exterior":     ("Render-fuera-casa-entera.png",   2560, 1280),
     "03-cocina-living":("Render-living-comedor1.png",     2560, 1280),
     "04-ventanal":     ("Render-living-comedor2.png",     2560, 1280),
@@ -35,7 +36,7 @@ for name, (src, wd, wm) in KEYFRAMES.items():
     if os.path.exists(own): src = "src/" + name + ".png (edited from " + src + ")"
     w, h = im.size
     manifest[name] = {"source": src, "sourceSize": [w, h], "aspect": round(w / h, 4)}
-    for tag, tw in (("", wd), ("-m", wm)):
+    for tag, tw in (("", wd), ("-m", wm)) if wm else (("", wd),):
         tw = min(tw, w)  # never upscale
         out = im.resize((tw, round(h * tw / w)), Image.LANCZOS)
         path = os.path.join(OUT, f"{name}{tag}.webp")
