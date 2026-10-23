@@ -1,4 +1,4 @@
-// Render-keyframe test (casa.html?kf[=04-ventanal]). The still render is projected onto the house from the camera it was
+// Render-keyframe test (ranchorelaxo.html?kf[=04-ventanal]). The still render is projected onto the house from the camera it was
 // matched to (assets/casa/cameras.json), like a slide projector standing where the photographer stood. At that pose the
 // screen shows the render exactly; as the camera moves the image stays glued to walls and furniture (real parallax),
 // and it hands over to the live 3D a metre or so later. Surfaces the render never saw keep the 3D.
@@ -117,7 +117,7 @@ const pass = new ShaderPass({
 A.composer.addPass(pass);
 
 // ── drive it ───────────────────────────────────────────────────────────────────
-R.free = true;                                                            // casa.html stops driving the camera
+R.free = true;                                                            // ranchorelaxo.html stops driving the camera
 A.setT(A.tOf('03-cocina-living'));                                                   // house finished, interior on, daylight
 let frames = 0, projReady = 0;
 addEventListener('resize', () => { mainRT.dispose(); mainRT = mkDepthRT(innerWidth * dpr(), innerHeight * dpr()); });
