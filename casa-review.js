@@ -1,4 +1,4 @@
-// Review / storyboard tool for the walkthrough. Open casa.html?review
+// Review / storyboard tool for the walkthrough. Open ranchorelaxo.html?review
 // Scrub the timeline or fly freely, freeze a frame, draw on it, drop numbered pins (each remembers the mesh/group/material under it)
 // and save. Notes land in ./review (see review-server.mjs) where they can be read back.
 // Calibration row: lay a still render over the 3D view (in a box with the render's own aspect), match the camera to it and save it to assets/casa/cameras.json.
@@ -244,7 +244,7 @@ const loadKf = async () => {
   $('rvKf').value = kfId;
 };
 const fitFrame = () => {
-  renderer.domElement.style.width = renderer.domElement.style.height = '';   // casa.html's resize handler pins it to the window
+  renderer.domElement.style.width = renderer.domElement.style.height = '';   // ranchorelaxo.html's resize handler pins it to the window
   if (!kfId) { stageEl.style.cssText = ''; frame.style.display = 'none'; A.resize(innerWidth, innerHeight); return; }
   const asp = kfManifest[kfId].aspect, aw = innerWidth, ah = innerHeight - ui.offsetHeight - 12;
   const w = Math.floor(Math.min(aw, ah * asp)), h = Math.floor(w / asp), l = Math.floor((aw - w) / 2), tp = 6;

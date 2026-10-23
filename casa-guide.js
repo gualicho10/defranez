@@ -1,4 +1,4 @@
-// Guide video for an AI video-to-video pass between two render keyframes (open casa.html?review&lamps=all, then in the console:
+// Guide video for an AI video-to-video pass between two render keyframes (open ranchorelaxo.html?review&lamps=all, then in the console:
 //   (await import('./casa-guide.js')).renderGuide('03-cocina-living', '04-ventanal')
 // The camera travels from one calibrated pose (assets/casa/cameras.json) to the other. Each frame is saved twice through
 // review-server.mjs → review/guide/<name>/: the 3D as seen (rgb, to judge the move) and a depth map (depth: near = white),
@@ -55,12 +55,12 @@ export async function renderGuide(fromId, toId, { frames = 121, w = 853, h = 480
   await frame(); await frame();
 
   for (let i = 0; i < frames; i++) {
-    gone.forEach(o => o.visible = false);             // casa.html may switch pieces back on as the frame advances
+    gone.forEach(o => o.visible = false);             // ranchorelaxo.html may switch pieces back on as the frame advances
     const u = smooth(i / (frames - 1));
     const f = Math.min(1, u / fovIn), lens = a.fov > b.fov ? smooth(f) : u;   // a wide start lens narrows early, so its curvature doesn't linger
     const pose = () => { camera.position.copy(curve.getPoint(u)); camera.quaternion.copy(a.q).slerp(b.q, u);
       camera.fov = a.fov + (b.fov - a.fov) * lens; camera.updateProjectionMatrix(); camera.updateMatrixWorld(); };
-    pose(); await frame();                            // let casa.html update doors and lamps for this camera position
+    pose(); await frame();                            // let ranchorelaxo.html update doors and lamps for this camera position
     pose();                                           // again: the review tool's orbit controls re-aim the camera every frame
     A.render(); const rgb = renderer.domElement.toDataURL('image/png');   // both captures before any await: the controls move the camera between frames
     const hidden = Object.entries(A.G).filter(([k, g]) => OUTSIDE.test(k) && g.visible).map(([, g]) => g); hidden.forEach(g => g.visible = false);
@@ -76,7 +76,7 @@ export async function renderGuide(fromId, toId, { frames = 121, w = 853, h = 480
   return { name, frames, fovs: [a.fov, b.fov], hidden: gone.length };
 }
 
-// A stretch of casa.html's own walkthrough (t0 → t1 on its timeline), rendered as video frames for an AI video-to-video pass.
+// A stretch of ranchorelaxo.html's own walkthrough (t0 → t1 on its timeline), rendered as video frames for an AI video-to-video pass.
 // The house and the light stay at envT (daylight, finished, interior on); only the camera follows the path. Frames are JPEG
 // (review/guide/<name>/rgb-<nnnn>.jpg). sky: show the site panorama and drop the fog (outside shots; otherwise the sky is the page colour).
 export async function renderPath({ t0, t1, seconds, fps = 16, envT, name, w = 1280 / 1.5, h = 720 / 1.5, sky = false, hide = [] }) {

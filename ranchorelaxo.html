@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&display=swap" rel="stylesheet">
-<title>House in the mountains · 3D</title>
+<title>Rancho Relaxo · 3D</title>
 <style>
   :root{--bg:#080a0c;--surface:#0e1114;--accent:#00f5a0;--text:#e8eaed;--muted:#8b93a1;--border:rgba(255,255,255,.06)}
   *{box-sizing:border-box}
@@ -15,7 +15,7 @@
     background-size:80px 80px}
   #stage{position:fixed;inset:0;z-index:0}
   #stage canvas{display:block;width:100%;height:100%}
-  #scroll{position:relative;height:3000vh}
+  #scroll{position:relative;height:3300vh}
   .ui{position:fixed;z-index:2;pointer-events:none}
   #back{left:24px;top:20px;font-weight:600;letter-spacing:.02em;pointer-events:auto}
   #back a{color:inherit;text-decoration:none}
@@ -25,22 +25,32 @@
   #cap .k{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent);letter-spacing:.1em;text-transform:uppercase}
   #cap .t{font-size:clamp(26px,4vw,44px);font-weight:600;letter-spacing:-.02em;line-height:1.05;margin-top:6px;text-shadow:0 1px 18px rgba(0,0,0,.55)}
   #cap .s{color:#b9c0cb;margin-top:8px;font-size:14px;text-shadow:0 1px 12px rgba(0,0,0,.6)}
-  /* render keyframes: wiped in over the 3D when the camera reaches the render's own viewpoint */
+  /* render keyframes: revealed over the 3D (soft blurred sweep) when the camera reaches the render's own viewpoint */
   #kfs{position:fixed;inset:0;z-index:1;pointer-events:none}
   .kf{position:absolute;inset:0;visibility:hidden}
-  .kf img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .kf img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;will-change:filter,opacity,transform}
   .kf .shade{position:absolute;inset:0;opacity:0;background:linear-gradient(90deg,rgba(8,10,12,.72),rgba(8,10,12,.35) 36%,rgba(8,10,12,0) 62%),linear-gradient(0deg,rgba(8,10,12,.5),rgba(8,10,12,0) 40%)}
   .kf.right .shade{background:linear-gradient(270deg,rgba(8,10,12,.72),rgba(8,10,12,.35) 36%,rgba(8,10,12,0) 62%),linear-gradient(0deg,rgba(8,10,12,.5),rgba(8,10,12,0) 40%)}
-  .kf .edge{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--accent);box-shadow:0 0 18px rgba(0,245,160,.55);opacity:0}
   .kf .copy{position:absolute;bottom:clamp(40px,9vh,110px);left:clamp(20px,5vw,72px);width:min(520px,calc(100vw - 40px));opacity:0;font:300 clamp(16px,1.4vw,21px)/1.55 Jost,system-ui,sans-serif;color:var(--text);text-shadow:0 1px 16px rgba(0,0,0,.65)}
   .kf.right .copy{left:auto;right:clamp(20px,5vw,72px)}
   .kf .l{font:600 13px/1 Jost,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
   .kf .t{font:300 clamp(36px,5vw,80px)/1 Jost,system-ui,sans-serif;letter-spacing:-.025em;margin:0 0 16px}
   .kf .b{margin:0}
   @media(max-width:760px){.kf .copy{left:20px;right:auto;bottom:64px}.kf.left .shade,.kf.right .shade{background:linear-gradient(0deg,rgba(8,10,12,.85),rgba(8,10,12,.5) 40%,rgba(8,10,12,0) 70%)}}
+  /* ETAPA 1: the floor-plan render, zoomed into its PLANTA until it sits exactly on the 3D slab, then dissolved into it */
+  #plano{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;background:var(--bg)}
+  #plano img{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;will-change:transform}
   #bar{position:fixed;left:0;top:0;height:2px;width:0;background:var(--accent);z-index:3;transition:width .2s}
   #prog{position:fixed;left:0;bottom:0;height:2px;width:0;background:var(--accent);z-index:3}
-  #hint{left:0;right:0;bottom:24px;text-align:center;font:11px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:opacity .4s}
+  /* the call to scroll, over the plan render: a mouse whose wheel rolls down, in a dark pill that breathes */
+  #hint{left:50%;bottom:clamp(84px,17vh,170px);transform:translateX(-50%);display:flex;align-items:center;gap:14px;padding:12px 22px 12px 16px;border-radius:999px;
+    background:rgba(8,10,12,.78);border:1px solid rgba(0,245,160,.35);box-shadow:0 8px 30px rgba(0,0,0,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    font:600 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--text);white-space:nowrap;transition:opacity .4s;animation:hintPulse 2.4s ease-in-out infinite}
+  #hint .mouse{position:relative;width:20px;height:30px;border:2px solid var(--accent);border-radius:11px;flex:none}
+  #hint .mouse i{position:absolute;left:50%;top:6px;width:3px;height:7px;margin-left:-1.5px;border-radius:2px;background:var(--accent);animation:hintWheel 1.6s cubic-bezier(.5,0,.3,1) infinite}
+  @keyframes hintWheel{0%{transform:translateY(0);opacity:0}20%{opacity:1}70%{transform:translateY(9px);opacity:0}100%{transform:translateY(9px);opacity:0}}
+  @keyframes hintPulse{0%,100%{box-shadow:0 8px 30px rgba(0,0,0,.35),0 0 0 0 rgba(0,245,160,.0)}50%{box-shadow:0 8px 30px rgba(0,0,0,.35),0 0 0 8px rgba(0,245,160,.12)}}
+  @media(prefers-reduced-motion:reduce){#hint,#hint .mouse i{animation:none}}
   #fail{display:none;position:fixed;inset:0;z-index:4;align-items:center;justify-content:center;text-align:center;padding:24px;background:var(--bg)}
   /* the laptop screen: dark page colour fades in as the camera fills the frame with the screen */
   #screen{position:fixed;inset:0;z-index:2;background:var(--bg);opacity:0;pointer-events:none;display:flex;align-items:center}
@@ -77,10 +87,10 @@
 <div id="stage"></div>
 <div id="scroll"></div>
 <div id="screen"><div class="hero"><div class="k">_ PROJECT</div><div class="h">Modeling<br>+ Render</div><div class="s">House in the mountains · Chubut, Patagonia</div></div></div>
-<div class="ui" id="back"><a href="index.html">← defranez</a> <span>&nbsp;/&nbsp; House in the mountains</span></div>
+<div class="ui" id="back"><a href="index.html">← defranez</a> <span>&nbsp;/&nbsp; Rancho Relaxo</span></div>
 <div class="ui" id="count">000 %</div>
 <div class="ui" id="cap"><div class="k"></div><div class="t"></div><div class="s"></div></div>
-<div class="ui" id="hint">Loading…</div>
+<div class="ui" id="hint"><span class="mouse"><i></i></span><span class="txt">Loading…</span></div>
 <div id="fail"><div>This 3D walkthrough needs WebGL.<br><a href="index.html" style="color:var(--accent)">Back to the portfolio</a></div></div>
 
 <main id="content">
@@ -156,6 +166,8 @@ const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const smooth = v => { v = clamp(v); return v * v * (3 - 2 * v); };
 const outCubic = v => 1 - Math.pow(1 - clamp(v), 3);
 const outQuart = v => 1 - Math.pow(1 - clamp(v), 4);
+// landing: an even pace for most of the way, then a brake over the last stretch (C1-continuous, no overshoot)
+const land = v => { v = clamp(v); const a = 0.6, s = 2 / (1 + a); return v < a ? s * v : 1 - s * (1 - v) * (1 - v) / (2 * (1 - a)); };
 const inOutCubic = v => { v = clamp(v); return v < .5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2; };
 const seg = (t, a, b) => clamp((t - a) / (b - a));
 
@@ -249,6 +261,7 @@ const fill = new THREE.PointLight(0xfff0dc, 0, 14, 1.6); scene.add(fill);   // s
 // The interior route follows the floor plan (glazed door x≈6.8, bedroom door x≈9.1/z≈-6.7, bath door x≈10/z≈-7.7,
 // stair along the north wall x 4.6→8.6 at z≈-9) so it never crosses a wall (checked with __checkPath()).
 const ASM = 72;
+const PRE = 10;  // ETAPA 1 (t = −PRE…0): the floor-plan render, a zoom into its PLANTA, the plan's lines on the slab, then the tilt into the assembly
 const HC = new THREE.Vector3(6.2, 1.5, -6.8);
 // Render keyframes: the walkthrough stops on the exact camera each still render was matched to (assets/casa/cameras.json, review
 // editor → Calibrar), the render is wiped in over the 3D with its copy, then wiped out as the camera moves on.
@@ -272,7 +285,7 @@ const KF = {
 const coverFov = (fov, ar) => { const va = innerWidth / innerHeight; return va > ar ? THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(rad(fov) / 2) * ar / va)) : fov; };
 const KEYS = []; let tt = ASM;
 const K = (id, dt, p, q, fov, shot = false) => { tt += dt; KEYS.push({ id, t: tt, p: new THREE.Vector3(...p), q: new THREE.Vector3(...q), fov, shot }); };
-const HOLD = 5;                                                       // timeline units a render stays on screen
+const HOLD = 6;                                                       // timeline units a render stays on screen
 const KFK = (id, dt) => { const k = KF[id], f = coverFov(k.fov, k.aspect); K(id, dt, k.p, k.q, f, true); K(id + ':out', HOLD, k.p, k.q, f, true); };
 KFK('02-exterior', 0);                                                // the assembly orbit rises and ends on the exterior render's camera
 K('door1', 5,   [6.85, 1.9, 0.8],   [6.7, 1.6, -5],   58);
@@ -313,7 +326,8 @@ const tgtCurve = new THREE.CatmullRomCurve3(KEYS.map(k => k.q), false, 'centripe
 const KF_SPANS = Object.keys(KF).map(id => ({ id, t0: tOf(id), t1: tOf(id + ':out') }));
 
 const CAPTIONS = [ // [from, to, label, title, sub] — the 3D stretches between render keyframes (a render brings its own copy)
-  [0, 5,    '_ Project', 'Rancho Relaxo', 'Epuyén, Chubut, Patagonia, Argentina · 2026'],
+  [-PRE - 1, -4.8, '', '', ''],                                         // the plan render carries its own title
+  [-4.8, 5, '_ 00 Plan', 'From the drawing', 'Columns and walls rise out of the plan’s own lines'],
   [5, 15.5, '_ 01 Foundation', 'Slab, embankment and paths', 'The house starts from the ground'],
   [15.5, 24.5, '_ 02 Structure', 'Columns, mezzanine, stairs', ''],
   [24.5, 36, '_ 03 Walls', 'Perimeter and partitions', 'Built up from the slab'],
@@ -326,26 +340,76 @@ const CAPTIONS = [ // [from, to, label, title, sub] — the 3D stretches between
   [tOf('06-bano:out'), tOf('07-entrepiso1'), '_ Stairs', 'Up to the mezzanine', ''],
   [tOf('08-entrepiso2:out'), 999, '_ Workspace', 'Back to the drawing board', ''],
 ];
-const NAMES = [[0, 'Terreno'], [7.5, 'Talud, camino y platea'], [12, 'Servicios'], [17.5, 'Columnas'], [21.5, 'Entrepiso'], [23.5, 'Escalera'], [26.5, 'Paredes perimetrales'], [29.5, 'Paredes internas'],
+const NAMES = [[-PRE, 'Render plano'], [-7.5, 'Zoom a PLANTA'], [-4.8, 'Plano → platea'], [-3.6, 'Inclinación'], [0, 'Terreno'], [7.5, 'Talud, camino y platea'], [12, 'Servicios'], [17.5, 'Columnas'], [21.5, 'Entrepiso'], [23.5, 'Escalera'], [26.5, 'Paredes perimetrales'], [29.5, 'Paredes internas'],
   [32.5, 'Cuarto tanque'], [35.5, 'Baranda entrepiso'], [39, 'Chapas'], [42.5, 'Piedras'], [46, 'Techo'], [48, 'Paneles solares'], [51, 'Aberturas'], [55.5, 'Soportes deck y garage'], [58, 'Deck'], [60, 'Escalones deck'],
   [62, 'Techo deck'], [63.5, 'Techo garage'], [66.5, 'Paisaje'], [70.5, 'Muebles (aparecen)'],
   ...Object.keys(KF).map(id => [tOf(id), 'Render ' + id]), [tOf('in'), 'Interior · ingreso'], [tOf('stair'), 'Pie de escalera'], [tOf('s2'), 'Subiendo la escalera'], [tOf('laptop'), 'Laptop']].sort((a, b) => a[0] - b[0]);
+
+// ETAPA 1 · the floor-plan render (assets/casa/01-plano) fills the screen, then zooms into its PLANTA until that drawing lands exactly on the
+// slab of the 3D, seen from straight above; the render dissolves and the plan's lines stay drawn on the slab (assets/casa/planta.svg, registered
+// to the model by the columns: planta.json). Columns and walls then come up out of those lines; the lines fade once the walls are up.
+// Render → model: in the 3200 px render, PLANTA's columns sit at ix = 398 + 55.05·(x − 1.13), iy = 474 + 55.05·(z + 9.69) (x right, −z up).
+const PLANO = { el: null, img: null, lines: [], C: new THREE.Vector3(6.25, 0, -6.7) };
+const PLANO_PX = { ppm: 55.05, x0: 398, x1: 1.13, y0: 474, z1: -9.69, w: 3200 };
+{ const el = document.createElement('div'); el.id = 'plano'; const img = new Image(); img.alt = ''; img.decoding = 'async';
+  img.src = `assets/casa/01-plano${Math.min(innerWidth, innerHeight) < 700 ? '-m' : ''}.webp`; el.appendChild(img); document.body.appendChild(el); PLANO.el = el; PLANO.img = img; }
+const planoMatch = () => {   // the top-down camera that frames the house, and the scale k (screen px per metre) on the slab
+  const W = innerWidth, H = innerHeight, k = Math.min(W * 0.82 / 11.5, H * 0.82 / 7.8), fov = 45, d = (H / 2) / (k * Math.tan(rad(fov / 2)));
+  return { k, fov, d };
+};
+function planoAt(t) {
+  const el = PLANO.el, img = PLANO.img, a = R.orig ? 0 : 1 - smooth(seg(t, -4.8, -3.6));
+  el.style.display = a > 0.001 ? 'block' : 'none'; if (a <= 0.001 || !img.naturalWidth) return;
+  el.style.opacity = a; el.style.background = t < -4.8 ? 'var(--bg)' : 'transparent';
+  const W = innerWidth, H = innerHeight, nw = img.naturalWidth, nh = img.naturalHeight, f = nw / PLANO_PX.w, { k } = planoMatch(), C = PLANO.C;
+  const s0 = Math.max(W / nw, H / nh) * (1 + 0.03 * smooth(seg(t, -PRE, -7.5))), c0 = [nw / 2, nh / 2];        // cover, with a slow push
+  const s1 = k / (PLANO_PX.ppm * f), c1 = [(PLANO_PX.x0 + PLANO_PX.ppm * (C.x - PLANO_PX.x1)) * f, (PLANO_PX.y0 + PLANO_PX.ppm * (C.z - PLANO_PX.z1)) * f];   // PLANTA on the slab
+  const u = inOutCubic(seg(t, -7.5, -4.8)), sc = s0 * Math.pow(s1 / s0, u), cx = c0[0] + (c1[0] - c0[0]) * u, cy = c0[1] + (c1[1] - c0[1]) * u;
+  img.style.width = nw + 'px'; img.style.transform = `translate(${W / 2 - cx * sc}px,${H / 2 - cy * sc}px) scale(${sc})`;
+}
+// the plan's lines on the slab: one sheet per layer, so they can be timed (columns, then walls, then cladding and posts)
+(async () => {
+  let fit, svg; try { fit = await (await fetch('assets/casa/planta.json')).json(); svg = await (await fetch('assets/casa/planta.svg')).text(); } catch (e) { return; }
+  const [, , W, H] = fit.viewBox, S = 4096 / W, X = py => fit.toModel.x.offset + fit.toModel.x.perPt * py, Z = px => fit.toModel.z.offset + fit.toModel.z.perPt * px, y = 0.006;
+  const geo = new THREE.BufferGeometry(), c = [[0, 0], [W, 0], [0, H], [W, H]];
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(c.flatMap(([px, py]) => [X(py), y, Z(px)]), 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(c.flatMap(([px, py]) => [px / W, 1 - py / H]), 2));
+  geo.setIndex([0, 2, 1, 1, 2, 3]); geo.computeVertexNormals();
+  const doc = new DOMParser().parseFromString(svg, 'image/svg+xml');
+  for (const [ids, t0, t1] of [[['columns', 'columns-added'], -1, 18.5], [['walls'], -1, 29], [['cladding', 'posts', 'marks'], -1, 37]]) {
+    const d = doc.documentElement.cloneNode(true);
+    for (const g of [...d.querySelectorAll(':scope > g')]) if (!ids.includes(g.id)) g.remove(); else g.setAttribute('stroke', '#16181a');
+    const img = new Image(); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(d)); await img.decode().catch(() => {});
+    const cv = document.createElement('canvas'); cv.width = Math.round(W * S); cv.height = Math.round(H * S); const cx = cv.getContext('2d');
+    const [sx0, sy0, sx1, sy1] = fit.slabPdf; cx.beginPath(); cx.rect(sx0 * S, sy0 * S, (sx1 - sx0) * S, (sy1 - sy0) * S); cx.clip();   // only what lies on the slab: nothing on the embankment or the grass
+    cx.drawImage(img, 0, 0, cv.width, cv.height);
+    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+    const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }));
+    m.name = 'plan-lines-' + ids[0]; m.renderOrder = 2; scene.add(m); PLANO.lines.push({ m, t0, t1 });
+  }
+})();
+function planLinesAt(t) {   // drawn as the render dissolves; each layer goes once what grows out of it is up
+  for (const { m, t0, t1 } of PLANO.lines) { const a = R.orig ? 0 : Math.min(smooth(seg(t, -4.8, -3.8)), 1 - smooth(seg(t, t1, t1 + 4))); m.visible = a > 0.001; m.material.opacity = a; }
+}
 
 // render keyframe layer (images load lazily: the browser fetches them as they become visible)
 { const layer = document.createElement('div'); layer.id = 'kfs'; document.body.appendChild(layer);
   const small = Math.min(innerWidth, innerHeight) < 700;
   for (const sp of KF_SPANS) { const k = KF[sp.id], el = document.createElement('div'); el.className = 'kf ' + k.side;
-    el.innerHTML = `<img src="assets/casa/${sp.id}${small ? '-m' : ''}.webp" alt="" loading="lazy" decoding="async"><div class="shade"></div><i class="edge"></i>`
+    el.innerHTML = `<img src="assets/casa/${sp.id}${small ? '-m' : ''}.webp" alt="" loading="lazy" decoding="async"><div class="shade"></div>`
       + `<div class="copy"><p class="l">${k.label}</p><h2 class="t">${k.title}</h2><p class="b">${k.body}</p></div>`;
-    layer.appendChild(el); Object.assign(sp, { el, img: el.querySelector('img'), edge: el.querySelector('.edge'), copy: el.querySelector('.copy'), shade: el.querySelector('.shade') }); } }
-function renderKeyframes(t) {   // wipe in (left → right) as the camera settles on the pose, copy, then wipe out; scrolling back undoes it
-  let on = false;
+    layer.appendChild(el); Object.assign(sp, { el, img: el.querySelector('img'), copy: el.querySelector('.copy'), shade: el.querySelector('.shade') }); } }
+function renderKeyframes(t) {   // in: a soft sweep (wide feathered edge, left → right) that comes into focus as the camera settles on the pose;
+  let on = false;                // out: a quick crossfade back to the 3D as the camera moves on. Scrolling back undoes it.
   for (const sp of KF_SPANS) {
-    const w = Math.min(smooth(seg(t, sp.t0 - 0.3, sp.t0 + 1.3)), 1 - smooth(seg(t, sp.t1 - 1.3, sp.t1 + 0.3)));
-    const c = Math.min(smooth(seg(t, sp.t0 + 1.1, sp.t0 + 1.9)), 1 - smooth(seg(t, sp.t1 - 1.9, sp.t1 - 1.1)));
-    sp.el.style.visibility = w > 0.001 ? 'visible' : 'hidden'; if (w > 0.001) on = true;
-    sp.img.style.clipPath = `inset(0 ${(1 - w) * 100}% 0 0)`;
-    sp.edge.style.left = (w * 100) + '%'; sp.edge.style.opacity = w > 0.001 && w < 0.999 ? 1 : 0;
+    const w = inOutCubic(seg(t, sp.t0 - 1.2, sp.t0 + 2.4)), o = 1 - inOutCubic(seg(t, sp.t1 - 1.6, sp.t1 + 1.4));   // long, soft in and out
+    const c = Math.min(smooth(seg(t, sp.t0 + 1.6, sp.t0 + 2.6)), 1 - smooth(seg(t, sp.t1 - 2.4, sp.t1 - 1.4)));
+    const a = Math.min(w, o); sp.el.style.visibility = a > 0.001 ? 'visible' : 'hidden'; if (a > 0.001) on = true;
+    const x = -45 + w * 190, mask = w >= 0.999 ? 'none' : `linear-gradient(90deg,#000 ${x - 45}%,transparent ${x}%)`;   // 45 %-wide feather, no line
+    sp.img.style.webkitMaskImage = sp.img.style.maskImage = mask;
+    sp.img.style.filter = w >= 0.999 ? 'none' : `blur(${((1 - w) * 22).toFixed(1)}px) brightness(${(1 + (1 - w) * 0.25).toFixed(3)})`;
+    sp.img.style.transform = `scale(${((1 + (1 - w) * 0.07) * (1 + 0.03 * seg(t, sp.t0, sp.t1)) * (1 + (1 - o) * 0.08)).toFixed(4)})`;   // settles in from a little closer, drifts, pushes on out
+    sp.img.style.opacity = o;
     sp.copy.style.opacity = c; sp.copy.style.transform = `translateY(${(1 - c) * 22}px)`; sp.shade.style.opacity = c;
   }
   return on;
@@ -381,12 +445,21 @@ gltfLoader.load('models/casa.stages.glb', gltf => {
     G[k] = model.getObjectByName('g-' + k); base[k] = G[k].position.clone();
     G[k].children.forEach(c => { c.userData.p0 = c.position.clone(); c.userData.cw = worldCenter(c); });   // quantization offset lives in the node: animate relative to it
   }
+  // Review 22/10 night: things that showed up during the assembly where they don't belong
+  G.svc4?.getObjectByName('p1876')?.removeFromParent();                       // a flat site image 65 m wide just under the grass: dashes poked through it
+  const move = (o, to) => { if (!o || !to) return; to.attach(o); o.userData.p0 = o.position.clone(); o.userData.cw = worldCenter(o); };
+  for (const n of ['p158', 'p159', 'p161']) move(G.svc2?.getObjectByName(n), G.interior);   // shelves inside the house: they come with the furniture
+  move(G.base?.getObjectByName('mesh_314'), G.paisaje);                        // old timber boards along the back of the slab: with the landscape
+  { const slab = G.base?.getObjectByName('mesh_289'), g = new THREE.Group(); g.name = 'g-platea'; model.add(g);   // the slab, on its own: the plan lands on it
+    if (slab) { move(slab, g); G.platea = g; base.platea = g.position.clone(); GROUPS.push('platea'); }
+    for (const n of ['mesh_281', 'mesh_308', 'mesh_309']) move(G.base?.getObjectByName(n), g);
+    const low = g.getObjectByName('mesh_281'); if (low) { low.position.y -= 0.01; low.userData.p0.y -= 0.01; } }   // two lawns at one height flickered (a dotted seam on the crest)   // the embankment (TALUD) and the lawn round it: the slab sits on them
   const tl = new THREE.TextureLoader();
   const tex = (url, rep) => { const t = tl.load(url); t.flipY = false; t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep, rep); t.anisotropy = 8; return t; };
   const azulejos = tex('models/azulejos-bano.jpg', 0.55);
   model.traverse(o => {
     if (!o.isMesh) return;
-    const terrainLike = o.parent === G.terreno || o.parent === G.base;
+    const terrainLike = o.parent === G.terreno || o.parent === G.base || o.parent === G.platea;
     o.receiveShadow = true; o.castShadow = o.parent !== G.terreno;
     for (const m of (Array.isArray(o.material) ? o.material : [o.material])) {
       m.emissive?.set(0x000000); m.emissiveMap = null;
@@ -408,7 +481,7 @@ gltfLoader.load('models/casa.stages.glb', gltf => {
     for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld); uv[i * 2] = v.x / size; uv[i * 2 + 1] = v.z / size; }
     o.geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); };
   { let grass = null, gravel = null; const grassy = [], paths = [];
-    for (const k of ['terreno', 'base']) G[k]?.traverse(o => { if (!o.isMesh) return; const n = o.material.name;
+    for (const k of ['terreno', 'base', 'platea']) G[k]?.traverse(o => { if (!o.isMesh) return; const n = o.material.name;
       if (/grass/i.test(n)) { grassy.push(o); if (k === 'terreno' && o.material.map) grass = o.material; }
       if (/caminos piedra|groundcover rock/i.test(n)) { paths.push(o); if (/caminos piedra/i.test(n)) gravel = o.material; } });
     if (grass) { grass.map.repeat.set(1, 1); for (const o of grassy) { worldUV(o, 2); o.material = grass; }   // 'Grass C 200cm': one tile per 2 m
@@ -419,10 +492,10 @@ gltfLoader.load('models/casa.stages.glb', gltf => {
   for (const k of ['ext', 'int', 'tanque']) G[k]?.traverse(o => { if (o.isMesh) o.material = Array.isArray(o.material) ? o.material.map(m => m.clone()) : o.material.clone(); });
   for (const k of ['base', 'tanque', 'tanqueeq', 'piedras', 'paisaje', 'svc0', 'svc1', 'svc2', 'svc3', 'svc4', 'svc5']) G[k]?.traverse(o => { if (o.isMesh) o.castShadow = true; });
   buildProxies(); buildLights(); buildLaptopScreen(); buildDoors(); buildReplacements(); buildTurntable(); closeTankRoom();
-  hint.textContent = 'Scroll'; bar.style.width = '0';
+  hint.querySelector('.txt').textContent = 'Scroll to view the project'; bar.style.width = '0';
   readScroll();
 }, e => { if (e.total) bar.style.width = (100 * e.loaded / e.total) + '%'; },
-err => { hint.textContent = 'Load error: ' + err.message; });
+err => { hint.querySelector('.txt').textContent = 'Load error: ' + err.message; });
 
 // Enscape-library trees and shrubs only render inside Enscape; they are re-drawn as clean faceted stand-ins (models/proxies.json)
 // Kitchen checker rug, as in the renders: 20 cm tiles inside a 10 cm black frame, from the counter front to the living-room edge.
@@ -679,7 +752,8 @@ function reveal(k, t0, t1, y0 = -0.3, y1 = 5.9) {
 function vis(k, on) { if (G[k]) G[k].visible = R.force[k] ?? on; }
 let T = 0;
 const UP = new THREE.Vector3(0, 1, 0), DOWN = new THREE.Vector3(0, -1, 0);
-// Entrance: pieces arrive from `dir` over `dist` metres and DECELERATE into place (no overshoot), each one slightly after the previous (`spread`).
+// Entrance: pieces arrive from `dir` over `dist` metres, keep an even pace and BRAKE just before their place (no overshoot), each one slightly
+// after the previous (`spread`). Each piece fades from 0 to 100 % as it travels, so nothing pops up in mid-air; dist 0 = fade in place.
 // `dir` may be a function of the piece (e.g. from its own cardinal side); `order` sorts the units (cascades). A unit is one SketchUp element:
 // the build keeps columns and deck steps as nodes named p<item>; any other child is a unit of its own.
 function unitsOf(g) {
@@ -687,7 +761,7 @@ function unitsOf(g) {
   const m = new Map(); for (const c of g.children) { const id = c.name.match(/^p\d+/)?.[0] ?? c.uuid; if (!m.has(id)) m.set(id, []); m.get(id).push(c); }
   return g.userData.units = [...m.values()].map(list => ({ list, c: list.reduce((a, o) => a.add(o.userData.cw ?? o.position), new THREE.Vector3()).divideScalar(list.length) }));
 }
-function enter(k, t0, t1, dir, dist, spread = 0.4, ease = outCubic, order = null) {
+function enter(k, t0, t1, dir, dist, spread = 0.4, ease = land, order = null) {
   const g = G[k]; if (!g) return;
   g.visible = R.force[k] ?? (T > t0);
   let list = unitsOf(g); if (order) { g.userData.sorted ??= [...list].sort(order); list = g.userData.sorted; }
@@ -695,11 +769,46 @@ function enter(k, t0, t1, dir, dist, spread = 0.4, ease = outCubic, order = null
   list.forEach((u, i) => {
     const d = n > 1 ? (i / (n - 1)) * spread : 0, v = clamp((seg(T, t0, t1) - d) / (1 - spread)), o = (1 - ease(v)) * dist;
     for (const c of u.list) { const p0 = c.userData.p0, dv = typeof dir === 'function' ? dir(c) : dir; if (p0) c.position.set(p0.x + dv.x * o, p0.y + dv.y * o, p0.z + dv.z * o); }
+    fadeUnit(u, R.orig || R.force[k] ? 1 : smooth(clamp(v / 0.85)));
   });
+}
+// A unit's meshes get their own materials the first time it fades (shared ones would fade other pieces too); its shadow waits until it is mostly there.
+function fadeUnit(u, a) {
+  if (u.a === a) return; u.a = a;
+  if (!u.mats) { if (a >= 1) return; u.mats = new Map(); u.meshes = [];
+    for (const c of u.list) c.traverse(o => { if (!o.isMesh) return; u.meshes.push([o, o.castShadow]);
+      const own = m => { if (!u.mats.has(m)) u.mats.set(m, { m: m.clone(), op: m.opacity, tr: m.transparent }); return u.mats.get(m).m; };
+      o.material = Array.isArray(o.material) ? o.material.map(own) : own(o.material); }); }
+  for (const { m, op, tr } of u.mats.values()) { const t = tr || a < 1; if (m.transparent !== t) { m.transparent = t; m.needsUpdate = true; } m.opacity = op * a; }
+  for (const [o, cs] of u.meshes) o.castShadow = cs && a > 0.6;
 }
 const X = (x) => new THREE.Vector3(x, 0, 0), Z = (z) => new THREE.Vector3(0, 0, z);
 const cardinal = c => { const w = c.userData.cw || HC, nx = (w.x - HC.x) / 5.8, nz = (w.z - HC.z) / 4.0; return Math.abs(nx) > Math.abs(nz) ? X(Math.sign(nx)) : Z(Math.sign(nz)); };
-const svcDir = c => (c.userData.cw && c.userData.cw.y > 1.4) ? UP : DOWN;     // cabinet roofs come down, bodies come up
+// Service cabins, built like the house: their slab fades in where it lies, the walls grow up out of it (a clip plane per cabin),
+// then the roof comes down from above, braking into place and fading in. Pieces are sorted once by their world box:
+// roof = sits in the top 40 % of the cabin, slab = a thin piece at the bottom, the rest grows as walls.
+function cabin(k, t0, t1) {
+  const g = G[k]; if (!g) return;
+  g.visible = R.force[k] ?? (T > t0);
+  let cb = g.userData.cab;
+  if (!cb) {
+    const us = unitsOf(g), box = u => u.box ??= u.list.reduce((b, o) => b.expandByObject(o), new THREE.Box3());
+    const all = us.reduce((b, u) => b.union(box(u)), new THREE.Box3()), y0 = all.min.y, hgt = all.max.y - y0;
+    cb = g.userData.cab = { slab: [], walls: [], roof: [], plane: new THREE.Plane(new THREE.Vector3(0, -1, 0), y0) };
+    for (const u of us) { const b = box(u); (b.min.y > y0 + 0.6 * hgt ? cb.roof : b.max.y - b.min.y < 0.35 && b.max.y < y0 + 0.7 ? cb.slab : cb.walls).push(u); }
+    if (!cb.walls.length) { cb.walls = cb.slab; cb.slab = []; }
+    cb.w0 = Math.min(...cb.walls.map(u => u.box.min.y)); cb.w1 = Math.max(...cb.walls.map(u => u.box.max.y));
+    for (const u of cb.walls) for (const c of u.list) c.traverse(o => { if (!o.isMesh) return;
+      o.material = (Array.isArray(o.material) ? o.material.map(m => m.clone()) : o.material.clone()); });
+  }
+  const s = seg(T, t0, t1), on = !R.orig && !R.force[k];
+  for (const u of cb.slab) fadeUnit(u, on ? smooth(seg(s, 0, 0.3)) : 1);
+  const w = on ? inOutCubic(seg(s, 0.25, 0.7)) : 1, clip = w < 1;
+  cb.plane.constant = cb.w0 - 0.02 + (cb.w1 - cb.w0 + 0.04) * w;
+  if (cb.clip !== clip) { cb.clip = clip; for (const u of cb.walls) for (const c of u.list) c.traverse(o => { if (o.isMesh) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { m.clippingPlanes = clip ? [cb.plane] : null; m.clipShadows = true; m.needsUpdate = true; }); }); }
+  const v = seg(s, 0.62, 1), o = (1 - land(v)) * 5;
+  for (const u of cb.roof) { for (const c of u.list) { const p0 = c.userData.p0; if (p0) c.position.set(p0.x, p0.y + (on ? o : 0), p0.z); } fadeUnit(u, on ? smooth(clamp(v / 0.85)) : 1); }
+}
 
 const clockwise = (a, b) => { const ang = u => { const v = Math.atan2(u.c.z - HC.z, u.c.x - HC.x) + Math.PI / 2; return v < 0 ? v + 2 * Math.PI : v; }; return ang(a) - ang(b); };
 // Furniture, fittings, interior doors and openings: they fade in where they stand (no movement) at the end of the assembly.
@@ -725,59 +834,69 @@ function fadeInterior(a) {
 function applyAssembly(t) {
   T = t;
   const byX = (a, b) => a.c.x - b.c.x;
-  // 1 · embankment + path + slab together, from below; then the service cabinets, clockwise
-  enter('base', 5, 9.5, DOWN, 8, 0, outQuart);
-  const lowFirst = (a, b) => a.c.y - b.c.y;   // a cabinet's body rises first, its roof comes down last
-  GROUPS.filter(k => /^svc\d+$/.test(k)).sort((a, b) => +a.slice(3) - +b.slice(3)).forEach((k, i) => enter(k, 9.5 + i * 0.7, 12 + i * 0.7, svcDir, 5, 0.35, outQuart, lowFirst));
+  // 0 · under the plan render (still opaque) the slab and the terrain fade in, so the dissolve shows the plan's lines on the slab
+  enter('platea', -6, -5, DOWN, 0, 0); enter('terreno', -6, -5, DOWN, 0, 0);
+  // 1 · the paths from below (slab and embankment are already there); then the service cabinets, clockwise
+  enter('base', 5, 9.5, DOWN, 8, 0);
+  GROUPS.filter(k => /^svc\d+$/.test(k)).sort((a, b) => +a.slice(3) - +b.slice(3)).forEach((k, i) => cabin(k, 9.5 + i * 0.9, 12.7 + i * 0.9));   // slab → walls → roof
   // 2 · columns one by one, from below (clockwise round the house)
-  enter('columnas', 15.5, 20, DOWN, 5.5, 0.75, outQuart, clockwise);
+  enter('columnas', 15.5, 20, DOWN, 5.5, 0.75, land, clockwise);
   // 3 · mezzanine slab as one block from above, then the stairs
-  enter('entrepiso', 20, 22.5, UP, 7, 0, outQuart);
-  enter('escalera', 22.5, 24.5, UP, 5, 0, outQuart);
+  enter('entrepiso', 20, 22.5, UP, 7, 0);
+  enter('escalera', 22.5, 24.5, UP, 5, 0);
   // 4 · perimeter walls grow out of the slab · 5 · interior walls, the tank room (+ tank), the mezzanine rail
   reveal('ext', 24.5, 28); reveal('int', 28, 31);
-  reveal('tanque', 31, 33.5, 2.6, 5.2); enter('tanqueeq', 33, 34.5, UP, 4, 0, outQuart);
-  enter('baranda', 34.5, 36, UP, 4, 0, outQuart);
+  reveal('tanque', 31, 33.5, 2.6, 5.2); enter('tanqueeq', 33, 34.5, UP, 4, 0);
+  enter('baranda', 34.5, 36, UP, 4, 0);
   // 6 · black side sheets, each from the side it faces; then the stone base from below
-  enter('chapa-e', 36, 39, X(1), 14, 0.3, outQuart); enter('chapa-s', 36.8, 39.8, Z(1), 14, 0.3, outQuart);
-  enter('chapa-o', 37.6, 40.6, X(-1), 14, 0.3, outQuart);
-  enter('piedras', 40.5, 44, DOWN, 3, 0.4, outCubic);
+  enter('chapa-e', 36, 39, cardinal, 14, 0.3); enter('chapa-s', 36.8, 39.8, cardinal, 14, 0.3);   // each sheet straight in, square to the face it covers
+  enter('chapa-o', 37.6, 40.6, cardinal, 14, 0.3);
+  enter('piedras', 40.5, 44, DOWN, 3, 0.4);
   // 7 · the roof as one block from above, together with its sheet covering ('chapas' = the CHAPAS tag: the roof sheets, not the side ones)
-  //     (+ its solar panels); openings, each straight in from the facade it sits on
-  enter('techo', 44, 47, UP, 14, 0, outQuart); enter('chapas', 44, 47, UP, 14, 0, outQuart);
-  enter('solar', 46.5, 48.5, UP, 4, 0.4, outQuart);
-  enter('ab-z1', 48, 51, Z(1), 4, 0.3, outQuart); enter('ab-x1', 48.5, 51.5, X(1), 4, 0.3, outQuart);
-  enter('ab-z0', 49, 52, Z(-1), 4, 0.3, outQuart); enter('ab-x0', 49.5, 52.5, X(-1), 4, 0.3, outQuart);
-  enter('lucesext', 52, 53.5, UP, 1.2, 0, outCubic);                                                // exterior wall lights, all at once
+  //     (+ its solar panels); openings, one block per facade, straight in from the facade it sits on
+  enter('techo', 44, 47, UP, 14, 0); enter('chapas', 44, 47, UP, 14, 0);
+  enter('solar', 46.5, 48.5, UP, 4, 0.4);
+  enter('ab-z1', 48, 50.5, Z(1), 4, 0); enter('ab-x1', 48.8, 51.3, X(1), 4, 0);                  // each facade's openings as one block
+  enter('ab-z0', 49.6, 52.1, Z(-1), 4, 0); enter('ab-x0', 50.4, 52.9, X(-1), 4, 0);
+  enter('lucesext', 52, 53.5, UP, 0, 0);                                                           // exterior wall lights, all at once, fading in where they hang
   // 8 · deck + garage posts from below · 9 · the deck, then its steps one by one · 10 · deck and garage roofs, each one block
-  enter('deckposts', 53.5, 56.5, DOWN, 3, 0.5, outQuart);
-  enter('deckboards', 56.5, 58.5, UP, 3, 0, outQuart);
-  enter('deckstairs', 58.5, 61, UP, 2, 0.6, outQuart, byX);                                        // from the deck edge down
-  enter('techodeck', 61, 63.5, UP, 7, 0, outQuart);
-  enter('techogarage', 62.5, 65, UP, 7, 0, outQuart);
-  enter('paisaje', 64, 68.5, DOWN, 5, 0.6, outCubic); enter('proxies', 64.5, 68.5, DOWN, 5, 0.6, outCubic);
+  enter('deckposts', 53.5, 56.5, DOWN, 3, 0.5);
+  enter('deckboards', 56.5, 58.5, UP, 3, 0);
+  enter('deckstairs', 58.5, 61, UP, 2, 0.6, land, byX);                                        // from the deck edge down
+  enter('techodeck', 61, 63.5, UP, 7, 0);
+  enter('techogarage', 62.5, 65, UP, 7, 0);
+  enter('paisaje', 64, 68.5, DOWN, 5, 0.6); enter('proxies', 64.5, 68.5, DOWN, 5, 0.6);
   // 11 · the interior fades in, then the drone takes over
   fadeInterior(R.orig ? 0 : smooth(seg(t, 68.5, ASM)));
 }
 
 // Camera: assembly orbit, then the key path. `cameraIdeal` is where the camera wants to be; the loop eases the real camera toward it.
-const ideal = { p: new THREE.Vector3(), q: new THREE.Vector3(), fov: 45 };
-function ease(u, a, b) { return a.shot && b.shot ? smooth(clamp((u - 0.12) / 0.76)) : a.shot ? u * u * (2 - u) : b.shot ? 1 - (1 - u) * (1 - u) : u; }
+const ideal = { p: new THREE.Vector3(), q: new THREE.Vector3(), fov: 45, up: new THREE.Vector3(0, 1, 0) };
+const PLAN_UP = new THREE.Vector3(0, 0, -1), Y_UP = new THREE.Vector3(0, 1, 0), _o = new THREE.Vector3();   // −z is "up" in the plan render
+function ease(u, a, b) { return a.shot && b.shot ? smooth(clamp((u - 0.12) / 0.76)) : a.shot ? u * u * u : b.shot ? 1 - Math.pow(1 - u, 3) : u; }   // slow away from a render's pose, a long brake into one
+function orbitAt(t) {   // the assembly orbit (t = 0…ASM)
+  const u = smooth(t / ASM), ang = rad(-66 + 183.11 * u), r = 30 - 11.108 * u, h = 16 - 9.2189 * u;   // ends exactly on the exterior render's camera
+  ideal.p.set(6.2 + r * Math.cos(ang), h, -6.8 + r * Math.sin(ang)); ideal.q.copy(HC).lerp(KEYS[0].q, u * u); ideal.fov = 45 + (KEYS[0].fov - 45) * u * u; ideal.up.copy(Y_UP); return ideal;
+}
 function cameraIdeal(t) {
+  if (t < 0) {          // ETAPA 1: straight above the plan, framed to the screen; then a tilt into the orbit's first pose
+    const { fov, d } = planoMatch(), C = PLANO.C, u = smooth(seg(t, -3.6, 0)); orbitAt(0); _o.copy(ideal.p);
+    ideal.p.set(C.x, C.y + d, C.z).lerp(_o, u);
+    ideal.q.copy(C).lerp(HC, u); ideal.fov = fov + (ideal.fov - fov) * u; ideal.up.copy(PLAN_UP).lerp(Y_UP, u).normalize(); return ideal;
+  }
   if (t < ASM) {
-    const u = smooth(t / ASM), ang = rad(-66 + 183.11 * u), r = 30 - 11.108 * u, h = 16 - 9.2189 * u;   // ends exactly on the exterior render's camera
-    ideal.p.set(6.2 + r * Math.cos(ang), h, -6.8 + r * Math.sin(ang)); ideal.q.copy(HC).lerp(KEYS[0].q, u * u); ideal.fov = 45 + (KEYS[0].fov - 45) * u * u; return ideal;
+    return orbitAt(t);
   }
   let i = KEYS.length - 2;
   for (let k = 0; k < KEYS.length - 1; k++) if (t < KEYS[k + 1].t) { i = k; break; }
   const a = KEYS[i], b = KEYS[i + 1], u = ease(clamp((t - a.t) / (b.t - a.t)), a, b), f = (i + u) / (KEYS.length - 1);
-  camCurve.getPoint(f, ideal.p); tgtCurve.getPoint(f, ideal.q); ideal.fov = a.fov + (b.fov - a.fov) * u; return ideal;
+  camCurve.getPoint(f, ideal.p); tgtCurve.getPoint(f, ideal.q); ideal.fov = a.fov + (b.fov - a.fov) * u; ideal.up.copy(Y_UP); return ideal;
 }
 const look = new THREE.Vector3(); let snap = true;
 function cameraAt(t, dt = 0) {   // sets the real camera; dt>0 eases it (soft transitions), dt=0 snaps (checker, review)
   const id = cameraIdeal(t);
-  if (snap || dt === 0) { camera.position.copy(id.p); look.copy(id.q); camera.fov = id.fov; snap = false; }
-  else { const k = 1 - Math.exp(-dt * 4.5); camera.position.lerp(id.p, k); look.lerp(id.q, k); camera.fov += (id.fov - camera.fov) * k; }
+  if (snap || dt === 0) { camera.position.copy(id.p); look.copy(id.q); camera.fov = id.fov; camera.up.copy(id.up); snap = false; }
+  else { const k = 1 - Math.exp(-dt * 4.5); camera.position.lerp(id.p, k); look.lerp(id.q, k); camera.fov += (id.fov - camera.fov) * k; camera.up.lerp(id.up, k).normalize(); }
   camera.lookAt(look); camera.updateProjectionMatrix();
 }
 
@@ -792,11 +911,11 @@ function captionAt(t) {
 }
 
 // ── Scroll → time ──────────────────────────────────────────────────────────────
-let target = 0, tCur = 0;
+let target = -PRE, tCur = -PRE;
 function readScroll() {
   if (R.active || R.kf) return;
   const sc = $('scroll'), max = sc.offsetHeight - innerHeight;
-  target = clamp(scrollY / max) * END;
+  target = -PRE + clamp(scrollY / max) * (END + PRE);
 }
 addEventListener('scroll', readScroll, { passive: true });
 addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); composer?.setSize(innerWidth, innerHeight); readScroll(); });
@@ -804,10 +923,11 @@ addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; cam
 const clock = new THREE.Clock(); const nearest = new THREE.Vector3(), camXZ = new THREE.Vector3();
 renderer.setAnimationLoop(() => {
   const dt = Math.min(clock.getDelta(), 0.1), now = performance.now() / 1000;
-  tCur += (target - tCur) * 0.07;
+  tCur += (target - tCur) * 0.05;   // a little inertia on the scroll
   const t = tCur;
   if (model) {
     if (!R.orig) applyAssembly(t);
+    planoAt(t); planLinesAt(t);
     if (!R.free) cameraAt(t, dt);
     const inside = smooth(seg(t, T_DOOR, T_DOOR + 3)), night = smooth(seg(t, T_NIGHT - 1.5, T_NIGHT + 2.5));
     skyMat.uniforms.alpha.value = smooth(seg(t, T_DOOR - 4, T_DOOR)); skyMat.uniforms.night.value = night;   // panorama through the windows, darkening to night
@@ -834,9 +954,10 @@ renderer.setAnimationLoop(() => {
     const inRender = renderKeyframes(t);
     screenEl.style.opacity = smooth(seg(t, END - 5.5, END - 1.5));         // the laptop screen fills the frame → the page's hero takes over, then the content scrolls in
     cap.style.opacity = t > END - 5 || inRender ? 0 : (cap.style.opacity === '0' ? 1 : cap.style.opacity || 1);
-    count.textContent = String(Math.round(t / END * 100)).padStart(3, '0') + ' %';
-    prog.style.width = (t / END * 100) + '%';
-    hint.style.opacity = t < 1.5 ? 1 : 0;
+    const pr = (t + PRE) / (END + PRE);
+    count.textContent = String(Math.round(pr * 100)).padStart(3, '0') + ' %';
+    prog.style.width = (pr * 100) + '%';
+    hint.style.opacity = t < -PRE + 0.8 ? 1 : 0;   // goes as soon as the scroll starts
   }
   R.beforeRender?.(t, dt);
   composer ? composer.render() : renderer.render(scene, camera);

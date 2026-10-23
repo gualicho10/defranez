@@ -1,6 +1,6 @@
 # Rancho Relaxo · scroll story UX
 
-Spec for turning `casa.html` into a scrollytelling piece: still render keyframes (image + copy) alternate with the live 3D.
+Spec for turning `ranchorelaxo.html` into a scrollytelling piece: still render keyframes (image + copy) alternate with the live 3D.
 Prototype of the rhythm, layout and copy: `casa-ux.html` (no three.js; 3D segments are placeholders). Open `casa-ux.html?dev` to see scene id and progress.
 
 ## Decisions
@@ -59,7 +59,7 @@ Floor plan: `assets/casa/planta.svg` (from the single-drawing `Plano Planta.pdf`
 - Model fixes from the plan check (tools/3d/build5.mjs): the kitchen bar and stair versions 2/3 are dropped (discarded in the design); the column by the living-room window, missing in SketchUp, is added as a copy of its back-wall twin. The bar and its stools are also removed from the plan SVG.
 - The model is newer than the plan and wins: the plan's column on the kitchen's outer wall is removed from the SVG, and the model's column next to the stair is drawn into it (`ADD_COLUMNS` in the script). Every column now has its square. Kitchen-block columns stay 7–16 cm off the drawing (left as built). Review editor → **Planta** lays the plan over the 3D.
 
-## Integration notes for casa.html
+## Integration notes for ranchorelaxo.html
 
 - Keyframe cameras: `assets/casa/cameras.json` holds `p`, `q` (look-at), vertical `fov` and the render `aspect` they were matched at. With `object-fit: cover`, if the viewport is wider than the render the image is cropped top/bottom, so the 3D needs `fov' = 2·atan(tan(fov/2) · renderAspect / viewAspect)`; if narrower, keep `fov`.
 - The keyframe camera must be reached and held still before the dissolve starts (the camera eases toward `cameraIdeal`, so give it a short dwell at the pose).
@@ -74,7 +74,7 @@ Floor plan: `assets/casa/planta.svg` (from the single-drawing `Plano Planta.pdf`
 - Align the plan SVG to the model (see above).
 - iPhone test of the whole piece.
 
-## Keyframe transition: projection test (`casa.html?kf`, `casa-kf.js`)
+## Keyframe transition: projection test (`ranchorelaxo.html?kf`, `casa-kf.js`)
 
 Replaces the cross-fade (rejected). The render is projected onto the model from its calibrated camera, as a last post-processing pass:
 
@@ -91,8 +91,8 @@ Replaces the cross-fade (rejected). The render is projected onto the model from 
 
 Approach changed: instead of matching the still renders, the 3D walkthrough itself goes through an AI video-to-video pass (Wan 2.2 v2v on fal, strength to be chosen on a 5 s test), like the SketchUp → AI stills. Three parts: (1) plan → assembly stays live 3D; (2) finished exterior, aerial down to the glazing; (3) interior, door → mezzanine desk.
 
-- Review videos (3D, day, every lamp on): `review/guide/ext4/ext4-3d.mp4` (6 s), `review/guide/int4/int4-3d.mp4` (46 s). Rendered with `casa-guide.js` → `renderPath()` on `casa.html?review&lamps=all`.
-- HDRI: Poly Haven's Alps Field (the user's own 360 was tried with `tools/3d/make-site-hdri.py` and rejected). `tools/3d/make-hdri-from-hdr.py` turns it so its sun (42° up) sits on the scene's sun and writes `assets/casa/site-pano-4k.jpg`, `-2k.jpg`, `site-env.hdr`; the sun light in casa.html is at 42° to match. The sky appears with the landscape at the end of the assembly (maquette → real site) and the fog lifts with it.
+- Review videos (3D, day, every lamp on): `review/guide/ext4/ext4-3d.mp4` (6 s), `review/guide/int4/int4-3d.mp4` (46 s). Rendered with `casa-guide.js` → `renderPath()` on `ranchorelaxo.html?review&lamps=all`.
+- HDRI: Poly Haven's Alps Field (the user's own 360 was tried with `tools/3d/make-site-hdri.py` and rejected). `tools/3d/make-hdri-from-hdr.py` turns it so its sun (42° up) sits on the scene's sun and writes `assets/casa/site-pano-4k.jpg`, `-2k.jpg`, `site-env.hdr`; the sun light in ranchorelaxo.html is at 42° to match. The sky appears with the landscape at the end of the assembly (maquette → real site) and the fog lifts with it.
 - Model and page fixes from the review notes: Enscape helper lights dropped, bedside/floor lamps and the bath globe as soft warm omni lights inside their shades, mezzanine sconce light inside its cone; window glass rough (the camera fill light left a hot spot), exterior lamp bulbs hidden from inside; roof sheets (`chapas`) enter with the roof; cabinet roofs come down last; mezzanine floor boards moved from `base` to `entrepiso`; bedroom tile block dropped; one gravel for every path; daylight interiors brighter and warmer.
 
 - Second light pass: every Enscape helper with no lamp around it dropped (interior 27 → 16 lights); ambient (omni) lamps have no visible bulb; the stair sconce's light sits at its cone rim like its siblings.
@@ -104,9 +104,9 @@ Approach changed: instead of matching the still renders, the 3D walkthrough itse
 - Ground: one grass and one gravel in world-space UVs (no seams or tone changes between terrain, lawn and far paths) and a 1.4 km grass field under the terrain so its edge never shows; the fog fades it into the page.
 - Interior decision: stays 3D (no AI video either), with the render keyframes as pauses.
 
-## Render keyframes in casa.html (22/10, night)
+## Render keyframes in ranchorelaxo.html (22/10, night)
 
-- The timeline (`KEYS`) now passes through the seven calibrated cameras (`KF` table in casa.html, copied from assets/casa/cameras.json): `KFK(id, dt)` adds the pose plus a hold of 5 units. The assembly orbit ends on the exterior render's camera; P2–P7 / M1–M2 / E1 stops were replaced; extra steps keep the camera clear of the dining pendant and take it through the bathroom door at door height (`__checkPath()` → 0 crossings).
+- The timeline (`KEYS`) now passes through the seven calibrated cameras (`KF` table in ranchorelaxo.html, copied from assets/casa/cameras.json): `KFK(id, dt)` adds the pose plus a hold of 5 units. The assembly orbit ends on the exterior render's camera; P2–P7 / M1–M2 / E1 stops were replaced; extra steps keep the camera clear of the dining pendant and take it through the bathroom door at door height (`__checkPath()` → 0 crossings).
 - Each keyframe: the render is wiped in left → right with a thin accent line as the camera settles, the copy rises in, then both go back out; all tied to the timeline, so scrolling back undoes it. fov is corrected for "cover" on wider screens.
 - Whole walkthrough is daylight now (`T_NIGHT` past the end), like the renders; captions only on the 3D stretches between renders.
 - Backup of the page before this change: models/_bak-1022/casa.pre-keyframes.html.
