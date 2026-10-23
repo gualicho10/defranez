@@ -1,0 +1,41 @@
+{
+  "units": "pdf points",
+  "pointsPerMetre": 56.7052,
+  "viewBox": [
+    0,
+    0,
+    1003.86,
+    892.31
+  ],
+  "slabPdf": [
+    200.7,
+    132.72,
+    643.02,
+    784.8
+  ],
+  "toModel": {
+    "x": {
+      "offset": -1.8221,
+      "perPt": 0.01760443,
+      "from": "py"
+    },
+    "z": {
+      "offset": 0.71632,
+      "perPt": -0.01760763,
+      "from": "px"
+    },
+    "method": "fitted on the columns shared by plan and model (rows/lines are orthogonal in both, so each axis on its own); residuals 0.5-1.6 cm",
+    "formula": "x = x.offset + x.perPt * py ; z = z.offset + z.perPt * px (y = ground)"
+  },
+  "layers": {
+    "fills": 79,
+    "detail": 3644,
+    "furniture": 0,
+    "dims": 260,
+    "marks": 1,
+    "cladding": 25,
+    "posts": 5,
+    "walls": 436,
+    "columns": 26
+  }
+}

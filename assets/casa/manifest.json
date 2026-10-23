@@ -1,0 +1,194 @@
+{
+  "01-plano": {
+    "source": "Render-Plano-planta.png",
+    "sourceSize": [
+      11811,
+      8350
+    ],
+    "aspect": 1.4145,
+    "desktop": {
+      "file": "01-plano.webp",
+      "size": [
+        3200,
+        2262
+      ],
+      "kb": 416
+    },
+    "mobile": {
+      "file": "01-plano-m.webp",
+      "size": [
+        1600,
+        1131
+      ],
+      "kb": 144
+    }
+  },
+  "02-exterior": {
+    "source": "Render-fuera-casa-entera.png",
+    "sourceSize": [
+      3600,
+      1748
+    ],
+    "aspect": 2.0595,
+    "desktop": {
+      "file": "02-exterior.webp",
+      "size": [
+        2560,
+        1243
+      ],
+      "kb": 1137
+    },
+    "mobile": {
+      "file": "02-exterior-m.webp",
+      "size": [
+        1280,
+        622
+      ],
+      "kb": 278
+    }
+  },
+  "03-cocina-living": {
+    "source": "src/03-cocina-living.png (edited from Render-living-comedor1.png)",
+    "sourceSize": [
+      2896,
+      2172
+    ],
+    "aspect": 1.3333,
+    "desktop": {
+      "file": "03-cocina-living.webp",
+      "size": [
+        2560,
+        1920
+      ],
+      "kb": 527
+    },
+    "mobile": {
+      "file": "03-cocina-living-m.webp",
+      "size": [
+        1280,
+        960
+      ],
+      "kb": 162
+    }
+  },
+  "04-ventanal": {
+    "source": "Render-living-comedor2.png",
+    "sourceSize": [
+      6476,
+      3884
+    ],
+    "aspect": 1.6674,
+    "desktop": {
+      "file": "04-ventanal.webp",
+      "size": [
+        2560,
+        1535
+      ],
+      "kb": 229
+    },
+    "mobile": {
+      "file": "04-ventanal-m.webp",
+      "size": [
+        1280,
+        768
+      ],
+      "kb": 97
+    }
+  },
+  "05-cuarto": {
+    "source": "Render-dormitorio.png",
+    "sourceSize": [
+      3376,
+      1864
+    ],
+    "aspect": 1.8112,
+    "desktop": {
+      "file": "05-cuarto.webp",
+      "size": [
+        2560,
+        1413
+      ],
+      "kb": 410
+    },
+    "mobile": {
+      "file": "05-cuarto-m.webp",
+      "size": [
+        1280,
+        707
+      ],
+      "kb": 118
+    }
+  },
+  "06-bano": {
+    "source": "Render-baño-top.png",
+    "sourceSize": [
+      5056,
+      3372
+    ],
+    "aspect": 1.4994,
+    "desktop": {
+      "file": "06-bano.webp",
+      "size": [
+        2560,
+        1707
+      ],
+      "kb": 324
+    },
+    "mobile": {
+      "file": "06-bano-m.webp",
+      "size": [
+        1280,
+        854
+      ],
+      "kb": 97
+    }
+  },
+  "07-entrepiso1": {
+    "source": "Render-Entrepiso1.png",
+    "sourceSize": [
+      3344,
+      1882
+    ],
+    "aspect": 1.7768,
+    "desktop": {
+      "file": "07-entrepiso1.webp",
+      "size": [
+        2560,
+        1441
+      ],
+      "kb": 603
+    },
+    "mobile": {
+      "file": "07-entrepiso1-m.webp",
+      "size": [
+        1280,
+        720
+      ],
+      "kb": 155
+    }
+  },
+  "08-entrepiso2": {
+    "source": "Render-Entrepiso2.png",
+    "sourceSize": [
+      3608,
+      1744
+    ],
+    "aspect": 2.0688,
+    "desktop": {
+      "file": "08-entrepiso2.webp",
+      "size": [
+        2560,
+        1237
+      ],
+      "kb": 289
+    },
+    "mobile": {
+      "file": "08-entrepiso2-m.webp",
+      "size": [
+        1280,
+        619
+      ],
+      "kb": 91
+    }
+  }
+}

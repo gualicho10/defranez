@@ -23,3 +23,9 @@ video/openloot-v2/checkout-flow.m4v
 # Quedo corrupto en Google Drive (pesa 41280 bytes pero da error al leerse;
 # el server devolvia 500). Reemplazado por problem-bkgd-v2.webp.
 img/openloot-v2/problem-bkgd.webp
+
+# walkthrough review notes + untouched-geometry originals (local only)
+review/
+
+tools/3d/node_modules/
+models/_bak-*/
