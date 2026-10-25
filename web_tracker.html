@@ -278,9 +278,12 @@
       display: flex; justify-content: space-between; gap: 12px;
     }
     .chart-title b { color: var(--accent); font-weight: 400; }
-    .chart-svg { width: 100%; height: auto; display: block; overflow: visible; }
-    .chart-svg .bar { fill: var(--accent); opacity: 0.85; }
-    .chart-svg .bar:hover { opacity: 1; fill: var(--accent2); }
+    .vbars { display: flex; align-items: stretch; gap: 3px; height: 180px; }
+    .vbar-col { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; }
+    .vbar-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text); line-height: 1; min-height: 10px; }
+    .vbar-fill { width: 100%; background: var(--accent); opacity: 0.85; }
+    .vbar-fill.zero { background: var(--border); opacity: 1; }
+    .vbar-col:hover .vbar-fill:not(.zero) { opacity: 1; background: var(--accent2); }
     .chart-axis-row { display: flex; justify-content: space-between; margin-top: 10px;
       font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: var(--muted); }
     .hbars { display: flex; flex-direction: column; gap: 12px; }
@@ -407,6 +410,8 @@
       .summary-grid { grid-template-columns: repeat(2, 1fr); margin-bottom: 36px; }
       .charts-grid { grid-template-columns: 1fr; margin-bottom: 40px; }
       .chart-card { padding: 22px 18px; }
+      .vbars { gap: 2px; }
+      .vbar-num { font-size: 8px; }
       .stat-card { padding: 22px 18px; }
       .stat-value { font-size: 32px; }
       .section { margin-bottom: 40px; }
@@ -634,23 +639,21 @@
       for (let i = days - 1; i >= 0; i--) {
         const d = new Date(today); d.setDate(d.getDate() - i);
         idx[dayKey(d)] = buckets.length;
-        buckets.push({ d, n: 0 });
+        buckets.push({ d, ips: new Set() });
       }
-      visits.forEach(v => { const i = idx[dayKey(new Date(v.created_at))]; if (i !== undefined) buckets[i].n++; });
-      const max = Math.max(1, ...buckets.map(b => b.n));
-      const W = 600, H = 140, base = 140, top = 14, gap = 3;
-      const bw = (W - gap * (days - 1)) / days;
-      const bars = buckets.map((b, i) => {
-        const h = b.n ? Math.max(2, (b.n / max) * (base - top)) : 0;
-        const x = i * (bw + gap);
-        const label = b.d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' }) + ' · ' + b.n;
-        return `<g><title>${label}</title><rect x="${x}" y="0" width="${bw}" height="${base}" fill="transparent"/>` +
-          (h ? `<rect class="bar" x="${x}" y="${base - h}" width="${bw}" height="${h}"/>` : `<rect x="${x}" y="${base - 1}" width="${bw}" height="1" fill="var(--border)"/>`) + `</g>`;
-      }).join('');
+      // unique visits per day = distinct IPs that day (visits without an IP can't be deduped, skipped)
+      visits.forEach(v => { const i = idx[dayKey(new Date(v.created_at))]; if (i !== undefined && v.ip) buckets[i].ips.add(v.ip); });
+      const counts = buckets.map(b => b.ips.size);
+      const max = Math.max(1, ...counts);
       const fmt = d => d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
-      return `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Visits per day, last ${days} days">
-        ${bars}
-      </svg>
+      const cols = buckets.map((b, i) => {
+        const n = counts[i];
+        return `<div class="vbar-col" title="${fmt(b.d)} · ${n} unique">
+          <span class="vbar-num">${n || ''}</span>
+          <div class="vbar-fill${n ? '' : ' zero'}" style="height:${n ? Math.max(3, n / max * 100).toFixed(1) + '%' : '1px'}"></div>
+        </div>`;
+      }).join('');
+      return `<div class="vbars">${cols}</div>
       <div class="chart-axis-row"><span>${fmt(buckets[0].d)}</span><span>peak ${max}/day</span><span>${fmt(buckets[days-1].d)}</span></div>`;
     }
 
@@ -674,7 +677,7 @@
 
     function chartsHTML(visits, clicks) {
       const days = 30;
-      const recent = visits.filter(v => Date.now() - new Date(v.created_at).getTime() < days * 864e5).length;
+      const recent = new Set(visits.filter(v => v.ip && Date.now() - new Date(v.created_at).getTime() < days * 864e5).map(v => v.ip)).size;
       const devices = tally(visits, v => v.device_type || 'unknown', 5);
       const countries = tally(visits, v => v.country, 6);
       const refs = tally(visits, v => parseRef(v.referrer), 6);
@@ -682,7 +685,7 @@
       return `
         <div class="charts-grid">
           <div class="chart-card wide">
-            <div class="chart-title"><span>Visits per day · last ${days} days</span><b>${recent} visits</b></div>
+            <div class="chart-title"><span>Unique visits per day · last ${days} days</span><b>${recent} unique IPs</b></div>
             ${visits.length ? visitsPerDayChart(visits, days) : '<div class="chart-empty">No data yet</div>'}
           </div>
           <div class="chart-card">
