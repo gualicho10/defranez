@@ -259,6 +259,41 @@
       letter-spacing: 0.05em;
     }
 
+
+    /* CHARTS */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 56px;
+    }
+    .chart-card { background: var(--surface); padding: 28px; min-width: 0; }
+    .chart-card.wide { grid-column: 1 / -1; }
+    .chart-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 20px;
+      display: flex; justify-content: space-between; gap: 12px;
+    }
+    .chart-title b { color: var(--accent); font-weight: 400; }
+    .chart-svg { width: 100%; height: auto; display: block; overflow: visible; }
+    .chart-svg .bar { fill: var(--accent); opacity: 0.85; }
+    .chart-svg .bar:hover { opacity: 1; fill: var(--accent2); }
+    .chart-axis-row { display: flex; justify-content: space-between; margin-top: 10px;
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: var(--muted); }
+    .hbars { display: flex; flex-direction: column; gap: 12px; }
+    .hbar-row { display: grid; grid-template-columns: minmax(70px, 38%) 1fr auto; gap: 12px; align-items: center;
+      font-family: 'DM Mono', monospace; font-size: 11px; }
+    .hbar-name { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hbar-track { height: 6px; background: var(--surface2); }
+    .hbar-fill { height: 100%; background: var(--accent); }
+    .hbar-fill.mobile { background: var(--accent2); }
+    .hbar-fill.tablet { background: #f5a623; }
+    .hbar-val { color: var(--muted); min-width: 52px; text-align: right; }
+    .chart-empty { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; padding: 24px 0; }
+
     /* SECTIONS */
     .section { margin-bottom: 56px; }
 
@@ -370,6 +405,8 @@
       nav { padding: 14px 20px; flex-wrap: wrap; gap: 10px; }
       main { padding: 28px 20px; }
       .summary-grid { grid-template-columns: repeat(2, 1fr); margin-bottom: 36px; }
+      .charts-grid { grid-template-columns: 1fr; margin-bottom: 40px; }
+      .chart-card { padding: 22px 18px; }
       .stat-card { padding: 22px 18px; }
       .stat-value { font-size: 32px; }
       .section { margin-bottom: 40px; }
@@ -584,6 +621,89 @@
       return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
+
+    // ── CHARTS ────────────────────────────────────────────────
+    function dayKey(d) {
+      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
+
+    function visitsPerDayChart(visits, days) {
+      const buckets = [];
+      const idx = {};
+      const today = new Date(); today.setHours(0,0,0,0);
+      for (let i = days - 1; i >= 0; i--) {
+        const d = new Date(today); d.setDate(d.getDate() - i);
+        idx[dayKey(d)] = buckets.length;
+        buckets.push({ d, n: 0 });
+      }
+      visits.forEach(v => { const i = idx[dayKey(new Date(v.created_at))]; if (i !== undefined) buckets[i].n++; });
+      const max = Math.max(1, ...buckets.map(b => b.n));
+      const W = 600, H = 140, base = 140, top = 14, gap = 3;
+      const bw = (W - gap * (days - 1)) / days;
+      const bars = buckets.map((b, i) => {
+        const h = b.n ? Math.max(2, (b.n / max) * (base - top)) : 0;
+        const x = i * (bw + gap);
+        const label = b.d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' }) + ' · ' + b.n;
+        return `<g><title>${label}</title><rect x="${x}" y="0" width="${bw}" height="${base}" fill="transparent"/>` +
+          (h ? `<rect class="bar" x="${x}" y="${base - h}" width="${bw}" height="${h}"/>` : `<rect x="${x}" y="${base - 1}" width="${bw}" height="1" fill="var(--border)"/>`) + `</g>`;
+      }).join('');
+      const fmt = d => d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
+      return `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Visits per day, last ${days} days">
+        ${bars}
+      </svg>
+      <div class="chart-axis-row"><span>${fmt(buckets[0].d)}</span><span>peak ${max}/day</span><span>${fmt(buckets[days-1].d)}</span></div>`;
+    }
+
+    function hbars(entries, cls) {
+      if (!entries.length) return `<div class="chart-empty">No data yet</div>`;
+      const total = entries.reduce((a, [, n]) => a + n, 0);
+      const max = entries[0][1];
+      return `<div class="hbars">${entries.map(([name, n]) => `
+        <div class="hbar-row">
+          <span class="hbar-name" title="${esc(name)}">${esc(name)}</span>
+          <div class="hbar-track"><div class="hbar-fill ${cls ? cls(name) : ''}" style="width:${(n / max * 100).toFixed(1)}%"></div></div>
+          <span class="hbar-val">${n} · ${Math.round(n / total * 100)}%</span>
+        </div>`).join('')}</div>`;
+    }
+
+    function tally(items, keyFn, limit) {
+      const m = {};
+      items.forEach(i => { const k = keyFn(i); if (k) m[k] = (m[k] || 0) + 1; });
+      return Object.entries(m).sort((a, b) => b[1] - a[1]).slice(0, limit);
+    }
+
+    function chartsHTML(visits, clicks) {
+      const days = 30;
+      const recent = visits.filter(v => Date.now() - new Date(v.created_at).getTime() < days * 864e5).length;
+      const devices = tally(visits, v => v.device_type || 'unknown', 5);
+      const countries = tally(visits, v => v.country, 6);
+      const refs = tally(visits, v => parseRef(v.referrer), 6);
+      const links = tally(clicks, c => c.link_label || c.link_url, 6);
+      return `
+        <div class="charts-grid">
+          <div class="chart-card wide">
+            <div class="chart-title"><span>Visits per day · last ${days} days</span><b>${recent} visits</b></div>
+            ${visits.length ? visitsPerDayChart(visits, days) : '<div class="chart-empty">No data yet</div>'}
+          </div>
+          <div class="chart-card">
+            <div class="chart-title"><span>Devices</span></div>
+            ${hbars(devices, n => n)}
+          </div>
+          <div class="chart-card">
+            <div class="chart-title"><span>Top countries</span></div>
+            ${hbars(countries)}
+          </div>
+          <div class="chart-card">
+            <div class="chart-title"><span>Top referrers</span></div>
+            ${hbars(refs)}
+          </div>
+          <div class="chart-card">
+            <div class="chart-title"><span>Most clicked links</span></div>
+            ${hbars(links)}
+          </div>
+        </div>`;
+    }
+
     // ── RENDER ────────────────────────────────────────────────
     function renderAll(visits, clicks) {
       // Summary
@@ -629,6 +749,9 @@
             <div class="stat-sub">top: ${topRef ? esc(topRef[0]) : '—'}</div>
           </div>
         </div>
+
+        <!-- CHARTS -->
+        ${chartsHTML(visits, clicks)}
 
         <!-- RECENT VISITS -->
         <div class="section">
