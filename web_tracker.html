@@ -618,7 +618,7 @@
     }
 
     function esc(s) {
-      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     }
 
 
@@ -687,7 +687,7 @@
           </div>
           <div class="chart-card">
             <div class="chart-title"><span>Devices</span></div>
-            ${hbars(devices, n => n)}
+            ${hbars(devices, n => n === 'mobile' ? 'mobile' : n === 'tablet' ? 'tablet' : '')}
           </div>
           <div class="chart-card">
             <div class="chart-title"><span>Top countries</span></div>
