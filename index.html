@@ -6360,6 +6360,36 @@ abcdefghijklmnopqrstuvwxyz
       });
     })();
 
+    // ── Arcade events ────────────────────────────────────────────────────
+    // arcade.html tells us when it opened and when a game started. Stored in link_clicks as
+    // arcade:open / arcade:play (no schema change); web_tracker.html filters them out of the
+    // link lists. Failures are swallowed: this must never get in the way of the arcade.
+    (function () {
+      if (location.hostname === 'localhost') return;
+      const SB_URL = 'https://aqtfbzrdwbdymaoskxpt.supabase.co';
+      const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxdGZienJkd2JkeW1hb3NreHB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NzUwMzMsImV4cCI6MjA5MTI1MTAzM30.zCtyQBXjt3-s0bMITXDCIZmtEKdDIx39xirLw2u9wX4';
+      const H = { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Prefer': 'return=minimal' };
+      const sent = {};
+      let ipP = null;
+      function getIp() {
+        if (!ipP) ipP = fetch('https://ipwho.is/?fields=success,ip').then(r => r.json()).then(g => g.success ? g.ip : '').catch(() => '');
+        return ipP;
+      }
+      function log(label) {
+        if (sent[label]) return;          // once per label per page load
+        sent[label] = 1;
+        getIp().then(ip => {
+          if (!ip) return;                // the tracker joins on IP; a row without one is useless
+          fetch(SB_URL + '/rest/v1/link_clicks', { method: 'POST', headers: H, body: JSON.stringify({ ip, link_url: 'arcade', link_label: label }) }).catch(() => {});
+        });
+      }
+      window.addEventListener('message', function (e) {
+        if (e.origin !== location.origin || !e.data) return;
+        if (e.data.arcade === 'open') log('arcade:open');
+        if (e.data.arcade === 'play') log('arcade:play');
+      });
+    })();
+
     // ── Project likes ─────────────────────────────────────────────────────
     // One floating heart shared by all six modals. Totals are fetched once on
     // load; opening a modal costs no network. Clicks are optimistic and
