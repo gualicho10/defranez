@@ -291,6 +291,11 @@
     .chart-legend { display: flex; gap: 18px; margin-top: 14px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: var(--muted); }
     .chart-legend .sw { display: inline-block; width: 8px; height: 8px; margin-right: 6px; }
     .vbars.dense { gap: 2px; }
+    #chart-tip { position: fixed; display: none; z-index: 1100; pointer-events: none; background: var(--surface2);
+      border: 1px solid var(--accent); padding: 8px 12px; font-family: 'DM Mono', monospace; font-size: 11px;
+      line-height: 1.5; white-space: nowrap; }
+    #chart-tip b { display: block; color: #fff; font-weight: 500; }
+    #chart-tip span { color: var(--accent); }
     .vbars { display: flex; align-items: stretch; gap: 3px; height: 180px; }
     .vbar-col { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; }
     .vbar-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text); line-height: 1; min-height: 10px; }
@@ -649,6 +654,37 @@
       return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
     }
 
+    // exact date for tooltips, e.g. "Monday 26 October 2026" (short form for week ranges)
+    function fmtFull(d, short) {
+      return d.toLocaleDateString('en-GB', short
+        ? { day: 'numeric', month: 'short', year: 'numeric' }
+        : { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    // one floating tooltip shared by all bars (native title is slow and easy to miss)
+    (function () {
+      const tip = document.createElement('div');
+      tip.id = 'chart-tip';
+      document.body.appendChild(tip);
+      const hide = () => { tip.style.display = 'none'; };
+      document.addEventListener('mouseover', e => {
+        const col = e.target.closest && e.target.closest('.vbar-col');
+        if (!col) return hide();
+        const [date, info] = col.dataset.tip.split('|');
+        tip.innerHTML = `<b>${date}</b><span>${info}</span>`;
+        tip.style.display = 'block';
+      });
+      document.addEventListener('mousemove', e => {
+        if (tip.style.display !== 'block') return;
+        const w = tip.offsetWidth, h = tip.offsetHeight;
+        const x = Math.min(Math.max(8, e.clientX - w / 2), window.innerWidth - w - 8);
+        const y = e.clientY - h - 14 < 8 ? e.clientY + 18 : e.clientY - h - 14;
+        tip.style.left = x + 'px';
+        tip.style.top = y + 'px';
+      });
+      document.addEventListener('mouseout', e => { if (!e.relatedTarget) hide(); });
+    })();
+
     // Main chart: 3 tabs x 5 ranges. State lives here so re-render only touches #main-chart.
     const CHART_TABS = { unique: 'Unique IPs', total: 'Total visits', returning: 'New vs returning' };
     const CHART_RANGES = [[7, '7d'], [15, '15d'], [30, '30d'], [90, '90d'], [365, '1y']];
@@ -700,19 +736,19 @@
       const dense = nb > 31 ? ' dense' : '';
       const cols = buckets.map(b => {
         const n = val(b);
-        const label = size === 7 ? 'Week of ' + fmt(b.d) : fmt(b.d);
+        const label = size === 7 ? fmtFull(b.d, true) + ' – ' + fmtFull(new Date(Math.min(+today, +b.d + 6 * 864e5)), true) : fmtFull(b.d);
         let fill, tip;
         if (tab === 'returning') {
           const nNew = b.newIps.size, nRet = b.ips.size - nNew;
-          tip = `${label} · ${nNew} new · ${nRet} returning`;
+          tip = `${label}|${nNew} new · ${nRet} returning`;
           fill = n ? `<div class="vbar-stack" style="height:${Math.max(3, n / max * 100).toFixed(1)}%">
               <div class="seg ret" style="flex:${nRet}"></div><div class="seg new" style="flex:${nNew}"></div></div>`
             : `<div class="vbar-fill zero" style="height:1px"></div>`;
         } else {
-          tip = `${label} · ${n} ${tab === 'total' ? 'visits' : 'unique'}`;
+          tip = `${label}|${n} ${tab === 'total' ? (n === 1 ? 'visit' : 'visits') : (n === 1 ? 'unique IP' : 'unique IPs')}`;
           fill = `<div class="vbar-fill${n ? '' : ' zero'}" style="height:${n ? Math.max(3, n / max * 100).toFixed(1) + '%' : '1px'}"></div>`;
         }
-        return `<div class="vbar-col" title="${tip}"><span class="vbar-num">${n || ''}</span>${fill}</div>`;
+        return `<div class="vbar-col" data-tip="${tip}"><span class="vbar-num">${n || ''}</span>${fill}</div>`;
       }).join('');
 
       const came = [...rangeIps].filter(ip => daysByIp[ip].size > 1).length;
