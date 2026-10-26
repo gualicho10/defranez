@@ -1066,6 +1066,12 @@ Tap the tempo back.</div>
 <script>
 const STATE = { unlocked: new Set() };
 
+/* Analytics only: tell the host page the arcade opened / a game started. No-op when not embedded. */
+function notifyHost(ev, game) {
+  try { if (parent !== window) parent.postMessage({ arcade: ev, game: game || null }, location.origin); } catch (e) {}
+}
+notifyHost('open');
+
 /* Talks to index.html, which embeds this page as a full-screen overlay. */
 const SITE_ID = { about: 'about', tools: 'tools', portfolio: 'work', career: 'resume', contact: 'contact' };
 /* keep = the player is still mid-arcade: the parent hides this page instead of removing it,
@@ -1096,6 +1102,7 @@ document.querySelectorAll('.win-btn').forEach(btn => {
 });
 
 function openGame(game) {
+  notifyHost('play', game);
   document.getElementById('game-' + game).classList.add('active');
   if (game === 'knock') initKnock();
   if (game === 'match') initMatch();

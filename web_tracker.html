@@ -702,7 +702,7 @@
     // Main chart: 3 tabs x 5 ranges. State lives here so re-render only touches #main-chart.
     const CHART_TABS = { unique: 'Unique IPs', total: 'Total visits', returning: 'New vs returning' };
     const CHART_RANGES = [[7, '7d'], [15, '15d'], [30, '30d'], [90, '90d'], [365, '1y']];
-    const chartState = { tab: 'unique', range: 30, visits: [] };
+    const chartState = { tab: 'unique', range: 30, visits: [], arcade: [] };
 
     function setChart(key, val) {
       chartState[key] = val;
@@ -718,7 +718,7 @@
       const buckets = [];
       for (let b = 0; b < nb; b++) {
         const d = new Date(today); d.setDate(d.getDate() - (nb - 1 - b) * size);
-        buckets.push({ d, ips: new Set(), total: 0, newIps: new Set(), rows: [], firstByIp: {} });
+        buckets.push({ d, ips: new Set(), total: 0, newIps: new Set(), rows: [], firstByIp: {}, played: new Set() });
       }
       const bucketOf = t => {
         const dt = new Date(t); dt.setHours(0,0,0,0);
@@ -746,6 +746,15 @@
         // attribute each IP to its earliest visit in the bucket so source/device sums match the IP count
         if (!b.firstByIp[v.ip] || v.created_at < b.firstByIp[v.ip].created_at) b.firstByIp[v.ip] = v;
       });
+      // arcade: who started a game, per bucket. Data only exists from the first arcade row on.
+      let arcadeStart = null;
+      chartState.arcade.forEach(r => {
+        if (!arcadeStart || r.created_at < arcadeStart) arcadeStart = r.created_at;
+        if (r.link_label !== 'arcade:play' || !r.ip) return;
+        const b = bucketOf(r.created_at);
+        if (b) b.played.add(r.ip);
+      });
+      const arcadeDay = arcadeStart ? (() => { const d = new Date(arcadeStart); d.setHours(0,0,0,0); return +d; })() : null;
       buckets.forEach(b => b.ips.forEach(ip => { if (bucketOf(first[ip]) === b) b.newIps.add(ip); }));
 
       const val = b => tab === 'total' ? b.total : b.ips.size;
@@ -771,6 +780,18 @@
         const src = tallyLine(rows, r => clean(parseRef(r.referrer)), 3);
         if (n && dev) tip += `|Device: ${dev}`;
         if (n && src) tip += `|From: ${src}`;
+        if (n) {
+          const mobile = Object.values(b.firstByIp).filter(r => r.device_type === 'mobile').map(r => r.ip);
+          if (arcadeDay === null || +b.d + size * 864e5 <= arcadeDay) {
+            if (mobile.length) tip += '|Arcade: no data yet';
+          } else if (mobile.length || b.played.size) {
+            const pm = mobile.filter(ip => b.played.has(ip)).length;
+            const other = b.played.size - pm;
+            tip += `|Arcade: ${pm} of ${mobile.length} mobile played`;
+            if (mobile.length - pm) tip += ` · ${mobile.length - pm} skipped`;
+            if (other) tip += ` · +${other} other`;
+          }
+        }
         return `<div class="vbar-col" data-tip="${esc(tip)}"><span class="vbar-num">${n || ''}</span>${fill}</div>`;
       }).join('');
 
@@ -844,6 +865,10 @@
 
     // ── RENDER ────────────────────────────────────────────────
     function renderAll(visits, clicks) {
+      // arcade:open / arcade:play rows live in link_clicks but are not link clicks
+      const arcade = clicks.filter(c => /^arcade:/.test(c.link_label || ''));
+      clicks = clicks.filter(c => !/^arcade:/.test(c.link_label || ''));
+      chartState.arcade = arcade;
       // Summary
       const uniqueIPs = [...new Set(visits.map(v => v.ip).filter(Boolean))];
       const countries = [...new Set(visits.map(v => v.country).filter(Boolean))];
