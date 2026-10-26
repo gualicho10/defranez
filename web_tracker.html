@@ -278,6 +278,19 @@
       display: flex; justify-content: space-between; gap: 12px;
     }
     .chart-title b { color: var(--accent); font-weight: 400; }
+    .chart-controls { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 22px; }
+    .chart-tabs { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+    .chart-tab { background: var(--surface); color: var(--muted); border: 0; cursor: pointer;
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 12px; }
+    .chart-tab:hover { color: var(--text); }
+    .chart-tab.active { background: var(--surface2); color: var(--accent); }
+    .vbar-stack { width: 100%; display: flex; flex-direction: column; opacity: 0.9; }
+    .vbar-stack .seg.new, .sw.new { background: var(--accent); }
+    .vbar-stack .seg.ret, .sw.ret { background: var(--accent2); }
+    .vbar-col:hover .vbar-stack { opacity: 1; }
+    .chart-legend { display: flex; gap: 18px; margin-top: 14px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: var(--muted); }
+    .chart-legend .sw { display: inline-block; width: 8px; height: 8px; margin-right: 6px; }
+    .vbars.dense { gap: 2px; }
     .vbars { display: flex; align-items: stretch; gap: 3px; height: 180px; }
     .vbar-col { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; }
     .vbar-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text); line-height: 1; min-height: 10px; }
@@ -412,6 +425,10 @@
       .chart-card { padding: 22px 18px; }
       .vbars { gap: 2px; }
       .vbar-num { font-size: 8px; }
+      .vbars.dense .vbar-num { display: none; }
+      .chart-tab { padding: 8px 9px; letter-spacing: 0.06em; }
+      .chart-tabs { flex: 1 1 auto; }
+      .chart-tab { flex: 1; }
       .stat-card { padding: 22px 18px; }
       .stat-value { font-size: 32px; }
       .section { margin-bottom: 40px; }
@@ -632,29 +649,92 @@
       return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
     }
 
-    function visitsPerDayChart(visits, days) {
-      const buckets = [];
-      const idx = {};
+    // Main chart: 3 tabs x 5 ranges. State lives here so re-render only touches #main-chart.
+    const CHART_TABS = { unique: 'Unique IPs', total: 'Total visits', returning: 'New vs returning' };
+    const CHART_RANGES = [[7, '7d'], [15, '15d'], [30, '30d'], [90, '90d'], [365, '1y']];
+    const chartState = { tab: 'unique', range: 30, visits: [] };
+
+    function setChart(key, val) {
+      chartState[key] = val;
+      document.getElementById('main-chart').innerHTML = mainChartHTML();
+    }
+
+    function mainChartHTML() {
+      const { tab, range, visits } = chartState;
+      const size = range >= 365 ? 7 : 1;               // 1y is bucketed by week to stay readable
+      const nb = Math.ceil(range / size);
       const today = new Date(); today.setHours(0,0,0,0);
-      for (let i = days - 1; i >= 0; i--) {
-        const d = new Date(today); d.setDate(d.getDate() - i);
-        idx[dayKey(d)] = buckets.length;
-        buckets.push({ d, ips: new Set() });
-      }
-      // unique visits per day = distinct IPs that day (visits without an IP can't be deduped, skipped)
-      visits.forEach(v => { const i = idx[dayKey(new Date(v.created_at))]; if (i !== undefined && v.ip) buckets[i].ips.add(v.ip); });
-      const counts = buckets.map(b => b.ips.size);
-      const max = Math.max(1, ...counts);
       const fmt = d => d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
-      const cols = buckets.map((b, i) => {
-        const n = counts[i];
-        return `<div class="vbar-col" title="${fmt(b.d)} · ${n} unique">
-          <span class="vbar-num">${n || ''}</span>
-          <div class="vbar-fill${n ? '' : ' zero'}" style="height:${n ? Math.max(3, n / max * 100).toFixed(1) + '%' : '1px'}"></div>
-        </div>`;
+      const buckets = [];
+      for (let b = 0; b < nb; b++) {
+        const d = new Date(today); d.setDate(d.getDate() - (nb - 1 - b) * size);
+        buckets.push({ d, ips: new Set(), total: 0, newIps: new Set() });
+      }
+      const bucketOf = t => {
+        const dt = new Date(t); dt.setHours(0,0,0,0);
+        const ago = Math.round((today - dt) / 864e5);
+        return ago < 0 || ago >= nb * size ? null : buckets[nb - 1 - Math.floor(ago / size)];
+      };
+
+      // first-ever visit per IP and distinct active days per IP, over the whole dataset
+      const first = {}, daysByIp = {};
+      visits.forEach(v => {
+        if (!v.ip) return;
+        if (!first[v.ip] || v.created_at < first[v.ip]) first[v.ip] = v.created_at;
+        (daysByIp[v.ip] = daysByIp[v.ip] || new Set()).add(dayKey(new Date(v.created_at)));
+      });
+
+      const rangeIps = new Set();
+      visits.forEach(v => {
+        const b = bucketOf(v.created_at);
+        if (!b) return;
+        b.total++;
+        if (!v.ip) return;
+        b.ips.add(v.ip);
+        rangeIps.add(v.ip);
+      });
+      buckets.forEach(b => b.ips.forEach(ip => { if (bucketOf(first[ip]) === b) b.newIps.add(ip); }));
+
+      const val = b => tab === 'total' ? b.total : b.ips.size;
+      const max = Math.max(1, ...buckets.map(val));
+      const dense = nb > 31 ? ' dense' : '';
+      const cols = buckets.map(b => {
+        const n = val(b);
+        const label = size === 7 ? 'Week of ' + fmt(b.d) : fmt(b.d);
+        let fill, tip;
+        if (tab === 'returning') {
+          const nNew = b.newIps.size, nRet = b.ips.size - nNew;
+          tip = `${label} · ${nNew} new · ${nRet} returning`;
+          fill = n ? `<div class="vbar-stack" style="height:${Math.max(3, n / max * 100).toFixed(1)}%">
+              <div class="seg ret" style="flex:${nRet}"></div><div class="seg new" style="flex:${nNew}"></div></div>`
+            : `<div class="vbar-fill zero" style="height:1px"></div>`;
+        } else {
+          tip = `${label} · ${n} ${tab === 'total' ? 'visits' : 'unique'}`;
+          fill = `<div class="vbar-fill${n ? '' : ' zero'}" style="height:${n ? Math.max(3, n / max * 100).toFixed(1) + '%' : '1px'}"></div>`;
+        }
+        return `<div class="vbar-col" title="${tip}"><span class="vbar-num">${n || ''}</span>${fill}</div>`;
       }).join('');
-      return `<div class="vbars">${cols}</div>
-      <div class="chart-axis-row"><span>${fmt(buckets[0].d)}</span><span>peak ${max}/day</span><span>${fmt(buckets[days-1].d)}</span></div>`;
+
+      const came = [...rangeIps].filter(ip => daysByIp[ip].size > 1).length;
+      const totalVisits = buckets.reduce((a, b) => a + b.total, 0);
+      const summary = tab === 'total' ? `${totalVisits} visits`
+        : tab === 'unique' ? `${rangeIps.size} unique IPs`
+        : `${came} of ${rangeIps.size} IPs came back (${rangeIps.size ? Math.round(came / rangeIps.size * 100) : 0}%)`;
+      const rangeLabel = (CHART_RANGES.find(r => r[0] === range) || [0, range + 'd'])[1];
+      const legend = tab === 'returning'
+        ? `<div class="chart-legend"><span><i class="sw new"></i>New (first visit)</span><span><i class="sw ret"></i>Returning</span></div>` : '';
+
+      return `
+        <div class="chart-controls">
+          <div class="chart-tabs">${Object.entries(CHART_TABS).map(([k, l]) =>
+            `<button class="chart-tab${k === tab ? ' active' : ''}" onclick="setChart('tab','${k}')">${l}</button>`).join('')}</div>
+          <div class="chart-tabs">${CHART_RANGES.map(([d, l]) =>
+            `<button class="chart-tab${d === range ? ' active' : ''}" onclick="setChart('range',${d})">${l}</button>`).join('')}</div>
+        </div>
+        <div class="chart-title"><span>${CHART_TABS[tab]} · last ${rangeLabel}${size === 7 ? ' · per week' : ' · per day'}</span><b>${summary}</b></div>
+        ${visits.length ? `<div class="vbars${dense}">${cols}</div>
+        <div class="chart-axis-row"><span>${fmt(buckets[0].d)}</span><span>peak ${max}/${size === 7 ? 'week' : 'day'}</span><span>${fmt(buckets[nb - 1].d)}</span></div>${legend}`
+          : '<div class="chart-empty">No data yet</div>'}`;
     }
 
     function hbars(entries, cls) {
@@ -676,18 +756,14 @@
     }
 
     function chartsHTML(visits, clicks) {
-      const days = 30;
-      const recent = new Set(visits.filter(v => v.ip && Date.now() - new Date(v.created_at).getTime() < days * 864e5).map(v => v.ip)).size;
+      chartState.visits = visits;
       const devices = tally(visits, v => v.device_type || 'unknown', 5);
       const countries = tally(visits, v => v.country, 6);
       const refs = tally(visits, v => parseRef(v.referrer), 6);
       const links = tally(clicks, c => c.link_label || c.link_url, 6);
       return `
         <div class="charts-grid">
-          <div class="chart-card wide">
-            <div class="chart-title"><span>Unique visits per day · last ${days} days</span><b>${recent} unique IPs</b></div>
-            ${visits.length ? visitsPerDayChart(visits, days) : '<div class="chart-empty">No data yet</div>'}
-          </div>
+          <div class="chart-card wide" id="main-chart">${mainChartHTML()}</div>
           <div class="chart-card">
             <div class="chart-title"><span>Devices</span></div>
             ${hbars(devices, n => n === 'mobile' ? 'mobile' : n === 'tablet' ? 'tablet' : '')}
