@@ -293,9 +293,10 @@
     .vbars.dense { gap: 2px; }
     #chart-tip { position: fixed; display: none; z-index: 1100; pointer-events: none; background: var(--surface2);
       border: 1px solid var(--accent); padding: 8px 12px; font-family: 'DM Mono', monospace; font-size: 11px;
-      line-height: 1.5; white-space: nowrap; }
+      line-height: 1.5; max-width: 340px; white-space: normal; overflow-wrap: anywhere; }
     #chart-tip b { display: block; color: #fff; font-weight: 500; }
-    #chart-tip span { color: var(--accent); }
+    #chart-tip span { display: block; color: var(--muted); }
+    #chart-tip span:nth-of-type(1) { color: var(--accent); }
     .vbars { display: flex; align-items: stretch; gap: 3px; height: 180px; }
     .vbar-col { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; }
     .vbar-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text); line-height: 1; min-height: 10px; }
@@ -670,8 +671,12 @@
       document.addEventListener('mouseover', e => {
         const col = e.target.closest && e.target.closest('.vbar-col');
         if (!col) return hide();
-        const [date, info] = col.dataset.tip.split('|');
-        tip.innerHTML = `<b>${date}</b><span>${info}</span>`;
+        tip.replaceChildren();
+        col.dataset.tip.split('|').forEach((line, i) => {
+          const el = document.createElement(i === 0 ? 'b' : 'span');
+          el.textContent = line;
+          tip.appendChild(el);
+        });
         tip.style.display = 'block';
       });
       document.addEventListener('mousemove', e => {
@@ -684,6 +689,15 @@
       });
       document.addEventListener('mouseout', e => { if (!e.relatedTarget) hide(); });
     })();
+
+    // "mobile 4 · desktop 2" — top entries of a tally, rest folded into "+N more"
+    function tallyLine(rows, keyFn, limit) {
+      const entries = tally(rows, keyFn, 99);
+      if (!entries.length) return '';
+      const shown = entries.slice(0, limit).map(([k, n]) => `${k} ${n}`);
+      if (entries.length > limit) shown.push(`+${entries.length - limit} more`);
+      return shown.join(' · ');
+    }
 
     // Main chart: 3 tabs x 5 ranges. State lives here so re-render only touches #main-chart.
     const CHART_TABS = { unique: 'Unique IPs', total: 'Total visits', returning: 'New vs returning' };
@@ -704,7 +718,7 @@
       const buckets = [];
       for (let b = 0; b < nb; b++) {
         const d = new Date(today); d.setDate(d.getDate() - (nb - 1 - b) * size);
-        buckets.push({ d, ips: new Set(), total: 0, newIps: new Set() });
+        buckets.push({ d, ips: new Set(), total: 0, newIps: new Set(), rows: [], firstByIp: {} });
       }
       const bucketOf = t => {
         const dt = new Date(t); dt.setHours(0,0,0,0);
@@ -725,9 +739,12 @@
         const b = bucketOf(v.created_at);
         if (!b) return;
         b.total++;
+        b.rows.push(v);
         if (!v.ip) return;
         b.ips.add(v.ip);
         rangeIps.add(v.ip);
+        // attribute each IP to its earliest visit in the bucket so source/device sums match the IP count
+        if (!b.firstByIp[v.ip] || v.created_at < b.firstByIp[v.ip].created_at) b.firstByIp[v.ip] = v;
       });
       buckets.forEach(b => b.ips.forEach(ip => { if (bucketOf(first[ip]) === b) b.newIps.add(ip); }));
 
@@ -748,7 +765,13 @@
           tip = `${label}|${n} ${tab === 'total' ? (n === 1 ? 'visit' : 'visits') : (n === 1 ? 'unique IP' : 'unique IPs')}`;
           fill = `<div class="vbar-fill${n ? '' : ' zero'}" style="height:${n ? Math.max(3, n / max * 100).toFixed(1) + '%' : '1px'}"></div>`;
         }
-        return `<div class="vbar-col" data-tip="${tip}"><span class="vbar-num">${n || ''}</span>${fill}</div>`;
+        const rows = tab === 'total' ? b.rows : Object.values(b.firstByIp);
+        const clean = x => String(x).replace(/\|/g, '').replace('— Direct', 'Direct');
+        const dev = tallyLine(rows, r => clean(r.device_type || 'unknown'), 3);
+        const src = tallyLine(rows, r => clean(parseRef(r.referrer)), 3);
+        if (n && dev) tip += `|Device: ${dev}`;
+        if (n && src) tip += `|From: ${src}`;
+        return `<div class="vbar-col" data-tip="${esc(tip)}"><span class="vbar-num">${n || ''}</span>${fill}</div>`;
       }).join('');
 
       const came = [...rangeIps].filter(ip => daysByIp[ip].size > 1).length;
