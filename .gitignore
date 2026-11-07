@@ -29,3 +29,32 @@ review/
 
 tools/3d/node_modules/
 models/_bak-*/
+
+# ── Fuera del repo publico (2026-11-07) ─────────────────────────────────────
+# El repo es publico y GitHub Pages sirve TODO lo trackeado en defranez.com.
+# Lo unico descargable del sitio tiene que ser el portfolio y el CV en PDF.
+# Esto vive solo en el Drive; no lo vuelvas a agregar.
+*.docx
+*.doc
+*.psd
+*.pptx
+*.xlsx
+*.ai
+*.zip
+**/.mcp.json
+.claude/
+.vscode/
+.remember/
+memory/
+graphify-out/
+docs/
+tools/
+CLAUDE.md
+.graphifyignore
+review-server.mjs
+img/Ezequiel F - Portfolio_2020.pdf
+img/simply.vision/
+img/games-illus/
+img/Bco Patagonia/
+img/otras cosas/
+img/roche/
