@@ -988,36 +988,85 @@
     .like-btn.pop svg { animation: like-pop 0.42s cubic-bezier(0.2,0.8,0.2,1); }
     .like-btn.pop::after { animation: like-ring 0.5s ease-out; }
 
-    /* "Hey, I'm here" — every 20s while a case study is open and not yet
-       liked: a lub-dub heartbeat with a small tilt, the heart flushing green,
-       and two ring echoes off the pill. Driven by ProjectLikes (nudge). */
+    /* "Hey, I'm here, click me" — every 10s while a case study is open and
+       not yet liked. Cartoon timing: the pill squashes, hops with a stretch,
+       lands with a splat and settles, flipping to inverted colors (green
+       pill, dark heart) for the whole gag. The heart wobbles big inside, and
+       a burst of rays plus a ring shoot off it. Driven by ProjectLikes
+       (nudge). The individual translate / scale properties stack on top of
+       the base translateX(-50%) without replacing it. */
+    @keyframes like-nudge-hop {
+      0%   { translate: 0 0;     scale: 1 1; }
+      9%   { translate: 0 4px;   scale: 1.22 0.78; }
+      22%  { translate: 0 -26px; scale: 0.84 1.22; }
+      34%  { translate: 0 -30px; scale: 1.04 0.98; }
+      46%  { translate: 0 0;     scale: 1.3 0.72; }
+      56%  { translate: 0 -9px;  scale: 0.9 1.12; }
+      66%  { translate: 0 0;     scale: 1.1 0.92; }
+      76%  { translate: 0 -2px;  scale: 0.97 1.03; }
+      86%, 100% { translate: 0 0; scale: 1 1; }
+    }
+    @keyframes like-nudge-invert {
+      0%, 100% { background-color: rgba(14,17,20,0.9); border-color: rgba(255,255,255,0.1);
+                 color: #8a94a6; box-shadow: 0 0 0 0 rgba(0,245,160,0); }
+      8%, 84%  { background-color: #00f5a0; border-color: #00f5a0; color: #0e1114;
+                 box-shadow: 0 6px 26px 2px rgba(0,245,160,0.55); }
+    }
     @keyframes like-nudge {
       0%   { transform: scale(1) rotate(0deg); }
-      12%  { transform: scale(1.32) rotate(-10deg); }
-      24%  { transform: scale(0.96) rotate(0deg); }
-      36%  { transform: scale(1.24) rotate(8deg); }
-      52%  { transform: scale(1) rotate(0deg); }
-      100% { transform: scale(1) rotate(0deg); }
+      9%   { transform: scale(0.8) rotate(0deg); }
+      24%  { transform: scale(1.75) rotate(-16deg); }
+      36%  { transform: scale(1.45) rotate(14deg); }
+      48%  { transform: scale(1.65) rotate(-9deg); }
+      60%  { transform: scale(1.2) rotate(6deg); }
+      72%  { transform: scale(1.32) rotate(-3deg); }
+      86%, 100% { transform: scale(1) rotate(0deg); }
     }
     @keyframes like-nudge-tint {
-      0%, 100% { stroke: currentColor; }
-      12%, 52% { stroke: #00f5a0; }
+      0%, 100% { fill: transparent; stroke: currentColor; }
+      8%, 84%  { fill: #0e1114; stroke: #0e1114; }
     }
     @keyframes like-nudge-ring {
-      0%   { opacity: 0.6; transform: scale(1); }
-      40%  { opacity: 0; transform: scale(1.45); }
-      41%  { opacity: 0.45; transform: scale(1); }
-      90%  { opacity: 0; transform: scale(1.6); }
-      100% { opacity: 0; transform: scale(1.6); }
+      0%, 44% { opacity: 0; transform: scale(1); }
+      46%     { opacity: 0.9; transform: scale(1); }
+      80%     { opacity: 0; transform: scale(1.9, 2.3); }
+      100%    { opacity: 0; transform: scale(1.9, 2.3); }
     }
-    .like-btn.nudge svg { animation: like-nudge 1.3s cubic-bezier(0.2,0.8,0.2,1); }
-    .like-btn.nudge svg path { animation: like-nudge-tint 1.3s ease; }
-    .like-btn.nudge::after { animation: like-nudge-ring 1.3s ease-out; }
+    @keyframes like-nudge-burst {
+      0%, 20% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+      26%     { opacity: 1; transform: translate(-50%, -50%) scale(0.9); }
+      44%     { opacity: 0; transform: translate(-50%, -50%) scale(1.7); }
+      100%    { opacity: 0; transform: translate(-50%, -50%) scale(1.7); }
+    }
+    /* Burst rays: eight short dashes drawn with a repeating conic gradient,
+       masked to a ring so only the tips show. */
+    .like-btn::before {
+      content: '';
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 92px; height: 92px;
+      border-radius: 50%;
+      background: repeating-conic-gradient(#00f5a0 0deg 9deg, transparent 9deg 45deg);
+      -webkit-mask: radial-gradient(circle, transparent 0 56%, #000 57% 72%, transparent 73%);
+              mask: radial-gradient(circle, transparent 0 56%, #000 57% 72%, transparent 73%);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+    .like-btn.nudge {
+      animation: like-nudge-hop 1.6s cubic-bezier(0.3,0.7,0.3,1),
+                 like-nudge-invert 1.6s ease;
+    }
+    .like-btn.nudge svg { animation: like-nudge 1.6s cubic-bezier(0.3,0.7,0.3,1); }
+    .like-btn.nudge svg path { animation: like-nudge-tint 1.6s ease; }
+    .like-btn.nudge::after { border-width: 2px; animation: like-nudge-ring 1.6s ease-out; }
+    .like-btn.nudge::before { animation: like-nudge-burst 1.6s ease-out; }
 
     @media (prefers-reduced-motion: reduce) {
       .like-btn, .like-btn svg, .like-count { transition: none; }
       .like-btn.pop svg, .like-btn.pop::after,
-      .like-btn.nudge svg, .like-btn.nudge svg path, .like-btn.nudge::after { animation: none; }
+      .like-btn.nudge, .like-btn.nudge svg, .like-btn.nudge svg path,
+      .like-btn.nudge::after, .like-btn.nudge::before { animation: none; }
     }
 
     @media (max-width: 560px) {
@@ -6650,10 +6699,10 @@ abcdefghijklmnopqrstuvwxyz
       btn.addEventListener('click', toggle);
       loadTotals();   // the one and only totals fetch, fire and forget
 
-      // Attention nudge: every 20s with a case study open. Skipped once the
+      // Attention nudge: every 10s with a case study open. Skipped once the
       // project is liked, while the pointer is on the button, when the tab is
       // in the background, and for anyone who asked for reduced motion.
-      const NUDGE_EVERY = 20000;
+      const NUDGE_EVERY = 10000;
       let nudgeTimer = null;
       let hovering = false;
       btn.addEventListener('pointerenter', () => { hovering = true; });
