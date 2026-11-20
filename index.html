@@ -4234,6 +4234,29 @@
   .ol-chart-yvalues { opacity: 1; transition: none; }
 }
 
+/* ── Open Loot — scroll reveal ────────────────────────────────────────────
+   Same idea as the landing's .fade-up, but the classes are added from JS
+   (OLInitReveal) so the markup stays clean and nothing is hidden without JS
+   or with reduced motion. Keyframes animate the individual `translate` /
+   `scale` properties, not `transform`, so elements that already carry a
+   transform (or hover transitions) keep them. */
+.olr { opacity: 0; }
+.olr.olr-in {
+  animation: olr-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--olr-d, 0ms);
+}
+.olr--left.olr-in  { animation-name: olr-left; }
+.olr--right.olr-in { animation-name: olr-right; }
+.olr--rise.olr-in  { animation-name: olr-rise; animation-duration: 1.2s; }
+.olr--pop.olr-in   { animation-name: olr-pop; animation-duration: 0.6s; }
+.olr--fade.olr-in  { animation-name: olr-fade; animation-duration: 1.4s; }
+@keyframes olr-up    { from { opacity: 0; translate: 0 32px; } to { opacity: 1; translate: 0 0; } }
+@keyframes olr-left  { from { opacity: 0; translate: -48px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes olr-right { from { opacity: 0; translate: 48px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes olr-rise  { from { opacity: 0; translate: 0 64px; scale: 0.96; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes olr-pop   { from { opacity: 0; scale: 0.85; } to { opacity: 1; scale: 1; } }
+@keyframes olr-fade  { from { opacity: 0; } to { opacity: 1; } }
+
 .ol-chart-yvalues span {
   position: absolute;
   left: calc(31 * var(--u));
@@ -7317,10 +7340,86 @@ abcdefghijklmnopqrstuvwxyz
       });
     }
 
+    /* ── Scroll reveal ─────────────────────────────────────────────────
+       Not everything moves: copy blocks rise, section numbers slide in
+       from their side, grids stagger as a group. Each rule is
+       [selector, variant, stagger ms]. With a stagger, the PARENT is
+       observed and its matching children enter together, one after the
+       other — so a card grid reads as one beat instead of row by row.
+       Fires once, rooted on the backdrop (the modal's scroll container). */
+    function OLInitReveal() {
+      var backdrop = document.getElementById('modal-openloot');
+      if (!backdrop || !('IntersectionObserver' in window)) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var root = backdrop.querySelector('.ol-case-in');
+      if (!root) return;
+
+      var rules = [
+        ['.ol-hero-copy > *',                              'up',    90],
+        ['.ol-meta-card',                                  'up',    80],
+        ['.ol-section-num:not(.ol-section-num--right)',    'left',  0],
+        ['.ol-section-num--right',                         'right', 0],
+        ['.ol-narrative-copy',                             'up',    0],
+        ['.ol-decision-copy > *:not(.ol-section-num)',     'up',    90],
+        ['.ol-decision-media',                             'right', 0],
+        ['.ol-process-head > *',                           'up',    90],
+        ['.ol-process-timeline > *',                       'up',    110],
+        ['.ol-process-stage',                              'rise',  0],
+        ['.ol-sec-head-copy > *',                          'up',    90],
+        ['.ol2-ds-caption',                                'up',    0],
+        ['.ol2-swatch',                                    'up',    50],
+        ['.ol2-specimen',                                  'up',    120],
+        ['.ol2-ds-spec',                                   'up',    0],
+        ['.ol2-comp',                                      'pop',   30],
+        ['.ol-strip-head > *',                             'up',    90],
+        ['.ol2-role-card',                                 'up',    80],
+        ['.ol-myrole-video',                               'rise',  0],
+        ['.ol-result-head > *',                            'up',    90],
+        ['.ol-result-stats',                               'up',    0],
+        ['.ol-result-wordmark',                            'fade',  0],
+        ['.ol-visit > *',                                  'up',    120]
+      ];
+
+      function show(el) { el.classList.add('olr-in'); }
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          obs.unobserve(e.target);
+          var kids = e.target._olrKids;
+          if (kids) kids.forEach(show); else show(e.target);
+        });
+      }, { root: backdrop, threshold: 0, rootMargin: '0px 0px -10% 0px' });
+
+      rules.forEach(function (r) {
+        var els = Array.prototype.filter.call(root.querySelectorAll(r[0]), function (el) {
+          return !el.classList.contains('olr');
+        });
+        els.forEach(function (el) {
+          el.classList.add('olr');
+          if (r[1] !== 'up') el.classList.add('olr--' + r[1]);
+        });
+        if (!r[2]) { els.forEach(function (el) { obs.observe(el); }); return; }
+        // Group by parent; each child's delay is its index in that group.
+        var groups = new Map();
+        els.forEach(function (el) {
+          var p = el.parentElement;
+          if (!groups.has(p)) groups.set(p, []);
+          groups.get(p).push(el);
+        });
+        groups.forEach(function (kids, parent) {
+          kids.forEach(function (el, i) { el.style.setProperty('--olr-d', (i * r[2]) + 'ms'); });
+          // A parent can hold kids from two rules; merge rather than replace.
+          parent._olrKids = (parent._olrKids || []).concat(kids);
+          obs.observe(parent);
+        });
+      });
+    }
+
     var olCarouselsReady = false;
     window.OLInitCarousels = function () {
       if (olCarouselsReady) return;
       olCarouselsReady = true;
+      OLInitReveal();
       OLInitResult();
 
       var msRoot = document.getElementById('ol-coverflow-mainscreens');
