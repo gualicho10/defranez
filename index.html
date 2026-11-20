@@ -910,16 +910,14 @@
     /* ── Like button ──────────────────────────────────────────────────────
        Borrows the box, background, border and hover accent of .modal-close
        above so it reads as part of the modal chrome rather than a widget
-       sitting on top of it. Centred rather than cornered: parked bottom-right
-       it sat outside the content column, in dead space the eye never reaches
-       once the case study ends. Centring also lets the pill grow symmetrically
-       when the count appears.
+       sitting on top of it. Parked on the right edge, clear of the
+       content column: centred, it sat on top of the case study images and
+       got lost against them. The count grows the pill leftward.
        One button serves all six modals; it follows whichever is open. */
     .like-btn {
       position: fixed;
       bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
+      right: 24px;
       z-index: 10001;
       height: 44px;
       min-width: 44px;
@@ -1069,8 +1067,13 @@
       .like-btn.nudge::after, .like-btn.nudge::before { animation: none; }
     }
 
+    /* Where the prev/next arrows show (<=900px), the like sits right above
+       next, so the count can grow leftward without hitting anything. */
+    @media (max-width: 900px) {
+      .like-btn { bottom: 60px; right: 16px; }
+    }
     @media (max-width: 560px) {
-      .like-btn { bottom: 14px; min-width: 38px; height: 38px; }
+      .like-btn { min-width: 38px; height: 38px; }
       .like-btn svg { width: 17px; height: 17px; }
       .like-btn.has-count { padding: 0 13px; gap: 8px; }
     }
