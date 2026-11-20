@@ -988,9 +988,36 @@
     .like-btn.pop svg { animation: like-pop 0.42s cubic-bezier(0.2,0.8,0.2,1); }
     .like-btn.pop::after { animation: like-ring 0.5s ease-out; }
 
+    /* "Hey, I'm here" — every 20s while a case study is open and not yet
+       liked: a lub-dub heartbeat with a small tilt, the heart flushing green,
+       and two ring echoes off the pill. Driven by ProjectLikes (nudge). */
+    @keyframes like-nudge {
+      0%   { transform: scale(1) rotate(0deg); }
+      12%  { transform: scale(1.32) rotate(-10deg); }
+      24%  { transform: scale(0.96) rotate(0deg); }
+      36%  { transform: scale(1.24) rotate(8deg); }
+      52%  { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    @keyframes like-nudge-tint {
+      0%, 100% { stroke: currentColor; }
+      12%, 52% { stroke: #00f5a0; }
+    }
+    @keyframes like-nudge-ring {
+      0%   { opacity: 0.6; transform: scale(1); }
+      40%  { opacity: 0; transform: scale(1.45); }
+      41%  { opacity: 0.45; transform: scale(1); }
+      90%  { opacity: 0; transform: scale(1.6); }
+      100% { opacity: 0; transform: scale(1.6); }
+    }
+    .like-btn.nudge svg { animation: like-nudge 1.3s cubic-bezier(0.2,0.8,0.2,1); }
+    .like-btn.nudge svg path { animation: like-nudge-tint 1.3s ease; }
+    .like-btn.nudge::after { animation: like-nudge-ring 1.3s ease-out; }
+
     @media (prefers-reduced-motion: reduce) {
       .like-btn, .like-btn svg, .like-count { transition: none; }
-      .like-btn.pop svg, .like-btn.pop::after { animation: none; }
+      .like-btn.pop svg, .like-btn.pop::after,
+      .like-btn.nudge svg, .like-btn.nudge svg path, .like-btn.nudge::after { animation: none; }
     }
 
     @media (max-width: 560px) {
@@ -4300,7 +4327,7 @@
 .rv-w > span { display: inline-block; opacity: 0; }
 .rv--words-rise .rv-w { overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
 .rv--words-rise.rv-in .rv-w > span { animation: rv-wrise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: var(--rv-d, 0ms); }
-.rv--words-blur.rv-in .rv-w > span { animation: rv-focus 1.1s ease-out both; animation-delay: var(--rv-d, 0ms); }
+.rv--words-blur.rv-in .rv-w > span { animation: rv-focus 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: var(--rv-d, 0ms); }
 /* Dipper's marker: the green phrase gets underlined once it's been said. */
 .rv--mark em {
   background: linear-gradient(rgba(0, 245, 160, 0.28), rgba(0, 245, 160, 0.28)) 0 90% / 0% 0.3em no-repeat;
@@ -4319,7 +4346,7 @@
 @keyframes rv-tilt   { from { opacity: 0; translate: 0 24px; rotate: -8deg; scale: 0.9; } to { opacity: 1; translate: 0 0; rotate: 0deg; scale: 1; } }
 @keyframes rv-unveil { from { opacity: 1; clip-path: inset(0 0 100% 0); scale: 1.03; } to { opacity: 1; clip-path: inset(0 0 0 0); scale: 1; } }
 @keyframes rv-fan    { from { opacity: 0; translate: 0 90px; rotate: var(--rv-r, 0deg); } to { opacity: 1; translate: 0 0; rotate: 0deg; } }
-@keyframes rv-focus  { from { opacity: 0; filter: blur(14px); scale: 1.03; } to { opacity: 1; filter: none; scale: 1; } }
+@keyframes rv-focus  { from { opacity: 0; filter: blur(10px); scale: 1.02; } to { opacity: 1; filter: none; scale: 1; } }
 @keyframes rv-bloom  { 0% { opacity: 0; scale: 0.3; } 60% { opacity: 1; scale: 1.08; } 80% { scale: 0.97; } 100% { opacity: 1; scale: 1; } }
 @keyframes rv-spring { 0% { opacity: 0; translate: 0 70px; } 60% { opacity: 1; translate: 0 -10px; } 80% { translate: 0 4px; } 100% { opacity: 1; translate: 0 0; } }
 @keyframes rv-wipe   { from { opacity: 1; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
@@ -6623,9 +6650,33 @@ abcdefghijklmnopqrstuvwxyz
       btn.addEventListener('click', toggle);
       loadTotals();   // the one and only totals fetch, fire and forget
 
+      // Attention nudge: every 20s with a case study open. Skipped once the
+      // project is liked, while the pointer is on the button, when the tab is
+      // in the background, and for anyone who asked for reduced motion.
+      const NUDGE_EVERY = 20000;
+      let nudgeTimer = null;
+      let hovering = false;
+      btn.addEventListener('pointerenter', () => { hovering = true; });
+      btn.addEventListener('pointerleave', () => { hovering = false; });
+      btn.addEventListener('animationend', e => {
+        if (e.animationName === 'like-nudge') btn.classList.remove('nudge');
+      });
+      function nudge() {
+        if (!slug || btn.hidden || !btn.classList.contains('visible')) return;
+        if (hovering || document.hidden || likedHere(slug)) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        btn.classList.remove('nudge'); void btn.offsetWidth; btn.classList.add('nudge');
+      }
+      function stopNudge() { clearInterval(nudgeTimer); nudgeTimer = null; btn.classList.remove('nudge'); }
+
       return {
-        attach(id) { slug = id; reveal(); },
-        detach()   { btn.classList.remove('visible', 'pop'); slug = null; }
+        attach(id) {
+          slug = id; reveal();
+          stopNudge();
+          nudgeTimer = setInterval(nudge, NUDGE_EVERY);
+        },
+        detach() { stopNudge(); btn.classList.remove('visible', 'pop'); slug = null; },
+        nudge
       };
     })();
 
