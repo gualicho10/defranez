@@ -1059,6 +1059,10 @@
     .like-btn.nudge svg path { animation: like-nudge-tint 1.6s ease; }
     .like-btn.nudge::after { border-width: 2px; animation: like-nudge-ring 1.6s ease-out; }
     .like-btn.nudge::before { animation: like-nudge-burst 1.6s ease-out; }
+    /* Liked is final: green heart, no more nudging. */
+    .like-btn.is-liked.nudge, .like-btn.is-liked.nudge svg,
+    .like-btn.is-liked.nudge svg path, .like-btn.is-liked.nudge::after,
+    .like-btn.is-liked.nudge::before { animation: none; }
 
     @media (prefers-reduced-motion: reduce) {
       .like-btn, .like-btn svg, .like-count { transition: none; }
@@ -6665,7 +6669,9 @@ abcdefghijklmnopqrstuvwxyz
         const wasLiked = likedHere(slug);
         const before   = totals[slug] || 0;
 
-        // Optimistic: paint first, ask later.
+        // Optimistic: paint first, ask later. A nudge caught mid-play would
+        // keep painting its inverted colours over the liked state, so cut it.
+        btn.classList.remove('nudge');
         const list = mine();
         setMine(wasLiked ? list.filter(s => s !== slug) : list.concat(slug));
         totals[slug] = Math.max(0, before + (wasLiked ? -1 : 1));
