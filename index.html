@@ -4257,6 +4257,80 @@
 @keyframes olr-pop   { from { opacity: 0; scale: 0.85; } to { opacity: 1; scale: 1; } }
 @keyframes olr-fade  { from { opacity: 0; } to { opacity: 1; } }
 
+/* ── Case studies — scroll reveal (Dipper · Simply Vision · Patagonia) ────
+   Same engine as Open Loot (classes added from JS by CSReveal, individual
+   translate/scale/rotate properties so nothing that already uses transform
+   breaks), but each case has its own vocabulary:
+     Dipper        — voice: headlines spoken word by word, a marker under
+                     the green phrase, figures unveiled, phones fanned out.
+     Simply Vision — clarity: things come into focus out of a blur, colour
+                     swatches bloom, the screen mosaic arrives as a wave.
+     Patagonia     — a guided path: everything travels left → right, the
+                     dividers fill like a progress bar, icons appear in steps. */
+.rv { opacity: 0; }
+.rv.rv-in {
+  animation: rv-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--rv-d, 0ms);
+}
+.rv--left.rv-in   { animation-name: rv-left; }
+.rv--right.rv-in  { animation-name: rv-right; }
+.rv--fade.rv-in   { animation-name: rv-fade; animation-duration: 1.4s; }
+.rv--pop.rv-in    { animation-name: rv-pop; animation-duration: 0.6s; }
+.rv--settle.rv-in { animation-name: rv-settle; animation-duration: 1.8s; }
+.rv--draw  { transform-origin: left center; }
+.rv--draw.rv-in, .rv--drawc.rv-in { animation-name: rv-draw; animation-duration: 1.2s; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+.rv--grow  { transform-origin: 50% 100%; }
+.rv--grow.rv-in   { animation-name: rv-grow; animation-duration: 0.7s; }
+.rv--tilt.rv-in   { animation-name: rv-tilt; animation-duration: 0.8s; }
+.rv--unveil.rv-in { animation-name: rv-unveil; animation-duration: 1.4s; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+.rv--fan.rv-in    { animation-name: rv-fan; animation-duration: 1.1s; }
+.rv--focus.rv-in  { animation-name: rv-focus; animation-duration: 1.3s; animation-timing-function: ease-out; }
+.rv--bloom.rv-in  { animation-name: rv-bloom; animation-duration: 0.9s; animation-timing-function: ease-out; }
+.rv--spring.rv-in { animation-name: rv-spring; animation-duration: 1s; animation-timing-function: ease-out; }
+.rv--wipe.rv-in   { animation-name: rv-wipe; animation-duration: 1.1s; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+.rv--trace.rv-in  { animation-name: rv-wipe; animation-duration: 2.4s; animation-timing-function: cubic-bezier(0.45, 0, 0.25, 1); }
+/* Eight product icons in one image: eight hard steps = one icon per beat. */
+.rv--steps.rv-in  { animation-name: rv-wipe; animation-duration: 1.6s; animation-timing-function: steps(8, end); }
+.rv--progress { transform-origin: left center; }
+.rv--progress.rv-in { animation-name: rv-progress; animation-duration: 1.6s; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+
+/* Word-by-word headlines. The container stays visible; its words animate. */
+.rv--words, .rv--words.rv-in { opacity: 1; animation: none; }
+.rv-w { display: inline-block; vertical-align: top; }
+.rv-w > span { display: inline-block; opacity: 0; }
+.rv--words-rise .rv-w { overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.rv--words-rise.rv-in .rv-w > span { animation: rv-wrise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: var(--rv-d, 0ms); }
+.rv--words-blur.rv-in .rv-w > span { animation: rv-focus 1.1s ease-out both; animation-delay: var(--rv-d, 0ms); }
+/* Dipper's marker: the green phrase gets underlined once it's been said. */
+.rv--mark em {
+  background: linear-gradient(rgba(0, 245, 160, 0.28), rgba(0, 245, 160, 0.28)) 0 90% / 0% 0.3em no-repeat;
+  transition: background-size 0.8s cubic-bezier(0.65, 0, 0.35, 1) var(--rv-mark-d, 0.6s);
+}
+.rv--mark.rv-in em { background-size: 100% 0.3em; }
+
+@keyframes rv-up     { from { opacity: 0; translate: 0 32px; } to { opacity: 1; translate: 0 0; } }
+@keyframes rv-left   { from { opacity: 0; translate: -40px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes rv-right  { from { opacity: 0; translate: 40px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes rv-fade   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rv-pop    { from { opacity: 0; scale: 0.85; } to { opacity: 1; scale: 1; } }
+@keyframes rv-settle { from { opacity: 0; scale: 1.08; } to { opacity: 1; scale: 1; } }
+@keyframes rv-draw   { from { opacity: 1; scale: 0 1; } to { opacity: 1; scale: 1 1; } }
+@keyframes rv-grow   { from { opacity: 1; scale: 1 0; } to { opacity: 1; scale: 1 1; } }
+@keyframes rv-tilt   { from { opacity: 0; translate: 0 24px; rotate: -8deg; scale: 0.9; } to { opacity: 1; translate: 0 0; rotate: 0deg; scale: 1; } }
+@keyframes rv-unveil { from { opacity: 1; clip-path: inset(0 0 100% 0); scale: 1.03; } to { opacity: 1; clip-path: inset(0 0 0 0); scale: 1; } }
+@keyframes rv-fan    { from { opacity: 0; translate: 0 90px; rotate: var(--rv-r, 0deg); } to { opacity: 1; translate: 0 0; rotate: 0deg; } }
+@keyframes rv-focus  { from { opacity: 0; filter: blur(14px); scale: 1.03; } to { opacity: 1; filter: none; scale: 1; } }
+@keyframes rv-bloom  { 0% { opacity: 0; scale: 0.3; } 60% { opacity: 1; scale: 1.08; } 80% { scale: 0.97; } 100% { opacity: 1; scale: 1; } }
+@keyframes rv-spring { 0% { opacity: 0; translate: 0 70px; } 60% { opacity: 1; translate: 0 -10px; } 80% { translate: 0 4px; } 100% { opacity: 1; translate: 0 0; } }
+@keyframes rv-wipe   { from { opacity: 1; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+@keyframes rv-wrise  { from { opacity: 1; translate: 0 105%; } to { opacity: 1; translate: 0 0; } }
+/* The divider runs in Patagonia teal, then cools to its normal hairline. */
+@keyframes rv-progress {
+  0%   { opacity: 1; scale: 0 1; background-color: #009AA2; }
+  70%  { opacity: 1; scale: 1 1; background-color: #009AA2; }
+  100% { opacity: 1; scale: 1 1; }
+}
+
 .ol-chart-yvalues span {
   position: absolute;
   left: calc(31 * var(--u));
@@ -6856,6 +6930,7 @@ abcdefghijklmnopqrstuvwxyz
       if (window.ProjectLikes) window.ProjectLikes.attach(id);
       if (typeof ProjectSwipe !== 'undefined' && ProjectSwipe) ProjectSwipe.sync(id);
       if (id === 'openloot' && window.OLInitCarousels) window.OLInitCarousels();
+      if (window.CSReveal) window.CSReveal.init(id);
       writeHash(id);
     }
     function closeModal(id) {
@@ -7414,6 +7489,197 @@ abcdefghijklmnopqrstuvwxyz
         });
       });
     }
+
+    /* ── Case-study scroll reveal (Dipper · Simply Vision · Patagonia) ──
+       Rule fields:
+         s      selector, scoped to the modal's .cs2-in
+         fx     variant → .rv--<fx> (see the CSS block for the vocabulary)
+         st     stagger ms: observe the PARENT, its matches enter in turn
+         base   extra ms added to every delay in the rule
+         words  'rise' | 'blur': split into words that enter one by one
+         mark   underline the <em> once the words have landed
+         fan    rotate each item away from the group's centre (Dipper phones)
+         wave   delay by grid column instead of DOM order (SV mosaic)
+       Init happens once per modal, on first open. */
+    window.CSReveal = (function () {
+      var CASES = {
+        dipper: [
+          { s: '.cs2-hero-copy > .cs2-pill', fx: 'left' },
+          { s: '.cs2-title', words: 'rise', st: 110 },
+          { s: '.cs2-lede', fx: 'up', base: 350 },
+          { s: '.cs2-chip', fx: 'pop', st: 60, base: 500 },
+          { s: '.cs2-meta-card', fx: 'up', st: 90, base: 300 },
+          { s: '.cs2-band img', fx: 'settle' },
+          { s: '.cs2-line', fx: 'draw' },
+          { s: '.cs2-pill--sm', fx: 'left' },
+          { s: '.cs2-h', words: 'rise', st: 90, mark: true },
+          { s: '.cs2-two .cs2-prose > p', fx: 'up', st: 140, base: 200 },
+          { s: '.cs2-prose--wide', fx: 'up', base: 250 },
+          { s: '.cs2-caption', fx: 'fade' },
+          { s: '.cs2-sw', fx: 'tilt', st: 80 },
+          { s: '.cs2-cols i', fx: 'grow', st: 45 },
+          { s: '.cs2-type', fx: 'up' },
+          { s: '.cs2-scale > div', fx: 'left', st: 110, base: 300 },
+          { s: '.cs2-figure', fx: 'unveil' },
+          { s: '.cs2-phones img', fx: 'fan', st: 70, fan: 7 },
+          { s: '.cs2-closer', fx: 'unveil' }
+        ],
+        simplyvision: [
+          { s: '.cs2-hero-copy > .cs2-pill', fx: 'bloom' },
+          { s: '.cs2-title', words: 'blur', st: 140 },
+          { s: '.cs2-lede', fx: 'focus', base: 300 },
+          { s: '.cs2-chip', fx: 'bloom', st: 70, base: 450 },
+          { s: '.cs2-meta-card', fx: 'focus', st: 100, base: 250 },
+          { s: '.cs2-band img', fx: 'focus' },
+          { s: '.cs2-line', fx: 'drawc' },
+          { s: '.cs2-pill--sm', fx: 'bloom' },
+          { s: '.cs2-h', words: 'blur', st: 100 },
+          { s: '.cs2-two .cs2-prose > p', fx: 'focus', st: 160, base: 200 },
+          { s: '.cs2-prose--wide', fx: 'focus', base: 200 },
+          { s: '.cs2-caption', fx: 'fade' },
+          { s: '.cs2-figure', fx: 'focus' },
+          { s: '.cs2-sw', fx: 'bloom', st: 90 },
+          { s: '.sv-scale-row', fx: 'left', st: 70 },
+          { s: '.sv-varrow img', fx: 'spring', st: 110 },
+          { s: '.cs2-phones img', fx: 'spring', st: 110 },
+          { s: '.sv-sabana img', fx: 'focus', wave: 110 }
+        ],
+        patagonia: [
+          { s: '.cs2-hero-copy > .cs2-pill', fx: 'left' },
+          { s: '.cs2-title', fx: 'wipe', base: 100 },
+          { s: '.cs2-lede', fx: 'left', base: 400 },
+          { s: '.cs2-chip', fx: 'left', st: 120, base: 550 },
+          { s: '.cs2-meta-card', fx: 'left', st: 130, base: 300 },
+          { s: '.pat-fig img[src*="mockups"]', fx: 'up' },
+          { s: '.cs2-line', fx: 'progress' },
+          { s: '.cs2-pill--sm', fx: 'left' },
+          { s: '.cs2-h', fx: 'wipe', base: 100 },
+          { s: '.cs2-two .cs2-prose > p', fx: 'left', st: 140, base: 250 },
+          { s: '.cs2-prose--wide', fx: 'left', base: 250 },
+          { s: '.cs2-caption', fx: 'fade' },
+          { s: '.pat-sw', fx: 'left', st: 140 },
+          { s: '.pat-sw-color', fx: 'wipe', st: 140, base: 200 },
+          { s: '.pat-fig img[src*="product-icons"]', fx: 'steps' },
+          { s: '.pat-fig img[src*="flow"]', fx: 'trace' },
+          { s: '.pat-fig img[src*="plans"]', fx: 'up' },
+          { s: '.pat-fig img[src*="confirm"]', fx: 'wipe' },
+          { s: '.pat-wordmark', fx: 'fade' },
+          { s: '.pat-closer-copy > *', fx: 'left', st: 140 },
+          { s: '.pat-closer-media', fx: 'right', base: 300 }
+        ]
+      };
+      var done = {};
+
+      /* Wraps every word in <span class="rv-w"><span>word</span></span>,
+         keeping <br>, <em> and whitespace exactly where they were. */
+      function splitWords(el) {
+        var words = [];
+        (function walk(node) {
+          Array.prototype.slice.call(node.childNodes).forEach(function (n) {
+            if (n.nodeType === 3) {
+              var frag = document.createDocumentFragment();
+              n.textContent.split(/(\s+)/).forEach(function (part) {
+                if (!part) return;
+                if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+                var outer = document.createElement('span');
+                var inner = document.createElement('span');
+                outer.className = 'rv-w';
+                inner.textContent = part;
+                outer.appendChild(inner);
+                frag.appendChild(outer);
+                words.push(inner);
+              });
+              node.replaceChild(frag, n);
+            } else if (n.nodeType === 1 && n.tagName !== 'BR') {
+              walk(n);
+            }
+          });
+        })(el);
+        return words;
+      }
+
+      function run(backdrop, rules) {
+        var root = backdrop.querySelector('.cs2-in');
+        if (!root) return;
+        var obs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            obs.unobserve(e.target);
+            (e.target._rvKids || [e.target]).forEach(function (el) { el.classList.add('rv-in'); });
+          });
+        }, { root: backdrop, threshold: 0, rootMargin: '0px 0px -10% 0px' });
+
+        rules.forEach(function (r) {
+          var base = r.base || 0;
+          var els = Array.prototype.filter.call(root.querySelectorAll(r.s), function (el) {
+            return !el.classList.contains('rv');
+          });
+
+          if (r.words) {
+            els.forEach(function (el) {
+              el.classList.add('rv', 'rv--words', 'rv--words-' + r.words);
+              var words = splitWords(el);
+              words.forEach(function (w, i) { w.style.setProperty('--rv-d', (base + i * r.st) + 'ms'); });
+              if (r.mark) {
+                el.classList.add('rv--mark');
+                el.style.setProperty('--rv-mark-d', (base + words.length * r.st + 300) + 'ms');
+              }
+              obs.observe(el);
+            });
+            return;
+          }
+
+          els.forEach(function (el) {
+            el.classList.add('rv', 'rv--' + r.fx);
+            if (base) el.style.setProperty('--rv-d', base + 'ms');
+          });
+
+          if (r.wave) {
+            // Delay by column: the mosaic rolls in left → right, row by row.
+            var cols = getComputedStyle(els[0].parentElement).gridTemplateColumns.split(' ').length || 1;
+            els.forEach(function (el, i) {
+              el.style.setProperty('--rv-d', (base + (i % cols) * r.wave) + 'ms');
+              obs.observe(el);
+            });
+            return;
+          }
+
+          if (!r.st) { els.forEach(function (el) { obs.observe(el); }); return; }
+
+          var groups = new Map();
+          els.forEach(function (el) {
+            var p = el.parentElement;
+            if (!groups.has(p)) groups.set(p, []);
+            groups.get(p).push(el);
+          });
+          groups.forEach(function (kids, parent) {
+            var mid = (kids.length - 1) / 2;
+            kids.forEach(function (el, i) {
+              el.style.setProperty('--rv-d', (base + i * r.st) + 'ms');
+              if (r.fan) el.style.setProperty('--rv-r', ((i - mid) * r.fan) + 'deg');
+            });
+            parent._rvKids = (parent._rvKids || []).concat(kids);
+            obs.observe(parent);
+          });
+        });
+      }
+
+      function init(id) {
+        if (done[id] || !CASES[id]) return;
+        if (!('IntersectionObserver' in window)) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var backdrop = document.getElementById('modal-' + id);
+        if (!backdrop) return;
+        done[id] = true;
+        run(backdrop, CASES[id]);
+      }
+
+      // A deep link (#dipper) may have opened the modal before this ran.
+      var open = document.querySelector('.modal-backdrop.open');
+      if (open) init(open.id.replace('modal-', ''));
+
+      return { init: init };
+    })();
 
     var olCarouselsReady = false;
     window.OLInitCarousels = function () {
